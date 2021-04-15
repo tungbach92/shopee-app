@@ -36,10 +36,10 @@ export default function ProductList(props) {
                     width="20"
                     className="app__free-ship-icon"
                   >
-                    <g fill="none" fill-rule="evenodd" transform="">
+                    <g fill="none" fillRule="evenodd" transform="">
                       <rect
                         fill="#00bfa5"
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         height="9"
                         rx="1"
                         width="12"
@@ -55,7 +55,7 @@ export default function ProductList(props) {
                       ></rect>
                       <rect
                         fill="#00bfa5"
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         height="7"
                         rx="1"
                         width="7"

@@ -6,10 +6,10 @@ import Pagination from "./Pagination";
 
 export default function ProductContainer() {
   return (
-    <div class="grid">
-      <div class="grid__row grid__row--padtb3">
+    <div className="grid">
+      <div className="grid__row grid__row--padtb3">
         <ProductCategory></ProductCategory>
-        <div class="grid__col-10x">
+        <div className="grid__col-10x">
           <ProductFilter></ProductFilter>
           <ProductList></ProductList>
         </div>

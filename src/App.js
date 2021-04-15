@@ -5,12 +5,15 @@ import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Product from "./pages/Product";
+import RoomProvider from "../src/context";
 
 function App() {
   return (
     <>
       <Header></Header>
-      <Product></Product>
+      <RoomProvider>
+        <Product></Product>
+      </RoomProvider>
       <Footer></Footer>
     </>
   );

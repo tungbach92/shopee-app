@@ -4,8 +4,8 @@ import HeaderSearch from "./HeaderSearch";
 
 export default function Header() {
   return (
-    <header class="header">
-      <div class="grid grid--fullheight">
+    <header className="header">
+      <div className="grid grid--fullheight">
           <HeaderNav></HeaderNav>
           <HeaderSearch></HeaderSearch>
       </div>
