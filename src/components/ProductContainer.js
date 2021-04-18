@@ -11,7 +11,9 @@ export default function ProductContainer() {
         <ProductCategory></ProductCategory>
         <div className="grid__col-10x">
           <ProductFilter></ProductFilter>
-          <ProductList></ProductList>
+          <div className="grid__row grid__row-product">
+            <ProductList></ProductList>
+          </div>
         </div>
         <Pagination></Pagination>
       </div>
