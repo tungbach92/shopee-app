@@ -6,7 +6,7 @@ export default class ProductList extends Component {
   render() {
     let value = this.context;
     const {
-      tempItems,
+      items,
       categoryItems,
       sortedItems,
       today,
@@ -14,7 +14,7 @@ export default class ProductList extends Component {
       bestSelling,
     } = value;
 
-    return tempItems.map((item) => 
+    return sortedItems.map((item) => 
        <ProductItem key={item.id} item={item}></ProductItem>
     );
   }
