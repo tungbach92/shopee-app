@@ -769,6 +769,10 @@ header {
   right: 0.5rem;
 }
 
+.app__input-lable--active {
+  color: var(--primary-color);
+}
+
 .app__input-list {
   position: absolute;
   background-color: var(--while-color);

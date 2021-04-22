@@ -6,25 +6,24 @@ const itemsApi = "http://localhost:3000/items";
 export default class ProductProvider extends Component {
   state = {
     items: [],
-    sortedItems: [], // items sort 
+    sortedItems: [], // items sort
+    categoryItems: [], // category
     today: new Date(),
     defaultPageIndex: 1,
     bestSelling: 20,
     type: "allProduct",
     filter: "popular",
+    filterPrice: "default",
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
     let items = await this.getData();
-    let sortedItems = [...items];
-    let categoryItems = [...sortedItems];
-    let defaultPageIndex = 1; // set = pageIndex in component pagination
     this.setState({
       items,
-      sortedItems,
-      categoryItems,
-      defaultPageIndex,
     });
+    this.filterCategoryProduct();
+    this.filterProduct();
+    let defaultPageIndex = 1; // set = pageIndex in component pagination
   };
 
   getData = async () => {
@@ -46,29 +45,59 @@ export default class ProductProvider extends Component {
     return items;
   };
 
-  handleEvent = (event) => {
-    console.log(event);
+  handleClick = (event) => {
+    // console.log(event.currentTarget.parentElement);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
-    this.setState({ [name]: value }, this.filterProduct);
+    if (name === "filterPrice") {
+      event.currentTarget.parentElement.style.display = "none";
+    }
+    //
+    // console.log(event.currentTarget.childNodes);
+    // event.currentTarget.removeChild(event.currentTarget.childNodes);
+    // event.currentTarget.classList.remove("app__input-item--active");
+
+    // event.currentTarget.classList.add("app__input-item--active");
+    // event.currentTarget.innerHTML += `<i class="app__input-item-icon bi bi-check"></i>`;
+    if (name === "type") {
+      this.setState(
+        { [name]: value, filter: "popular", filterPrice: "default" },
+        this.filterCategoryProduct
+      );
+    }
+    if (name === "filter") {
+      this.setState(
+        { [name]: value, filterPrice: "default" },
+        this.filterProduct
+      );
+    }
+    if (name === "filterPrice") {
+      this.setState({ [name]: value }, this.filterProduct);
+    }
   };
 
-  filterProduct = () => {
-    let {
-      items,
-      sortedItems,
-      today,
-      defaultPageIndex,
-      bestSelling,
-      category,
-      type,
-      filter,
-    } = this.state;
+  filterCategoryProduct = () => {
+    let { items, sortedItems, type } = this.state;
     let tempItems = [...items];
     //filter by category
     if (type !== "allProduct") {
       tempItems = tempItems.filter((item) => item.type === type);
     }
+    //change state
+    this.setState({
+      sortedItems: tempItems,
+      categoryItems: tempItems,
+    });
+    console.log(sortedItems);
+  };
+
+  filterProduct = () => {
+    let {
+      categoryItems,
+      filter,
+      filterPrice,
+    } = this.state;
+    let tempItems = [...categoryItems];
     //filter by filter
     if (filter === "popular") {
       tempItems = tempItems.filter(
@@ -88,34 +117,38 @@ export default class ProductProvider extends Component {
     // Date Filter
     if (filter === "date") {
       tempItems = tempItems.filter(
-        (item) => item.date.getDate() > today.getDate() - 20
-        // (item) => new Date(item.date).getDate() > this.today.getDate() - 20
+        (item) =>
+          new Date(item.date).getDate() > this.state.today.getDate() - 20
+        // (item) => item.date.getDate() > today.getDate() - 20
       );
     }
 
-    // Price filter
-    if (filter === "price") {
-      if (tempItems.length === 1) {
-        return;
-      }
+    //price filter
+    if (filterPrice !== "default") {
       // priceAscFilter
-      tempItems = tempItems.sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      );
+      if (filterPrice === "priceAsc" && tempItems.length !== 1) {
+        tempItems = [...tempItems].sort(
+          (a, b) => parseFloat(a.price) - parseFloat(b.price)
+        );
+      }
       // priceDescFilter
-      tempItems = tempItems.sort(
-        (a, b) => parseFloat(b.price) - parseFloat(a.price)
-      );
+      if (filterPrice === "priceDesc" && tempItems.length !== 1) {
+        tempItems = [...tempItems].sort(
+          (a, b) => parseFloat(b.price) - parseFloat(a.price)
+        );
+      }
     }
 
     //change state
     this.setState({ sortedItems: tempItems });
   };
-
   render() {
     return (
       <ProductContext.Provider
-        value={{ ...this.state, handleEvent: this.handleEvent }}
+        value={{
+          ...this.state,
+          handleClick: this.handleClick,
+        }}
       >
         {this.props.children}
       </ProductContext.Provider>

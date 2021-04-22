@@ -7,7 +7,6 @@ export default class ProductList extends Component {
     let value = this.context;
     const {
       items,
-      categoryItems,
       sortedItems,
       today,
       defaultPageIndex,
