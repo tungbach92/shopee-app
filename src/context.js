@@ -14,6 +14,8 @@ export default class ProductProvider extends Component {
     type: "allProduct",
     filter: "popular",
     filterPrice: "default",
+    isFilterPriceClick: false,
+    isFilterClick: false,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -21,9 +23,8 @@ export default class ProductProvider extends Component {
     this.setState({
       items,
     });
+    this.categoryProduct();
     this.filterCategoryProduct();
-    this.filterProduct();
-    let defaultPageIndex = 1; // set = pageIndex in component pagination
   };
 
   getData = async () => {
@@ -49,9 +50,6 @@ export default class ProductProvider extends Component {
     // console.log(event.currentTarget.parentElement);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
-    if (name === "filterPrice") {
-      event.currentTarget.parentElement.style.display = "none";
-    }
     //
     // console.log(event.currentTarget.childNodes);
     // event.currentTarget.removeChild(event.currentTarget.childNodes);
@@ -62,21 +60,25 @@ export default class ProductProvider extends Component {
     if (name === "type") {
       this.setState(
         { [name]: value, filter: "popular", filterPrice: "default" },
-        this.filterCategoryProduct
+        this.categoryProduct
       );
     }
     if (name === "filter") {
       this.setState(
-        { [name]: value, filterPrice: "default" },
-        this.filterProduct
+        { [name]: value, filterPrice: "default", isFilterClick: true },
+        this.filterCategoryProduct
       );
     }
     if (name === "filterPrice") {
-      this.setState({ [name]: value }, this.filterProduct);
+      this.setState(
+        { [name]: value, isFilterPriceClick: true },
+        this.filterCategoryProduct
+      );
+      event.currentTarget.parentElement.style.display = "none";
     }
   };
 
-  filterCategoryProduct = () => {
+  categoryProduct = () => {
     let { items, sortedItems, type } = this.state;
     let tempItems = [...items];
     //filter by category
@@ -91,12 +93,8 @@ export default class ProductProvider extends Component {
     console.log(sortedItems);
   };
 
-  filterProduct = () => {
-    let {
-      categoryItems,
-      filter,
-      filterPrice,
-    } = this.state;
+  filterCategoryProduct = () => {
+    let { categoryItems, filter, filterPrice } = this.state;
     let tempItems = [...categoryItems];
     //filter by filter
     if (filter === "popular") {
@@ -127,13 +125,13 @@ export default class ProductProvider extends Component {
     if (filterPrice !== "default") {
       // priceAscFilter
       if (filterPrice === "priceAsc" && tempItems.length !== 1) {
-        tempItems = [...tempItems].sort(
+        tempItems = tempItems.sort(
           (a, b) => parseFloat(a.price) - parseFloat(b.price)
         );
       }
       // priceDescFilter
       if (filterPrice === "priceDesc" && tempItems.length !== 1) {
-        tempItems = [...tempItems].sort(
+        tempItems = tempItems.sort(
           (a, b) => parseFloat(b.price) - parseFloat(a.price)
         );
       }

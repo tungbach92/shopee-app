@@ -4,13 +4,8 @@ import classNames from "classnames";
 
 export default class ProductFilter extends Component {
   static contextType = ProductContext;
-  state = {
-    isClick: false,
-    isHover: false,
-  };
 
   handelHover = (event) => {
-    this.setState({ isHover: !this.state.isHover });
     const name = event.currentTarget.dataset.name;
     if (name === "filterPrice") {
       event.currentTarget.children[2].removeAttribute("style");
@@ -18,16 +13,40 @@ export default class ProductFilter extends Component {
   };
 
   render() {
-    const { type, filterPrice, handleClick } = this.context;
-    //css
+    const {
+      filter,
+      filterPrice,
+      isFilterPriceClick,
+      isFilterClick,
+      handleClick,
+    } = this.context;
+
     let labelValue = "";
-    if (filterPrice === "priceAsc") {
+    var icon1,
+      icon2 = "";
+    var isFilterPopular,
+      isFilterDate,
+      isFilterBestSell = false;
+
+    //css filter price
+    if (filterPrice === "priceAsc" && isFilterPriceClick) {
       labelValue = "Giá: Thấp đến cao";
-    } else if (filterPrice === "priceDesc") {
+      icon1 = `app__input-item-icon bi bi-check`;
+    } else if (filterPrice === "priceDesc" && isFilterPriceClick) {
       labelValue = "Giá: Cao đến thấp";
+      icon2 = `app__input-item-icon bi bi-check`;
     } else {
       labelValue = "Giá:";
     }
+    //css filter popular, date, bestSelling
+    if (filter === "popular") {
+      isFilterPopular = true;
+    } else if (filter === "date") {
+      isFilterDate = true;
+    } else if (filter === "bestSelling") {
+      isFilterBestSell = true;
+    }
+
     return (
       <div className="app__filter">
         <div className="app__filter-label">Sắp xếp theo</div>
@@ -37,7 +56,9 @@ export default class ProductFilter extends Component {
             data-name="filter"
             data-value="popular"
             onClick={handleClick}
-            className="btn app__filter-item app__filter-popular btn--active"
+            className={classNames("btn app__filter-item app__filter-popular", {
+              "btn--active": isFilterPopular === true,
+            })}
           >
             Phổ biến
           </button>
@@ -45,7 +66,9 @@ export default class ProductFilter extends Component {
             data-name="filter"
             data-value="date"
             onClick={handleClick}
-            className="btn app__filter-item app__filter-newest"
+            className={classNames("btn app__filter-item app__filter-newest", {
+              "btn--active": isFilterDate === true,
+            })}
           >
             Mới nhất
           </button>
@@ -53,7 +76,9 @@ export default class ProductFilter extends Component {
             data-name="filter"
             data-value="bestSelling"
             onClick={handleClick}
-            className="btn app__filter-item app__filter-bestSell"
+            className={classNames("btn app__filter-item app__filter-bestSell", {
+              "btn--active": isFilterBestSell === true,
+            })}
           >
             Bán chạy
           </button>
@@ -83,6 +108,7 @@ export default class ProductFilter extends Component {
                 className="app__input-item app__price-asc"
               >
                 Giá: Thấp đến Cao
+                <i className={icon1}></i>
               </li>
               <li
                 data-name="filterPrice"
@@ -91,6 +117,7 @@ export default class ProductFilter extends Component {
                 className="app__input-item app__price-desc"
               >
                 Giá: Cao đến Thấp
+                <i className={icon2}></i>
               </li>
             </ul>
           </div>
