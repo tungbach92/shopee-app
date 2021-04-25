@@ -16,8 +16,6 @@ export default class ProductFilter extends Component {
     const {
       filter,
       filterPrice,
-      isFilterPriceClick,
-      isFilterClick,
       handleClick,
     } = this.context;
 
@@ -29,10 +27,10 @@ export default class ProductFilter extends Component {
       isFilterBestSell = false;
 
     //css filter price
-    if (filterPrice === "priceAsc" && isFilterPriceClick) {
+    if (filterPrice === "priceAsc" ) {
       labelValue = "Giá: Thấp đến cao";
       icon1 = `app__input-item-icon bi bi-check`;
-    } else if (filterPrice === "priceDesc" && isFilterPriceClick) {
+    } else if (filterPrice === "priceDesc") {
       labelValue = "Giá: Cao đến thấp";
       icon2 = `app__input-item-icon bi bi-check`;
     } else {

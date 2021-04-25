@@ -14,17 +14,21 @@ export default class ProductProvider extends Component {
     type: "allProduct",
     filter: "popular",
     filterPrice: "default",
-    isFilterPriceClick: false,
-    isFilterClick: false,
+    pageIndex: 1,
+    pageSize: 10,
+    pageTotal: 0,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
-    let items = await this.getData();
+    const items = await this.getData();
     this.setState({
       items,
     });
     this.categoryProduct();
     this.filterCategoryProduct();
+    this.setState({
+      pageTotal: this.calcPageTotals(this.state.sortedItems),
+    });
   };
 
   getData = async () => {
@@ -46,8 +50,16 @@ export default class ProductProvider extends Component {
     return items;
   };
 
+  calcPageTotals = (items) => {
+    const pageTotal =
+      Math.ceil(items.length / this.state.pageSize) < 1
+        ? 1
+        : Math.ceil(items.length / this.state.pageSize);
+    return pageTotal;
+  };
+
   handleClick = (event) => {
-    // console.log(event.currentTarget.parentElement);
+    console.log(event.currentTarget.dataset);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     //
@@ -62,24 +74,27 @@ export default class ProductProvider extends Component {
         { [name]: value, filter: "popular", filterPrice: "default" },
         this.categoryProduct
       );
+      // set type filter filterPrice state, and sortedItems categoryItem pageIndex after state mutate
+      // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
     }
     if (name === "filter") {
       this.setState(
-        { [name]: value, filterPrice: "default", isFilterClick: true },
+        { [name]: value, filterPrice: "default" },
         this.filterCategoryProduct
       );
     }
     if (name === "filterPrice") {
-      this.setState(
-        { [name]: value, isFilterPriceClick: true },
-        this.filterCategoryProduct
-      );
+      this.setState({ [name]: value }, this.filterCategoryProduct);
       event.currentTarget.parentElement.style.display = "none";
+    }
+
+    if (name === "pageIndex") {
+      this.setState({ [name]: parseInt(value) });
     }
   };
 
   categoryProduct = () => {
-    let { items, sortedItems, type } = this.state;
+    let { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
     if (type !== "allProduct") {
@@ -89,8 +104,9 @@ export default class ProductProvider extends Component {
     this.setState({
       sortedItems: tempItems,
       categoryItems: tempItems,
+      pageIndex: 1,
+      pageTotal: this.calcPageTotals(tempItems),
     });
-    console.log(sortedItems);
   };
 
   filterCategoryProduct = () => {
@@ -138,7 +154,11 @@ export default class ProductProvider extends Component {
     }
 
     //change state
-    this.setState({ sortedItems: tempItems });
+    this.setState({
+      sortedItems: tempItems,
+      pageIndex: 1,
+      pageTotal: this.calcPageTotals(tempItems),
+    });
   };
   render() {
     return (

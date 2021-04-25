@@ -14,8 +14,8 @@ export default function ProductContainer() {
           <div className="grid__row grid__row-product">
             <ProductList></ProductList>
           </div>
+          <Pagination></Pagination>
         </div>
-        <Pagination></Pagination>
       </div>
     </div>
   );
