@@ -62,13 +62,7 @@ export default class ProductProvider extends Component {
     console.log(event.currentTarget.dataset);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
-    //
-    // console.log(event.currentTarget.childNodes);
-    // event.currentTarget.removeChild(event.currentTarget.childNodes);
-    // event.currentTarget.classList.remove("app__input-item--active");
 
-    // event.currentTarget.classList.add("app__input-item--active");
-    // event.currentTarget.innerHTML += `<i class="app__input-item-icon bi bi-check"></i>`;
     if (name === "type") {
       this.setState(
         { [name]: value, filter: "popular", filterPrice: "default" },
@@ -90,6 +84,19 @@ export default class ProductProvider extends Component {
 
     if (name === "pageIndex") {
       this.setState({ [name]: parseInt(value) });
+    }
+
+    if (name === "pageIndexLeftIcon") {
+      const pageIndex =
+        this.state.pageIndex - 1 <= 0 ? 1 : this.state.pageIndex - 1;
+      this.setState({ pageIndex });
+    }
+    if (name === "pageIndexRightIcon") {
+      const pageIndex =
+        this.state.pageIndex + 1 >= this.state.pageTotal
+          ? this.state.pageTotal
+          : this.state.pageIndex + 1;
+      this.setState({ pageIndex });
     }
   };
 

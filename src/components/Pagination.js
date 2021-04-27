@@ -7,10 +7,9 @@ export default class Pagination extends Component {
   render() {
     const {
       sortedItems,
-      pageIndex,
       pageSize,
-      pageTotal,
       handleClick,
+      eventValue,
     } = this.context;
 
     if (sortedItems.length <= pageSize) {
@@ -18,41 +17,21 @@ export default class Pagination extends Component {
     } else
       return (
         <ul className="pagination pagination--mtb3">
-          <li className="pagination-item pagination-item__left">
+          <li
+            data-name="pageIndexLeftIcon"
+            onClick={handleClick}
+            className="pagination-item pagination-item__left"
+          >
             <div className="pagination-item__link">
               <i className="pagination-item__icon bi bi-chevron-left"></i>
             </div>
           </li>
+          <PaginationItemNumber value={eventValue}></PaginationItemNumber>
           <li
-            data-name="pageIndex"
-            data-value="1"
+            data-name="pageIndexRightIcon"
             onClick={handleClick}
-            className="pagination-number pagination-number--active"
+            className="pagination-item pagination-item__right"
           >
-            <div className="pagination-item__link">1</div>
-          </li>
-          <li
-            data-name="pageIndex"
-            data-value="2"
-            onClick={handleClick}
-            className="pagination-number"
-          >
-            <div className="pagination-item__link">2</div>
-          </li>
-          {/* Hiện ... khi quá 5 trnag đầu */}
-          {pageIndex >= 6 && (
-            <li className="pagination-item pagination-item--non-click">
-              <div className="pagination-item__link">...</div>
-            </li>
-          )}
-          <PaginationItemNumber></PaginationItemNumber>
-          {/* Hiện ... khi quá 5 trang cuối */}
-          {pageTotal > 5 && pageIndex <= pageTotal - 3 && (
-            <li className="pagination-item pagination-item--non-click">
-              <div className="pageTotalpagination-item__link">...</div>
-            </li>
-          )}
-          <li className="pagination-item pagination-item__right">
             <div className="pagination-item__link">
               <i className="pagination-item__icon bi bi-chevron-right"></i>
             </div>
