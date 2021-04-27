@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import { ProductContext } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
-
+import classNames from "classnames";
 export default class Pagination extends Component {
   static contextType = ProductContext;
   render() {
     const {
       sortedItems,
+      pageIndex,
+      pageTotal,
       pageSize,
       handleClick,
-      eventValue,
     } = this.context;
 
     if (sortedItems.length <= pageSize) {
@@ -20,17 +21,25 @@ export default class Pagination extends Component {
           <li
             data-name="pageIndexLeftIcon"
             onClick={handleClick}
-            className="pagination-item pagination-item__left"
+            className={classNames("pagination-item", " pagination-item__left", {
+              "pagination-item--disabled": pageIndex <= 1,
+            })}
           >
             <div className="pagination-item__link">
               <i className="pagination-item__icon bi bi-chevron-left"></i>
             </div>
           </li>
-          <PaginationItemNumber value={eventValue}></PaginationItemNumber>
+          <PaginationItemNumber></PaginationItemNumber>
           <li
             data-name="pageIndexRightIcon"
             onClick={handleClick}
-            className="pagination-item pagination-item__right"
+            className={classNames(
+              "pagination-item",
+              " pagination-item__right",
+              {
+                "pagination-item--disabled": pageIndex >= pageTotal,
+              }
+            )}
           >
             <div className="pagination-item__link">
               <i className="pagination-item__icon bi bi-chevron-right"></i>

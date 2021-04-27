@@ -14,6 +14,10 @@ export default class ProductFilter extends Component {
 
   render() {
     const {
+      sortedItems,
+      pageIndex,
+      pageTotal,
+      pageSize,
       filter,
       filterPrice,
       handleClick,
@@ -25,9 +29,10 @@ export default class ProductFilter extends Component {
     var isFilterPopular,
       isFilterDate,
       isFilterBestSell = false;
-
+    const totalItems = sortedItems.length;
+    console.log([totalItems, pageSize]);
     //css filter price
-    if (filterPrice === "priceAsc" ) {
+    if (filterPrice === "priceAsc") {
       labelValue = "Giá: Thấp đến cao";
       icon1 = `app__input-item-icon bi bi-check`;
     } else if (filterPrice === "priceDesc") {
@@ -122,13 +127,31 @@ export default class ProductFilter extends Component {
         </div>
         <div className="app__filter-page">
           <div className="app__page-number">
-            {/* <!-- render --> */}
+            {totalItems >= pageSize && (
+              <>
+                <span className="app__page-index">{pageIndex}</span>/
+                <span className="app__page-page-total">{pageTotal}</span>
+              </>
+            )}
+
             {/* <!--  app__pre-page--disabled --> */}
           </div>
-          <div className="app__filter-page-item app__pre-page app__pre-page--disabled">
+          <div
+            data-name="pageIndexLeftIcon"
+            onClick={handleClick}
+            className={classNames("app__filter-page-item", "app__pre-page", {
+              "app__pre-page--disabled": pageIndex <= 1,
+            })}
+          >
             <i className="app__pre-icon bi bi-chevron-left"></i>
           </div>
-          <div className="app__filter-page-item app__next-page">
+          <div
+            data-name="pageIndexRightIcon"
+            onClick={handleClick}
+            className={classNames("app__filter-page-item", "app__next-page", {
+              "app__next-page--disabled": pageIndex >= pageTotal,
+            })}
+          >
             <i className="app__next-icon bi bi-chevron-right"></i>
           </div>
         </div>
