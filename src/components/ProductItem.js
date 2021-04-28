@@ -1,10 +1,15 @@
 import React from "react";
+
 export default function ProductItem(props) {
   const { id, imageUrl, name, price, soldAmount, location } = props.item;
   return (
     <div className="grid__col-2c4x">
       <div className="app__product-item">
-        <button className="btn app__product-cart-btn" data-id={id}>
+        <button
+          data-id={id}
+          onClick={props.event}
+          className="btn app__product-cart-btn"
+        >
           <i className="app__product-cart-btn-icon bi bi-cart"></i>
           Add to cart
         </button>

@@ -17,6 +17,8 @@ export default class ProductProvider extends Component {
     pageIndex: 1,
     pageSize: 10,
     pageTotal: 0,
+    cartNumb: 0,
+    cartItems: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -29,6 +31,8 @@ export default class ProductProvider extends Component {
     this.setState({
       pageTotal: this.calcPageTotals(this.state.sortedItems),
     });
+
+    this.setState({ cartNumb: this.calcCartNumb(this.state.cartItems) });
   };
 
   getData = async () => {
@@ -58,10 +62,19 @@ export default class ProductProvider extends Component {
     return pageTotal;
   };
 
+  calcCartNumb = (items) => {
+    let cartNumb = 0;
+    items.forEach((item) => {
+      cartNumb += item.amount;
+    });
+    return cartNumb;
+  };
+
   handleClick = (event) => {
     console.log(event.currentTarget.dataset);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
+    const id = event.currentTarget.dataset.id;
 
     if (name === "type") {
       this.setState(
@@ -98,6 +111,21 @@ export default class ProductProvider extends Component {
           : this.state.pageIndex + 1;
       this.setState({ pageIndex });
     }
+    if (id != null) {
+      this.addToCartItems(id);
+    }
+  };
+
+  addToCartItems = (id) => {
+    const { items, cartItems } = this.state;
+    const tempItems = [...items];
+    let item = tempItems.find((item) => item.id === Number(id));
+    item = { ...item, amount: 1 };
+    let cartItemsModified = [...cartItems, item];
+    this.setState({
+      cartItems: cartItemsModified,
+      cartNumb: this.calcCartNumb(cartItemsModified),
+    });
   };
 
   categoryProduct = () => {

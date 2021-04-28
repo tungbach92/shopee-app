@@ -476,8 +476,7 @@ header {
   margin-right: auto;
 }
 
-.header__cart-list--empty .header__cart-list-container,
-.header__cart-list--empty + .header__cart-numb {
+.header__cart-list--empty .header__cart-list-container {
   display: none;
 }
 

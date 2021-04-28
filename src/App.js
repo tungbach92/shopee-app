@@ -10,8 +10,8 @@ import ProductContext from "./context";
 function App() {
   return (
     <>
-      <Header></Header>
       <ProductContext>
+        <Header></Header>
         <Product></Product>
       </ProductContext>
       <Footer></Footer>

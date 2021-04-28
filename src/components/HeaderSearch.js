@@ -1,6 +1,6 @@
 import React from "react";
 import shopeeLogo from "../img/shoppe-logo.png";
-import noCartImg from "../img/no-cart.png";
+import HeaderCart from "./HeaderCart";
 
 export default function HeaderSearch() {
   return (
@@ -81,31 +81,7 @@ export default function HeaderSearch() {
           </li>
         </ul>
       </div>
-      <div className="header__cart">
-        <div className="header__cart-wrapper">
-          <a href="# " className="header__cart-icon-link">
-            <i className="header__cart-icon bi bi-cart">
-              {/* <!-- No cart: empty --> */}
-              <div className="header__cart-numb">0</div>
-            </i>
-          </a>
-          {/* <!-- No cart: header__cart-list--empty --> */}
-          <div className="header__cart-list">
-            <div className="header__cart-arrow"></div>
-            <div className="header__cart-list-container">
-              <div className="header__cart-title">Sản phẩm mới thêm</div>
-              <div className="header__cart-list-item">{/* <!-- render --> */}</div>
-              <div className="header__cart-item">
-                <a href="# " className="header__cart-button">
-                  Xem giỏ hàng
-                </a>
-              </div>
-            </div>
-            <img src={noCartImg} className="header__cart-empty-img" alt="no-cart" />
-            <div className="header__cart-empty-info">Chưa có sản phẩm</div>
-          </div>
-        </div>
-      </div>
+      <HeaderCart></HeaderCart>
     </div>
   );
 }
