@@ -30,7 +30,6 @@ export default class ProductFilter extends Component {
       isFilterDate,
       isFilterBestSell = false;
     const totalItems = sortedItems.length;
-    console.log([totalItems, pageSize]);
     //css filter price
     if (filterPrice === "priceAsc") {
       labelValue = "Giá: Thấp đến cao";

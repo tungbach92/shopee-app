@@ -7,7 +7,7 @@ export default class HeaderCart extends Component {
   static contextType = ProductContext;
 
   render() {
-    const { cartNumb, cartItems } = this.context;
+    const { cartNumb, cartItems, handleClick } = this.context;
     return (
       <div className="header__cart">
         <div className="header__cart-wrapper">
@@ -20,7 +20,7 @@ export default class HeaderCart extends Component {
           {/* <!-- No cart: header__cart-list--empty --> */}
           <div
             className={classNames("header__cart-list", {
-              "header__cart-list--empty": cartItems.length === 0,
+              "header__cart-list--empty": cartNumb === 0,
             })}
           >
             <div className="header__cart-arrow"></div>
@@ -41,6 +41,8 @@ export default class HeaderCart extends Component {
                     </a>
                     <div className="header__cart-amount">
                       <i
+                        data-name="incrCartItem"
+                        onClick={handleClick}
                         className="header__cart-incr bi bi-caret-up-fill"
                         data-id={item.id}
                       ></i>
@@ -51,11 +53,18 @@ export default class HeaderCart extends Component {
                         {item.amount}
                       </span>
                       <i
+                        data-name="decrCartItem"
+                        onClick={handleClick}
                         className="header__cart-decr bi bi-caret-down-fill"
                         data-id={item.id}
                       ></i>
                     </div>
-                    <span className="header__cart-delBtn" data-id={item.id}>
+                    <span
+                      data-name="delCartBtn"
+                      onClick={handleClick}
+                      className="header__cart-delBtn"
+                      data-id={item.id}
+                    >
                       Xóa
                     </span>
                   </div>

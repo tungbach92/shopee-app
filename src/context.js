@@ -22,17 +22,19 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
+    //get and filter
     const items = await this.getData();
     this.setState({
       items,
     });
     this.categoryProduct();
     this.filterCategoryProduct();
+    //get and set state cartItems
+    const cartItems = this.getCartItemsFromStorage();
     this.setState({
-      pageTotal: this.calcPageTotals(this.state.sortedItems),
+      cartItems: this.getCartItemsFromStorage(),
+      cartNumb: this.calcCartNumb(cartItems),
     });
-
-    this.setState({ cartNumb: this.calcCartNumb(this.state.cartItems) });
   };
 
   getData = async () => {
@@ -111,21 +113,71 @@ export default class ProductProvider extends Component {
           : this.state.pageIndex + 1;
       this.setState({ pageIndex });
     }
-    if (id != null) {
-      this.addToCartItems(id);
+    if (name === "addToCartBtn") {
+      this.addToCartItems(id, this.saveCartItemsToStorage);
+    }
+    if (name === "delCartBtn") {
+      this.delCartItem(id, this.saveCartItemsToStorage);
+    }
+    if (name === "incrCartItem") {
+      this.incrCartItem(id, this.saveCartItemsToStorage);
+    }
+    if (name === "decrCartItem") {
+      this.decrCartItem(id, this.saveCartItemsToStorage);
     }
   };
 
-  addToCartItems = (id) => {
+  addToCartItems = (id, callback) => {
     const { items, cartItems } = this.state;
     const tempItems = [...items];
     let item = tempItems.find((item) => item.id === Number(id));
     item = { ...item, amount: 1 };
     let cartItemsModified = [...cartItems, item];
-    this.setState({
-      cartItems: cartItemsModified,
-      cartNumb: this.calcCartNumb(cartItemsModified),
-    });
+    this.setState(
+      {
+        cartItems: cartItemsModified,
+        cartNumb: this.calcCartNumb(cartItemsModified),
+      },
+      callback
+    );
+  };
+
+  delCartItem = (id, callback) => {
+    const { cartItems } = this.state;
+    let items = cartItems.filter((item) => item.id !== Number(id));
+    this.setState(
+      {
+        cartItems: items,
+        cartNumb: this.calcCartNumb(items),
+      },
+      callback
+    );
+  };
+
+  incrCartItem = (id, callback) => {
+    const { cartItems } = this.state;
+    let item = cartItems.find((item) => item.id === Number(id));
+    item.amount++;
+    const cartNumb = this.calcCartNumb(this.state.cartItems);
+    this.setState({ cartNumb }, callback);
+  };
+
+  decrCartItem = (id, callback) => {
+    const { cartItems } = this.state;
+    let item = cartItems.find((item) => item.id === Number(id));
+    item.amount <= 1 ? (item.amount = 1) : item.amount--;
+    const cartNumb = this.calcCartNumb(this.state.cartItems);
+    this.setState({ cartNumb }, callback);
+  };
+
+  saveCartItemsToStorage = () => {
+    const { cartItems } = this.state;
+    localStorage.setItem("product", JSON.stringify(cartItems));
+  };
+
+  getCartItemsFromStorage = () => {
+    let savedCartItems = localStorage.getItem("product");
+    return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
   categoryProduct = () => {

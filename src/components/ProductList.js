@@ -4,13 +4,24 @@ import ProductItem from "./ProductItem";
 export default class ProductList extends Component {
   static contextType = ProductContext;
   render() {
-    const { sortedItems, pageIndex, pageSize, handleClick } = this.context;
+    const {
+      sortedItems,
+      cartItems,
+      pageIndex,
+      pageSize,
+      handleClick,
+    } = this.context;
     let items = sortedItems.slice(
       (pageIndex - 1) * pageSize,
       pageIndex * pageSize
     );
     return items.map((item) => (
-      <ProductItem key={item.id} item={item} event={handleClick}></ProductItem>
+      <ProductItem
+        key={item.id}
+        cartItems={cartItems}
+        item={item}
+        event={handleClick}
+      ></ProductItem>
     ));
   }
 }

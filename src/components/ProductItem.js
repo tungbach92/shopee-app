@@ -1,17 +1,23 @@
+import classNames from "classnames";
 import React from "react";
 
 export default function ProductItem(props) {
   const { id, imageUrl, name, price, soldAmount, location } = props.item;
+  let isInCart = false;
+  isInCart = props.cartItems.some((item) => item.id === Number(id));
   return (
     <div className="grid__col-2c4x">
       <div className="app__product-item">
         <button
+          data-name="addToCartBtn"
           data-id={id}
-          onClick={props.event}
-          className="btn app__product-cart-btn"
+          onClick={isInCart ? undefined : props.event}
+          className={classNames("btn app__product-cart-btn", {
+            "app__product-cart-btn--disabled": isInCart,
+          })}
         >
           <i className="app__product-cart-btn-icon bi bi-cart"></i>
-          Add to cart
+          {isInCart ? `In Cart` : `Add to cart`}
         </button>
         <a href="# " className="app__product-link">
           <div className="app__product-top-text">Yêu thích</div>
