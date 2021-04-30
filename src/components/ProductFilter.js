@@ -107,7 +107,9 @@ export default class ProductFilter extends Component {
                 data-name="filterPrice"
                 data-value="priceAsc"
                 onClick={handleClick}
-                className="app__input-item app__price-asc"
+                className={classNames("app__input-item", "app__price-asc", {
+                  "app__input-item--active": filterPrice === "priceAsc",
+                })}
               >
                 Giá: Thấp đến Cao
                 <i className={icon1}></i>
@@ -116,7 +118,9 @@ export default class ProductFilter extends Component {
                 data-name="filterPrice"
                 data-value="priceDesc"
                 onClick={handleClick}
-                className="app__input-item app__price-desc"
+                className={classNames("app__input-item", "app__price-desc", {
+                  "app__input-item--active": filterPrice === "priceDesc",
+                })}
               >
                 Giá: Cao đến Thấp
                 <i className={icon2}></i>
