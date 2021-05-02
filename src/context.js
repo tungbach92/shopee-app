@@ -19,6 +19,8 @@ export default class ProductProvider extends Component {
     pageTotal: 0,
     cartNumb: 0,
     cartItems: [],
+    searchInput: "",
+    searchHistory: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -70,6 +72,31 @@ export default class ProductProvider extends Component {
       cartNumb += item.amount;
     });
     return cartNumb;
+  };
+
+  filterProductBySearch = (text) => {
+    text = text.trim();
+    if (text.length > 0) {
+      const { items } = this.state;
+      const sortedItems = [...items].filter((item) =>
+        item.name.toLowerCase().includes(text)
+      );
+      this.setState(
+        {
+          sortedItems,
+          categoryItems: sortedItems,
+          searchInput: text,
+          type: "allProduct",
+          filter: "popular",
+          filterPrice: "default",
+          pageIndex: 1,
+          pageTotal: this.calcPageTotals(sortedItems),
+        },
+        () => {
+          console.log(this.state.sortedItems);
+        }
+      );
+    }
   };
 
   handleClick = (event) => {
@@ -125,6 +152,12 @@ export default class ProductProvider extends Component {
     if (name === "decrCartItem") {
       this.decrCartItem(id, this.saveCartItemsToStorage);
     }
+  };
+
+  addToSearchHistory = (text) => {
+    let { searchHistory } = this.state;
+    searchHistory = [...searchHistory, text];
+    this.setState({ searchHistory });
   };
 
   addToCartItems = (id, callback) => {
@@ -253,6 +286,8 @@ export default class ProductProvider extends Component {
         value={{
           ...this.state,
           handleClick: this.handleClick,
+          filterProductBySearch: this.filterProductBySearch,
+          addToSearchHistory: this.addToSearchHistory,
         }}
       >
         {this.props.children}

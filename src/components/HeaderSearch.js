@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useRef } from "react";
 import shopeeLogo from "../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
+import HeaderSearchHistory from "./HeaderSearchHistory";
 
-export default function HeaderSearch() {
+export default function HeaderSearch(props) {
+  const { filterProductBySearch, addToSearchHistory, searchHistory } = props;
+  const inputEl = useRef("");
+
+  function getUnique(items) {
+    let uniqueItems = new Set(items);
+    return [...uniqueItems];
+  }
+
+  function handleSearchIconClick() {
+    let text = inputEl.current.value;
+    filterProductBySearch(text);
+    addToSearchHistory(text);
+  }
+
+  function inputOnKeyUp(event) {
+    let text = event.target.value;
+    if (event.keyCode === 13) {
+      inputEl.current.blur();
+      filterProductBySearch(text);
+      addToSearchHistory(text);
+    }
+  }
+
   return (
     <div className="header__search">
       <a href="# " className="header__logo-link">
@@ -11,30 +35,29 @@ export default function HeaderSearch() {
       <div className="header__search-content">
         <div className="header__search-wrapper">
           <input
+            ref={inputEl}
             type="text"
+            onKeyUp={inputOnKeyUp}
             className="header__search-input"
             placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
           />
-          <a href="# " className="header__search-icon">
+          <a
+            href="# "
+            onClick={handleSearchIconClick}
+            className="header__search-icon"
+          >
             <i className="bi bi-search"></i>
           </a>
           <ul className="header__history-list">
             <li className="header__history-title">Lịch Sử Tìm Kiếm</li>
-            <li className="header__history-item">
-              <a href="# " className="header__history-link">
-                Item
-              </a>
-            </li>
-            <li className="header__history-item">
-              <a href="# " className="header__history-link">
-                Item
-              </a>
-            </li>
-            <li className="header__history-item">
-              <a href="# " className="header__history-link">
-                Item
-              </a>
-            </li>
+            {getUnique(searchHistory).map((item, index) => (
+              <HeaderSearchHistory
+                key={index}
+                text={item}
+                inputEl={inputEl}
+                handleSearchIconClick={handleSearchIconClick}
+              ></HeaderSearchHistory>
+            ))}
           </ul>
         </div>
 

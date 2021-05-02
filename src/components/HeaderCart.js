@@ -70,11 +70,6 @@ export default class HeaderCart extends Component {
                   </div>
                 ))}
               </div>
-              <div className="header__cart-item">
-                <a href="# " className="header__cart-button">
-                  Xem giỏ hàng
-                </a>
-              </div>
             </div>
             <img
               src={noCartImg}
@@ -82,6 +77,9 @@ export default class HeaderCart extends Component {
               alt="no-cart"
             />
             <div className="header__cart-empty-info">Chưa có sản phẩm</div>
+              <a href="# " className="header__cart-button">
+                Xem giỏ hàng
+              </a>
           </div>
         </div>
       </div>
