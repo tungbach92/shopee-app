@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import shopeeLogo from "../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import HeaderSearchHistory from "./HeaderSearchHistory";
+import { Link } from "react-router-dom";
 
 export default function HeaderSearch(props) {
   const { filterProductBySearch, addToSearchHistory, searchHistory } = props;
@@ -29,9 +30,9 @@ export default function HeaderSearch(props) {
 
   return (
     <div className="header__search">
-      <a href="# " className="header__logo-link">
+      <Link to="/" className="header__logo-link">
         <img src={shopeeLogo} alt="shoppe-logo" />
-      </a>
+      </Link>
       <div className="header__search-content">
         <div className="header__search-wrapper">
           <input

@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function ProductItem(props) {
   const { id, imageUrl, name, price, soldAmount, location } = props.item;
@@ -19,7 +20,7 @@ export default function ProductItem(props) {
           <i className="app__product-cart-btn-icon bi bi-cart"></i>
           {isInCart ? `In Cart` : `Add to cart`}
         </button>
-        <a href="# " className="app__product-link">
+        <Link to="/metaName" className="app__product-link">
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">
             <span className="app__product-sale-off-percent">43%</span>
@@ -112,7 +113,7 @@ export default function ProductItem(props) {
             </div>
             <div className="app__product-location">{location}</div>
           </div>
-        </a>
+        </Link>
       </div>
     </div>
   );

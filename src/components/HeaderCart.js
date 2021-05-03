@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import noCartImg from "../img/no-cart.png";
 import { ProductContext } from "../context";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 
 export default class HeaderCart extends Component {
   static contextType = ProductContext;
@@ -29,7 +30,7 @@ export default class HeaderCart extends Component {
               <div className="header__cart-list-item">
                 {cartItems.map((item, index) => (
                   <div key={index} className="header__cart-item">
-                    <a href="# " className="header__cart-link">
+                    <Link to="/:metaName" className="header__cart-link">
                       <img
                         className="header__cart-img"
                         src={require(`../img/${item.imageUrl}`).default}
@@ -38,7 +39,7 @@ export default class HeaderCart extends Component {
                       <div className="header__cart-name">{item.name}</div>
                       <div className="header__cart-price">{item.price}</div>
                       <span>x</span>
-                    </a>
+                    </Link>
                     <div className="header__cart-amount">
                       <i
                         data-name="incrCartItem"
@@ -77,9 +78,9 @@ export default class HeaderCart extends Component {
               alt="no-cart"
             />
             <div className="header__cart-empty-info">Chưa có sản phẩm</div>
-              <a href="# " className="header__cart-button">
-                Xem giỏ hàng
-              </a>
+            <Link to="/cart" className="header__cart-button">
+              Xem giỏ hàng
+            </Link>
           </div>
         </div>
       </div>
