@@ -17,14 +17,13 @@ export default function Header(props) {
     <header className="header">
       <div className="grid grid--fullheight">
         <HeaderNav></HeaderNav>
-        {!isCartPageLoaded && (
-          <HeaderSearch
-            searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
-            searchHistory={searchHistory}
-            addToSearchHistory={addToSearchHistory}
-          ></HeaderSearch>
-        )}
+        <HeaderSearch
+          searchInput={searchInput}
+          filterProductBySearch={filterProductBySearch}
+          searchHistory={searchHistory}
+          addToSearchHistory={addToSearchHistory}
+          isCartPageLoaded={isCartPageLoaded}
+        ></HeaderSearch>
       </div>
     </header>
   );

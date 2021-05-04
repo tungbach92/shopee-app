@@ -332,21 +332,51 @@ header {
   align-items: center;
 }
 
+.header__search--cart {
+  justify-content: space-between;
+  padding-bottom: 2.4rem;
+}
+
+.header__logo-wrapper {
+  display: flex;
+}
+
 .header__logo-link {
+  margin-right: 4rem;
   flex-basis: 20rem;
+}
+
+.header__logo-link--notHome {
+  margin-right: 0;
+}
+
+.header__page-name {
+  flex-basis: 14rem;
+  font-size: 1.8rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  border-left: 0.0625rem solid var(--while-color);
+  padding-left: 1rem;
+  margin: auto 0;
+  margin-top: 1.4rem;
+  color: var(--while-color);
 }
 
 .header__logo-link img {
   display: block;
   height: 5rem;
   color: #fff;
-  padding-right: 4rem;
   margin-top: -1.3rem;
 }
 
 .header__search-content {
   flex: 1;
   position: relative;
+}
+
+.header__search-content--cart {
+  flex: none;
+  width: 61.7rem;
 }
 
 .header__search-wrapper {
