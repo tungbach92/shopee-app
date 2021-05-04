@@ -20,7 +20,7 @@ export default function ProductItem(props) {
           <i className="app__product-cart-btn-icon bi bi-cart"></i>
           {isInCart ? `In Cart` : `Add to cart`}
         </button>
-        <Link to="/metaName" className="app__product-link">
+        <Link to="/" className="app__product-link">
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">
             <span className="app__product-sale-off-percent">43%</span>

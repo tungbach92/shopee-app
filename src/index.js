@@ -2,13 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
 import reportWebVitals from "./reportWebVitals";
+import ProductProvider from "./context";
 import { BrowserRouter as Router } from "react-router-dom";
 ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </React.StrictMode>,
+  <ProductProvider>
+    <React.StrictMode>
+      <Router>
+        <App />
+      </Router>
+    </React.StrictMode>
+  </ProductProvider>,
   document.getElementById("root")
 );
 

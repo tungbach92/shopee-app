@@ -4,7 +4,7 @@ import HeaderSearch from "./HeaderSearch";
 import { ProductContext } from "../context";
 import { useContext } from "react";
 
-export default function Header() {
+export default function Header(props) {
   const context = useContext(ProductContext);
   const {
     searchInput,
@@ -12,16 +12,19 @@ export default function Header() {
     searchHistory,
     addToSearchHistory,
   } = context;
+  const { isCartPageLoaded } = props;
   return (
     <header className="header">
       <div className="grid grid--fullheight">
         <HeaderNav></HeaderNav>
-        <HeaderSearch
-          searchInput={searchInput}
-          filterProductBySearch={filterProductBySearch}
-          searchHistory={searchHistory}
-          addToSearchHistory={addToSearchHistory}
-        ></HeaderSearch>
+        {!isCartPageLoaded && (
+          <HeaderSearch
+            searchInput={searchInput}
+            filterProductBySearch={filterProductBySearch}
+            searchHistory={searchHistory}
+            addToSearchHistory={addToSearchHistory}
+          ></HeaderSearch>
+        )}
       </div>
     </header>
   );
