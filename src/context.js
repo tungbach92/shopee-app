@@ -191,7 +191,7 @@ export default class ProductProvider extends Component {
     const { cartItems } = this.state;
     let item = cartItems.find((item) => item.id === Number(id));
     item.amount++;
-    const cartNumb = this.calcCartNumb(this.state.cartItems);
+    const cartNumb = this.calcCartNumb(cartItems);
     this.setState({ cartNumb }, callback);
   };
 
@@ -199,7 +199,7 @@ export default class ProductProvider extends Component {
     const { cartItems } = this.state;
     let item = cartItems.find((item) => item.id === Number(id));
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
-    const cartNumb = this.calcCartNumb(this.state.cartItems);
+    const cartNumb = this.calcCartNumb(cartItems);
     this.setState({ cartNumb }, callback);
   };
 

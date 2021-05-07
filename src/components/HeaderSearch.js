@@ -44,7 +44,7 @@ export default function HeaderSearch(props) {
     >
       <div className="header__logo-wrapper">
         <a
-          href="# "
+          href="/"
           className={classNames("header__logo-link", {
             "header__logo-link--notHome": isCartPageLoaded,
           })}
