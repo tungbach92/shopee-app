@@ -44,7 +44,10 @@ export default class ProductProvider extends Component {
       const response = await fetch(itemsApi);
       const items = await response.json();
       const itemsWithID = await this.addItemId(items);
-      return itemsWithID;
+      const itemsWithVariationDisPlay = await this.addVariationDisplayProp(
+        itemsWithID
+      );
+      return itemsWithVariationDisPlay;
     } catch (error) {
       console.log(error);
     }
@@ -54,6 +57,13 @@ export default class ProductProvider extends Component {
   addItemId = async (items) => {
     items.forEach((item, index) => {
       item.id = index;
+    });
+    return items;
+  };
+
+  addVariationDisplayProp = async (items) => {
+    items.forEach((item, index) => {
+      item.variationDisPlay = false;
     });
     return items;
   };
@@ -100,7 +110,7 @@ export default class ProductProvider extends Component {
   };
 
   handleClick = (event) => {
-    console.log(event.currentTarget.dataset);
+    console.log(event);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     const id = event.currentTarget.dataset.id;
@@ -280,6 +290,19 @@ export default class ProductProvider extends Component {
       pageTotal: this.calcPageTotals(tempItems),
     });
   };
+
+  changeVariationDisPlayCartItems = (index, event) => {
+    let { cartItems } = this.state;
+    const { name } = event.currentTarget.dataset;
+    if (name === "variation") {
+      let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
+      items.forEach((item) => {
+        item.variationDisPlay = false;
+      });
+      cartItems[index].variationDisPlay = !cartItems[index].variationDisPlay;
+      this.setState({ cartItems });
+    }
+  };
   render() {
     return (
       <ProductContext.Provider
@@ -288,6 +311,7 @@ export default class ProductProvider extends Component {
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
+          changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
         }}
       >
         {this.props.children}

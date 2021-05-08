@@ -1,23 +1,19 @@
-import React, { Component, useState, useContext } from "react";
-import { ProductContext } from "../context";
+import React, { Component } from "react";
 
 export default class CartProduct extends Component {
-  constructor(props) {
-    super(props);
-  }
   state = {
     checked: [],
   };
 
   componentDidMount = () => {
     const { cartItems } = this.props;
-    const checked = cartItems.map((item) => false);
-    this.setState({ checked: checked });
+    const defaultChecked = cartItems.map((item) => false);
+    this.setState({ checked: defaultChecked });
   };
 
   selectAll = (event) => {
     const { cartItems } = this.props;
-    const { name, checked } = event.target;
+    const { checked } = event.target;
     this.setState({ checked: cartItems.map((item) => checked) });
   };
 
@@ -26,6 +22,11 @@ export default class CartProduct extends Component {
     checked[index] = event.target.checked;
     this.setState({ checked });
   };
+
+  handelClick = (index, event) => {
+    this.props.changeVariationDisPlayCartItems(index, event);
+  };
+
   render() {
     let { cartItems } = this.props;
     let { checked } = this.state;
@@ -155,27 +156,69 @@ export default class CartProduct extends Component {
                 type="checkbox"
                 checked={!!checked[index]}
                 onChange={this.selectOne.bind(this, index)}
-                className="grid__col cart-product-item__checkbox"
+                className="grid__col cart-product__checkbox"
               />
-              <div className="grid__col cart-product-item__overview">
+              <div className="grid__col cart-product__overview">
                 <img
                   src={require(`../img/${item.imageUrl}`).default}
-                  alt="cart-product-item"
-                  className="cart-product-item__img"
+                  alt="cart-product"
+                  className="cart-product__img"
                 />
-                <span className="cart-product-item__name">{item.name}</span>
+                <span className="cart-product__name">{item.name}</span>
               </div>
-              <div className="grid__col cart-product-item__variation">
-                <span className="cart-product-item__variation-label">
+              <div
+                data-name="variation"
+                onClick={this.handelClick.bind(this, index)}
+                className="grid__col cart-product__variation"
+              >
+                <span className="cart-product__variation-label">
                   Phân Loại Hàng:
-                  <span href="# " className="cart-product-item__variation-icon">
+                  <span href="# " className="cart-product__variation-icon">
                     icon
                   </span>
                 </span>
-
-                <span className="cart-product-item__variation-numb">2kg</span>
+                <span className="cart-product__variation-numb">2kg</span>
+                {cartItems[index].variationDisPlay && (
+                  <div className="cart-product__variation-notify">
+                    <div className="cart-product__arrow-outer">
+                      <div className="cart-product__notify-arrow"></div>
+                    </div>
+                    <div className="cart-product__notify-content">
+                      <div className="cart-product__notify-label">Màu Sắc:</div>
+                      <div className="cart-product__variation-container">
+                        <div className="cart-product__notify-variation cart-product__notify-variation--active">
+                          1kg
+                          <div className="cart-product__variation-tick">
+                            <svg
+                              enableBackground="new 0 0 12 12"
+                              viewBox="0 0 12 12"
+                              x="0"
+                              y="0"
+                              className="cart-product__tick-icon"
+                            >
+                              <g>
+                                <path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path>
+                              </g>
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="cart-product__notify-variation">
+                          2kg
+                        </div>
+                      </div>
+                    </div>
+                    <div className="cart-product__notify-button">
+                      <button className="btn cart-product__notify-back">
+                        Trở Lại
+                      </button>
+                      <button className="btn cart-product__notify-ok">
+                        Xác nhận
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="grid__col cart-product-item__price">
+              <div className="grid__col cart-product__price">
                 {/* cart-product__price-item--before  */}
                 {/* cart-product__price-item--after  */}
                 <span className="cart-product__price-item cart-product__price-item--before">
@@ -183,29 +226,27 @@ export default class CartProduct extends Component {
                 </span>
                 <span className="cart-product__price-item">{item.price}</span>
               </div>
-              <div className="grid__col cart-product-item__amount">
-                <span href="# " className="cart-product-item__amount-desc">
+              <div className="grid__col cart-product__amount">
+                <span href="# " className="cart-product__amount-desc">
                   -
                 </span>
-                <span className="cart-product-item__amount-numb">
-                  {item.amount}
-                </span>
-                <span href="# " className="cart-product-item__amount-incr">
+                <span className="cart-product__amount-numb">{item.amount}</span>
+                <span href="# " className="cart-product__amount-incr">
                   +
                 </span>
               </div>
-              <div className="grid__col cart-product-item__total">
+              <div className="grid__col cart-product__total">
                 {item.price * item.amount}
               </div>
-              <div className="grid__col cart-product-item__action">
-                <span href="# " className="cart-product-item__action-del">
+              <div className="grid__col cart-product__action">
+                <span href="# " className="cart-product__action-del">
                   Xóa
                 </span>
-                <span className="cart-product-item__action-find">
-                  <span className="cart-product-item__action-label">
+                <span className="cart-product__action-find">
+                  <span className="cart-product__action-label">
                     Tìm sản phẩm tương tự:
                   </span>
-                  <span href="# " className="cart-product-item__action-icon">
+                  <span href="# " className="cart-product__action-icon">
                     icon
                   </span>
                 </span>
