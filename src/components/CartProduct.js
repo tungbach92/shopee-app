@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import classNames from "classnames";
 export default class CartProduct extends Component {
   state = {
     checked: [],
@@ -24,11 +24,16 @@ export default class CartProduct extends Component {
   };
 
   handelClick = (index, event) => {
-    this.props.changeVariationDisPlayCartItems(index, event);
+    const { name } = event.currentTarget.dataset;
+    if (name === "variation") {
+      this.props.changeVariationDisPlayCartItems(index, event);
+    }
+    if (name === "similar") {
+      this.props.changeSimilarDisPlayCartItems(index, event);
+    }
   };
-
   render() {
-    let { cartItems } = this.props;
+    let { cartItems, handleClick } = this.props;
     let { checked } = this.state;
     return (
       <div className="container">
@@ -173,51 +178,53 @@ export default class CartProduct extends Component {
               >
                 <span className="cart-product__variation-label">
                   Phân Loại Hàng:
-                  <span href="# " className="cart-product__variation-icon">
-                    icon
-                  </span>
+                  <span
+                    href="# "
+                    className={classNames("cart-product__variation-icon", {
+                      "cart-product__variation-icon--rotate":
+                        cartItems[index].variationDisPlay,
+                    })}
+                  ></span>
                 </span>
                 <span className="cart-product__variation-numb">2kg</span>
-                {cartItems[index].variationDisPlay && (
-                  <div className="cart-product__variation-notify">
-                    <div className="cart-product__arrow-outer">
-                      <div className="cart-product__notify-arrow"></div>
-                    </div>
-                    <div className="cart-product__notify-content">
-                      <div className="cart-product__notify-label">Màu Sắc:</div>
-                      <div className="cart-product__variation-container">
-                        <div className="cart-product__notify-variation cart-product__notify-variation--active">
-                          1kg
-                          <div className="cart-product__variation-tick">
-                            <svg
-                              enableBackground="new 0 0 12 12"
-                              viewBox="0 0 12 12"
-                              x="0"
-                              y="0"
-                              className="cart-product__tick-icon"
-                            >
-                              <g>
-                                <path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path>
-                              </g>
-                            </svg>
-                          </div>
-                        </div>
-                        <div className="cart-product__notify-variation">
-                          2kg
+              </div>
+              {cartItems[index].variationDisPlay && (
+                <div className="cart-product__variation-notify">
+                  <div className="cart-product__arrow-outer">
+                    <div className="cart-product__notify-arrow"></div>
+                  </div>
+                  <div className="cart-product__notify-content">
+                    <div className="cart-product__notify-label">Kích cỡ:</div>
+                    <div className="cart-product__variation-container">
+                      <div className="cart-product__notify-variation cart-product__notify-variation--active">
+                        X
+                        <div className="cart-product__variation-tick">
+                          <svg
+                            enableBackground="new 0 0 12 12"
+                            viewBox="0 0 12 12"
+                            x="0"
+                            y="0"
+                            className="cart-product__tick-icon"
+                          >
+                            <g>
+                              <path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path>
+                            </g>
+                          </svg>
                         </div>
                       </div>
-                    </div>
-                    <div className="cart-product__notify-button">
-                      <button className="btn cart-product__notify-back">
-                        Trở Lại
-                      </button>
-                      <button className="btn cart-product__notify-ok">
-                        Xác nhận
-                      </button>
+                      <div className="cart-product__notify-variation">XL</div>
                     </div>
                   </div>
-                )}
-              </div>
+                  <div className="cart-product__notify-button">
+                    <button className="btn cart-product__notify-back">
+                      Trở Lại
+                    </button>
+                    <button className="btn cart-product__notify-ok">
+                      Xác nhận
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="grid__col cart-product__price">
                 {/* cart-product__price-item--before  */}
                 {/* cart-product__price-item--after  */}
@@ -227,29 +234,67 @@ export default class CartProduct extends Component {
                 <span className="cart-product__price-item">{item.price}</span>
               </div>
               <div className="grid__col cart-product__amount">
-                <span href="# " className="cart-product__amount-desc">
-                  -
-                </span>
-                <span className="cart-product__amount-numb">{item.amount}</span>
-                <span href="# " className="cart-product__amount-incr">
-                  +
-                </span>
+                <div className="cart-product__amount-wrapper">
+                  <button
+                    data-id={item.id}
+                    data-name="decrCartItem"
+                    onClick={handleClick}
+                    href="# "
+                    className="cart-product__amount-desc"
+                  >
+                    -
+                  </button>
+                  <input
+                    data-id={item.id}
+                    data-name="inputAmount"
+                    type="text"
+                    className="cart-product__amount-numb"
+                    value={item.amount <= 0 ? 1 : item.amount}
+                    onChange={handleClick}
+                  />
+                  <button
+                    data-id={item.id}
+                    data-name="incrCartItem"
+                    onClick={handleClick}
+                    href="# "
+                    className="cart-product__amount-incr"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
               <div className="grid__col cart-product__total">
                 {item.price * item.amount}
               </div>
               <div className="grid__col cart-product__action">
-                <span href="# " className="cart-product__action-del">
+                <span
+                  data-name="delCartBtn"
+                  data-id={item.id}
+                  onClick={handleClick}
+                  className="cart-product__action-del"
+                >
                   Xóa
                 </span>
-                <span className="cart-product__action-find">
+                <span
+                  data-name="similar"
+                  onClick={this.handelClick.bind(this, index)}
+                  className="cart-product__action-find"
+                >
                   <span className="cart-product__action-label">
                     Tìm sản phẩm tương tự:
                   </span>
-                  <span href="# " className="cart-product__action-icon">
-                    icon
-                  </span>
+                  <span
+                    className={classNames("cart-product__action-icon", {
+                      "cart-product__action-icon--rotate":
+                        cartItems[index].similarDisPlay,
+                    })}
+                  ></span>
                 </span>
+                {cartItems[index].similarDisPlay && (
+                  <span className="cart-product__action-similar">
+                    hello similar
+                  </span>
+                )}
               </div>
             </div>
           ))}

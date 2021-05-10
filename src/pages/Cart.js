@@ -12,13 +12,20 @@ export default class Cart extends Component {
     this.setState({ isCartPageLoaded: true });
   };
   render() {
-    const { cartItems, changeVariationDisPlayCartItems } = this.context;
+    const {
+      cartItems,
+      handleClick,
+      changeVariationDisPlayCartItems,
+      changeSimilarDisPlayCartItems,
+    } = this.context;
     return (
       <>
         <Header isCartPageLoaded={this.state.isCartPageLoaded}></Header>
         <CartProduct
+          changeSimilarDisPlayCartItems={changeSimilarDisPlayCartItems}
           changeVariationDisPlayCartItems={changeVariationDisPlayCartItems}
           cartItems={cartItems}
+          handleClick={handleClick}
         ></CartProduct>
       </>
     );

@@ -47,12 +47,14 @@ export default class HeaderCart extends Component {
                         className="header__cart-incr bi bi-caret-up-fill"
                         data-id={item.id}
                       ></i>
-                      <span
+                      <input
                         className="header__cart-amount-item"
                         data-id={item.id}
-                      >
-                        {item.amount}
-                      </span>
+                        data-name="inputAmount"
+                        value={item.amount <= 0 ? 1 : item.amount}
+                        onChange={handleClick}
+                      />
+
                       <i
                         data-name="decrCartItem"
                         onClick={handleClick}

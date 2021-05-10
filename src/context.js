@@ -44,10 +44,10 @@ export default class ProductProvider extends Component {
       const response = await fetch(itemsApi);
       const items = await response.json();
       const itemsWithID = await this.addItemId(items);
-      const itemsWithVariationDisPlay = await this.addVariationDisplayProp(
+      const itemsWithVariationSimilarDisPlay = await this.addVariationSimilarDisplayProp(
         itemsWithID
       );
-      return itemsWithVariationDisPlay;
+      return itemsWithVariationSimilarDisPlay;
     } catch (error) {
       console.log(error);
     }
@@ -61,9 +61,10 @@ export default class ProductProvider extends Component {
     return items;
   };
 
-  addVariationDisplayProp = async (items) => {
-    items.forEach((item, index) => {
+  addVariationSimilarDisplayProp = async (items) => {
+    items.forEach((item) => {
       item.variationDisPlay = false;
+      item.similarDisPlay = false;
     });
     return items;
   };
@@ -79,7 +80,7 @@ export default class ProductProvider extends Component {
   calcCartNumb = (items) => {
     let cartNumb = 0;
     items.forEach((item) => {
-      cartNumb += item.amount;
+      cartNumb += Number(item.amount);
     });
     return cartNumb;
   };
@@ -159,6 +160,14 @@ export default class ProductProvider extends Component {
     if (name === "incrCartItem") {
       this.incrCartItem(id, this.saveCartItemsToStorage);
     }
+
+    if (name === "inputAmount") {
+      event.target.value = event.target.value
+        .replace(/[^1-9.]/g, "")
+        .replace(/(\..*)\./g, "$1");
+      const value = event.target.value;
+      this.changeAmountCartItem(id, value, this.saveCartItemsToStorage);
+    }
     if (name === "decrCartItem") {
       this.decrCartItem(id, this.saveCartItemsToStorage);
     }
@@ -197,6 +206,14 @@ export default class ProductProvider extends Component {
     );
   };
 
+  changeAmountCartItem = (id, amount, callback) => {
+    const { cartItems } = this.state;
+    let item = cartItems.find((item) => item.id === Number(id));
+    item.amount = amount;
+    const cartNumb = this.calcCartNumb(cartItems);
+    this.setState({ cartNumb }, callback);
+  };
+
   incrCartItem = (id, callback) => {
     const { cartItems } = this.state;
     let item = cartItems.find((item) => item.id === Number(id));
@@ -215,6 +232,10 @@ export default class ProductProvider extends Component {
 
   saveCartItemsToStorage = () => {
     const { cartItems } = this.state;
+    cartItems.forEach((item) => {
+      item.variationDisPlay = false;
+      item.similarDisPlay = false;
+    });
     localStorage.setItem("product", JSON.stringify(cartItems));
   };
 
@@ -303,6 +324,20 @@ export default class ProductProvider extends Component {
       this.setState({ cartItems });
     }
   };
+
+  changeSimilarDisPlayCartItems = (index, event) => {
+    let { cartItems } = this.state;
+    const { name } = event.currentTarget.dataset;
+    if (name === "similar") {
+      let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
+      items.forEach((item) => {
+        item.similarDisPlay = false;
+      });
+      cartItems[index].similarDisPlay = !cartItems[index].similarDisPlay;
+      this.setState({ cartItems });
+    }
+  };
+
   render() {
     return (
       <ProductContext.Provider
@@ -312,6 +347,7 @@ export default class ProductProvider extends Component {
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
+          changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
         }}
       >
         {this.props.children}
