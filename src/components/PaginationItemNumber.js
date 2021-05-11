@@ -3,10 +3,19 @@ import { ProductContext } from "../context";
 import classNames from "classnames";
 import { useContext } from "react";
 
-export default function PaginationItemNumber() {
+export default function PaginationItemNumber(props) {
   const context = useContext(ProductContext);
-  const { pageTotal, pageIndex, handleClick } = context;
-
+  let {
+    pageTotal,
+    similarPageTotal,
+    pageIndex,
+    similarPageIndex,
+    handleClick,
+  } = context;
+  if (props.similarDisPlay) {
+    pageTotal = similarPageTotal;
+    pageIndex = similarPageIndex;
+  }
   let jsxArray = [];
   for (let index = 3; index <= pageTotal; index++) {
     //Hiện 5 trang đầu

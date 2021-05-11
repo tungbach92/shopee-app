@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import classNames from "classnames";
+import ProductList from "./ProductList";
+import Pagination from "./Pagination";
 export default class CartProduct extends Component {
   state = {
     checked: [],
@@ -7,8 +9,12 @@ export default class CartProduct extends Component {
 
   componentDidMount = () => {
     const { cartItems } = this.props;
+    cartItems.forEach((item) => {
+      item.variationDisPlay = false;
+      item.similarDisPlay = false;
+    });
     const defaultChecked = cartItems.map((item) => false);
-    this.setState({ checked: defaultChecked });
+    this.setState({ cartItems, checked: defaultChecked });
   };
 
   selectAll = (event) => {
@@ -26,10 +32,10 @@ export default class CartProduct extends Component {
   handelClick = (index, event) => {
     const { name } = event.currentTarget.dataset;
     if (name === "variation") {
-      this.props.changeVariationDisPlayCartItems(index, event);
+      this.props.changeVariationDisPlayCartItems(index);
     }
     if (name === "similar") {
-      this.props.changeSimilarDisPlayCartItems(index, event);
+      this.props.changeSimilarDisPlayCartItems(index);
     }
   };
   render() {
@@ -278,7 +284,10 @@ export default class CartProduct extends Component {
                 <span
                   data-name="similar"
                   onClick={this.handelClick.bind(this, index)}
-                  className="cart-product__action-find"
+                  className={classNames("cart-product__action-find", {
+                    "cart-product__action-find--border":
+                      cartItems[index].similarDisPlay,
+                  })}
                 >
                   <span className="cart-product__action-label">
                     Tìm sản phẩm tương tự:
@@ -291,9 +300,16 @@ export default class CartProduct extends Component {
                   ></span>
                 </span>
                 {cartItems[index].similarDisPlay && (
-                  <span className="cart-product__action-similar">
-                    hello similar
-                  </span>
+                  <>
+                    <div className="grid__row cart-product__similar-list">
+                      <ProductList
+                        similarDisPlay={cartItems[index].similarDisPlay}
+                      ></ProductList>
+                      <Pagination
+                        similarDisPlay={cartItems[index].similarDisPlay}
+                      ></Pagination>
+                    </div>
+                  </>
                 )}
               </div>
             </div>

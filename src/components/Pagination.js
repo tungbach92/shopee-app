@@ -5,14 +5,21 @@ import classNames from "classnames";
 export default class Pagination extends Component {
   static contextType = ProductContext;
   render() {
-    const {
+    let {
       sortedItems,
       pageIndex,
       pageTotal,
+      similarPageIndex,
+      similarPageTotal,
       pageSize,
+      similarPageSize,
       handleClick,
     } = this.context;
-
+    if (this.props.similarDisPlay) {
+      pageIndex = similarPageIndex;
+      pageTotal = similarPageTotal;
+      pageSize = similarPageSize;
+    }
     if (sortedItems.length <= pageSize) {
       return <ul className="pagination pagination--mtb3"></ul>;
     } else
@@ -29,7 +36,9 @@ export default class Pagination extends Component {
               <i className="pagination-item__icon bi bi-chevron-left"></i>
             </div>
           </li>
-          <PaginationItemNumber></PaginationItemNumber>
+          <PaginationItemNumber
+            similarDisPlay={this.props.similarDisPlay}
+          ></PaginationItemNumber>
           <li
             data-name="pageIndexRightIcon"
             onClick={handleClick}

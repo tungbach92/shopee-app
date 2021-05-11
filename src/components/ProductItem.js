@@ -7,7 +7,14 @@ export default function ProductItem(props) {
   let isInCart = false;
   isInCart = props.cartItems.some((item) => item.id === Number(id));
   return (
-    <div className="grid__col-2c4x">
+    <div
+      className={classNames(
+        { "grid__col-2c4x": !props.similarDisPlay },
+        {
+          "grid__col-2x": props.similarDisPlay,
+        }
+      )}
+    >
       <div className="app__product-item">
         <button
           data-name="addToCartBtn"

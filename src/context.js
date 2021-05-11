@@ -7,6 +7,7 @@ export default class ProductProvider extends Component {
   state = {
     items: [],
     sortedItems: [], // items sort
+    similarItems: [],
     categoryItems: [], // category
     today: new Date(),
     defaultPageIndex: 1,
@@ -17,6 +18,9 @@ export default class ProductProvider extends Component {
     pageIndex: 1,
     pageSize: 10,
     pageTotal: 0,
+    similarPageIndex: 1,
+    similarPageTotal: 0,
+    similarPageSize: 6,
     cartNumb: 0,
     cartItems: [],
     searchInput: "",
@@ -44,9 +48,8 @@ export default class ProductProvider extends Component {
       const response = await fetch(itemsApi);
       const items = await response.json();
       const itemsWithID = await this.addItemId(items);
-      const itemsWithVariationSimilarDisPlay = await this.addVariationSimilarDisplayProp(
-        itemsWithID
-      );
+      const itemsWithVariationSimilarDisPlay =
+        await this.addVariationSimilarDisplayProp(itemsWithID);
       return itemsWithVariationSimilarDisPlay;
     } catch (error) {
       console.log(error);
@@ -75,6 +78,14 @@ export default class ProductProvider extends Component {
         ? 1
         : Math.ceil(items.length / this.state.pageSize);
     return pageTotal;
+  };
+
+  calcSimilarPageTotals = (items) => {
+    const similarPageTotal =
+      Math.ceil(items.length / this.state.similarPageSize) < 1
+        ? 1
+        : Math.ceil(items.length / this.state.similarPageSize);
+    return similarPageTotal;
   };
 
   calcCartNumb = (items) => {
@@ -136,20 +147,35 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "pageIndex") {
-      this.setState({ [name]: parseInt(value) });
+      this.setState({
+        [name]: parseInt(value),
+        similarPageIndex: parseInt(value),
+      });
     }
 
     if (name === "pageIndexLeftIcon") {
       const pageIndex =
         this.state.pageIndex - 1 <= 0 ? 1 : this.state.pageIndex - 1;
-      this.setState({ pageIndex });
+
+      const similarPageIndex =
+        this.state.similarPageIndex - 1 <= 0
+          ? 1
+          : this.state.similarPageIndex - 1;
+
+      this.setState({ pageIndex, similarPageIndex });
     }
     if (name === "pageIndexRightIcon") {
       const pageIndex =
         this.state.pageIndex + 1 >= this.state.pageTotal
           ? this.state.pageTotal
           : this.state.pageIndex + 1;
-      this.setState({ pageIndex });
+
+      const similarPageIndex =
+        this.state.similarPageIndex + 1 >= this.state.similarPageTotal
+          ? this.state.similarPageTotal
+          : this.state.similarPageIndex + 1;
+
+      this.setState({ pageIndex, similarPageIndex });
     }
     if (name === "addToCartBtn") {
       this.addToCartItems(id, this.saveCartItemsToStorage);
@@ -260,6 +286,21 @@ export default class ProductProvider extends Component {
     });
   };
 
+  similarProduct = (type) => {
+    let { items } = this.state;
+    let tempItems = [...items];
+    //filter by category
+    if (type !== "allProduct") {
+      tempItems = tempItems.filter((item) => item.type === type);
+    }
+    //change state
+    this.setState({
+      similarItems: tempItems,
+      pageIndex: 1,
+      similarPageTotal: this.calcSimilarPageTotals(tempItems),
+    });
+  };
+
   filterCategoryProduct = () => {
     let { categoryItems, filter, filterPrice } = this.state;
     let tempItems = [...categoryItems];
@@ -312,30 +353,27 @@ export default class ProductProvider extends Component {
     });
   };
 
-  changeVariationDisPlayCartItems = (index, event) => {
+  changeVariationDisPlayCartItems = (index) => {
     let { cartItems } = this.state;
-    const { name } = event.currentTarget.dataset;
-    if (name === "variation") {
-      let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
-      items.forEach((item) => {
-        item.variationDisPlay = false;
-      });
-      cartItems[index].variationDisPlay = !cartItems[index].variationDisPlay;
-      this.setState({ cartItems });
-    }
+
+    let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
+    items.forEach((item) => {
+      item.variationDisPlay = false;
+    });
+    cartItems[index].variationDisPlay = !cartItems[index].variationDisPlay;
+    this.setState({ cartItems });
   };
 
-  changeSimilarDisPlayCartItems = (index, event) => {
-    let { cartItems } = this.state;
-    const { name } = event.currentTarget.dataset;
-    if (name === "similar") {
-      let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
-      items.forEach((item) => {
-        item.similarDisPlay = false;
-      });
-      cartItems[index].similarDisPlay = !cartItems[index].similarDisPlay;
-      this.setState({ cartItems });
-    }
+  changeSimilarDisPlayCartItems = (index) => {
+    let { type, cartItems } = this.state;
+
+    let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
+    items.forEach((item) => {
+      item.similarDisPlay = false;
+    });
+    cartItems[index].similarDisPlay = !cartItems[index].similarDisPlay;
+    type = cartItems[index].type;
+    this.setState({ cartItems }, this.similarProduct(type));
   };
 
   render() {
