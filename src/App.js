@@ -10,6 +10,7 @@ import SingleProduct from "./pages/SingleProduct";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
 import Purchased from "./pages/Purchased";
+import ProductProvider from "./context";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/:metaName" component={SingleProduct}></Route>
         <Route exact path="/account" component={Account}></Route>
-        <Purchased exact path="/purchased" component={Purchased}></Purchased>
+        <Route exact path="/purchased" component={Purchased}></Route>
         <Route component={Error} />
       </Switch>
       <Footer></Footer>

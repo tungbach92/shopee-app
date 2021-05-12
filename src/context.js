@@ -28,13 +28,26 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
-    //get and filter
+    //get items
     const items = await this.getData();
     this.setState({
       items,
     });
-    this.categoryProduct();
-    this.filterCategoryProduct();
+    this.setDefaultState();
+  };
+
+  setDefaultState = () => {
+    //get sortItem
+    this.setState(
+      {
+        type: "allProduct",
+        filter: "popular",
+        filterPrice: "default",
+        searchInput: "",
+        searchHistory: [],
+      },
+      this.categoryProduct
+    );
     //get and set state cartItems
     const cartItems = this.getCartItemsFromStorage();
     this.setState({
@@ -283,7 +296,7 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  categoryProduct = () => {
+  categoryProduct = () => { //get sortedItems by type using items
     let { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
@@ -314,7 +327,7 @@ export default class ProductProvider extends Component {
     });
   };
 
-  filterCategoryProduct = () => {
+  filterCategoryProduct = () => { //get sortedItems by filter using categoryItems
     let { categoryItems, filter, filterPrice } = this.state;
     let tempItems = [...categoryItems];
     //filter by filter
@@ -394,6 +407,7 @@ export default class ProductProvider extends Component {
       <ProductContext.Provider
         value={{
           ...this.state,
+          setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
