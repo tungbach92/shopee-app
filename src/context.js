@@ -149,6 +149,11 @@ export default class ProductProvider extends Component {
     if (name === "pageIndex") {
       this.setState({
         [name]: parseInt(value),
+      });
+    }
+
+    if (name === "similarPageIndex") {
+      this.setState({
         similarPageIndex: parseInt(value),
       });
     }
@@ -157,12 +162,7 @@ export default class ProductProvider extends Component {
       const pageIndex =
         this.state.pageIndex - 1 <= 0 ? 1 : this.state.pageIndex - 1;
 
-      const similarPageIndex =
-        this.state.similarPageIndex - 1 <= 0
-          ? 1
-          : this.state.similarPageIndex - 1;
-
-      this.setState({ pageIndex, similarPageIndex });
+      this.setState({ pageIndex });
     }
     if (name === "pageIndexRightIcon") {
       const pageIndex =
@@ -170,13 +170,26 @@ export default class ProductProvider extends Component {
           ? this.state.pageTotal
           : this.state.pageIndex + 1;
 
+      this.setState({ pageIndex });
+    }
+
+    if (name === "similarPageIndexLeftIcon") {
+      const similarPageIndex =
+        this.state.similarPageIndex - 1 <= 0
+          ? 1
+          : this.state.similarPageIndex - 1;
+
+      this.setState({ similarPageIndex });
+    }
+    if (name === "similarPageIndexRightIcon") {
       const similarPageIndex =
         this.state.similarPageIndex + 1 >= this.state.similarPageTotal
           ? this.state.similarPageTotal
           : this.state.similarPageIndex + 1;
 
-      this.setState({ pageIndex, similarPageIndex });
+      this.setState({ similarPageIndex });
     }
+
     if (name === "addToCartBtn") {
       this.addToCartItems(id, this.saveCartItemsToStorage);
     }

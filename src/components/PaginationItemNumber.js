@@ -23,7 +23,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name="pageIndex"
+          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
           data-value={index}
           onClick={handleClick}
           className={classNames("pagination-number", {
@@ -44,7 +44,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name="pageIndex"
+          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
           data-value={index}
           onClick={handleClick}
           className={classNames("pagination-number", {
@@ -61,7 +61,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name="pageIndex"
+          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
           data-value={index}
           onClick={handleClick}
           className={classNames("pagination-number", {
@@ -77,7 +77,7 @@ export default function PaginationItemNumber(props) {
   return (
     <>
       <li
-        data-name="pageIndex"
+        data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
         data-value="1"
         onClick={(event) => {
           handleClick(event);
@@ -89,7 +89,7 @@ export default function PaginationItemNumber(props) {
         <div className="pagination-item__link">1</div>
       </li>
       <li
-        data-name="pageIndex"
+        data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
         data-value="2"
         onClick={(event) => {
           handleClick(event);

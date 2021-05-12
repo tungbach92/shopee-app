@@ -26,7 +26,11 @@ export default class Pagination extends Component {
       return (
         <ul className="pagination pagination--mtb3">
           <li
-            data-name="pageIndexLeftIcon"
+            data-name={
+              this.props.similarDisPlay
+                ? "similarPageIndexLeftIcon"
+                : "pageIndexLeftIcon"
+            }
             onClick={handleClick}
             className={classNames("pagination-item", " pagination-item__left", {
               "pagination-item--disabled": pageIndex <= 1,
@@ -40,7 +44,11 @@ export default class Pagination extends Component {
             similarDisPlay={this.props.similarDisPlay}
           ></PaginationItemNumber>
           <li
-            data-name="pageIndexRightIcon"
+            data-name={
+              this.props.similarDisPlay
+                ? "similarPageIndexRightIcon"
+                : "pageIndexRightIcon"
+            }
             onClick={handleClick}
             className={classNames(
               "pagination-item",
