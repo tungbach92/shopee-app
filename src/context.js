@@ -34,6 +34,12 @@ export default class ProductProvider extends Component {
       items,
     });
     this.setDefaultState();
+    //get and set state cartItems
+    const cartItems = this.getCartItemsFromStorage();
+    this.setState({
+      cartItems: this.getCartItemsFromStorage(),
+      cartNumb: this.calcCartNumb(cartItems),
+    });
   };
 
   setDefaultState = () => {
@@ -48,12 +54,6 @@ export default class ProductProvider extends Component {
       },
       this.categoryProduct
     );
-    //get and set state cartItems
-    const cartItems = this.getCartItemsFromStorage();
-    this.setState({
-      cartItems: this.getCartItemsFromStorage(),
-      cartNumb: this.calcCartNumb(cartItems),
-    });
   };
 
   getData = async () => {
