@@ -300,16 +300,14 @@ export default class CartProduct extends Component {
                   ></span>
                 </span>
                 {cartItems[index].similarDisPlay && (
-                  <>
-                    <div className="grid__row cart-product__similar-list">
-                      <ProductList
-                        similarDisPlay={cartItems[index].similarDisPlay}
-                      ></ProductList>
-                      <Pagination
-                        similarDisPlay={cartItems[index].similarDisPlay}
-                      ></Pagination>
-                    </div>
-                  </>
+                  <div className="grid__row cart-product__similar-list">
+                    <ProductList
+                      similarDisPlay={cartItems[index].similarDisPlay}
+                    ></ProductList>
+                    <Pagination
+                      similarDisPlay={cartItems[index].similarDisPlay}
+                    ></Pagination>
+                  </div>
                 )}
               </div>
             </div>

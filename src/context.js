@@ -296,7 +296,8 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  categoryProduct = () => { //get sortedItems by type using items
+  categoryProduct = () => {
+    //get sortedItems by type using items
     let { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
@@ -312,8 +313,8 @@ export default class ProductProvider extends Component {
     });
   };
 
-  similarProduct = (type) => {
-    let { items } = this.state;
+  similarProduct = () => {
+    let { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
     if (type !== "allProduct") {
@@ -322,12 +323,13 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       similarItems: tempItems,
-      pageIndex: 1,
+      similarPageIndex: 1,
       similarPageTotal: this.calcSimilarPageTotals(tempItems),
     });
   };
 
-  filterCategoryProduct = () => { //get sortedItems by filter using categoryItems
+  filterCategoryProduct = () => {
+    //get sortedItems by filter using categoryItems
     let { categoryItems, filter, filterPrice } = this.state;
     let tempItems = [...categoryItems];
     //filter by filter
@@ -399,7 +401,7 @@ export default class ProductProvider extends Component {
     });
     cartItems[index].similarDisPlay = !cartItems[index].similarDisPlay;
     type = cartItems[index].type;
-    this.setState({ cartItems }, this.similarProduct(type));
+    this.setState({ cartItems, type }, this.similarProduct);
   };
 
   render() {
