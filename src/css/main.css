@@ -1255,7 +1255,6 @@ header {
   text-align: left;
   position: relative;
   cursor: pointer;
-  z-index: 3;
 }
 /* 
 .cart-product__variation:hover .cart-product__variation-notify {
@@ -1390,7 +1389,7 @@ header {
   background-color: var(--while-color);
   border: 1px solid var(--primary-color);
   box-shadow: 0 5px 10px 0 var(--primary-color);
-  z-index: 3;
+  z-index: 2;
 }
 
 .cart-product__voucher-icon {
@@ -1430,7 +1429,6 @@ header {
   padding: 2.7rem 2.5rem;
   border: 1px solid rgba(0, 0, 0, 0.09);
   box-shadow: 0 5px 10px 0 rgb(0 0 0 / 9%);
-  z-index: 3;
   position: absolute;
   top: 70%;
   right: 50%;
@@ -1540,7 +1538,6 @@ header {
   background-color: var(--while-color);
   position: sticky;
   bottom: 0;
-  z-index: 2;
 }
 
 .cart-product__footer--overlap {

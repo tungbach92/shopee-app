@@ -17,15 +17,18 @@ export default class Cart extends Component {
       handleClick,
       changeVariationDisPlayCartItems,
       changeSimilarDisPlayCartItems,
+      setDefaultState,
     } = this.context;
     return (
       <>
         <Header isCartPageLoaded={this.state.isCartPageLoaded}></Header>
         <CartProduct
+          isCartPageLoaded={this.state.isCartPageLoaded}
           changeSimilarDisPlayCartItems={changeSimilarDisPlayCartItems}
           changeVariationDisPlayCartItems={changeVariationDisPlayCartItems}
           cartItems={cartItems}
           handleClick={handleClick}
+          setDefaultState={setDefaultState}
         ></CartProduct>
       </>
     );

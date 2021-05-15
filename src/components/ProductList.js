@@ -4,11 +4,6 @@ import ProductItem from "./ProductItem";
 export default class ProductList extends Component {
   static contextType = ProductContext;
 
-  componentWillUnmount = () => {
-    const { setDefaultState } = this.context;
-    setDefaultState();
-  };
-
   render() {
     let {
       sortedItems,
