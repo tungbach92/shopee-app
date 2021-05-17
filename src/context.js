@@ -34,7 +34,6 @@ export default class ProductProvider extends Component {
       items,
     });
     this.setDefaultState();
-    
   };
 
   setDefaultState = () => {
@@ -207,6 +206,7 @@ export default class ProductProvider extends Component {
     if (name === "addToCartBtn") {
       this.addToCartItems(id, this.saveCartItemsToStorage);
     }
+
     if (name === "delCartBtn") {
       this.delCartItem(id, this.saveCartItemsToStorage);
     }
@@ -248,15 +248,31 @@ export default class ProductProvider extends Component {
   };
 
   delCartItem = (id, callback) => {
-    const { cartItems } = this.state;
-    let items = cartItems.filter((item) => item.id !== Number(id));
+    let { cartItems } = this.state;
+    cartItems = cartItems.filter((item) => item.id !== Number(id));
     this.setState(
       {
-        cartItems: items,
-        cartNumb: this.calcCartNumb(items),
+        cartItems,
+        cartNumb: this.calcCartNumb(cartItems),
       },
       callback
     );
+  };
+
+  delCartItems = (idArr, callback) => {
+    if (idArr.length > 0) {
+      let { cartItems } = this.state;
+      idArr.forEach((id) => {
+        cartItems = cartItems.filter((item) => item.id !== Number(id));
+      });
+      this.setState(
+        {
+          cartItems,
+          cartNumb: this.calcCartNumb(cartItems),
+        },
+        callback
+      );
+    }
   };
 
   changeAmountCartItem = (id, amount, callback) => {
@@ -410,12 +426,13 @@ export default class ProductProvider extends Component {
       <ProductContext.Provider
         value={{
           ...this.state,
-          setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
+          delCartItems: this.delCartItems,
+          saveCartItemsToStorage: this.saveCartItemsToStorage,
         }}
       >
         {this.props.children}

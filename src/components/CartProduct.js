@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import classNames from "classnames";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
+import { ProductContext } from "../context";
 
-export default function CartProduct(props) {
+export default function CartProduct() {
   const [checked, setChecked] = useState([]);
   const { isShowing, toggleModal } = useModal();
   const {
@@ -13,25 +14,32 @@ export default function CartProduct(props) {
     handleClick,
     changeVariationDisPlayCartItems,
     changeSimilarDisPlayCartItems,
-    setDefaultState,
-  } = props;
+    delCartItems,
+    saveCartItemsToStorage,
+  } = useContext(ProductContext);
+
   const lastIndex = cartItems.length + 1;
   let checkOutPriceTotal = 0;
   let checkOutItemTotal = 0;
   cartItems.forEach((item) => (checkOutPriceTotal += item.amount * item.price));
   cartItems.forEach((item) => (checkOutItemTotal += item.amount));
 
+  let idArr = [];
+
   useEffect(() => {
+    setCheckedByCartItem();
+    return () => {
+      saveCartItemsToStorage();
+      toggleModal(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartItems]);
+
+  const setCheckedByCartItem = () => {
     let defaultChecked = cartItems.map((item) => false);
     defaultChecked = [false, ...defaultChecked, false];
     setChecked(defaultChecked);
-    toggleModal(false);
-
-    return () => {
-      setDefaultState(); // only need func set cartItems to default value
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const selectAll = (event) => {
     const { checked } = event.target;
@@ -48,7 +56,22 @@ export default function CartProduct(props) {
     setChecked(newChecked);
   };
 
-  const handelClick = (index, event) => {
+  const handleDeleteSelection = (event) => {
+    if (cartItems.length > 0) {
+      idArr = checked.map((checkItem, index) => {
+        if (checkItem === true && index > 0 && index < lastIndex) {
+          return cartItems[index - 1].id;
+        } else return null;
+      });
+      idArr = idArr.filter((id) => id !== null);
+      delCartItems(idArr, () => {
+        saveCartItemsToStorage();
+        setCheckedByCartItem();
+      });
+    }
+  };
+
+  const handlePopup = (index, event) => {
     const { name } = event.currentTarget.dataset;
     if (name === "variation") {
       changeVariationDisPlayCartItems(index);
@@ -197,7 +220,7 @@ export default function CartProduct(props) {
             </div>
             <div
               data-name="variation"
-              onClick={handelClick.bind(this, index)}
+              onClick={handlePopup.bind(this, index)}
               className="grid__col cart-product__variation"
             >
               <span className="cart-product__variation-label">
@@ -301,7 +324,7 @@ export default function CartProduct(props) {
               </span>
               <span
                 data-name="similar"
-                onClick={handelClick.bind(this, index)}
+                onClick={handlePopup.bind(this, index)}
                 className={classNames("cart-product__action-find", {
                   "cart-product__action-find--border":
                     cartItems[index].similarDisPlay,
@@ -511,7 +534,10 @@ export default function CartProduct(props) {
               </svg>
               <span className="cart-product__shoppe-label">Shopee Voucher</span>
             </div>
-            <div onClick={toggleModal} className="cart-product__shopee-action">
+            <div
+              onClick={toggleModal.bind(this, true)}
+              className="cart-product__shopee-action"
+            >
               Chọn Hoặc Nhập Mã
             </div>
             {isShowing && (
@@ -582,7 +608,13 @@ export default function CartProduct(props) {
             <span className="cart-product__checkout-label">
               Chọn tất cả ({cartItems.length})
             </span>
-            <span className="cart-product__checkout-del">Xóa</span>
+            <span
+              data-name="deleteSelected"
+              onClick={handleDeleteSelection}
+              className="cart-product__checkout-del"
+            >
+              Xóa
+            </span>
             <span className="cart-product__checkout-favorite">
               Lưu vào mục Đã thích
             </span>

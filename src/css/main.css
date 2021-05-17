@@ -1708,6 +1708,120 @@ header {
   opacity: 0.9;
 }
 
+.cart-product__modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 600;
+}
+
+.cart-product__modal-overlay {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.cart-product__modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50rem;
+  padding: 3rem 3rem 0rem;
+  background-color: var(--while-color);
+}
+
+.cart-product__modal-header {
+  display: flex;
+  justify-content: space-between;
+}
+.cart-product__header-label {
+  font-size: 1.8rem;
+  text-transform: capitalize;
+  font-weight: 540;
+}
+.cart-product__header-support {
+  display: flex;
+  align-items: center;
+}
+.cart-product__support-label {
+  text-transform: capitalize;
+  font-size: 1.3rem;
+  opacity: 0.7;
+}
+.cart-product__support-icon {
+  margin-left: 0.2rem;
+}
+.cart-product__modal-voucher {
+  margin-top: 2.6rem;
+  padding: 1.8rem;
+  display: flex;
+  background-color: #f8f8f8;
+}
+.cart-product__voucher-text {
+  font-size: 1.4rem;
+  padding: 1.4rem 0rem;
+}
+.cart-product__voucher-input {
+  margin-left: 1rem;
+  flex-basis: 22.2rem;
+  opacity: 0.7;
+}
+.cart-product__voucher-btn {
+  margin-left: auto;
+  font-size: 1.4rem;
+  padding: 1.4rem;
+}
+
+.cart-product__list-label {
+  margin-top: 2.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart-product__label-left {
+  font-size: 1.6rem;
+  opacity: 0.9;
+}
+.cart-product__label-right {
+  font-size: 1.4rem;
+}
+
+.cart-product__voucher-list {
+}
+.cart-product__voucher-item {
+}
+.cart-product__modal-footer {
+  padding: 2.5rem 0rem;
+  text-align: end;
+}
+
+.cart-product__modal-close {
+  padding: 1.4rem 6rem;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cart-product__modal-close:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.cart-product__modal-apply {
+  margin-left: 0.3rem;
+  padding: 1.4rem 6rem;
+  background-color: var(--primary-color);
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  color: var(--while-color);
+  cursor: pointer;
+}
+
+.cart-product__modal-apply:hover {
+  opacity: 0.9;
+}
+
 .footer {
   background-color: #fbfbfb;
 }
