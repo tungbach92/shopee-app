@@ -20,10 +20,10 @@ export default function CartProduct() {
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
-  let checkOutPriceTotal = 0;
-  let checkOutItemTotal = 0;
-  cartItems.forEach((item) => (checkOutPriceTotal += item.amount * item.price));
-  cartItems.forEach((item) => (checkOutItemTotal += item.amount));
+  let checkoutPriceTotal = 0;
+  let checkoutItemTotal = 0;
+  cartItems.forEach((item) => (checkoutPriceTotal += item.amount * item.price));
+  cartItems.forEach((item) => (checkoutItemTotal += item.amount));
 
   let idArr = [];
 
@@ -622,10 +622,10 @@ export default function CartProduct() {
             <div className="cart-product__checkout-total-wrapper">
               <div className="cart-product__checkout-total">
                 <span className="cart-product__total-label">
-                  Tổng thanh toán ({checkOutItemTotal} sản phẩm):
+                  Tổng thanh toán ({checkoutItemTotal} sản phẩm):
                 </span>
                 <span className="cart-product__total-value">
-                  {checkOutPriceTotal}
+                  {checkoutPriceTotal}
                 </span>
               </div>
               <div className="cart-product__checkout-saved">
@@ -633,7 +633,7 @@ export default function CartProduct() {
                 <span className="cart-product__saved-value">21.000</span>
               </div>
             </div>
-            <Link to="/checkOut" className="btn cart-product__checkout-btn">
+            <Link to="/checkout" className="btn cart-product__checkout-btn">
               Mua hàng
             </Link>
           </div>

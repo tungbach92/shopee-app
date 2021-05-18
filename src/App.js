@@ -9,7 +9,7 @@ import Cart from "./pages/Cart";
 import SingleProduct from "./pages/SingleProduct";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
-import CheckOut from "./pages/CheckOut";
+import Checkout from "./pages/Checkout";
 import ProductProvider from "./context";
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/metaName" component={SingleProduct}></Route>
         <Route exact path="/account" component={Account}></Route>
-        <Route exact path="/checkOut" component={CheckOut}></Route>
+        <Route exact path="/checkout" component={Checkout}></Route>
         <Route component={Error} />
       </Switch>
       <Footer></Footer>

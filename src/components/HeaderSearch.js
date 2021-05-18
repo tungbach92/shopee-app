@@ -11,7 +11,7 @@ export default function HeaderSearch(props) {
     addToSearchHistory,
     searchHistory,
     isCartPageLoaded,
-    isCheckOutPage,
+    isCheckoutPage,
   } = props;
   const inputEl = useRef("");
   const history = useHistory();
@@ -40,23 +40,23 @@ export default function HeaderSearch(props) {
   return (
     <div
       className={classNames("header__search", {
-        "header__search--cart": isCartPageLoaded || isCheckOutPage,
+        "header__search--cart": isCartPageLoaded || isCheckoutPage,
       })}
     >
       <div className="header__logo-wrapper">
         <a
           href="/"
           className={classNames("header__logo-link", {
-            "header__logo-link--notHome": isCartPageLoaded || isCheckOutPage,
+            "header__logo-link--notHome": isCartPageLoaded || isCheckoutPage,
           })}
         >
           <img src={shopeeLogo} alt="shoppe-logo" />
         </a>
         {isCartPageLoaded && <div className="header__page-name">Giỏ hàng</div>}
-        {isCheckOutPage && <div className="header__page-name">Thanh Toán</div>}
+        {isCheckoutPage && <div className="header__page-name">Thanh Toán</div>}
       </div>
 
-      {!isCheckOutPage ? (
+      {!isCheckoutPage ? (
         !isCartPageLoaded ? (
           <>
             <div className="header__search-content">

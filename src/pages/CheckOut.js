@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
-import CheckOutProduct from "../components/CheckOutProduct";
+import CheckoutProduct from "../components/CheckoutProduct";
 
-export default function CheckOut() {
-  const [isCheckOutPage, setIsCheckOutPage] = useState(false);
+export default function Checkout() {
+  const [isCheckoutPage, setIsCheckoutPage] = useState(false);
 
   useEffect(() => {
     // effect
-    setIsCheckOutPage(true);
+    setIsCheckoutPage(true);
     return () => {
       // cleanup
     };
   }, []);
   return (
     <>
-      <Header isCheckOutPage={isCheckOutPage}></Header>
-      <CheckOutProduct></CheckOutProduct>
+      <Header isCheckoutPage={isCheckoutPage}></Header>
+      <CheckoutProduct></CheckoutProduct>
     </>
   );
 }

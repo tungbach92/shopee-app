@@ -12,7 +12,7 @@ export default function Header(props) {
     searchHistory,
     addToSearchHistory,
   } = context;
-  const { isCartPageLoaded, isCheckOutPage } = props;
+  const { isCartPageLoaded, isCheckoutPage } = props;
   return (
     <header className="header">
       <div className="grid grid--fullheight">
@@ -23,7 +23,7 @@ export default function Header(props) {
           searchHistory={searchHistory}
           addToSearchHistory={addToSearchHistory}
           isCartPageLoaded={isCartPageLoaded}
-          isCheckOutPage={isCheckOutPage}
+          isCheckoutPage={isCheckoutPage}
         ></HeaderSearch>
       </div>
     </header>
