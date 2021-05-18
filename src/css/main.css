@@ -351,8 +351,8 @@ header {
 }
 
 .header__page-name {
-  flex-basis: 14rem;
-  font-size: 1.8rem;
+  flex-basis: 14.2rem;
+  font-size: 2rem;
   font-weight: 500;
   text-transform: capitalize;
   border-left: 0.0625rem solid var(--while-color);
@@ -1138,7 +1138,8 @@ header {
   background-color: #f5f5f5;
 }
 
-.cart-product {
+.cart-product,
+.checkOut-product {
   padding: 1.6rem 0;
   background-color: #f5f5f5;
 }
@@ -1820,6 +1821,219 @@ header {
 
 .cart-product__modal-apply:hover {
   opacity: 0.9;
+}
+
+.checkOut-product__address-line {
+  height: 0.3rem;
+  width: 100%;
+  background-position-x: -30px;
+  background-size: 116px 3px;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #6fa6d6,
+    #6fa6d6 33px,
+    transparent 0,
+    transparent 41px,
+    #f18d9b 0,
+    #f18d9b 74px,
+    transparent 0,
+    transparent 82px
+  );
+}
+.checkOut-product__address-wrapper {
+  padding: 3rem 2.6rem;
+  background-color: var(--while-color);
+}
+.checkOut-product__address-icon {
+  fill: var(--primary-color);
+}
+.checkOut-product__address-label {
+  margin-left: 0.6rem;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+.checkOut-product__address-content {
+  margin-top: 2.6rem;
+}
+
+.checkOut-product__address {
+  font-size: 1.6rem;
+}
+.checkOut-product__address-default {
+  margin-left: 3rem;
+  font-size: 1.4rem;
+}
+.checkOut-product__address-action {
+  margin-left: 6rem;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #05a;
+}
+
+.checkOut-product__item-list {
+  padding: 4.4rem 2.6rem;
+  margin-top: 1.4rem;
+  background-color: var(--while-color);
+}
+.checkOut-product__item-label {
+  display: flex;
+}
+
+.checkOut-product__product {
+  font-size: 1.6rem;
+  flex-basis: 66rem;
+}
+.checkOut-product__price {
+  text-align: center;
+  font-size: 1.4rem;
+  opacity: 0.7;
+  flex: 1;
+}
+.checkOut-product__amount {
+  text-align: center;
+  font-size: 1.4rem;
+  opacity: 0.7;
+  flex: 1;
+}
+.checkOut-product__total {
+  font-size: 1.4rem;
+  opacity: 0.7;
+  flex-basis: 14rem;
+  text-align: center;
+}
+
+.checkOut-product__item {
+  margin-top: 1.4rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+}
+
+.checkOut-product__item:first-child {
+  margin-top: 0rem;
+}
+
+.checkOut-product__name-wrapper {
+  flex-basis: 66rem;
+  display: flex;
+  align-items: center;
+}
+
+.checkOut-product__item-img {
+  flex-basis: 4rem;
+  height: 4rem;
+}
+.checkOut-product__item-name {
+  margin-left: 1.6rem;
+  flex-basis: 42rem;
+}
+.checkOut-product__variation-wrapper {
+  flex: 1;
+  margin-right: auto;
+  opacity: 0.6;
+}
+.checkOut-product__variation-label {
+}
+.checkOut-product__variation {
+}
+.checkOut-product__item-price {
+  text-align: center;
+  flex: 1;
+}
+.checkOut-product__item-amount {
+  text-align: center;
+  flex: 1;
+}
+.checkOut-product__item-total {
+  flex-basis: 14rem;
+  text-align: center;
+}
+
+.checkOut-product__addition {
+  background-color: #fafdff;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkOut-product__first-addition {
+  display: flex;
+  align-items: center;
+}
+
+.checkOut-product__message-wrapper {
+  padding-left: 2.6rem;
+  flex-basis: 47.5rem;
+  font-size: 1.4rem;
+}
+.checkOut-product__message-label {
+}
+.checkOut-product__message-input {
+  height: 3.8rem;
+  width: 34rem;
+  margin-left: 2rem;
+}
+.checkOut-product__transport-wrapper {
+  display: flex;
+  padding: 1.8rem 2.6rem;
+  flex: 1;
+  align-items: center;
+  border-left: 1px dashed rgba(0, 0, 0, 0.09);
+}
+.checkOut-product__transport-label {
+  flex-basis: 23rem;
+  font-size: 1.4rem;
+}
+.checkOut-product__transport-info {
+  flex-basis: 26rem;
+  display: flex;
+  flex-direction: column;
+}
+.checkOut-product__transport-type {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.checkOut-product__transport-unit {
+  margin-top: 0.6rem;
+  font-size: 1.2rem;
+}
+.checkOut-product__transport-time {
+  margin-top: 0.6rem;
+  font-size: 1.2rem;
+}
+.checkOut-product__transport-action {
+  font-size: 1.4rem;
+  flex: 1;
+  color: #05a;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.checkOut-product__transport-price {
+  font-size: 1.4rem;
+  flex: 1;
+}
+.checkOut-product__second-addition {
+  text-align: end;
+  font-size: 1.6rem;
+  padding: 1.8rem 0;
+  border-top: 1px dashed rgba(0, 0, 0, 0.09);
+}
+.checkOut-product__price-label {
+}
+.checkOut-product__additon-price {
+}
+
+.checkOut-product__voucher-wrapper {
+  background-color: var(--while-color);
+  padding: 4.4rem 2.6rem;
+  margin-top: 1.4rem;
+}
+
+.checkOut-product__checkOut-wrapper {
+  background-color: var(--while-color);
+  padding: 4.4rem 2.6rem;
+  margin-top: 1.4rem;
 }
 
 .footer {

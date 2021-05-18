@@ -5,6 +5,7 @@ import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
+import { Link } from "react-router-dom";
 
 export default function CartProduct() {
   const [checked, setChecked] = useState([]);
@@ -632,7 +633,9 @@ export default function CartProduct() {
                 <span className="cart-product__saved-value">21.000</span>
               </div>
             </div>
-            <button className="btn cart-product__checkout-btn">Mua hàng</button>
+            <Link to="/checkOut" className="btn cart-product__checkout-btn">
+              Mua hàng
+            </Link>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import Cart from "./pages/Cart";
 import SingleProduct from "./pages/SingleProduct";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
-import Purchased from "./pages/Purchased";
+import CheckOut from "./pages/CheckOut";
 import ProductProvider from "./context";
 
 function App() {
@@ -18,9 +18,9 @@ function App() {
       <Switch>
         <Route exact path="/" component={Product}></Route>
         <Route exact path="/cart" component={Cart}></Route>
-        <Route exact path="/:metaName" component={SingleProduct}></Route>
+        <Route exact path="/metaName" component={SingleProduct}></Route>
         <Route exact path="/account" component={Account}></Route>
-        <Route exact path="/purchased" component={Purchased}></Route>
+        <Route exact path="/checkOut" component={CheckOut}></Route>
         <Route component={Error} />
       </Switch>
       <Footer></Footer>

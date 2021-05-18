@@ -11,6 +11,7 @@ export default function HeaderSearch(props) {
     addToSearchHistory,
     searchHistory,
     isCartPageLoaded,
+    isCheckOutPage,
   } = props;
   const inputEl = useRef("");
   const history = useHistory();
@@ -39,23 +40,105 @@ export default function HeaderSearch(props) {
   return (
     <div
       className={classNames("header__search", {
-        "header__search--cart": isCartPageLoaded,
+        "header__search--cart": isCartPageLoaded || isCheckOutPage,
       })}
     >
       <div className="header__logo-wrapper">
         <a
           href="/"
           className={classNames("header__logo-link", {
-            "header__logo-link--notHome": isCartPageLoaded,
+            "header__logo-link--notHome": isCartPageLoaded || isCheckOutPage,
           })}
         >
           <img src={shopeeLogo} alt="shoppe-logo" />
         </a>
         {isCartPageLoaded && <div className="header__page-name">Giỏ hàng</div>}
+        {isCheckOutPage && <div className="header__page-name">Thanh Toán</div>}
       </div>
-      {!isCartPageLoaded ? (
-        <>
-          <div className="header__search-content">
+
+      {!isCheckOutPage ? (
+        !isCartPageLoaded ? (
+          <>
+            <div className="header__search-content">
+              <div className="header__search-wrapper">
+                <input
+                  ref={inputEl}
+                  type="text"
+                  onKeyUp={inputOnKeyUp}
+                  className="header__search-input"
+                  placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
+                />
+                <a
+                  href="# "
+                  onClick={handleSearchIconClick}
+                  className="header__search-icon"
+                >
+                  <i className="bi bi-search"></i>
+                </a>
+                <ul className="header__history-list">
+                  <li className="header__history-title">Lịch Sử Tìm Kiếm</li>
+                  {getUnique(searchHistory).map((item, index) => (
+                    <HeaderSearchHistory
+                      key={index}
+                      text={item}
+                      inputEl={inputEl}
+                      handleSearchIconClick={handleSearchIconClick}
+                    ></HeaderSearchHistory>
+                  ))}
+                </ul>
+              </div>
+
+              <ul className="header__search-list">
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Hoodie Nam
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Sandal Nữ
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Áo Nữ
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Quần Nam
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Dép Nam
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Balo Nữ
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Váy Trắng
+                  </a>
+                </li>
+                <li className="header__search-item">
+                  <a href="# " className="header__item-link">
+                    Tất Nữ
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <HeaderCart></HeaderCart>
+          </>
+        ) : (
+          <div
+            className={classNames("header__search-content", {
+              "header__search-content--cart": isCartPageLoaded,
+            })}
+          >
             <div className="header__search-wrapper">
               <input
                 ref={inputEl}
@@ -83,87 +166,9 @@ export default function HeaderSearch(props) {
                 ))}
               </ul>
             </div>
-
-            <ul className="header__search-list">
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Hoodie Nam
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Sandal Nữ
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Áo Nữ
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Quần Nam
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Dép Nam
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Balo Nữ
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Váy Trắng
-                </a>
-              </li>
-              <li className="header__search-item">
-                <a href="# " className="header__item-link">
-                  Tất Nữ
-                </a>
-              </li>
-            </ul>
           </div>
-          <HeaderCart></HeaderCart>
-        </>
-      ) : (
-        <div
-          className={classNames("header__search-content", {
-            "header__search-content--cart": isCartPageLoaded,
-          })}
-        >
-          <div className="header__search-wrapper">
-            <input
-              ref={inputEl}
-              type="text"
-              onKeyUp={inputOnKeyUp}
-              className="header__search-input"
-              placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
-            />
-            <a
-              href="# "
-              onClick={handleSearchIconClick}
-              className="header__search-icon"
-            >
-              <i className="bi bi-search"></i>
-            </a>
-            <ul className="header__history-list">
-              <li className="header__history-title">Lịch Sử Tìm Kiếm</li>
-              {getUnique(searchHistory).map((item, index) => (
-                <HeaderSearchHistory
-                  key={index}
-                  text={item}
-                  inputEl={inputEl}
-                  handleSearchIconClick={handleSearchIconClick}
-                ></HeaderSearchHistory>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
+        )
+      ) : null}
     </div>
   );
 }
