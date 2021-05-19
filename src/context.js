@@ -33,7 +33,13 @@ export default class ProductProvider extends Component {
     this.setState({
       items,
     });
-    this.setDefaultState();
+    this.categoryProduct();
+    //get and set cartItems state
+    const cartItems = this.getCartItemsFromStorage();
+    this.setState({
+      cartItems: this.getCartItemsFromStorage(),
+      cartNumb: this.calcCartNumb(cartItems),
+    });
   };
 
   setDefaultState = () => {
@@ -44,16 +50,9 @@ export default class ProductProvider extends Component {
         filter: "popular",
         filterPrice: "default",
         searchInput: "",
-        searchHistory: [],
       },
       this.categoryProduct
     );
-    //get and set state cartItems
-    const cartItems = this.getCartItemsFromStorage();
-    this.setState({
-      cartItems: this.getCartItemsFromStorage(),
-      cartNumb: this.calcCartNumb(cartItems),
-    });
   };
 
   getData = async () => {
@@ -304,7 +303,7 @@ export default class ProductProvider extends Component {
     cartItems.forEach((item) => {
       item.variationDisPlay = false;
       item.similarDisPlay = false;
-    });
+    }); // reset properties first
     localStorage.setItem("product", JSON.stringify(cartItems));
   };
 
@@ -426,6 +425,7 @@ export default class ProductProvider extends Component {
       <ProductContext.Provider
         value={{
           ...this.state,
+          setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,

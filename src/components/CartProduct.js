@@ -17,6 +17,7 @@ export default function CartProduct() {
     changeSimilarDisPlayCartItems,
     delCartItems,
     saveCartItemsToStorage,
+    setDefaultState,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
@@ -29,12 +30,13 @@ export default function CartProduct() {
 
   useEffect(() => {
     setCheckedByCartItem();
+    setDefaultState();
     return () => {
       saveCartItemsToStorage();
       toggleModal(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartItems]);
+  }, [cartItems]);//get updated cartItems for setChecked
 
   const setCheckedByCartItem = () => {
     let defaultChecked = cartItems.map((item) => false);
