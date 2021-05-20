@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import classNames from "classnames";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
@@ -8,7 +8,7 @@ import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 
 export default function CartProduct() {
-  const [checked, setChecked] = useState([]);
+  console.log("render");
   const { isShowing, toggleModal } = useModal();
   const {
     cartItems,
@@ -18,6 +18,11 @@ export default function CartProduct() {
     delCartItems,
     saveCartItemsToStorage,
     setDefaultState,
+    setDefaultType,
+    setCheckoutItems,
+    checked,
+    setChecked,
+    setDefaultCheckedByCartItem,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
@@ -29,19 +34,27 @@ export default function CartProduct() {
   let idArr = [];
 
   useEffect(() => {
-    setCheckedByCartItem();
+    console.log("useEffect");
     setDefaultState();
     return () => {
+      setDefaultType();
       saveCartItemsToStorage();
       toggleModal(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartItems]);//get updated cartItems for setChecked
+  }, [setDefaultState, setDefaultType, saveCartItemsToStorage, toggleModal]);
 
-  const setCheckedByCartItem = () => {
-    let defaultChecked = cartItems.map((item) => false);
-    defaultChecked = [false, ...defaultChecked, false];
-    setChecked(defaultChecked);
+  const handleCheckout = (event) => {
+    let items = checked.map((checkItem, index) => {
+      if (checkItem === true && index > 0 && index < lastIndex) {
+        return cartItems[index - 1];
+      } else return null;
+    });
+    items = items.filter((item) => item !== null);
+    if (items.length > 0) {
+      setCheckoutItems(items);
+    } else {
+      event.preventDefault();
+    }
   };
 
   const selectAll = (event) => {
@@ -69,7 +82,7 @@ export default function CartProduct() {
       idArr = idArr.filter((id) => id !== null);
       delCartItems(idArr, () => {
         saveCartItemsToStorage();
-        setCheckedByCartItem();
+        setDefaultCheckedByCartItem();
       });
     }
   };
@@ -635,7 +648,11 @@ export default function CartProduct() {
                 <span className="cart-product__saved-value">21.000</span>
               </div>
             </div>
-            <Link to="/checkout" className="btn cart-product__checkout-btn">
+            <Link
+              to="/checkout"
+              onClick={handleCheckout}
+              className="btn cart-product__checkout-btn"
+            >
               Mua hàng
             </Link>
           </div>

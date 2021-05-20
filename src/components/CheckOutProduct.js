@@ -9,14 +9,23 @@ import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 
 export default function CheckoutProduct() {
-  const { cartItems } = useContext(ProductContext);
+  const { checkoutItems } = useContext(ProductContext);
   let shipPrice = 20000;
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
   let checkoutShipTotal = 0;
-  cartItems.forEach((item) => (checkoutShipTotal += shipPrice));
-  cartItems.forEach((item) => (checkoutPriceTotal += item.amount * item.price));
-  cartItems.forEach((item) => (checkoutItemTotal += item.amount));
+  checkoutItems.forEach((item) => (checkoutShipTotal += shipPrice));
+  checkoutItems.forEach((item) => (checkoutPriceTotal += item.amount * item.price));
+  checkoutItems.forEach((item) => (checkoutItemTotal += item.amount));
+
+  useEffect(() => {
+    // effect
+    return () => {
+      // cleanup
+      
+    }
+  }, [])
+
   return (
     <div className="container">
       <div className="grid checkout-product">
@@ -52,7 +61,7 @@ export default function CheckoutProduct() {
           <span className="checkout-product__total">Thành tiền</span>
         </div>
         <ul className="checkout-product__item-list">
-          {cartItems.map((item, index) => (
+          {checkoutItems.map((item, index) => (
             <div key={index} className="checkout-product-item-wrapper">
               <li className="checkout-product__item">
                 <span className="checkout-product__name-wrapper">

@@ -23,8 +23,10 @@ export default class ProductProvider extends Component {
     similarPageSize: 6,
     cartNumb: 0,
     cartItems: [],
+    checkoutItems: [],
     searchInput: "",
     searchHistory: [],
+    checked: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -40,6 +42,19 @@ export default class ProductProvider extends Component {
       cartItems: this.getCartItemsFromStorage(),
       cartNumb: this.calcCartNumb(cartItems),
     });
+    // set checked state
+    this.setDefaultCheckedByCartItem();
+  };
+
+  setChecked = (cheked) => {
+    this.setState({ checked: cheked });
+  };
+
+  setDefaultCheckedByCartItem = () => {
+    const { cartItems } = this.state;
+    let defaultChecked = cartItems.map((item) => false);
+    defaultChecked = [false, ...defaultChecked, false];
+    this.setChecked(defaultChecked);
   };
 
   setDefaultState = () => {
@@ -53,6 +68,10 @@ export default class ProductProvider extends Component {
       },
       this.categoryProduct
     );
+  };
+
+  setDefaultType = () => {
+    this.setState({ type: "allProduct" });
   };
 
   getData = async () => {
@@ -203,11 +222,17 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "addToCartBtn") {
-      this.addToCartItems(id, this.saveCartItemsToStorage);
+      this.addToCartItems(id, () => {
+        this.setDefaultCheckedByCartItem();
+        this.saveCartItemsToStorage();
+      });
     }
 
     if (name === "delCartBtn") {
-      this.delCartItem(id, this.saveCartItemsToStorage);
+      this.delCartItem(id, () => {
+        this.setDefaultCheckedByCartItem();
+        this.saveCartItemsToStorage();
+      });
     }
     if (name === "incrCartItem") {
       this.incrCartItem(id, this.saveCartItemsToStorage);
@@ -296,6 +321,10 @@ export default class ProductProvider extends Component {
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     const cartNumb = this.calcCartNumb(cartItems);
     this.setState({ cartNumb }, callback);
+  };
+
+  setCheckoutItems = (items) => {
+    this.setState({ checkoutItems: items });
   };
 
   saveCartItemsToStorage = () => {
@@ -421,10 +450,13 @@ export default class ProductProvider extends Component {
   };
 
   render() {
+    console.log("provider render");
     return (
       <ProductContext.Provider
         value={{
           ...this.state,
+          setDefaultCheckedByCartItem: this.setDefaultCheckedByCartItem,
+          setDefaultType: this.setDefaultType,
           setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
@@ -433,6 +465,8 @@ export default class ProductProvider extends Component {
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,
+          setCheckoutItems: this.setCheckoutItems,
+          setChecked: this.setChecked,
         }}
       >
         {this.props.children}
