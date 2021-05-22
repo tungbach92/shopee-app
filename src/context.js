@@ -30,24 +30,42 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
+    console.log("did Mount");
     //get items
     const items = await this.getData();
-    this.setState({
-      items,
-    });
-    this.categoryProduct();
+    const categoryItems = items.filter((item) => item.type !== this.state.type);
+    const sortedItems = categoryItems.filter(
+      (item) =>
+        new Date(item.date).getDate() > this.state.today.getDate() - 20 ||
+        item.soldAmount >= this.state.bestSelling
+    );
+    const pageIndex = this.state.pageIndex;
+    const pageTotal = this.calcPageTotals(sortedItems);
     //get and set cartItems state
     const cartItems = this.getCartItemsFromStorage();
-    this.setState({
-      cartItems: this.getCartItemsFromStorage(),
-      cartNumb: this.calcCartNumb(cartItems),
-    });
+    const cartNumb = this.calcCartNumb(cartItems);
     // set checked state
-    this.setDefaultCheckedByCartItem();
+    const checked = this.getDefaultCheckedByCartItem(cartItems);
+    this.setState({
+      items,
+      categoryItems,
+      sortedItems,
+      pageIndex,
+      pageTotal,
+      cartItems,
+      cartNumb,
+      checked,
+    });
   };
 
   setChecked = (cheked) => {
     this.setState({ checked: cheked });
+  };
+
+  getDefaultCheckedByCartItem = (cartItems) => {
+    let defaultChecked = cartItems.map((item) => false);
+    defaultChecked = [false, ...defaultChecked, false];
+    return defaultChecked;
   };
 
   setDefaultCheckedByCartItem = () => {
@@ -58,7 +76,8 @@ export default class ProductProvider extends Component {
   };
 
   setDefaultState = () => {
-    //get sortItem
+    //clean function when destroy cartProduct component
+    //reset sortItem, dom button, pageIndex, pageTotal, searchInput to default
     this.setState(
       {
         type: "allProduct",
@@ -134,21 +153,16 @@ export default class ProductProvider extends Component {
       const sortedItems = [...items].filter((item) =>
         item.name.toLowerCase().includes(text)
       );
-      this.setState(
-        {
-          sortedItems,
-          categoryItems: sortedItems,
-          searchInput: text,
-          type: "allProduct",
-          filter: "popular",
-          filterPrice: "default",
-          pageIndex: 1,
-          pageTotal: this.calcPageTotals(sortedItems),
-        },
-        () => {
-          console.log(this.state.sortedItems);
-        }
-      );
+      this.setState({
+        sortedItems,
+        categoryItems: sortedItems,
+        searchInput: text,
+        type: "allProduct",
+        filter: "popular",
+        filterPrice: "default",
+        pageIndex: 1,
+        pageTotal: this.calcPageTotals(sortedItems),
+      });
     }
   };
 
@@ -343,15 +357,20 @@ export default class ProductProvider extends Component {
 
   categoryProduct = () => {
     //get sortedItems by type using items
-    let { items, type } = this.state;
+    const { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
     if (type !== "allProduct") {
       tempItems = tempItems.filter((item) => item.type === type);
     }
+    const sortedItems = tempItems.filter(
+      (item) =>
+        new Date(item.date).getDate() > this.state.today.getDate() - 20 ||
+        item.soldAmount >= this.state.bestSelling
+    );
     //change state
     this.setState({
-      sortedItems: tempItems,
+      sortedItems,
       categoryItems: tempItems,
       pageIndex: 1,
       pageTotal: this.calcPageTotals(tempItems),

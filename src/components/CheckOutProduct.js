@@ -9,6 +9,7 @@ import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 
 export default function CheckoutProduct() {
+  console.log("check out render");
   const { checkoutItems } = useContext(ProductContext);
   let shipPrice = 20000;
   let checkoutPriceTotal = 0;

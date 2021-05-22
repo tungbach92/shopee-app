@@ -5,6 +5,7 @@ export default class ProductList extends Component {
   static contextType = ProductContext;
 
   render() {
+    console.log("product list render");
     let {
       sortedItems,
       similarItems,
