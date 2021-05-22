@@ -1,10 +1,12 @@
 import React from "react";
 import Header from "../components/Header";
-
+import HeaderSearch from "../components/HeaderSearch";
 export default function Error() {
   return (
     <>
-      <Header></Header>
+      <Header>
+        <HeaderSearch></HeaderSearch>
+      </Header>
       Hello Error!
     </>
   );

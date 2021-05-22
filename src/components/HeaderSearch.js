@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 
 export default function HeaderSearch(props) {
+  console.log("header search render");
   const {
     filterProductBySearch,
     addToSearchHistory,
