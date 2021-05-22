@@ -300,9 +300,12 @@ export default class ProductProvider extends Component {
   delCartItems = (idArr, callback) => {
     if (idArr.length > 0) {
       let { cartItems } = this.state;
-      idArr.forEach((id) => {
-        cartItems = cartItems.filter((item) => item.id !== Number(id));
-      });
+      // idArr.forEach((id) => {
+      //   cartItems = cartItems.filter((item) => item.id !== Number(id));
+      // });
+      cartItems = cartItems.filter(
+        (item, index) => idArr.indexOf(item.id) === -1
+      );
       this.setState(
         {
           cartItems,
