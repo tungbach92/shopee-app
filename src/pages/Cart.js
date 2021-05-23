@@ -21,15 +21,17 @@ export default class Cart extends Component {
     } = this.context;
     return (
       <>
-        <Header>
-          <HeaderSearch
-            searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
-            searchHistory={searchHistory}
-            addToSearchHistory={addToSearchHistory}
-            isCartPageLoaded={this.state.isCartPageLoaded}
-          ></HeaderSearch>
-        </Header>
+        <Header
+          headerSearch={
+            <HeaderSearch
+              searchInput={searchInput}
+              filterProductBySearch={filterProductBySearch}
+              searchHistory={searchHistory}
+              addToSearchHistory={addToSearchHistory}
+              isCartPageLoaded={this.state.isCartPageLoaded}
+            ></HeaderSearch>
+          }
+        ></Header>
         <CartProduct></CartProduct>
       </>
     );

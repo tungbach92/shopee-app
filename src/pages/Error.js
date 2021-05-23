@@ -4,8 +4,7 @@ import HeaderSearch from "../components/HeaderSearch";
 export default function Error() {
   return (
     <>
-      <Header>
-        <HeaderSearch></HeaderSearch>
+      <Header headerSearch={<HeaderSearch />}>
       </Header>
       Hello Error!
     </>

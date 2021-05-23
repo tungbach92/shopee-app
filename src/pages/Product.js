@@ -5,9 +5,7 @@ import HeaderSearch from "../components/HeaderSearch";
 export default function Product() {
   return (
     <>
-      <Header>
-        <HeaderSearch></HeaderSearch>
-      </Header>
+      <Header headerSearch={<HeaderSearch />}></Header>
       <ProductContainer></ProductContainer>
     </>
   );

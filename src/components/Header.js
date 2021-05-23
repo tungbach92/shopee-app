@@ -6,7 +6,7 @@ export default function Header(props) {
     <header className="header">
       <div className="grid grid--fullheight">
         <HeaderNav></HeaderNav>
-        {props.children}
+        {props.headerSearch}
       </div>
     </header>
   );

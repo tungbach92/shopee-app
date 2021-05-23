@@ -4,9 +4,7 @@ import HeaderSearch from "../components/HeaderSearch";
 export default function Account() {
   return (
     <div>
-      <Header>
-        <HeaderSearch></HeaderSearch>
-      </Header>
+      <Header headerSearch={<HeaderSearch />}></Header>
       Hello Account!
     </div>
   );

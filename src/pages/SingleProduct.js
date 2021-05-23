@@ -8,8 +8,7 @@ export default class SingleProduct extends Component {
   render() {
     return (
       <>
-        <Header>
-          <HeaderSearch></HeaderSearch>
+        <Header headerSearch={<HeaderSearch />}>
         </Header>
         Hello Single Product!
       </>

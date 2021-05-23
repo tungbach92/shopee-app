@@ -22,15 +22,17 @@ export default function Checkout() {
   }, []);
   return (
     <>
-      <Header>
-        <HeaderSearch
-          searchInput={searchInput}
-          filterProductBySearch={filterProductBySearch}
-          searchHistory={searchHistory}
-          addToSearchHistory={addToSearchHistory}
-          isCheckoutPage={isCheckoutPage}
-        ></HeaderSearch>
-      </Header>
+      <Header
+        headerSearch={
+          <HeaderSearch
+            searchInput={searchInput}
+            filterProductBySearch={filterProductBySearch}
+            searchHistory={searchHistory}
+            addToSearchHistory={addToSearchHistory}
+            isCheckoutPage={isCheckoutPage}
+          ></HeaderSearch>
+        }
+      ></Header>
       <CheckoutProduct></CheckoutProduct>
     </>
   );
