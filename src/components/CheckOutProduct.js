@@ -8,8 +8,14 @@ import VoucherModal from "./VoucherModal";
 
 export default function CheckoutProduct() {
   console.log("check out render");
-  const { checkoutItems, name, phone, address, setCustomerInfo } =
-    useContext(ProductContext);
+  const {
+    checkoutItems,
+    name,
+    phone,
+    address,
+    setCustomerInfo,
+    setOrderItems,
+  } = useContext(ProductContext);
   //
   const [isInformation, setIsInformation] = useState(false);
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
@@ -74,6 +80,10 @@ export default function CheckoutProduct() {
 
   const handleVoucherModal = (e) => {
     toggleVoucher(!isShipUnits);
+  };
+
+  const handleCheckout = () => {
+    setOrderItems(checkoutItems, "none", "none");
   };
   return (
     <div className="container">
@@ -393,7 +403,10 @@ export default function CheckoutProduct() {
             <span className="checkout-product__order-policy">
               Điều khoản Shopee
             </span>
-            <button className="btn checkout-product__order-btn">
+            <button
+              onClick={handleCheckout}
+              className="btn checkout-product__order-btn"
+            >
               Đặt hàng
             </button>
           </div>

@@ -30,8 +30,7 @@ export default class ProductProvider extends Component {
     name: "",
     phone: "",
     address: "",
-    shipUnit: "",
-    paymentMethod: "",
+    orderItems: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -41,7 +40,7 @@ export default class ProductProvider extends Component {
     const categoryItems = items.filter((item) => item.type !== this.state.type);
     const sortedItems = categoryItems.filter(
       (item) =>
-        new Date(item.date).getDate() > this.state.today.getDate() - 20 ||
+        new Date(item.date).getDate() > new Date().getDate() - 20 ||
         item.soldAmount >= this.state.bestSelling
     );
     const pageIndex = this.state.pageIndex;
@@ -353,6 +352,24 @@ export default class ProductProvider extends Component {
     this.setState({ checkoutItems: items });
   };
 
+  setOrderItems = (checkoutItems, paymentMethod, shipUnit) => {
+    let { orderItems, name, phone, address } = this.state;
+    const newOrderItems = {
+      date: new Date(),
+      items: checkoutItems,
+      paymentMethod,
+      shipUnit,
+      shipAddress: name + " " + phone + " " + address,
+    };
+    if (orderItems.length === 0) {
+      orderItems = [newOrderItems];
+    } else {
+      orderItems = [...orderItems, newOrderItems];
+    }
+
+    this.setState({ orderItems });
+  };
+
   saveCartItemsToStorage = () => {
     const { cartItems } = this.state;
     cartItems.forEach((item) => {
@@ -377,7 +394,7 @@ export default class ProductProvider extends Component {
     }
     const sortedItems = tempItems.filter(
       (item) =>
-        new Date(item.date).getDate() > this.state.today.getDate() - 20 ||
+        new Date(item.date).getDate() > new Date().getDate() - 20 ||
         item.soldAmount >= this.state.bestSelling
     );
     //change state
@@ -412,7 +429,7 @@ export default class ProductProvider extends Component {
     if (filter === "popular") {
       tempItems = tempItems.filter(
         (item) =>
-          new Date(item.date).getDate() > this.state.today.getDate() - 20 ||
+          new Date(item.date).getDate() > new Date().getDate() - 20 ||
           item.soldAmount >= this.state.bestSelling
       );
     }
@@ -427,8 +444,7 @@ export default class ProductProvider extends Component {
     // Date Filter
     if (filter === "date") {
       tempItems = tempItems.filter(
-        (item) =>
-          new Date(item.date).getDate() > this.state.today.getDate() - 20
+        (item) => new Date(item.date).getDate() > new Date().getDate() - 20
         // (item) => item.date.getDate() > today.getDate() - 20
       );
     }
@@ -499,6 +515,7 @@ export default class ProductProvider extends Component {
           setCheckoutItems: this.setCheckoutItems,
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
+          setOrderItems: this.setOrderItems,
         }}
       >
         {this.props.children}
