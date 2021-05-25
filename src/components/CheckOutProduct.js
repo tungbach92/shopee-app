@@ -8,11 +8,9 @@ import { Link } from "react-router-dom";
 
 export default function CheckoutProduct() {
   console.log("check out render");
-  const { checkoutItems } = useContext(ProductContext);
+  const { checkoutItems, name, phone, address, setCustomerInfo } =
+    useContext(ProductContext);
   //
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAdress] = useState("");
   const [isInformation, setIsInformation] = useState(false);
   const inputEl = useRef([]);
   let isInfoEmpty = false;
@@ -32,18 +30,27 @@ export default function CheckoutProduct() {
 
   useEffect(() => {
     // effect
-    setInputInfo();
+    const setInputCustomerInfo = () => {
+      if (isInformation === true) {
+        inputEl.current[0].value = name;
+        inputEl.current[1].value = phone;
+        inputEl.current[2].value = address;
+      }
+    };
+
+    setInputCustomerInfo();
     return () => {
       // cleanup
     };
-  }, [isInformation]);
+  }, [isInformation, name, phone, address]);
 
   const handelClick = () => {
     setIsInformation(!isInformation);
     if (isInformation) {
-      setName(inputEl.current[0].value);
-      setPhone(inputEl.current[1].value);
-      setAdress(inputEl.current[2].value);
+      const name = inputEl.current[0].value;
+      const phone = inputEl.current[1].value;
+      const address = inputEl.current[2].value;
+      setCustomerInfo(name, phone, address);
     }
   };
 
@@ -51,20 +58,6 @@ export default function CheckoutProduct() {
     e.target.value = e.target.value
       .replace(/[^1-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
-  };
-
-  const setInputInfo = () => {
-    if (inputEl.current.length !== 0) {
-      if (inputEl.current[0] !== null) {
-        inputEl.current[0].value = name;
-      }
-      if (inputEl.current[1] !== null) {
-        inputEl.current[1].value = phone;
-      }
-      if (inputEl.current[2] !== null) {
-        inputEl.current[2].value = address;
-      }
-    }
   };
 
   return (

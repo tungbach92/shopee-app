@@ -27,6 +27,9 @@ export default class ProductProvider extends Component {
     searchInput: "",
     searchHistory: [],
     checked: [],
+    name: "",
+    phone: "",
+    address: "",
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -60,6 +63,10 @@ export default class ProductProvider extends Component {
 
   setChecked = (cheked) => {
     this.setState({ checked: cheked });
+  };
+
+  setCustomerInfo = (name, phone, address) => {
+    this.setState({ name, phone, address });
   };
 
   getDefaultCheckedByCartItem = (cartItems) => {
@@ -489,6 +496,7 @@ export default class ProductProvider extends Component {
           saveCartItemsToStorage: this.saveCartItemsToStorage,
           setCheckoutItems: this.setCheckoutItems,
           setChecked: this.setChecked,
+          setCustomerInfo: this.setCustomerInfo,
         }}
       >
         {this.props.children}
