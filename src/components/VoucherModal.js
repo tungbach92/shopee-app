@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 export default function VoucherModal(props) {
-  const { isShowing, toggleModal } = props;
+  const { isVoucherShowing, toggleVoucher } = props;
   const handleClick = (e) => {
-    toggleModal(!isShowing);
+    toggleVoucher(!isVoucherShowing);
   };
 
   return ReactDOM.createPortal(

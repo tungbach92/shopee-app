@@ -1,15 +1,17 @@
-import React, { useEffect, useContext, useCallback } from "react";
+import React, { useEffect, useContext } from "react";
 import classNames from "classnames";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
+import PopupModal from "./PopupModal";
 import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 
 export default function CartProduct() {
   console.log("render");
-  const { isShowing, toggleModal } = useModal();
+  const { isVoucherShowing, toggleVoucher, isPopupShowing, togglePopup } =
+    useModal();
   const {
     cartItems,
     handleClick,
@@ -39,9 +41,16 @@ export default function CartProduct() {
     return () => {
       setDefaultType();
       saveCartItemsToStorage();
-      toggleModal(false);
+      togglePopup(false);
+      toggleVoucher(false);
     };
-  }, [setDefaultState, setDefaultType, saveCartItemsToStorage, toggleModal]);
+  }, [
+    setDefaultState,
+    setDefaultType,
+    saveCartItemsToStorage,
+    togglePopup,
+    toggleVoucher,
+  ]);
 
   const handleCheckout = (event) => {
     let items = checked.map((checkItem, index) => {
@@ -54,6 +63,7 @@ export default function CartProduct() {
       setCheckoutItems(items);
     } else {
       event.preventDefault();
+      togglePopup(true);
     }
   };
 
@@ -551,15 +561,15 @@ export default function CartProduct() {
               <span className="cart-product__shoppe-label">Shopee Voucher</span>
             </div>
             <div
-              onClick={toggleModal.bind(this, true)}
+              onClick={toggleVoucher.bind(this, true)}
               className="cart-product__shopee-action"
             >
               Chọn Hoặc Nhập Mã
             </div>
-            {isShowing && (
+            {isVoucherShowing && (
               <VoucherModal
-                isShowing={isShowing}
-                toggleModal={toggleModal}
+                isVoucherShowing={isVoucherShowing}
+                toggleVoucher={toggleVoucher}
               ></VoucherModal>
             )}
           </div>
@@ -655,6 +665,12 @@ export default function CartProduct() {
             >
               Mua hàng
             </Link>
+            {isPopupShowing && (
+              <PopupModal
+                isPopupShowing={isPopupShowing}
+                togglePopup={togglePopup}
+              ></PopupModal>
+            )}
           </div>
         </div>
       </div>

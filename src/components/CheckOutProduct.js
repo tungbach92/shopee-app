@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import img1 from "../img/ao.png";
 import classNames from "classnames";
-import ProductList from "./ProductList";
-import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
@@ -11,21 +9,63 @@ import { Link } from "react-router-dom";
 export default function CheckoutProduct() {
   console.log("check out render");
   const { checkoutItems } = useContext(ProductContext);
+  //
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAdress] = useState("");
+  const [isInformation, setIsInformation] = useState(false);
+  const inputEl = useRef([]);
+  let isInfoEmpty = false;
+  if (name === "" && phone === "" && address === "") {
+    isInfoEmpty = true;
+  }
+  //
   let shipPrice = 20000;
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
   let checkoutShipTotal = 0;
   checkoutItems.forEach((item) => (checkoutShipTotal += shipPrice));
-  checkoutItems.forEach((item) => (checkoutPriceTotal += item.amount * item.price));
+  checkoutItems.forEach(
+    (item) => (checkoutPriceTotal += item.amount * item.price)
+  );
   checkoutItems.forEach((item) => (checkoutItemTotal += item.amount));
 
   useEffect(() => {
     // effect
+    setInputInfo();
     return () => {
       // cleanup
-      
+    };
+  }, [isInformation]);
+
+  const handelClick = () => {
+    setIsInformation(!isInformation);
+    if (isInformation) {
+      setName(inputEl.current[0].value);
+      setPhone(inputEl.current[1].value);
+      setAdress(inputEl.current[2].value);
     }
-  }, [])
+  };
+
+  const handleChange = (e) => {
+    e.target.value = e.target.value
+      .replace(/[^1-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+  };
+
+  const setInputInfo = () => {
+    if (inputEl.current.length !== 0) {
+      if (inputEl.current[0] !== null) {
+        inputEl.current[0].value = name;
+      }
+      if (inputEl.current[1] !== null) {
+        inputEl.current[1].value = phone;
+      }
+      if (inputEl.current[2] !== null) {
+        inputEl.current[2].value = address;
+      }
+    }
+  };
 
   return (
     <div className="container">
@@ -44,15 +84,60 @@ export default function CheckoutProduct() {
             ></path>
           </svg>
           <span className="checkout-product__address-label">
-            Địa Chỉ Nhận Hàng
+            Thông tin người mua
           </span>
           <div className="checkout-product__address-content">
-            <span className="checkout-product__address">
-              Nguyễn Tùng Bách (+84) 369832318 Số 28 Ngõ 420 Tổ 22 Đường Kim
-              Giang, Phường Đại Kim, Quận Hoàng Mai, Hà Nội
-            </span>
-            <span className="checkout-product__address-default">Mặc Định</span>
-            <span className="checkout-product__address-action">THAY ĐỔI</span>
+            {!isInformation && (
+              <>
+                <span className="checkout-product__info">
+                  {name} {phone} {address}
+                </span>
+                <span
+                  onClick={handelClick}
+                  className="checkout-product__address-action"
+                >
+                  {isInfoEmpty ? "Thêm" : "Sửa"}
+                </span>
+              </>
+            )}
+            {isInformation && (
+              <div className="checkout-product__info-input">
+                <span className="checkout-product__name-label">Họ và tên:</span>
+                <input
+                  ref={(el) => (inputEl.current[0] = el)}
+                  type="text"
+                  className="checkout-product__name-input"
+                  placeholder="Họ và tên..."
+                />
+
+                <span className="checkout-product__phone-label">
+                  Số điện thoại:
+                </span>
+                <input
+                  ref={(el) => (inputEl.current[1] = el)}
+                  type="text"
+                  className="checkout-product__phone-input"
+                  placeholder="Số điện thoại..."
+                  onChange={handleChange}
+                />
+
+                <span className="checkout-product__location-label">
+                  Địa chỉ:
+                </span>
+                <input
+                  ref={(el) => (inputEl.current[2] = el)}
+                  type="text"
+                  className="checkout-product__location-input"
+                  placeholder="Địa chỉ..."
+                />
+                <button
+                  onClick={handelClick}
+                  className="btn checkout-product__input-btn"
+                >
+                  Lưu
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <div className="checkout-product__item-label">

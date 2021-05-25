@@ -1,17 +1,22 @@
 import { useState, useCallback } from "react";
 
 const useModal = () => {
-  const [isShowing, setIsShowing] = useState(false);
+  const [isVoucherShowing, setIsVoucherShowing] = useState(false);
+  const [isPopupShowing, setIsPopupShowing] = useState(false);
 
-  const toggleModal = useCallback(
-    (isShowing) => {
-      setIsShowing(isShowing);
-    },
-    [],
-  )
+  const toggleVoucher = useCallback((value) => {
+    setIsVoucherShowing(value);
+  }, []);
+
+  const togglePopup = useCallback((value) => {
+    setIsPopupShowing(value);
+  }, []);
+
   return {
-    isShowing,
-    toggleModal,
+    isVoucherShowing,
+    toggleVoucher,
+    isPopupShowing,
+    togglePopup,
   };
 };
 export default useModal;
