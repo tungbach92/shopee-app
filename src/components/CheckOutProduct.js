@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
-import img1 from "../img/ao.png";
-import classNames from "classnames";
-import useModal from "../hooks/useModal";
-import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
+import classNames from "classnames";
 import { Link } from "react-router-dom";
+import useModal from "../hooks/useModal";
+import ShipUnitsModal from "./ShipUnitsModal";
+import VoucherModal from "./VoucherModal";
 
 export default function CheckoutProduct() {
   console.log("check out render");
@@ -12,6 +12,10 @@ export default function CheckoutProduct() {
     useContext(ProductContext);
   //
   const [isInformation, setIsInformation] = useState(false);
+  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
+  const { isVoucherShowing, toggleVoucher, isShipUnits, toggleShipUnits } =
+    useModal();
+
   const inputEl = useRef([]);
   let isInfoEmpty = false;
   if (name === "" && phone === "" && address === "") {
@@ -54,12 +58,23 @@ export default function CheckoutProduct() {
     }
   };
 
+  const handlePaymentMethod = () => {
+    setIsPaymentMethod(!isPaymentMethod);
+  };
+
   const handleChange = (e) => {
     e.target.value = e.target.value
       .replace(/[^1-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
   };
 
+  const handleShipUnitModal = (e) => {
+    toggleShipUnits(!isShipUnits);
+  };
+
+  const handleVoucherModal = (e) => {
+    toggleVoucher(!isShipUnits);
+  };
   return (
     <div className="container">
       <div className="grid checkout-product">
@@ -196,9 +211,18 @@ export default function CheckoutProduct() {
                         Nhận hàng vào 22 Th05 - 24 Th05
                       </span>
                     </span>
-                    <span className="checkout-product__transport-action">
+                    <span
+                      onClick={handleShipUnitModal}
+                      className="checkout-product__transport-action"
+                    >
                       Thay đổi
                     </span>
+                    {isShipUnits && (
+                      <ShipUnitsModal
+                        isShipUnits={isShipUnits}
+                        toggleShipUnits={toggleShipUnits}
+                      ></ShipUnitsModal>
+                    )}
                     <span className="checkout-product__transport-price">
                       {shipPrice}
                     </span>
@@ -278,18 +302,70 @@ export default function CheckoutProduct() {
             <span className="checkout-product__voucher-label">
               Shopee Voucher
             </span>
-            <span className="checkout-product__voucher-action">
+            <span
+              onClick={handleVoucherModal}
+              className="checkout-product__voucher-action"
+            >
               Chọn Voucher
             </span>
+            {isVoucherShowing && (
+              <VoucherModal
+                isVoucherShowing={isVoucherShowing}
+                toggleVoucher={toggleVoucher}
+              ></VoucherModal>
+            )}
           </div>
           <div className="checkout-product__method-wrapper">
             <span className="checkout-product__method-label">
               Phương thức thanh toán
             </span>
-            <span className="checkout-product__method">
-              Thanh toán khi nhận hàng
-            </span>
-            <span className="checkout-product__method-action">THAY ĐỔI</span>
+            {isPaymentMethod && (
+              <>
+                <span className="checkout-product__method-airpay">
+                  Ví AirPay
+                </span>
+                <div
+                  onClick={handlePaymentMethod}
+                  className="checkout-product__airpay-notify"
+                >
+                  airpay info
+                </div>
+
+                <span className="checkout-product__method-card">
+                  Thẻ Tín dụng/Ghi nợ
+                </span>
+                <div
+                  onClick={handlePaymentMethod}
+                  className="checkout-product__card-notify"
+                >
+                  card info
+                </div>
+
+                <span className="checkout-product__method-Immediatepay">
+                  Thanh toán khi nhận hàng
+                </span>
+                <div
+                  onClick={handlePaymentMethod}
+                  className="checkout-product__Immediatepay-notify"
+                >
+                  Immediatepay info
+                </div>
+              </>
+            )}
+
+            {!isPaymentMethod && (
+              <>
+                <span className="checkout-product__method">
+                  Thanh toán khi nhận hàng
+                </span>
+                <span
+                  onClick={handlePaymentMethod}
+                  className="checkout-product__method-action"
+                >
+                  THAY ĐỔI
+                </span>
+              </>
+            )}
           </div>
 
           <div className="checkout-product__calc-wrapper">

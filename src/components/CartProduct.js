@@ -63,7 +63,7 @@ export default function CartProduct() {
       setCheckoutItems(items);
     } else {
       event.preventDefault();
-      togglePopup(true);
+      togglePopup(!isPopupShowing);
     }
   };
 
@@ -561,7 +561,7 @@ export default function CartProduct() {
               <span className="cart-product__shoppe-label">Shopee Voucher</span>
             </div>
             <div
-              onClick={toggleVoucher.bind(this, true)}
+              onClick={toggleVoucher.bind(this, !isVoucherShowing)}
               className="cart-product__shopee-action"
             >
               Chọn Hoặc Nhập Mã

@@ -2141,13 +2141,13 @@ header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 .checkout-product__method-label {
-  flex-basis: 86rem;
   font-size: 1.8rem;
   font-weight: 540;
 }
 .checkout-product__method {
-  flex: 2;
+  flex: 7;
   font-size: 1.4rem;
+  text-align: end;
 }
 .checkout-product__method-action {
   flex: 1;

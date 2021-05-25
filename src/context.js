@@ -30,6 +30,8 @@ export default class ProductProvider extends Component {
     name: "",
     phone: "",
     address: "",
+    shipUnit: "",
+    paymentMethod: "",
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
