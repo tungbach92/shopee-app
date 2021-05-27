@@ -31,6 +31,8 @@ export default class ProductProvider extends Component {
     phone: "",
     address: "",
     orderItems: [],
+    shipUnit: "",
+    paymentMethod: "",
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -60,6 +62,14 @@ export default class ProductProvider extends Component {
       cartNumb,
       checked,
     });
+  };
+
+  setPaymentMethod = (paymentMethod) => {
+    this.setState({ paymentMethod: paymentMethod });
+  };
+
+  setShipUnit = (shipUnit) => {
+    this.setState({ shipUnit: shipUnit });
   };
 
   setChecked = (cheked) => {
@@ -516,6 +526,8 @@ export default class ProductProvider extends Component {
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
           setOrderItems: this.setOrderItems,
+          setShipUnit: this.setShipUnit,
+          setPaymentMethod: this.setPaymentMethod,
         }}
       >
         {this.props.children}

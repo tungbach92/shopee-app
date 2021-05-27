@@ -2055,11 +2055,6 @@ header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 
-.checkout-product__first-addition {
-  display: flex;
-  align-items: center;
-}
-
 .checkout-product__message-wrapper {
   padding-left: 2.6rem;
   flex-basis: 47.5rem;
@@ -2129,9 +2124,15 @@ header {
   color: var(--primary-color);
 }
 
+.checkout-product__first-addition {
+  display: flex;
+  align-items: center;
+  background-color: var(--while-color);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+
 .checkout-product__checkout-wrapper {
   background-color: var(--while-color);
-  margin-top: 1.4rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 

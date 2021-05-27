@@ -10,12 +10,15 @@ import PopupModal from "./PopupModal";
 export default function CheckoutProduct() {
   console.log("check out render");
   const {
+    paymentMethod,
+    shipUnit,
     checkoutItems,
     name,
     phone,
     address,
     setCustomerInfo,
     setOrderItems,
+    setPaymentMethod,
   } = useContext(ProductContext);
   //
   const [isInformation, setIsInformation] = useState(false);
@@ -38,8 +41,6 @@ export default function CheckoutProduct() {
   let shipPrice = 20000;
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
-  let checkoutShipTotal = 0;
-  checkoutItems.forEach((item) => (checkoutShipTotal += shipPrice));
   checkoutItems.forEach(
     (item) => (checkoutPriceTotal += item.amount * item.price)
   );
@@ -61,7 +62,7 @@ export default function CheckoutProduct() {
     };
   }, [isInformation, name, phone, address]);
 
-  const handelClick = () => {
+  const handleClick = () => {
     setIsInformation(!isInformation);
     if (isInformation) {
       const name = inputEl.current[0].value;
@@ -71,7 +72,15 @@ export default function CheckoutProduct() {
     }
   };
 
-  const handlePaymentMethod = () => {
+  const handlePaymentMethodSelect = (e) => {
+    const paymentMethod = e.target.innerText;
+    if (paymentMethod.length > 0) {
+      setPaymentMethod(paymentMethod);
+    }
+    setIsPaymentMethod(!isPaymentMethod);
+  };
+
+  const handlePaymentMethodChange = (e) => {
     setIsPaymentMethod(!isPaymentMethod);
   };
 
@@ -93,7 +102,7 @@ export default function CheckoutProduct() {
     if (isInformation === true || isInfoEmpty === true) {
       togglePopup(!isPopupShowing);
     } else {
-      setOrderItems(checkoutItems, "none", "none");
+      setOrderItems(checkoutItems, paymentMethod, shipUnit);
     }
   };
   return (
@@ -122,7 +131,7 @@ export default function CheckoutProduct() {
                   {name} {phone} {address}
                 </span>
                 <span
-                  onClick={handelClick}
+                  onClick={handleClick}
                   className="checkout-product__address-action"
                 >
                   {isInfoEmpty ? "Thêm" : "Sửa"}
@@ -132,7 +141,7 @@ export default function CheckoutProduct() {
             {isInformation && (
               <form
                 className="checkout-product__info-input"
-                onSubmit={handelClick}
+                onSubmit={handleClick}
               >
                 <label className="checkout-product__name-label">
                   Họ và tên:
@@ -214,63 +223,59 @@ export default function CheckoutProduct() {
                 </span>
               </li>
               <div className="checkout-product__addition">
-                <div className="checkout-product__first-addition">
-                  <span className="checkout-product__message-wrapper">
-                    <span className="checkout-product__message-label">
-                      Lời nhắn:
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="Lưu ý cho người bán..."
-                      className="checkout-product__message-input"
-                    />
-                  </span>
-                  <span className="checkout-product__transport-wrapper">
-                    <span className="checkout-product__transport-label">
-                      Đơn vị vận chuyển:
-                    </span>
-                    <span className="checkout-product__transport-info">
-                      <span className="checkout-product__transport-type">
-                        Vận Chuyển Nhanh
-                      </span>
-                      <span className="checkout-product__transport-unit">
-                        Shopee Express
-                      </span>
-                      <span className="checkout-product__transport-time">
-                        Nhận hàng vào 22 Th05 - 24 Th05
-                      </span>
-                    </span>
-                    <span
-                      onClick={handleShipUnitModal}
-                      className="checkout-product__transport-action"
-                    >
-                      Thay đổi
-                    </span>
-                    {isShipUnits && (
-                      <ShipUnitsModal
-                        isShipUnits={isShipUnits}
-                        toggleShipUnits={toggleShipUnits}
-                      ></ShipUnitsModal>
-                    )}
-                    <span className="checkout-product__transport-price">
-                      {shipPrice}
-                    </span>
-                  </span>
-                </div>
-
                 <span className="checkout-product__second-addition">
                   <span className="checkout-product__price-label">
                     Tổng số tiền ({item.amount} sản phẩm):
                   </span>
                   <span className="checkout-product__additon-price">
-                    {item.price * item.amount + shipPrice}
+                    {item.price * item.amount}
                   </span>
                 </span>
               </div>
             </div>
           ))}
         </ul>
-
+        <div className="checkout-product__first-addition">
+          <span className="checkout-product__message-wrapper">
+            <span className="checkout-product__message-label">Lời nhắn:</span>
+            <input
+              type="text"
+              placeholder="Lưu ý cho người bán..."
+              className="checkout-product__message-input"
+            />
+          </span>
+          <span className="checkout-product__transport-wrapper">
+            <span className="checkout-product__transport-label">
+              Đơn vị vận chuyển:
+            </span>
+            <span className="checkout-product__transport-info">
+              <span className="checkout-product__transport-type">
+                {shipUnit}
+              </span>
+              <span className="checkout-product__transport-unit">
+                Shopee Express
+              </span>
+              <span className="checkout-product__transport-time">
+                Nhận hàng vào 22 Th05 - 24 Th05
+              </span>
+            </span>
+            <span
+              onClick={handleShipUnitModal}
+              className="checkout-product__transport-action"
+            >
+              Thay đổi
+            </span>
+            {isShipUnits && (
+              <ShipUnitsModal
+                isShipUnits={isShipUnits}
+                toggleShipUnits={toggleShipUnits}
+              ></ShipUnitsModal>
+            )}
+            <span className="checkout-product__transport-price">
+              {shipPrice}
+            </span>
+          </span>
+        </div>
         <div className="checkout-product__checkout-wrapper">
           <div className="checkout-product__voucher-wrapper">
             <svg
@@ -350,33 +355,31 @@ export default function CheckoutProduct() {
             </span>
             {isPaymentMethod && (
               <>
-                <span className="checkout-product__method-airpay">
+                <span
+                  onClick={handlePaymentMethodSelect}
+                  className="checkout-product__method-airpay"
+                >
                   Ví AirPay
                 </span>
-                <div
-                  onClick={handlePaymentMethod}
-                  className="checkout-product__airpay-notify"
-                >
+                <div className="checkout-product__airpay-notify">
                   airpay info
                 </div>
 
-                <span className="checkout-product__method-card">
+                <span
+                  onClick={handlePaymentMethodSelect}
+                  className="checkout-product__method-card"
+                >
                   Thẻ Tín dụng/Ghi nợ
                 </span>
-                <div
-                  onClick={handlePaymentMethod}
-                  className="checkout-product__card-notify"
-                >
-                  card info
-                </div>
+                <div className="checkout-product__card-notify">card info</div>
 
-                <span className="checkout-product__method-Immediatepay">
+                <span
+                  onClick={handlePaymentMethodSelect}
+                  className="checkout-product__method-Immediatepay"
+                >
                   Thanh toán khi nhận hàng
                 </span>
-                <div
-                  onClick={handlePaymentMethod}
-                  className="checkout-product__Immediatepay-notify"
-                >
+                <div className="checkout-product__Immediatepay-notify">
                   Immediatepay info
                 </div>
               </>
@@ -385,10 +388,10 @@ export default function CheckoutProduct() {
             {!isPaymentMethod && (
               <>
                 <span className="checkout-product__method">
-                  Thanh toán khi nhận hàng
+                  {paymentMethod}
                 </span>
                 <span
-                  onClick={handlePaymentMethod}
+                  onClick={handlePaymentMethodChange}
                   className="checkout-product__method-action"
                 >
                   THAY ĐỔI
@@ -407,12 +410,12 @@ export default function CheckoutProduct() {
             <span className="checkout-product__ship-label">
               Phí vận chuyển:
             </span>
-            <span className="checkout-product__ship">{checkoutShipTotal}</span>
+            <span className="checkout-product__ship">{shipPrice}</span>
             <span className="checkout-product__final-label">
               Tổng thanh toán:
             </span>
             <span className="checkout-product__final">
-              {checkoutPriceTotal + checkoutShipTotal}
+              {checkoutPriceTotal + shipPrice}
             </span>
           </div>
           <div className="checkout-product__order-wrapper">
