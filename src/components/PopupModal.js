@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 export default function PopupModal(props) {
-  const { isPopupShowing, togglePopup } = props;
+  const { isPopupShowing, togglePopup, isInformation, isInfoEmpty } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
   };
@@ -11,7 +11,9 @@ export default function PopupModal(props) {
       <div className="cart-product__modal-container">
         <div className="cart-product__modal-header">
           <span className="cart-product__popup-label">
-            Bạn vẫn chưa chọn sản phẩm nào để mua.
+            {isInformation === true || isInfoEmpty === true
+              ? "Vui lòng điền thông tin người mua và ấn Lưu."
+              : "Bạn vẫn chưa chọn sản phẩm nào để mua."}
           </span>
         </div>
         <div className="cart-product__popup-footer">

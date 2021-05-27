@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import ShipUnitsModal from "./ShipUnitsModal";
 import VoucherModal from "./VoucherModal";
+import PopupModal from "./PopupModal";
 
 export default function CheckoutProduct() {
   console.log("check out render");
@@ -19,12 +20,18 @@ export default function CheckoutProduct() {
   //
   const [isInformation, setIsInformation] = useState(false);
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
-  const { isVoucherShowing, toggleVoucher, isShipUnits, toggleShipUnits } =
-    useModal();
+  const {
+    isPopupShowing,
+    togglePopup,
+    isVoucherShowing,
+    toggleVoucher,
+    isShipUnits,
+    toggleShipUnits,
+  } = useModal();
 
   const inputEl = useRef([]);
   let isInfoEmpty = false;
-  if (name === "" && phone === "" && address === "") {
+  if (name === "" || phone === "" || address === "") {
     isInfoEmpty = true;
   }
   //
@@ -83,7 +90,11 @@ export default function CheckoutProduct() {
   };
 
   const handleCheckout = () => {
-    setOrderItems(checkoutItems, "none", "none");
+    if (isInformation === true || isInfoEmpty === true) {
+      togglePopup(!isPopupShowing);
+    } else {
+      setOrderItems(checkoutItems, "none", "none");
+    }
   };
   return (
     <div className="container">
@@ -119,42 +130,50 @@ export default function CheckoutProduct() {
               </>
             )}
             {isInformation && (
-              <div className="checkout-product__info-input">
-                <span className="checkout-product__name-label">Họ và tên:</span>
+              <form
+                className="checkout-product__info-input"
+                onSubmit={handelClick}
+              >
+                <label className="checkout-product__name-label">
+                  Họ và tên:
+                </label>
                 <input
                   ref={(el) => (inputEl.current[0] = el)}
                   type="text"
                   className="checkout-product__name-input"
                   placeholder="Họ và tên..."
+                  required
                 />
 
-                <span className="checkout-product__phone-label">
+                <label className="checkout-product__phone-label">
                   Số điện thoại:
-                </span>
+                </label>
                 <input
                   ref={(el) => (inputEl.current[1] = el)}
                   type="text"
                   className="checkout-product__phone-input"
                   placeholder="Số điện thoại..."
                   onChange={handleChange}
+                  required
                 />
 
-                <span className="checkout-product__location-label">
+                <label className="checkout-product__location-label">
                   Địa chỉ:
-                </span>
+                </label>
                 <input
                   ref={(el) => (inputEl.current[2] = el)}
                   type="text"
                   className="checkout-product__location-input"
                   placeholder="Địa chỉ..."
+                  required
                 />
                 <button
-                  onClick={handelClick}
                   className="btn checkout-product__input-btn"
+                  type="submit"
                 >
                   Lưu
                 </button>
-              </div>
+              </form>
             )}
           </div>
         </div>
@@ -409,6 +428,14 @@ export default function CheckoutProduct() {
             >
               Đặt hàng
             </button>
+            {isPopupShowing && (
+              <PopupModal
+                isPopupShowing={isPopupShowing}
+                togglePopup={togglePopup}
+                isInformation={isInformation}
+                isInfoEmpty={isInfoEmpty}
+              ></PopupModal>
+            )}
           </div>
         </div>
       </div>
