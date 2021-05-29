@@ -30,9 +30,22 @@ export default class ProductProvider extends Component {
     name: "",
     phone: "",
     address: "",
-    orderItems: [],
-    shipUnit: "",
-    paymentMethod: "",
+    shipUnitList: [
+      {
+        id: 0,
+        name: "Giao Hàng Tiết Kiệm",
+        price: "20000",
+        date: "2~3 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+      {
+        id: 1,
+        name: "JT Express",
+        price: "30000",
+        date: "2~3 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+    ],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -62,14 +75,6 @@ export default class ProductProvider extends Component {
       cartNumb,
       checked,
     });
-  };
-
-  setPaymentMethod = (paymentMethod) => {
-    this.setState({ paymentMethod: paymentMethod });
-  };
-
-  setShipUnit = (shipUnit) => {
-    this.setState({ shipUnit: shipUnit });
   };
 
   setChecked = (cheked) => {
@@ -362,24 +367,6 @@ export default class ProductProvider extends Component {
     this.setState({ checkoutItems: items });
   };
 
-  setOrderItems = (checkoutItems, paymentMethod, shipUnit) => {
-    let { orderItems, name, phone, address } = this.state;
-    const newOrderItems = {
-      date: new Date(),
-      items: checkoutItems,
-      paymentMethod,
-      shipUnit,
-      shipAddress: name + " " + phone + " " + address,
-    };
-    if (orderItems.length === 0) {
-      orderItems = [newOrderItems];
-    } else {
-      orderItems = [...orderItems, newOrderItems];
-    }
-
-    this.setState({ orderItems });
-  };
-
   saveCartItemsToStorage = () => {
     const { cartItems } = this.state;
     cartItems.forEach((item) => {
@@ -526,7 +513,6 @@ export default class ProductProvider extends Component {
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
           setOrderItems: this.setOrderItems,
-          setShipUnit: this.setShipUnit,
           setPaymentMethod: this.setPaymentMethod,
         }}
       >

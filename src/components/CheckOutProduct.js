@@ -9,20 +9,21 @@ import PopupModal from "./PopupModal";
 
 export default function CheckoutProduct() {
   console.log("check out render");
-  const {
-    paymentMethod,
-    shipUnit,
-    checkoutItems,
-    name,
-    phone,
-    address,
-    setCustomerInfo,
-    setOrderItems,
-    setPaymentMethod,
-  } = useContext(ProductContext);
   //
+  const { shipUnitList, checkoutItems } = useContext(ProductContext);
+  const [customerInfo, setCustomerInfo] = useState({
+    name: "",
+    phone: "",
+    address: "",
+  });
+
+  let orderItems = {};
+
+  const [shipUnit, setShipUnit] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState("");
   const [isInformation, setIsInformation] = useState(false);
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
+  const [shipChecked, setShipChecked] = useState([]);
   const {
     isPopupShowing,
     togglePopup,
@@ -34,13 +35,17 @@ export default function CheckoutProduct() {
 
   const inputEl = useRef([]);
   let isInfoEmpty = false;
-  if (name === "" || phone === "" || address === "") {
+  if (
+    customerInfo.name === "" ||
+    customerInfo.phone === "" ||
+    customerInfo.address === ""
+  ) {
     isInfoEmpty = true;
   }
   //
-  let shipPrice = 20000;
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
+  let shipPrice = Number(shipUnit.price === undefined ? 0 : shipUnit.price);
   checkoutItems.forEach(
     (item) => (checkoutPriceTotal += item.amount * item.price)
   );
@@ -50,17 +55,28 @@ export default function CheckoutProduct() {
     // effect
     const setInputCustomerInfo = () => {
       if (isInformation === true) {
-        inputEl.current[0].value = name;
-        inputEl.current[1].value = phone;
-        inputEl.current[2].value = address;
+        inputEl.current[0].value = customerInfo.name;
+        inputEl.current[1].value = customerInfo.phone;
+        inputEl.current[2].value = customerInfo.address;
       }
     };
-
+    const setCheckedByShipUnit = () => {
+      let checked = [];
+      shipUnitList.forEach((item) => {
+        if (item.id === shipUnit.id) {
+          checked[item.id] = true;
+        } else {
+          checked[item.id] = false;
+        }
+      });
+      setShipChecked(checked);
+    };
+    setCheckedByShipUnit();
     setInputCustomerInfo();
     return () => {
       // cleanup
     };
-  }, [isInformation, name, phone, address]);
+  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
 
   const handleClick = () => {
     setIsInformation(!isInformation);
@@ -68,7 +84,7 @@ export default function CheckoutProduct() {
       const name = inputEl.current[0].value;
       const phone = inputEl.current[1].value;
       const address = inputEl.current[2].value;
-      setCustomerInfo(name, phone, address);
+      setCustomerInfo({ name, phone, address });
     }
   };
 
@@ -99,12 +115,24 @@ export default function CheckoutProduct() {
   };
 
   const handleCheckout = () => {
-    if (isInformation === true || isInfoEmpty === true) {
+    if (
+      isInformation === true ||
+      isInfoEmpty === true ||
+      !Object.keys(shipUnit).length
+    ) {
       togglePopup(!isPopupShowing);
     } else {
-      setOrderItems(checkoutItems, paymentMethod, shipUnit);
+      orderItems = {
+        date: new Date(),
+        checkoutItems: checkoutItems,
+        customerInfo: customerInfo,
+        shipUnit: shipUnit,
+        paymentMethod: paymentMethod,
+      };
+      console.log(orderItems); // order output
     }
   };
+
   return (
     <div className="container">
       <div className="grid checkout-product">
@@ -128,7 +156,8 @@ export default function CheckoutProduct() {
             {!isInformation && (
               <>
                 <span className="checkout-product__info">
-                  {name} {phone} {address}
+                  {customerInfo.name} {customerInfo.phone}{" "}
+                  {customerInfo.address}
                 </span>
                 <span
                   onClick={handleClick}
@@ -248,31 +277,43 @@ export default function CheckoutProduct() {
             <span className="checkout-product__transport-label">
               Đơn vị vận chuyển:
             </span>
-            <span className="checkout-product__transport-info">
-              <span className="checkout-product__transport-type">
-                {shipUnit}
+
+            {!Object.keys(shipUnit).length ? (
+              <span className="checkout-product__transport-notchoose">
+                Chưa chọn đơn vị vận chuyển
               </span>
-              <span className="checkout-product__transport-unit">
-                Shopee Express
+            ) : (
+              <span className="checkout-product__transport-info">
+                <span className="checkout-product__transport-name">
+                  {shipUnit.name}
+                </span>
+                <span className="checkout-product__transport-date">
+                  {shipUnit.date}
+                </span>
+                <span className="checkout-product__transport-method">
+                  {shipUnit.method}
+                </span>
               </span>
-              <span className="checkout-product__transport-time">
-                Nhận hàng vào 22 Th05 - 24 Th05
-              </span>
-            </span>
+            )}
+
             <span
               onClick={handleShipUnitModal}
               className="checkout-product__transport-action"
             >
-              Thay đổi
+              {!Object.keys(shipUnit).length ? "Chọn" : "Thay đổi"}
             </span>
             {isShipUnits && (
               <ShipUnitsModal
                 isShipUnits={isShipUnits}
                 toggleShipUnits={toggleShipUnits}
+                shipUnit={shipUnit}
+                setShipUnit={setShipUnit}
+                shipChecked={shipChecked}
+                setShipChecked={setShipChecked}
               ></ShipUnitsModal>
             )}
             <span className="checkout-product__transport-price">
-              {shipPrice}
+              {shipUnit.price}
             </span>
           </span>
         </div>

@@ -1,23 +1,45 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
 export default function ShipUnitsModal(props) {
-  const { isShipUnits, toggleShipUnits } = props;
-  const { shipUnit, setShipUnit } = useContext(ProductContext);
+  const {
+    shipChecked,
+    setShipChecked,
+    shipUnit,
+    setShipUnit,
+    isShipUnits,
+    toggleShipUnits,
+  } = props;
+  const { shipUnitList } = useContext(ProductContext);
+
   const handleClick = () => {
     toggleShipUnits(!isShipUnits);
   };
 
-  let selectedShipUnit = "";
-  const handleShipUnitClick = (e) => {
-    selectedShipUnit = e.target.innerText;
+  const handleShipUnitClick = (item, e) => {
+    console.log(e);
+    let checked = [];
+    shipUnitList.forEach((shipUnititem) => {
+      if (shipUnititem.id === item.id) {
+        checked[item.id] = e.target.checked;
+      } else {
+        checked[shipUnititem.id] = false;
+      }
+    });
+    setShipChecked(checked);
   };
 
   const handleShipUnitSubmit = (e) => {
-    if (selectedShipUnit.length > 0) {
+    let selectedShipUnit = {};
+    shipUnitList.forEach((item) => {
+      if (shipChecked[item.id]) {
+        selectedShipUnit = item;
+      }
+    });
+    if (selectedShipUnit !== null) {
       setShipUnit(selectedShipUnit);
+      toggleShipUnits(!isShipUnits);
     }
-    toggleShipUnits(!isShipUnits);
   };
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
@@ -28,47 +50,42 @@ export default function ShipUnitsModal(props) {
             Chọn đơn vị vận chuyển
           </span>
         </div>
-        <div className="cart-product__shipunit-type">Vân chuyển nhanh</div>
         <ul className="cart-product__shipunit-list">
-          <li className="cart-product__shipunit-item">
-            <span
-              onClick={handleShipUnitClick}
-              className="cart-product__shipunit-name"
-            >
-              Giao Hàng Tiết Kiệm
-            </span>
-            <span className="cart-product__shipunit-date">
-              Nhận hàng vào 27 Th05 - 29 Th05
-            </span>
-            <span className="cart-product__shipunit-pay">
-              Cho phép Thanh toán khi nhận hàng
-            </span>
-          </li>
-          <li className="cart-product__shipunit-item">
-            <span
-              onClick={handleShipUnitClick}
-              className="cart-product__shipunit-name"
-            >
-              JT Express
-            </span>
-            <span className="cart-product__shipunit-date">
-              Nhận hàng vào 28 Th05
-            </span>
-            <span className="cart-product__shipunit-pay">
-              Cho phép Thanh toán khi nhận hàng
-            </span>
-          </li>
+          {shipUnitList.map((item, index) => (
+            <div key={index} className="cart-product__shipunit-wrapper">
+              <li className="cart-product__shipunit-item">
+                <input
+                  onChange={handleShipUnitClick.bind(this, item)}
+                  type="checkbox"
+                  className="cart-product__shipunit-checkbox"
+                  name="giaohangtietkiem"
+                  value={item.name}
+                  checked={!!shipChecked[index]}
+                />
+                <label className="cart-product__shipunit-name">
+                  {item.name}
+                </label>
+                <span className="cart-product__shipunit-price">
+                  {item.price}
+                </span>
+                <span className="cart-product__shipunit-date">{item.date}</span>
+                <span className="cart-product__shipunit-pay">
+                  {item.method}
+                </span>
+              </li>
+            </div>
+          ))}
         </ul>
-        <div className="cart-product__popup-footer">
+        <div className="cart-product__modal-footer">
           <button
             onClick={handleClick}
-            className="btn cart-product__shipunit-close"
+            className="btn cart-product__modal-close"
           >
             Trở lại
           </button>
           <button
             onClick={handleShipUnitSubmit}
-            className="btn cart-product__shipunit-apply"
+            className="btn cart-product__modal-apply"
           >
             OK
           </button>
