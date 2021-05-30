@@ -1,8 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 export default function PopupModal(props) {
-  const { shipUnit, isPopupShowing, togglePopup, isInformation, isInfoEmpty } =
-    props;
+  const {
+    isCardInfoMustFilled,
+    shipUnit,
+    isPopupShowing,
+    togglePopup,
+    isInformation,
+    isInfoEmpty,
+  } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
   };
@@ -16,6 +22,8 @@ export default function PopupModal(props) {
               ? "Vui lòng điền thông tin người mua và ấn Lưu."
               : !Object.keys(shipUnit).length
               ? "Vui lòng chọn đơn vị vận chuyển."
+              : isCardInfoMustFilled
+              ? "Vui lòng điền đầy đủ thông tin Thẻ Tín dụng/Ghi nợ"
               : "Đặt hàng thành công"}
           </span>
         </div>

@@ -6,6 +6,7 @@ import useModal from "../hooks/useModal";
 import ShipUnitsModal from "./ShipUnitsModal";
 import VoucherModal from "./VoucherModal";
 import PopupModal from "./PopupModal";
+import CardInfoModal from "./CardInfoModal";
 
 export default function CheckoutProduct() {
   console.log("check out render");
@@ -19,11 +20,22 @@ export default function CheckoutProduct() {
 
   let orderItems = {};
 
+  const [message, setMessage] = useState("");
+  const [cardInfo, setCardInfo] = useState({
+    name: "",
+    number: "",
+    expire: "",
+    cvv: "",
+    address: "",
+    postalCode: "",
+  });
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isInformation, setIsInformation] = useState(false);
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
   const [shipChecked, setShipChecked] = useState([]);
+  const [isCardPayment, setIsCardPayment] = useState(false);
+  const [isImmediatePayment, setIsImmediatePayment] = useState(false);
   const {
     isPopupShowing,
     togglePopup,
@@ -31,9 +43,12 @@ export default function CheckoutProduct() {
     toggleVoucher,
     isShipUnits,
     toggleShipUnits,
+    isCardInfoShowing,
+    toggleCardInfo,
   } = useModal();
 
   const inputEl = useRef([]);
+  const inputMessageEl = useRef([]);
   let isInfoEmpty = false;
   if (
     customerInfo.name === "" ||
@@ -41,6 +56,18 @@ export default function CheckoutProduct() {
     customerInfo.address === ""
   ) {
     isInfoEmpty = true;
+  }
+  let isCardInfoMustFilled = false;
+  if (
+    (cardInfo.name === "" ||
+      cardInfo.number === "" ||
+      cardInfo.expire === "" ||
+      cardInfo.cvv === "" ||
+      cardInfo.postalCode === "" ||
+      cardInfo.address === "") &&
+    isCardPayment === true
+  ) {
+    isCardInfoMustFilled = true;
   }
   //
   let checkoutPriceTotal = 0;
@@ -60,6 +87,7 @@ export default function CheckoutProduct() {
         inputEl.current[2].value = customerInfo.address;
       }
     };
+
     const setCheckedByShipUnit = () => {
       let checked = [];
       shipUnitList.forEach((item) => {
@@ -88,12 +116,34 @@ export default function CheckoutProduct() {
     }
   };
 
+  const handleInput = (e) => {
+    let text = e.target.value;
+    if (e.keyCode === 13) {
+      setMessage(text);
+      inputMessageEl.current.blur();
+    }
+  };
+
   const handlePaymentMethodSelect = (e) => {
     const paymentMethod = e.target.innerText;
+    if (paymentMethod === "Thẻ Tín dụng/Ghi nợ") {
+      setIsCardPayment(true);
+      setIsImmediatePayment(false);
+    } else if (paymentMethod === "Thanh toán khi nhận hàng") {
+      setIsImmediatePayment(true);
+      setIsCardPayment(false);
+      setCardInfo({
+        name: "",
+        number: "",
+        expire: "",
+        cvv: "",
+        address: "",
+        postalCode: "",
+      });
+    }
     if (paymentMethod.length > 0) {
       setPaymentMethod(paymentMethod);
     }
-    setIsPaymentMethod(!isPaymentMethod);
   };
 
   const handlePaymentMethodChange = (e) => {
@@ -114,12 +164,14 @@ export default function CheckoutProduct() {
     toggleVoucher(!isShipUnits);
   };
 
-  const handleCheckout = () => {
+  const handleOrder = () => {
     togglePopup(!isPopupShowing);
     if (
       isInformation === false &&
       isInfoEmpty === false &&
-      Object.keys(shipUnit).length
+      isCardInfoShowing === false &&
+      Object.keys(shipUnit).length &&
+      isCardInfoMustFilled === false
     ) {
       orderItems = {
         date: new Date(),
@@ -127,6 +179,8 @@ export default function CheckoutProduct() {
         customerInfo: customerInfo,
         shipUnit: shipUnit,
         paymentMethod: paymentMethod,
+        cardInfo: cardInfo,
+        message: message,
       };
       console.log(orderItems); // order output
     }
@@ -267,6 +321,8 @@ export default function CheckoutProduct() {
           <span className="checkout-product__message-wrapper">
             <span className="checkout-product__message-label">Lời nhắn:</span>
             <input
+              ref={inputMessageEl}
+              onKeyUp={handleInput}
               type="text"
               placeholder="Lưu ý cho người bán..."
               className="checkout-product__message-input"
@@ -395,33 +451,29 @@ export default function CheckoutProduct() {
             </span>
             {isPaymentMethod && (
               <>
-                <span
+                <button
                   onClick={handlePaymentMethodSelect}
-                  className="checkout-product__method-airpay"
-                >
-                  Ví AirPay
-                </span>
-                <div className="checkout-product__airpay-notify">
-                  airpay info
-                </div>
-
-                <span
-                  onClick={handlePaymentMethodSelect}
-                  className="checkout-product__method-card"
+                  className={classNames(
+                    "btn",
+                    "checkout-product__method-card",
+                    { "checkout-product__method--selected": isCardPayment }
+                  )}
                 >
                   Thẻ Tín dụng/Ghi nợ
-                </span>
-                <div className="checkout-product__card-notify">card info</div>
+                </button>
 
-                <span
+                <button
                   onClick={handlePaymentMethodSelect}
-                  className="checkout-product__method-Immediatepay"
+                  className={classNames(
+                    "btn",
+                    "checkout-product__method-Immediatepay",
+                    {
+                      "checkout-product__method--selected": isImmediatePayment,
+                    }
+                  )}
                 >
                   Thanh toán khi nhận hàng
-                </span>
-                <div className="checkout-product__Immediatepay-notify">
-                  Immediatepay info
-                </div>
+                </button>
               </>
             )}
 
@@ -439,7 +491,44 @@ export default function CheckoutProduct() {
               </>
             )}
           </div>
-
+          <div className="checkout-product__notify-wrapper">
+            <div className="checkout-product__method-notify">
+              <span className="checkout-product__notify-label">
+                {isCardPayment ? "Chọn thẻ" : ""}
+                {isImmediatePayment ? "Thanh toán khi nhận hàng" : ""}
+              </span>
+              {isCardPayment && (
+                <div className="checkout-product__notify-item">
+                  <button
+                    onClick={toggleCardInfo.bind(this, !isCardInfoShowing)}
+                    className="btn checkout-product__add-item"
+                  >
+                    Thêm
+                  </button>
+                  {isCardInfoShowing && (
+                    <CardInfoModal
+                      isCardInfoShowing={isCardInfoShowing}
+                      toggleCardInfo={toggleCardInfo}
+                      cardInfo={cardInfo}
+                      setCardInfo={setCardInfo}
+                    ></CardInfoModal>
+                  )}
+                </div>
+              )}
+              {isImmediatePayment && (
+                <span className="checkout-product__immediatepay-notify">
+                  Phí thu hộ: ₫0 VNĐ. Ưu đãi về phí vận chuyển (nếu có) áp dụng
+                  cả với phí thu hộ.
+                </span>
+              )}
+            </div>
+            {isCardPayment && (
+              <div className="checkout-product__promo-item">
+                <div className="checkout-product__promo-hsbc">hsbc</div>
+                <div className="checkout-product__promo-jcb">jcbs</div>
+              </div>
+            )}
+          </div>
           <div className="checkout-product__calc-wrapper">
             <span className="checkout-product__payment-label">
               Tổng tiền hàng:
@@ -466,7 +555,7 @@ export default function CheckoutProduct() {
               Điều khoản Shopee
             </span>
             <button
-              onClick={handleCheckout}
+              onClick={handleOrder}
               className="btn checkout-product__order-btn"
             >
               Đặt hàng
@@ -478,6 +567,7 @@ export default function CheckoutProduct() {
                 shipUnit={shipUnit}
                 isInformation={isInformation}
                 isInfoEmpty={isInfoEmpty}
+                isCardInfoMustFilled={isCardInfoMustFilled}
               ></PopupModal>
             )}
           </div>

@@ -4,6 +4,7 @@ const useModal = () => {
   const [isVoucherShowing, setIsVoucherShowing] = useState(false);
   const [isPopupShowing, setIsPopupShowing] = useState(false);
   const [isShipUnits, setIsShipUnits] = useState(false);
+  const [isCardInfoShowing, setIsCardInfoShowing] = useState(false);
 
   const toggleShipUnits = useCallback((value) => {
     setIsShipUnits(value);
@@ -17,6 +18,10 @@ const useModal = () => {
     setIsPopupShowing(value);
   }, []);
 
+  const toggleCardInfo = useCallback((value) => {
+    setIsCardInfoShowing(value);
+  }, []);
+
   return {
     isVoucherShowing,
     toggleVoucher,
@@ -24,6 +29,8 @@ const useModal = () => {
     togglePopup,
     isShipUnits,
     toggleShipUnits,
+    isCardInfoShowing,
+    toggleCardInfo,
   };
 };
 export default useModal;
