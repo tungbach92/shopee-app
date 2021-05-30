@@ -14,6 +14,16 @@ export default function ShipUnitsModal(props) {
 
   const handleClick = () => {
     toggleShipUnits(!isShipUnits);
+    //setCheckedByShipUnit
+    let checked = [];
+    shipUnitList.forEach((item) => {
+      if (item.id === shipUnit.id) {
+        checked[item.id] = true;
+      } else {
+        checked[item.id] = false;
+      }
+    });
+    setShipChecked(checked);
   };
 
   const handleShipUnitClick = (item, e) => {

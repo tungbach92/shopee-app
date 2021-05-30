@@ -115,13 +115,12 @@ export default function CheckoutProduct() {
   };
 
   const handleCheckout = () => {
+    togglePopup(!isPopupShowing);
     if (
-      isInformation === true ||
-      isInfoEmpty === true ||
-      !Object.keys(shipUnit).length
+      isInformation === false &&
+      isInfoEmpty === false &&
+      Object.keys(shipUnit).length
     ) {
-      togglePopup(!isPopupShowing);
-    } else {
       orderItems = {
         date: new Date(),
         checkoutItems: checkoutItems,
@@ -476,6 +475,7 @@ export default function CheckoutProduct() {
               <PopupModal
                 isPopupShowing={isPopupShowing}
                 togglePopup={togglePopup}
+                shipUnit={shipUnit}
                 isInformation={isInformation}
                 isInfoEmpty={isInfoEmpty}
               ></PopupModal>
