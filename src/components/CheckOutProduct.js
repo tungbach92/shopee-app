@@ -9,7 +9,7 @@ import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
 import cimbImg from "../img/ic_cimb_bank@4x.png";
 import mbImg from "../img/ic_MBBank@4x.png";
-
+import visaImg from "../img/visa.png";
 export default function CheckoutProduct() {
   console.log("check out render");
 
@@ -24,14 +24,7 @@ export default function CheckoutProduct() {
   });
 
   const [message, setMessage] = useState("");
-  const [cardInfo, setCardInfo] = useState({
-    name: "",
-    number: "",
-    expire: "",
-    cvv: "",
-    address: "",
-    postalCode: "",
-  });
+  const [cardInfo, setCardInfo] = useState({});
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isInformation, setIsInformation] = useState(false);
@@ -618,21 +611,38 @@ export default function CheckoutProduct() {
               </span>
               {isCardPayment && (
                 <div className="checkout-product__notify-item">
+                  {Object.keys(cardInfo).length > 0 && (
+                    <>
+                      <img
+                        src={visaImg} //if cardInfo.number => img
+                        alt="visa"
+                        className="checkout-product__card-img"
+                      ></img>
+                      <span className="checkout-product__card-type">
+                        VIETNAM TECHNOLOGICAL AND COMMERCIAL JSB
+                      </span>
+                      <span className="checkout-product__card-numb">
+                        {cardInfo.number}
+                      </span>
+                    </>
+                  )}
                   <button
                     onClick={toggleCardInfo.bind(this, !isCardInfoShowing)}
                     className="btn checkout-product__add-item"
                   >
-                    <svg
-                      enableBackground="new 0 0 10 10"
-                      viewBox="0 0 10 10"
-                      className="checkout-product__add-icon"
-                    >
-                      <path
-                        stroke="none"
-                        d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"
-                      ></path>
-                    </svg>
-                    Thêm thẻ
+                    {Object.keys(cardInfo).length <= 0 && (
+                      <svg
+                        enableBackground="new 0 0 10 10"
+                        viewBox="0 0 10 10"
+                        className="checkout-product__add-icon"
+                      >
+                        <path
+                          stroke="none"
+                          d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"
+                        ></path>
+                      </svg>
+                    )}
+                    {Object.keys(cardInfo).length > 0 ? "Sửa thẻ" : "Thêm thẻ"}
                   </button>
                   {isCardInfoShowing && (
                     <CardInfoModal

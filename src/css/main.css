@@ -1876,22 +1876,24 @@ header {
   height: 4rem;
   outline: none;
 }
-.cart-product__card-visa {
-  padding: 2rem;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-}
-.cart-product__card-master {
-  padding: 2rem;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-}
-.cart-product__card-jcb {
-  padding: 2rem;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-}
+.cart-product__card-visa,
+.cart-product__card-master,
+.cart-product__card-jcb,
 .cart-product__card-express {
-  padding: 2rem;
+  filter: grayscale(100%);
+  width: 6.2rem;
+  height: 4rem;
+  padding: 0.6rem;
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
+
+.cart-product__card-visa--enable,
+.cart-product__card-master--enable,
+.cart-product__card-jcb--enable,
+.cart-product__card-express--enable{
+  filter:none;
+}
+
 .cart-product__expire-wrapper {
   margin-top: 2rem;
   display: flex;
@@ -2352,11 +2354,28 @@ header {
 .checkout-product__add-item {
   padding: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.09);
-  display: flex;
+  display: inline-flex;
+  margin-left: 1rem;
+  color: #05a;
 }
 
 .checkout-product__add-item:hover {
   background-color: rgba(0, 0, 0, 0.09);
+}
+
+.checkout-product__card-img {
+  padding: 0.6rem;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+.checkout-product__card-type {
+  margin-left: 1rem;
+  font-size: 1.4rem;
+}
+.checkout-product__card-numb {
+  margin-left: 1rem;
+  font-size: 1.6rem;
+  font-family: OCR A;
+  font-weight: 600;
 }
 
 .checkout-product__add-icon {
@@ -2468,7 +2487,7 @@ header {
   cursor: pointer;
 }
 
-.checkout-product__voucher-del{
+.checkout-product__voucher-del {
   margin-left: 2rem;
   font-size: 1.4rem;
   color: var(--primary-color);

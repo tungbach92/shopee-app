@@ -1,18 +1,23 @@
 import React, { useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
+import visaImg from "../img/visa.png";
+import masterImg from "../img/master.png";
+import jcbImg from "../img/jcb.png";
+import expressImg from "../img/express.png";
 export default function CardInfoModal(props) {
   const inputEl = useRef([]);
   const { isCardInfoShowing, toggleCardInfo, cardInfo, setCardInfo } = props;
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
   };
-  const handleApply = () => {
+  const handleSubmit = () => {
     const name = inputEl.current[0].value;
     const number = inputEl.current[1].value;
     const expire = inputEl.current[2].value;
     const cvv = inputEl.current[3].value;
     const address = inputEl.current[4].value;
     const postalCode = inputEl.current[5].value;
+
     const newCardInfo = {
       name,
       number,
@@ -29,12 +34,18 @@ export default function CardInfoModal(props) {
     // effect
     const setInputCardInfo = () => {
       if (isCardInfoShowing === true) {
-        inputEl.current[0].value = cardInfo.name;
-        inputEl.current[1].value = cardInfo.number;
-        inputEl.current[2].value = cardInfo.expire;
-        inputEl.current[3].value = cardInfo.cvv;
-        inputEl.current[4].value = cardInfo.address;
-        inputEl.current[5].value = cardInfo.postalCode;
+        inputEl.current[0].value =
+          cardInfo.name === undefined ? "" : cardInfo.name;
+        inputEl.current[1].value =
+          cardInfo.number === undefined ? "" : cardInfo.number;
+        inputEl.current[2].value =
+          cardInfo.expire === undefined ? "" : cardInfo.expire;
+        inputEl.current[3].value =
+          cardInfo.cvv === undefined ? "" : cardInfo.cvv;
+        inputEl.current[4].value =
+          cardInfo.address === undefined ? "" : cardInfo.address;
+        inputEl.current[5].value =
+          cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
       }
     };
     setInputCardInfo();
@@ -74,70 +85,90 @@ export default function CardInfoModal(props) {
             thông tin thẻ của bạn.
           </div>
         </div>
-        <div className="cart-product__card-info">
-          <label className="cart-product__card-label">Chi tiết thẻ</label>
-          <input
-            ref={(el) => (inputEl.current[0] = el)}
-            type="text"
-            className="cart-product__card-name"
-            placeholder="Họ tên trên thẻ"
-          />
-          <div className="cart-product__number-wrapper">
+        <form onSubmit={handleSubmit}>
+          <div className="cart-product__card-info">
+            <label className="cart-product__card-label">Chi tiết thẻ</label>
             <input
-              ref={(el) => (inputEl.current[1] = el)}
+              ref={(el) => (inputEl.current[0] = el)}
               type="text"
-              className="cart-product__card-number"
-              placeholder="Số thẻ"
+              className="cart-product__card-name"
+              placeholder="Họ tên trên thẻ"
+              required
             />
-            <button className="btn cart-product__card-visa"></button>
-            <button className="btn cart-product__card-master"></button>
-            <button className="btn cart-product__card-jcb"></button>
-            <button className="btn cart-product__card-express"></button>
+            <div className="cart-product__number-wrapper">
+              <input
+                ref={(el) => (inputEl.current[1] = el)}
+                type="text"
+                className="cart-product__card-number"
+                placeholder="Số thẻ"
+                required
+              />
+              <img
+                src={visaImg}
+                alt="visa"
+                className="cart-product__card-visa cart-product__card-visa--enable"
+              />
+              {/* if cardInfo.number => img */}
+              <img
+                src={masterImg}
+                alt="master"
+                className="cart-product__card-master"
+              />
+              <img src={jcbImg} alt="jcb" className="cart-product__card-jcb" />
+              <img
+                src={expressImg}
+                alt="express"
+                className="cart-product__card-express"
+              />
+            </div>
+            <div className="cart-product__expire-wrapper">
+              <input
+                ref={(el) => (inputEl.current[2] = el)}
+                type="text"
+                className="cart-product__card-expire"
+                placeholder="Ngày hết hạn (MM / YY)"
+                required
+              />
+              <input
+                ref={(el) => (inputEl.current[3] = el)}
+                type="text"
+                className="cart-product__card-cvv"
+                placeholder="Mã CVV"
+                required
+              />
+            </div>
           </div>
-          <div className="cart-product__expire-wrapper">
+          <div className="cart-product__card-address">
+            <label className="cart-product__address-label">
+              Billing Address
+            </label>
             <input
-              ref={(el) => (inputEl.current[2] = el)}
+              ref={(el) => (inputEl.current[4] = el)}
               type="text"
-              className="cart-product__card-expire"
-              placeholder="Ngày hết hạn (MM / YY)"
+              className="cart-product__address-text"
+              placeholder="Address"
+              required
             />
             <input
-              ref={(el) => (inputEl.current[3] = el)}
+              ref={(el) => (inputEl.current[5] = el)}
               type="text"
-              className="cart-product__card-cvv"
-              placeholder="Mã CVV"
+              className="cart-product__address-postalcode"
+              placeholder="Postal Code"
+              required
             />
           </div>
-        </div>
-        <div className="cart-product__card-address">
-          <label className="cart-product__address-label">Billing Address</label>
-          <input
-            ref={(el) => (inputEl.current[4] = el)}
-            type="text"
-            className="cart-product__address-text"
-            placeholder="Address"
-          />
-          <input
-            ref={(el) => (inputEl.current[5] = el)}
-            type="text"
-            className="cart-product__address-postalcode"
-            placeholder="Postal Code"
-          />
-        </div>
-        <div className="cart-product__modal-footer">
-          <button
-            onClick={handleClick}
-            className="btn cart-product__modal-close"
-          >
-            Trở lại
-          </button>
-          <button
-            onClick={handleApply}
-            className="btn cart-product__modal-apply"
-          >
-            OK
-          </button>
-        </div>
+          <div className="cart-product__modal-footer">
+            <button
+              onClick={handleClick}
+              className="btn cart-product__modal-close"
+            >
+              Trở lại
+            </button>
+            <button type="submit" className="btn cart-product__modal-apply">
+              OK
+            </button>
+          </div>
+        </form>
       </div>
     </div>,
     document.body
