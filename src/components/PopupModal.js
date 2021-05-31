@@ -8,6 +8,7 @@ export default function PopupModal(props) {
     togglePopup,
     isInformation,
     isInfoEmpty,
+    paymentMethod,
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
@@ -22,6 +23,8 @@ export default function PopupModal(props) {
               ? "Vui lòng điền thông tin người mua và ấn Lưu."
               : !Object.keys(shipUnit).length
               ? "Vui lòng chọn đơn vị vận chuyển."
+              : paymentMethod.length <= 0
+              ? "Vui lòng chọn phương thức thanh toán."
               : isCardInfoMustFilled
               ? "Vui lòng điền đầy đủ thông tin Thẻ Tín dụng/Ghi nợ"
               : "Đặt hàng thành công"}

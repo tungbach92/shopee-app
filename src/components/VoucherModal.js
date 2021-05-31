@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactDOM from "react-dom";
 export default function VoucherModal(props) {
-  const { isVoucherShowing, toggleVoucher } = props;
+  const inputEl = useRef();
+  const { isVoucherShowing, toggleVoucher, voucher, setVoucher, voucherList } =
+    props;
   const handleClick = (e) => {
     toggleVoucher(!isVoucherShowing);
+  };
+
+  const handleVoucherApply = (e) => {
+    const text = inputEl.current.value;
+    const voucher = voucherList.find((item) => item.code === text);
+    if (voucher !== undefined) {
+      setVoucher(voucher);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -36,13 +46,19 @@ export default function VoucherModal(props) {
         <div className="cart-product__modal-voucher">
           <span className="cart-product__voucher-text">Mã Voucher</span>
           <input
+            ref={inputEl}
             className="cart-product__voucher-input"
             placeholder="Mã shoppe Voucher"
           />
-          <button className="btn cart-product__voucher-btn">Áp dụng</button>
+          <button
+            onClick={handleVoucherApply}
+            className="btn cart-product__voucher-btn"
+          >
+            Áp dụng
+          </button>
         </div>
 
-        <ul className="cart-product__voucher-list">
+        {/* <ul className="cart-product__voucher-list">
           <li className="cart-product__list-label">
             <span className="cart-product__label-left">
               Mã Miễn Phí Vận Chuyển
@@ -52,12 +68,14 @@ export default function VoucherModal(props) {
           <li className="cart-product__voucher-item">item</li>
           <li className="cart-product__voucher-item">item</li>
           <li className="cart-product__voucher-item">item</li>
-        </ul>
+        </ul> */}
         <div className="cart-product__modal-footer">
-          <button onClick={handleClick} className="btn cart-product__modal-close">
-            Trở lại
+          <button
+            onClick={handleClick}
+            className="btn cart-product__modal-apply"
+          >
+            OK
           </button>
-          <button className="btn cart-product__modal-apply">OK</button>
         </div>
       </div>
     </div>,
