@@ -1,35 +1,118 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import visaImg from "../img/visa.png";
 import masterImg from "../img/master.png";
 import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
+import validCardCheck from "card-validator";
+import classNames from "classnames";
 export default function CardInfoModal(props) {
   const inputEl = useRef([]);
   const { isCardInfoShowing, toggleCardInfo, cardInfo, setCardInfo } = props;
+  const [isNameValid, setIsNameValid] = useState(true);
+  const [isNumberValid, setIsNumberValid] = useState(true);
+  const [isExpireValid, setIsExpireValid] = useState(true);
+  const [isCvvValid, setIsCvvValid] = useState(true);
+  const [isPostalCodeValid, setIsPostalCodeValid] = useState(true);
+  const [isVisa, setIsVisa] = useState(false);
+  const [isMaster, setIsMaster] = useState(false);
+  const [isJcb, setIsJcb] = useState(false);
+  const [isExpress, setIsExpress] = useState(false);
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
   };
+
   const handleSubmit = () => {
     const name = inputEl.current[0].value;
     const number = inputEl.current[1].value;
+    const type = validCardCheck.number(number).card.type;
     const expire = inputEl.current[2].value;
     const cvv = inputEl.current[3].value;
     const address = inputEl.current[4].value;
     const postalCode = inputEl.current[5].value;
-
-    const newCardInfo = {
-      name,
-      number,
-      expire,
-      cvv,
-      address,
-      postalCode,
-    };
-    setCardInfo(newCardInfo);
-    toggleCardInfo(!isCardInfoShowing);
+    if (
+      name === "" &&
+      type === "" &&
+      number === "" &&
+      expire === "" &&
+      cvv === "" &&
+      address === "" &&
+      postalCode === ""
+    ) {
+      return;
+    } else {
+      const newCardInfo = {
+        name,
+        type,
+        number,
+        expire,
+        cvv,
+        address,
+        postalCode,
+      };
+      setCardInfo(newCardInfo);
+      toggleCardInfo(!isCardInfoShowing);
+    }
   };
-
+  const handleBlur = (e) => {
+    switch (e.target.name) {
+      case "name":
+        let nameValidation = validCardCheck.cardholderName(e.target.value);
+        if (!nameValidation.isValid) {
+          setIsNameValid(false);
+        } else {
+          setIsNameValid(true);
+        }
+        break;
+      case "number":
+        let numberValidation = validCardCheck.number(e.target.value);
+        if (!numberValidation.isValid) {
+          setIsNumberValid(false);
+        } else {
+          setIsNumberValid(true);
+          const type = numberValidation.card.type;
+          if (type === "visa") {
+            setIsVisa(true);
+          }
+          if (type === "american-express") {
+            setIsExpress(true);
+          }
+          if (type === "mastercard") {
+            setIsMaster(true);
+          }
+          if (type === "jcb") {
+            setIsJcb(true);
+          }
+        }
+        break;
+      case "expire":
+        let expireValidation = validCardCheck.expirationDate(e.target.value);
+        if (!expireValidation.isValid) {
+          setIsExpireValid(false);
+        } else {
+          setIsExpireValid(true);
+        }
+        break;
+      case "cvv":
+        let cvvValidation = validCardCheck.cvv(e.target.value);
+        if (!cvvValidation.isValid) {
+          setIsCvvValid(false);
+        } else {
+          setIsCvvValid(true);
+        }
+        break;
+      case "postalcode":
+        let postalcodeValidation = validCardCheck.postalCode(e.target.value);
+        if (!postalcodeValidation.isValid) {
+          setIsPostalCodeValid(false);
+        } else {
+          setIsPostalCodeValid(true);
+        }
+        break;
+      default:
+        break;
+    }
+  };
   useEffect(() => {
     // effect
     const setInputCardInfo = () => {
@@ -89,53 +172,94 @@ export default function CardInfoModal(props) {
           <div className="cart-product__card-info">
             <label className="cart-product__card-label">Chi tiết thẻ</label>
             <input
+              onBlur={handleBlur}
               ref={(el) => (inputEl.current[0] = el)}
               type="text"
+              name="name"
               className="cart-product__card-name"
               placeholder="Họ tên trên thẻ"
               required
             />
+
+            {!isNameValid && (
+              <label className="cart-product__name-error">
+                Họ tên không đúng định dạng
+              </label>
+            )}
             <div className="cart-product__number-wrapper">
               <input
+                onBlur={handleBlur}
                 ref={(el) => (inputEl.current[1] = el)}
                 type="text"
+                name="number"
                 className="cart-product__card-number"
                 placeholder="Số thẻ"
                 required
               />
+              {!isNumberValid && (
+                <label className="cart-product__number-error">
+                  Số thẻ không đúng
+                </label>
+              )}
               <img
                 src={visaImg}
                 alt="visa"
-                className="cart-product__card-visa cart-product__card-visa--enable"
+                className={classNames("cart-product__card-visa", {
+                  "cart-product__card-visa--enable": isVisa,
+                })}
               />
               {/* if cardInfo.number => img */}
               <img
                 src={masterImg}
                 alt="master"
-                className="cart-product__card-master"
+                className={classNames("cart-product__card-master", {
+                  "cart-product__card-master--enable": isMaster,
+                })}
               />
-              <img src={jcbImg} alt="jcb" className="cart-product__card-jcb" />
+              <img
+                src={jcbImg}
+                alt="jcb"
+                className={classNames("cart-product__card-jcb", {
+                  "cart-product__card-jcb--enable": isJcb,
+                })}
+              />
               <img
                 src={expressImg}
                 alt="express"
-                className="cart-product__card-express"
+                className={classNames("cart-product__card-express", {
+                  "cart-product__card-express--enable": isExpress,
+                })}
               />
             </div>
             <div className="cart-product__expire-wrapper">
               <input
+                onBlur={handleBlur}
                 ref={(el) => (inputEl.current[2] = el)}
                 type="text"
+                name="expire"
                 className="cart-product__card-expire"
                 placeholder="Ngày hết hạn (MM / YY)"
                 required
               />
+              {!isExpireValid && (
+                <label className="cart-product__expire-error">
+                  HSD không đúng
+                </label>
+              )}
               <input
+                onBlur={handleBlur}
                 ref={(el) => (inputEl.current[3] = el)}
                 type="text"
+                name="cvv"
                 className="cart-product__card-cvv"
                 placeholder="Mã CVV"
                 required
               />
+              {!isCvvValid && (
+                <label className="cart-product__cvv-error">
+                  Mã CVV không đúng
+                </label>
+              )}
             </div>
           </div>
           <div className="cart-product__card-address">
@@ -145,17 +269,24 @@ export default function CardInfoModal(props) {
             <input
               ref={(el) => (inputEl.current[4] = el)}
               type="text"
+              name="address"
               className="cart-product__address-text"
               placeholder="Address"
-              required
             />
             <input
+              onBlur={handleBlur}
               ref={(el) => (inputEl.current[5] = el)}
               type="text"
+              name="postalcode"
               className="cart-product__address-postalcode"
               placeholder="Postal Code"
               required
             />
+            {!isPostalCodeValid && (
+              <label className="cart-product__postalcode-error">
+                Mã Postal không đúng
+              </label>
+            )}
           </div>
           <div className="cart-product__modal-footer">
             <button

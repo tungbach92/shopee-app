@@ -1890,8 +1890,8 @@ header {
 .cart-product__card-visa--enable,
 .cart-product__card-master--enable,
 .cart-product__card-jcb--enable,
-.cart-product__card-express--enable{
-  filter:none;
+.cart-product__card-express--enable {
+  filter: none;
 }
 
 .cart-product__expire-wrapper {
@@ -1927,6 +1927,16 @@ header {
   margin-top: 1rem;
   height: 4rem;
   outline: none;
+}
+
+.cart-product__name-error,
+.cart-product__number-error,
+.cart-product__expire-error,
+.cart-product__cvv-error,
+.cart-product__postalcode-error {
+  margin-top: 0.6rem;
+  color: var(--primary-color);
+  font-size: 1.2rem;
 }
 
 .cart-product__popup-label {
