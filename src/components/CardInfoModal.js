@@ -22,25 +22,62 @@ export default function CardInfoModal(props) {
     toggleCardInfo(!isCardInfoShowing);
   };
 
-  const handleSubmit = () => {
-    const name = inputEl.current[0].value;
-    const number = inputEl.current[1].value;
-    const type = validCardCheck.number(number).card.type;
-    const expire = inputEl.current[2].value;
-    const cvv = inputEl.current[3].value;
-    const address = inputEl.current[4].value;
-    const postalCode = inputEl.current[5].value;
+  const handleChange = (e) => {
+    const name = e.target.name;
+    if (name === "number") {
+      let value = e.target.value;
+      let newValue = "";
+      value = value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
+      for (let i = 0; i < value.length; i++) {
+        if (i % 4 == 0 && i > 0) newValue = newValue.concat(" ");
+        newValue = newValue.concat(value[i]);
+      }
+      e.target.value = newValue;
+    }
+    if (name === "expire") {
+      let expdate = e.target.value;
+      let expDateFormatter =
+        expdate
+          .replace(/[^0-9.]/g, "")
+          .replace(/(\..*)\./g, "$1")
+          .substring(0, 2) +
+        (expdate.length > 2 ? "/" : "") +
+        expdate
+          .replace(/[^0-9.]/g, "")
+          .replace(/(\..*)\./g, "$1")
+          .substring(2, 4);
+      e.target.value = expDateFormatter;
+    }
+    if (name === "cvv" || name === "postalcode") {
+      e.target.value = e.target.value
+        .replace(/[^0-9.]/g, "")
+        .replace(/(\..*)\./g, "$1");
+    }
+  };
+
+  const handleSubmit = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+    }
+    inputEl.current.forEach((item) => {
+      item.focus();
+      item.blur();
+    });
     if (
-      name === "" &&
-      type === "" &&
-      number === "" &&
-      expire === "" &&
-      cvv === "" &&
-      address === "" &&
-      postalCode === ""
+      isNameValid &&
+      isNumberValid &&
+      isExpireValid &&
+      isCvvValid &&
+      isPostalCodeValid
     ) {
-      return;
-    } else {
+      const name = inputEl.current[0].value;
+      const number = inputEl.current[1].value;
+      const type = validCardCheck.number(number).card.type;
+      const expire = inputEl.current[2].value;
+      const cvv = inputEl.current[3].value;
+      const address = inputEl.current[4].value;
+      const postalCode = inputEl.current[5].value;
+
       const newCardInfo = {
         name,
         type,
@@ -52,6 +89,13 @@ export default function CardInfoModal(props) {
       };
       setCardInfo(newCardInfo);
       toggleCardInfo(!isCardInfoShowing);
+    } else {
+      e.preventDefault();
+    }
+  };
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
     }
   };
   const handleBlur = (e) => {
@@ -72,16 +116,24 @@ export default function CardInfoModal(props) {
           setIsNumberValid(true);
           const type = numberValidation.card.type;
           if (type === "visa") {
-            setIsVisa(true);
+            setIsVisa((isVisa) => (isVisa = true));
+          } else {
+            setIsVisa((isVisa) => (isVisa = false));
           }
           if (type === "american-express") {
-            setIsExpress(true);
+            setIsExpress((isExpress) => (isExpress = true));
+          } else {
+            setIsExpress((isExpress) => (isExpress = false));
           }
           if (type === "mastercard") {
-            setIsMaster(true);
+            setIsMaster((isMaster) => (isMaster = true));
+          } else {
+            setIsMaster((isMaster) => (isMaster = false));
           }
           if (type === "jcb") {
-            setIsJcb(true);
+            setIsJcb((isJcb) => (isJcb = true));
+          } else {
+            setIsJcb((isJcb) => (isJcb = false));
           }
         }
         break;
@@ -121,6 +173,8 @@ export default function CardInfoModal(props) {
           cardInfo.name === undefined ? "" : cardInfo.name;
         inputEl.current[1].value =
           cardInfo.number === undefined ? "" : cardInfo.number;
+        inputEl.current[1].focus();
+        inputEl.current[1].blur();
         inputEl.current[2].value =
           cardInfo.expire === undefined ? "" : cardInfo.expire;
         inputEl.current[3].value =
@@ -173,6 +227,7 @@ export default function CardInfoModal(props) {
             <label className="cart-product__card-label">Chi tiết thẻ</label>
             <input
               onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
               ref={(el) => (inputEl.current[0] = el)}
               type="text"
               name="name"
@@ -188,12 +243,15 @@ export default function CardInfoModal(props) {
             )}
             <div className="cart-product__number-wrapper">
               <input
+                type="tel"
+                onChange={handleChange}
                 onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
                 ref={(el) => (inputEl.current[1] = el)}
-                type="text"
                 name="number"
                 className="cart-product__card-number"
                 placeholder="Số thẻ"
+                maxLength="19"
                 required
               />
               {!isNumberValid && (
@@ -234,6 +292,8 @@ export default function CardInfoModal(props) {
             <div className="cart-product__expire-wrapper">
               <input
                 onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
                 ref={(el) => (inputEl.current[2] = el)}
                 type="text"
                 name="expire"
@@ -248,11 +308,14 @@ export default function CardInfoModal(props) {
               )}
               <input
                 onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
                 ref={(el) => (inputEl.current[3] = el)}
                 type="text"
                 name="cvv"
                 className="cart-product__card-cvv"
                 placeholder="Mã CVV"
+                maxLength="3"
                 required
               />
               {!isCvvValid && (
@@ -267,6 +330,7 @@ export default function CardInfoModal(props) {
               Billing Address
             </label>
             <input
+              onKeyDown={handleKeyDown}
               ref={(el) => (inputEl.current[4] = el)}
               type="text"
               name="address"
@@ -275,11 +339,14 @@ export default function CardInfoModal(props) {
             />
             <input
               onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              onChange={handleChange}
               ref={(el) => (inputEl.current[5] = el)}
               type="text"
               name="postalcode"
               className="cart-product__address-postalcode"
               placeholder="Postal Code"
+              maxLength="5"
               required
             />
             {!isPostalCodeValid && (

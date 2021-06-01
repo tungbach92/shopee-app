@@ -1865,6 +1865,7 @@ header {
   margin-top: 1rem;
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__number-wrapper {
   margin-top: 2rem;
@@ -1875,6 +1876,7 @@ header {
 .cart-product__card-number {
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__card-visa,
 .cart-product__card-master,
@@ -1902,12 +1904,14 @@ header {
   flex: 1;
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__card-cvv {
   flex: 1;
   margin-left: 0.6rem;
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__card-address {
   margin-top: 4rem;
@@ -1922,11 +1926,13 @@ header {
   margin-top: 1rem;
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__address-postalcode {
   margin-top: 1rem;
   height: 4rem;
   outline: none;
+  border: 1px solid rgb(0 0 0 / 20%);
 }
 
 .cart-product__name-error,

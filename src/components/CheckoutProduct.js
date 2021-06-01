@@ -177,7 +177,7 @@ export default function CheckoutProduct() {
 
   const handleChange = (e) => {
     e.target.value = e.target.value
-      .replace(/[^1-9.]/g, "")
+      .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
   };
 
@@ -633,7 +633,7 @@ export default function CheckoutProduct() {
                     <>
                       <img
                         src={getCardImgByType(cardInfo.type)} //if cardInfo.number => img
-                        alt="visa"
+                        alt="card"
                         className="checkout-product__card-img"
                       ></img>
                       <span className="checkout-product__card-type">
