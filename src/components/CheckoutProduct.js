@@ -19,7 +19,8 @@ export default function CheckoutProduct() {
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
-  const { shipUnitList, checkoutItems } = useContext(ProductContext);
+  const { shipUnitList, checkoutItems, voucherList, voucher, setVoucher } =
+    useContext(ProductContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -35,12 +36,6 @@ export default function CheckoutProduct() {
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
-  const [voucherList, setVoucherList] = useState([
-    { code: "FREEFORALL", discount: "100%" },
-    { code: "LUNARSALE", discount: "50%" },
-    { code: "CHRISTMASSALE", discount: "100000" },
-  ]);
-  const [voucher, setVoucher] = useState({});
   const {
     isPopupShowing,
     togglePopup,
@@ -170,7 +165,7 @@ export default function CheckoutProduct() {
   };
 
   const handleVoucherModal = (e) => {
-    toggleVoucher(!isShipUnits);
+    toggleVoucher(!isVoucherShowing);
   };
 
   const handleOrder = () => {
@@ -547,7 +542,7 @@ export default function CheckoutProduct() {
               onClick={handleVoucherModal}
               className="checkout-product__voucher-action"
             >
-              Chọn Voucher
+              {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
             </span>
             {isVoucherShowing && (
               <VoucherModal

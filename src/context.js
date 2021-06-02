@@ -30,6 +30,12 @@ export default class ProductProvider extends Component {
     name: "",
     phone: "",
     address: "",
+    voucher: {},
+    voucherList: [
+      { code: "FREEFORALL", discount: "100%" },
+      { code: "LUNARSALE", discount: "50%" },
+      { code: "CHRISTMASSALE", discount: "100000" },
+    ],
     shipUnitList: [
       {
         id: 0,
@@ -75,6 +81,9 @@ export default class ProductProvider extends Component {
       cartNumb,
       checked,
     });
+  };
+  setVoucher = (voucher) => {
+    this.setState({ voucher });
   };
 
   setChecked = (cheked) => {
@@ -512,8 +521,7 @@ export default class ProductProvider extends Component {
           setCheckoutItems: this.setCheckoutItems,
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
-          setOrderItems: this.setOrderItems,
-          setPaymentMethod: this.setPaymentMethod,
+          setVoucher: this.setVoucher,
         }}
       >
         {this.props.children}

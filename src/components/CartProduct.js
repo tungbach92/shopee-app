@@ -13,6 +13,9 @@ export default function CartProduct() {
   const { isVoucherShowing, toggleVoucher, isPopupShowing, togglePopup } =
     useModal();
   const {
+    voucherList,
+    voucher,
+    setVoucher,
     cartItems,
     handleClick,
     changeVariationDisPlayCartItems,
@@ -105,6 +108,14 @@ export default function CartProduct() {
     if (name === "similar") {
       changeSimilarDisPlayCartItems(index);
     }
+  };
+
+  const handleVoucherModal = (e) => {
+    toggleVoucher(!isVoucherShowing);
+  };
+
+  const handleVoucherDelete = () => {
+    setVoucher({});
   };
 
   return (
@@ -380,7 +391,7 @@ export default function CartProduct() {
           </div>
         ))}
 
-        <div className="cart-product__voucher">
+        {/* <div className="cart-product__voucher">
           <svg
             fill="none"
             viewBox="0 -2 23 22"
@@ -436,7 +447,7 @@ export default function CartProduct() {
           <span className="grid__col cart-product__voucher-label">
             Thêm mã giảm giá của Shop
           </span>
-        </div>
+        </div> */}
         <div className="cart-product__shipping">
           <svg
             enableBackground="new 0 0 15 15"
@@ -560,16 +571,32 @@ export default function CartProduct() {
               </svg>
               <span className="cart-product__shoppe-label">Shopee Voucher</span>
             </div>
+            {Object.keys(voucher).length > 0 && (
+              <span className="cart-product__voucher-discount">
+                -{voucher.discount}
+              </span>
+            )}
+            {Object.keys(voucher).length > 0 && (
+              <span
+                onClick={handleVoucherDelete}
+                className="cart-product__voucher-del"
+              >
+                Xóa
+              </span>
+            )}
             <div
-              onClick={toggleVoucher.bind(this, !isVoucherShowing)}
+              onClick={handleVoucherModal}
               className="cart-product__shopee-action"
             >
-              Chọn Hoặc Nhập Mã
+               {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
             </div>
             {isVoucherShowing && (
               <VoucherModal
                 isVoucherShowing={isVoucherShowing}
                 toggleVoucher={toggleVoucher}
+                voucherList={voucherList}
+                voucher={voucher}
+                setVoucher={setVoucher}
               ></VoucherModal>
             )}
           </div>
@@ -641,9 +668,9 @@ export default function CartProduct() {
             >
               Xóa
             </span>
-            <span className="cart-product__checkout-favorite">
+            {/* <span className="cart-product__checkout-favorite">
               Lưu vào mục Đã thích
-            </span>
+            </span> */}
             <div className="cart-product__checkout-total-wrapper">
               <div className="cart-product__checkout-total">
                 <span className="cart-product__total-label">
