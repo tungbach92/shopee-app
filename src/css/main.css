@@ -1896,19 +1896,26 @@ header {
   filter: none;
 }
 
-.cart-product__expire-wrapper {
+.cart-product__expirecvv-wrapper {
   margin-top: 2rem;
   display: flex;
 }
-.cart-product__card-expire {
+.cart-product__expire-wrapper {
   flex: 1;
+}
+.cart-product__cvv-wrapper {
+  flex: 1;
+  margin-left: 0.6rem;
+}
+
+.cart-product__card-expire {
+  width: 100%;
   height: 4rem;
   outline: none;
   border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__card-cvv {
-  flex: 1;
-  margin-left: 0.6rem;
+  width: 100%;
   height: 4rem;
   outline: none;
   border: 1px solid rgb(0 0 0 / 20%);
@@ -1940,6 +1947,7 @@ header {
 .cart-product__expire-error,
 .cart-product__cvv-error,
 .cart-product__postalcode-error {
+  display: block;
   margin-top: 0.6rem;
   color: var(--primary-color);
   font-size: 1.2rem;
@@ -2239,6 +2247,11 @@ header {
   margin-left: 2rem;
   outline: none;
 }
+
+.checkout-product__message-input:focus {
+  border: 1px solid var(--primary-color);
+}
+
 .checkout-product__transport-wrapper {
   display: flex;
   padding: 1.8rem 2.6rem;
@@ -2279,6 +2292,9 @@ header {
   color: #05a;
   text-transform: uppercase;
   cursor: pointer;
+}
+.checkout-product__transport-action:hover {
+  color: var(--primary-color);
 }
 .checkout-product__transport-price {
   font-size: 1.4rem;
@@ -2342,6 +2358,7 @@ header {
 
 .checkout-product__method--selected {
   border: 1px solid var(--primary-color);
+  color: var(--primary-color);
 }
 
 .checkout-product__notify-wrapper {
@@ -2376,7 +2393,8 @@ header {
 }
 
 .checkout-product__add-item:hover {
-  background-color: rgba(0, 0, 0, 0.09);
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--primary-color);
 }
 
 .checkout-product__card-img {
@@ -2386,12 +2404,14 @@ header {
 .checkout-product__card-type {
   margin-left: 1rem;
   font-size: 1.4rem;
+  text-transform: capitalize;
 }
 .checkout-product__card-numb {
   margin-left: 1rem;
   font-size: 1.6rem;
   font-family: OCR A;
   font-weight: 600;
+  cursor: pointer;
 }
 
 .checkout-product__add-icon {
@@ -2496,17 +2516,26 @@ header {
   padding: 0.2rem;
 }
 
-.checkout-product__voucher-action {
+.checkout-product__voucher-discount ~ .checkout-product__voucher-action {
   margin-left: 2rem;
+}
+
+.checkout-product__voucher-action {
+  margin-left: auto;
   font-size: 1.4rem;
   color: #05a;
   cursor: pointer;
 }
 
-.checkout-product__voucher-del {
-  margin-left: 2rem;
-  font-size: 1.4rem;
+.checkout-product__voucher-action:hover,
+.checkout-product__voucher-del:hover {
   color: var(--primary-color);
+}
+
+.checkout-product__voucher-del {
+  margin-left: 0.6rem;
+  font-size: 1.4rem;
+  color: #05a;
   cursor: pointer;
 }
 

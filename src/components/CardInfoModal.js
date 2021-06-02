@@ -29,7 +29,7 @@ export default function CardInfoModal(props) {
       let newValue = "";
       value = value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
       for (let i = 0; i < value.length; i++) {
-        if (i % 4 == 0 && i > 0) newValue = newValue.concat(" ");
+        if (i % 4 === 0 && i > 0) newValue = newValue.concat(" ");
         newValue = newValue.concat(value[i]);
       }
       e.target.value = newValue;
@@ -114,27 +114,27 @@ export default function CardInfoModal(props) {
           setIsNumberValid(false);
         } else {
           setIsNumberValid(true);
-          const type = numberValidation.card.type;
-          if (type === "visa") {
-            setIsVisa((isVisa) => (isVisa = true));
-          } else {
-            setIsVisa((isVisa) => (isVisa = false));
-          }
-          if (type === "american-express") {
-            setIsExpress((isExpress) => (isExpress = true));
-          } else {
-            setIsExpress((isExpress) => (isExpress = false));
-          }
-          if (type === "mastercard") {
-            setIsMaster((isMaster) => (isMaster = true));
-          } else {
-            setIsMaster((isMaster) => (isMaster = false));
-          }
-          if (type === "jcb") {
-            setIsJcb((isJcb) => (isJcb = true));
-          } else {
-            setIsJcb((isJcb) => (isJcb = false));
-          }
+        }
+        const type = numberValidation.card?.type;
+        if (type === "visa") {
+          setIsVisa((isVisa) => (isVisa = true));
+        } else {
+          setIsVisa((isVisa) => (isVisa = false));
+        }
+        if (type === "american-express") {
+          setIsExpress((isExpress) => (isExpress = true));
+        } else {
+          setIsExpress((isExpress) => (isExpress = false));
+        }
+        if (type === "mastercard") {
+          setIsMaster((isMaster) => (isMaster = true));
+        } else {
+          setIsMaster((isMaster) => (isMaster = false));
+        }
+        if (type === "jcb") {
+          setIsJcb((isJcb) => (isJcb = true));
+        } else {
+          setIsJcb((isJcb) => (isJcb = false));
         }
         break;
       case "expire":
@@ -173,8 +173,6 @@ export default function CardInfoModal(props) {
           cardInfo.name === undefined ? "" : cardInfo.name;
         inputEl.current[1].value =
           cardInfo.number === undefined ? "" : cardInfo.number;
-        inputEl.current[1].focus();
-        inputEl.current[1].blur();
         inputEl.current[2].value =
           cardInfo.expire === undefined ? "" : cardInfo.expire;
         inputEl.current[3].value =
@@ -235,10 +233,9 @@ export default function CardInfoModal(props) {
               placeholder="Họ tên trên thẻ"
               required
             />
-
             {!isNameValid && (
               <label className="cart-product__name-error">
-                Họ tên không đúng định dạng
+                Tên thẻ không đúng
               </label>
             )}
             <div className="cart-product__number-wrapper">
@@ -254,11 +251,6 @@ export default function CardInfoModal(props) {
                 maxLength="19"
                 required
               />
-              {!isNumberValid && (
-                <label className="cart-product__number-error">
-                  Số thẻ không đúng
-                </label>
-              )}
               <img
                 src={visaImg}
                 alt="visa"
@@ -289,40 +281,49 @@ export default function CardInfoModal(props) {
                 })}
               />
             </div>
-            <div className="cart-product__expire-wrapper">
-              <input
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                onChange={handleChange}
-                ref={(el) => (inputEl.current[2] = el)}
-                type="text"
-                name="expire"
-                className="cart-product__card-expire"
-                placeholder="Ngày hết hạn (MM / YY)"
-                required
-              />
-              {!isExpireValid && (
-                <label className="cart-product__expire-error">
-                  HSD không đúng
-                </label>
-              )}
-              <input
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                onChange={handleChange}
-                ref={(el) => (inputEl.current[3] = el)}
-                type="text"
-                name="cvv"
-                className="cart-product__card-cvv"
-                placeholder="Mã CVV"
-                maxLength="3"
-                required
-              />
-              {!isCvvValid && (
-                <label className="cart-product__cvv-error">
-                  Mã CVV không đúng
-                </label>
-              )}
+            {!isNumberValid && (
+              <label className="cart-product__number-error">
+                Số thẻ không đúng
+              </label>
+            )}
+            <div className="cart-product__expirecvv-wrapper">
+              <div className="cart-product__expire-wrapper">
+                <input
+                  onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  ref={(el) => (inputEl.current[2] = el)}
+                  type="text"
+                  name="expire"
+                  className="cart-product__card-expire"
+                  placeholder="Ngày hết hạn (MM / YY)"
+                  required
+                />
+                {!isExpireValid && (
+                  <label className="cart-product__expire-error">
+                    HSD không đúng
+                  </label>
+                )}
+              </div>
+              <div className="cart-product__cvv-wrapper">
+                <input
+                  onBlur={handleBlur}
+                  onKeyDown={handleKeyDown}
+                  onChange={handleChange}
+                  ref={(el) => (inputEl.current[3] = el)}
+                  type="text"
+                  name="cvv"
+                  className="cart-product__card-cvv"
+                  placeholder="Mã CVV"
+                  maxLength="3"
+                  required
+                />
+                {!isCvvValid && (
+                  <label className="cart-product__cvv-error">
+                    Mã CVV không đúng
+                  </label>
+                )}
+              </div>
             </div>
           </div>
           <div className="cart-product__card-address">

@@ -8,6 +8,15 @@ export default function VoucherModal(props) {
     toggleVoucher(!isVoucherShowing);
   };
 
+
+  const handleKeyUp = (e) => {
+    if(e.keyCode === 13)
+    {
+      handleVoucherApply();
+      inputEl.current.blur();
+    }
+  }
+
   const handleVoucherApply = (e) => {
     const text = inputEl.current.value;
     const voucher = voucherList.find((item) => item.code === text);
@@ -47,6 +56,7 @@ export default function VoucherModal(props) {
           <span className="cart-product__voucher-text">Mã Voucher</span>
           <input
             ref={inputEl}
+            onKeyUp={handleKeyUp}
             className="cart-product__voucher-input"
             placeholder="Mã shoppe Voucher"
           />

@@ -67,15 +67,7 @@ export default function CheckoutProduct() {
 
   //
   let isCardInfoMustFilled = false;
-  if (
-    (cardInfo.name === "" ||
-      cardInfo.number === "" ||
-      cardInfo.expire === "" ||
-      cardInfo.cvv === "" ||
-      cardInfo.postalCode === "" ||
-      cardInfo.address === "") &&
-    isCardPayment === true
-  ) {
+  if (Object.keys(cardInfo).length <= 0 && isCardPayment === true) {
     isCardInfoMustFilled = true;
   }
 
@@ -157,14 +149,6 @@ export default function CheckoutProduct() {
     } else if (paymentMethod === "Thanh toán khi nhận hàng") {
       setIsImmediatePayment(true);
       setIsCardPayment(false);
-      setCardInfo({
-        name: "",
-        number: "",
-        expire: "",
-        cvv: "",
-        address: "",
-        postalCode: "",
-      });
     }
     if (paymentMethod.length > 0) {
       setPaymentMethod(paymentMethod);
@@ -556,7 +540,7 @@ export default function CheckoutProduct() {
                 onClick={handleVoucherDelete}
                 className="checkout-product__voucher-del"
               >
-                Xóa voucher
+                Xóa
               </span>
             )}
             <span
@@ -616,7 +600,7 @@ export default function CheckoutProduct() {
                   onClick={handlePaymentMethodChange}
                   className="checkout-product__method-action"
                 >
-                  THAY ĐỔI
+                  Chọn
                 </span>
               </>
             )}
@@ -639,8 +623,12 @@ export default function CheckoutProduct() {
                       <span className="checkout-product__card-type">
                         {cardInfo.type}
                       </span>
-                      <span className="checkout-product__card-numb">
-                        {cardInfo.number}
+                      <span
+                        onClick={toggleCardInfo.bind(this, !isCardInfoShowing)}
+                        className="checkout-product__card-numb"
+                      >
+                        ***
+                        {cardInfo.number.substring(cardInfo.number.length - 5)}
                       </span>
                     </>
                   )}
