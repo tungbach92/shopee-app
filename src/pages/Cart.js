@@ -1,39 +1,51 @@
-import React, { Component } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Header from "../components/Header";
 import CartProduct from "../components/CartProduct";
 import HeaderSearch from "../components/HeaderSearch";
 import { ProductContext } from "../context";
-export default class Cart extends Component {
-  static contextType = ProductContext;
-  state = {
-    isCartPageLoaded: false,
-  };
+import PopupModal from "../components/PopupModal";
+import useModal from "../hooks/useModal";
 
-  componentDidMount = () => {
-    this.setState({ isCartPageLoaded: true });
-  };
-  render() {
-    const {
-      searchInput,
-      filterProductBySearch,
-      searchHistory,
-      addToSearchHistory,
-    } = this.context;
-    return (
-      <>
-        <Header
-          headerSearch={
-            <HeaderSearch
-              searchInput={searchInput}
-              filterProductBySearch={filterProductBySearch}
-              searchHistory={searchHistory}
-              addToSearchHistory={addToSearchHistory}
-              isCartPageLoaded={this.state.isCartPageLoaded}
-            ></HeaderSearch>
-          }
-        ></Header>
-        <CartProduct></CartProduct>
-      </>
-    );
-  }
+export default function Cart() {
+  const {
+    searchInput,
+    filterProductBySearch,
+    searchHistory,
+    addToSearchHistory,
+  } = useContext(ProductContext);
+  const [isCartPageLoaded, setIsCartPageLoaded] = useState(false);
+  const { isPopupShowing, togglePopup } = useModal();
+  useEffect(() => {
+    // effect
+    setIsCartPageLoaded(true);
+    return () => {
+      // cleanup
+    };
+  }, []);
+  return (
+    <>
+      <Header
+        headerSearch={
+          <HeaderSearch
+            searchInput={searchInput}
+            filterProductBySearch={filterProductBySearch}
+            searchHistory={searchHistory}
+            addToSearchHistory={addToSearchHistory}
+            isCartPageLoaded={isCartPageLoaded}
+          ></HeaderSearch>
+        }
+      ></Header>
+      <CartProduct
+        isPopupShowing={isPopupShowing}
+        togglePopup={togglePopup}
+        popupModal={
+          <PopupModal
+            isCartPageLoaded={isCartPageLoaded}
+            isPopupShowing={isPopupShowing}
+            togglePopup={togglePopup}
+          ></PopupModal>
+        }
+      ></CartProduct>
+    </>
+  );
 }

@@ -4,14 +4,13 @@ import ProductList from "./ProductList";
 import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
-import PopupModal from "./PopupModal";
 import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 
-export default function CartProduct() {
+export default function CartProduct(props) {
   console.log("render");
-  const { isVoucherShowing, toggleVoucher, isPopupShowing, togglePopup } =
-    useModal();
+  const { isPopupShowing, togglePopup, popupModal } = props;
+  const { isVoucherShowing, toggleVoucher } = useModal();
   const {
     voucherList,
     voucher,
@@ -707,12 +706,7 @@ export default function CartProduct() {
             >
               Mua hàng
             </Link>
-            {isPopupShowing && (
-              <PopupModal
-                isPopupShowing={isPopupShowing}
-                togglePopup={togglePopup}
-              ></PopupModal>
-            )}
+            {isPopupShowing && popupModal}
           </div>
         </div>
       </div>
