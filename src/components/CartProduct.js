@@ -24,6 +24,7 @@ export default function CartProduct() {
     saveCartItemsToStorage,
     setDefaultState,
     setDefaultType,
+    checkoutItems,
     setCheckoutItems,
     checked,
     setChecked,
@@ -33,7 +34,9 @@ export default function CartProduct() {
   const lastIndex = cartItems.length + 1;
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
-  cartItems.forEach((item) => (checkoutPriceTotal += item.amount * item.price));
+  checkoutItems.forEach(
+    (item) => (checkoutPriceTotal += item.amount * item.price)
+  );
   cartItems.forEach((item) => (checkoutItemTotal += item.amount));
 
   let idArr = [];
@@ -56,33 +59,45 @@ export default function CartProduct() {
   ]);
 
   const handleCheckout = (event) => {
-    let items = checked.map((checkItem, index) => {
-      if (checkItem === true && index > 0 && index < lastIndex) {
-        return cartItems[index - 1];
-      } else return null;
-    });
-    items = items.filter((item) => item !== null);
-    if (items.length > 0) {
-      setCheckoutItems(items);
-    } else {
+    if (checkoutItems.length <= 0) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     }
   };
 
   const selectAll = (event) => {
+    //
     const { checked } = event.target;
     let newChecked = cartItems.map((item) => checked);
     newChecked = [checked, ...newChecked, checked];
+
+    //
+    let items = newChecked.map((checkItem, index) => {
+      if (checkItem === true && index > 0 && index < lastIndex) {
+        return cartItems[index - 1];
+      } else return null;
+    });
+    items = items.filter((item) => item !== null);
     setChecked(newChecked);
+    setCheckoutItems(items);
   };
 
   const selectOne = (index, event) => {
+    //
     checked[0] = false;
     checked[index + 1] = event.target.checked;
     checked[lastIndex] = false;
     const newChecked = [...checked];
+
+    //
+    let items = newChecked.map((checkItem, index) => {
+      if (checkItem === true && index > 0 && index < lastIndex) {
+        return cartItems[index - 1];
+      } else return null;
+    });
+    items = items.filter((item) => item !== null);
     setChecked(newChecked);
+    setCheckoutItems(items);
   };
 
   const handleDeleteSelection = (event) => {
@@ -588,7 +603,7 @@ export default function CartProduct() {
               onClick={handleVoucherModal}
               className="cart-product__shopee-action"
             >
-               {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
+              {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
             </div>
             {isVoucherShowing && (
               <VoucherModal
