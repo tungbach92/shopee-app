@@ -8,21 +8,22 @@ export default function VoucherModal(props) {
     toggleVoucher(!isVoucherShowing);
   };
 
-
   const handleKeyUp = (e) => {
-    if(e.keyCode === 13)
-    {
+    if (e.keyCode === 13) {
       handleVoucherApply();
       inputEl.current.blur();
     }
-  }
+  };
 
   const handleVoucherApply = (e) => {
-    const text = inputEl.current.value;
-    const voucher = voucherList.find((item) => item.code === text);
-    if (voucher !== undefined) {
-      setVoucher(voucher);
-    }
+    let text = inputEl.current.value;
+    text = text.trim();
+    if (text.length > 0) {
+      const voucher = voucherList.find((item) => item.code === text);
+      if (voucher) {
+        setVoucher(voucher);
+      }
+    }    
   };
 
   return ReactDOM.createPortal(

@@ -31,13 +31,20 @@ export default function CartProduct(props) {
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
+
   let checkoutPriceTotal = 0;
   let checkoutItemTotal = 0;
   checkoutItems.forEach(
     (item) => (checkoutPriceTotal += item.amount * item.price)
   );
   cartItems.forEach((item) => (checkoutItemTotal += item.amount));
-
+  //Calc saved
+  let saved = 0;
+  if (Object.keys(voucher).length > 0) {
+    saved = voucher.discount.includes("%")
+      ? (checkoutPriceTotal * Number(voucher.discount.slice(0, -1))) / 100
+      : voucher.discount;
+  }
   let idArr = [];
 
   useEffect(() => {
@@ -696,7 +703,7 @@ export default function CartProduct(props) {
               </div>
               <div className="cart-product__checkout-saved">
                 <span className="cart-product__saved-label">Tiết kiệm:</span>
-                <span className="cart-product__saved-value">21.000</span>
+                <span className="cart-product__saved-value">{saved}</span>
               </div>
             </div>
             <Link
