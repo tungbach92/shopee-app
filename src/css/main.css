@@ -1803,7 +1803,7 @@ header {
   line-height: 1.2;
 }
 
-.cart-product__voucher-notify ~.cart-product__voucher-input {
+.cart-product__voucher-notify ~ .cart-product__voucher-input {
   border: 1px solid var(--primary-color);
 }
 
@@ -2236,7 +2236,7 @@ header {
 }
 .checkout-product__variation-wrapper {
   flex: 1;
-  margin-right: auto;
+  margin-left: 1rem;
   opacity: 0.6;
 }
 .checkout-product__variation-label {

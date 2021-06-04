@@ -132,7 +132,10 @@ export default class ProductProvider extends Component {
       const itemsWithID = await this.addItemId(items);
       const itemsWithVariationSimilarDisPlay =
         await this.addVariationSimilarDisplayProp(itemsWithID);
-      return itemsWithVariationSimilarDisPlay;
+      const itemsWithVariation = await this.addVariationProp(
+        itemsWithVariationSimilarDisPlay
+      );
+      return itemsWithVariation;
     } catch (error) {
       console.log(error);
     }
@@ -142,6 +145,38 @@ export default class ProductProvider extends Component {
   addItemId = async (items) => {
     items.forEach((item, index) => {
       item.id = index;
+    });
+    return items;
+  };
+
+  addVariationProp = async (items) => {
+    items.forEach((item) => {
+      switch (item.type) {
+        case "shirt":
+          item.variation = "";
+          item.variationList = ["M", "L", "XL"];
+          break;
+        case "set":
+          item.variation = "";
+          item.variationList = ["M", "L"];
+          break;
+        case "bag":
+          item.variation = "";
+          item.variationList = ["S", "M", "L"];
+          break;
+        case "shoe":
+          item.variation = "";
+          item.variationList = ["38", "39", "40", "41"];
+          break;
+        case "accessories":
+          item.variation = "";
+          item.variationList = ["M", "L", "XL"];
+          break;
+        default:
+          item.variation = "";
+          item.variationList = ["M", "L", "XL"];
+          break;
+      }
     });
     return items;
   };
@@ -490,6 +525,12 @@ export default class ProductProvider extends Component {
     this.setState({ cartItems });
   };
 
+  changeVariation = (variation, index) => {
+    let { cartItems } = this.state;
+    cartItems[index].variation = variation;
+    this.setState({ cartItems });
+  };
+
   changeSimilarDisPlayCartItems = (index) => {
     let { type, cartItems } = this.state;
 
@@ -515,6 +556,7 @@ export default class ProductProvider extends Component {
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
+          changeVariation: this.changeVariation,
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,

@@ -314,7 +314,9 @@ export default function CheckoutProduct() {
                     <span className="checkout-product__variation-label">
                       Loại:
                     </span>
-                    <span className="checkout-product__variation">XL</span>
+                    <span className="checkout-product__variation">
+                      {item.variation}
+                    </span>
                   </span>
                 </span>
                 <span className="checkout-product__item-price">

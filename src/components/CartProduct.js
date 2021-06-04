@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import classNames from "classnames";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 export default function CartProduct(props) {
   console.log("render");
   const { isPopupShowing, togglePopup, popupModal } = props;
+  const [variation, setVariation] = useState("");
   const { isVoucherShowing, toggleVoucher } = useModal();
   const {
     voucherList,
@@ -18,6 +19,7 @@ export default function CartProduct(props) {
     cartItems,
     handleClick,
     changeVariationDisPlayCartItems,
+    changeVariation,
     changeSimilarDisPlayCartItems,
     delCartItems,
     saveCartItemsToStorage,
@@ -64,6 +66,20 @@ export default function CartProduct(props) {
     toggleVoucher,
   ]);
 
+  const handleVariationClick = (event) => {
+    const variation = event.currentTarget.innerText;
+    setVariation(variation);
+  };
+
+  const handleVariationBack = (index, event) => {
+    setVariation("");
+    changeVariationDisPlayCartItems(index);
+  };
+
+  const handleVariationApply = (index, event) => {
+    changeVariation(variation, index);
+    changeVariationDisPlayCartItems(index);
+  };
   const handleCheckout = (event) => {
     if (checkoutItems.length <= 0) {
       event.preventDefault();
@@ -125,6 +141,7 @@ export default function CartProduct(props) {
     const { name } = event.currentTarget.dataset;
     if (name === "variation") {
       changeVariationDisPlayCartItems(index);
+      setVariation(cartItems[index].variation);
     }
     if (name === "similar") {
       changeSimilarDisPlayCartItems(index);
@@ -287,13 +304,15 @@ export default function CartProduct(props) {
                   href="# "
                   className={classNames("cart-product__variation-icon", {
                     "cart-product__variation-icon--rotate":
-                      cartItems[index].variationDisPlay,
+                      item.variationDisPlay,
                   })}
                 ></span>
               </span>
-              <span className="cart-product__variation-numb">2kg</span>
+              <span className="cart-product__variation-numb">
+                {item.variation}
+              </span>
             </div>
-            {cartItems[index].variationDisPlay && (
+            {item.variationDisPlay && (
               <div className="cart-product__variation-notify">
                 <div className="cart-product__arrow-outer">
                   <div className="cart-product__notify-arrow"></div>
@@ -301,30 +320,47 @@ export default function CartProduct(props) {
                 <div className="cart-product__notify-content">
                   <div className="cart-product__notify-label">Kích cỡ:</div>
                   <div className="cart-product__variation-container">
-                    <div className="cart-product__notify-variation cart-product__notify-variation--active">
-                      X
-                      <div className="cart-product__variation-tick">
-                        <svg
-                          enableBackground="new 0 0 12 12"
-                          viewBox="0 0 12 12"
-                          x="0"
-                          y="0"
-                          className="cart-product__tick-icon"
-                        >
-                          <g>
-                            <path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path>
-                          </g>
-                        </svg>
+                    {item.variationList?.map((listItem, i) => (
+                      <div
+                        onClick={handleVariationClick}
+                        key={i}
+                        className={
+                          variation === listItem
+                            ? "cart-product__notify-variation cart-product__notify-variation--active"
+                            : "cart-product__notify-variation"
+                        }
+                      >
+                        {listItem}
+                        {variation === listItem && (
+                          <div className="cart-product__variation-tick">
+                            <svg
+                              enableBackground="new 0 0 12 12"
+                              viewBox="0 0 12 12"
+                              x="0"
+                              y="0"
+                              className="cart-product__tick-icon"
+                            >
+                              <g>
+                                <path d="m5.2 10.9c-.2 0-.5-.1-.7-.2l-4.2-3.7c-.4-.4-.5-1-.1-1.4s1-.5 1.4-.1l3.4 3 5.1-7c .3-.4 1-.5 1.4-.2s.5 1 .2 1.4l-5.7 7.9c-.2.2-.4.4-.7.4 0-.1 0-.1-.1-.1z"></path>
+                              </g>
+                            </svg>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div className="cart-product__notify-variation">XL</div>
+                    ))}
                   </div>
                 </div>
                 <div className="cart-product__notify-button">
-                  <button className="btn cart-product__notify-back">
+                  <button
+                    onClick={handleVariationBack.bind(this, index)}
+                    className="btn cart-product__notify-back"
+                  >
                     Trở Lại
                   </button>
-                  <button className="btn cart-product__notify-ok">
+                  <button
+                    onClick={handleVariationApply.bind(this, index)}
+                    className="btn cart-product__notify-ok"
+                  >
                     Xác nhận
                   </button>
                 </div>
