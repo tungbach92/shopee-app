@@ -1,9 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState} from "react";
 import ReactDOM from "react-dom";
 export default function VoucherModal(props) {
+  const [isInvalidVoucher, setIsInvalidVoucher] = useState(true);
+  const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();
   const { isVoucherShowing, toggleVoucher, voucher, setVoucher, voucherList } =
     props;
+
   const handleClick = (e) => {
     toggleVoucher(!isVoucherShowing);
   };
@@ -15,15 +18,25 @@ export default function VoucherModal(props) {
     }
   };
 
+  const handleFocus = (e) => {
+    setIsVoucherNotifyShowing(false);
+  };
+
   const handleVoucherApply = (e) => {
     let text = inputEl.current.value;
     text = text.trim();
+    inputEl.current.value = text;
+
     if (text.length > 0) {
       const voucher = voucherList.find((item) => item.code === text);
       if (voucher) {
         setVoucher(voucher);
+        setIsInvalidVoucher(false);
+      } else {
+        setIsInvalidVoucher(true);
       }
-    }    
+      setIsVoucherNotifyShowing(true);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -55,12 +68,22 @@ export default function VoucherModal(props) {
         </div>
         <div className="cart-product__modal-voucher">
           <span className="cart-product__voucher-text">Mã Voucher</span>
-          <input
-            ref={inputEl}
-            onKeyUp={handleKeyUp}
-            className="cart-product__voucher-input"
-            placeholder="Mã shoppe Voucher"
-          />
+          <div className="cart-product__input-wrapper">
+            {isVoucherNotifyShowing && (
+              <span className="cart-product__voucher-notify">
+                {isInvalidVoucher
+                  ? "Rất tiếc! Không thể tìm thấy mã voucher này.Xin vui lòng kiểm tra lại."
+                  : "Thành công"}
+              </span>
+            )}
+            <input
+              ref={inputEl}
+              onKeyUp={handleKeyUp}
+              onFocus={handleFocus}
+              className="cart-product__voucher-input"
+              placeholder="Mã shoppe Voucher"
+            />
+          </div>
           <button
             onClick={handleVoucherApply}
             className="btn cart-product__voucher-btn"
@@ -85,7 +108,7 @@ export default function VoucherModal(props) {
             onClick={handleClick}
             className="btn cart-product__modal-apply"
           >
-            OK
+            Trở lại
           </button>
         </div>
       </div>

@@ -1767,9 +1767,16 @@ header {
   font-size: 1.4rem;
   padding: 1.4rem 0rem;
 }
-.cart-product__voucher-input {
+
+.cart-product__input-wrapper {
+  position: relative;
   margin-left: 1rem;
   flex-basis: 22.2rem;
+}
+
+.cart-product__voucher-input {
+  width: 100%;
+  height: 100%;
   opacity: 0.7;
   outline: none;
 }
@@ -1777,6 +1784,27 @@ header {
   margin-left: auto;
   font-size: 1.4rem;
   padding: 1.4rem;
+}
+
+.cart-product__voucher-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--primary-color);
+}
+
+.cart-product__voucher-notify {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--primary-color);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.cart-product__voucher-notify ~.cart-product__voucher-input {
+  border: 1px solid var(--primary-color);
 }
 
 .cart-product__list-label {
