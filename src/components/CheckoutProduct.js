@@ -128,10 +128,13 @@ export default function CheckoutProduct() {
     }
   };
 
-  const handleInput = (e) => {
+  const handleInputBlur = (e) => {
     let text = e.target.value;
+    setMessage(text);
+  };
+
+  const handleInputEnter = (e) => {
     if (e.keyCode === 13) {
-      setMessage(text);
       inputMessageEl.current.blur();
     }
   };
@@ -347,7 +350,8 @@ export default function CheckoutProduct() {
             <span className="checkout-product__message-label">Lời nhắn:</span>
             <input
               ref={inputMessageEl}
-              onKeyUp={handleInput}
+              onBlur={handleInputBlur}
+              onKeyUp={handleInputEnter}
               type="text"
               placeholder="Lưu ý cho người bán..."
               className="checkout-product__message-input"
