@@ -19,8 +19,13 @@ export default function CheckoutProduct() {
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
-  const { shipUnitList, checkoutItems, voucherList, voucher, setVoucher } =
-    useContext(ProductContext);
+  const {
+    shipUnitList,
+    voucherList,
+    voucher,
+    setVoucher,
+    checkoutItems,
+  } = useContext(ProductContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -116,7 +121,12 @@ export default function CheckoutProduct() {
     return () => {
       // cleanup
     };
-  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
+  }, [
+    shipUnit,
+    shipUnitList,
+    isInformation,
+    customerInfo,
+  ]);
 
   const handleClick = () => {
     setIsInformation(!isInformation);

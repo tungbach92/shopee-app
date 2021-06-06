@@ -69,18 +69,22 @@ export default class ProductProvider extends Component {
     //get and set cartItems state
     const cartItems = this.getCartItemsFromStorage();
     const cartNumb = this.calcCartNumb(cartItems);
-    // set checked state
-    const checked = this.getDefaultCheckedByCartItem(cartItems);
-    this.setState({
-      items,
-      categoryItems,
-      sortedItems,
-      pageIndex,
-      pageTotal,
-      cartItems,
-      cartNumb,
-      checked,
-    });
+    //get and set checkoutItems state
+    const checkoutItems = this.getCheckoutItemsFromStorage();
+
+    this.setState(
+      {
+        items,
+        categoryItems,
+        sortedItems,
+        pageIndex,
+        pageTotal,
+        cartItems,
+        cartNumb,
+        checkoutItems,
+      },
+      this.setDefaultChecked
+    );
   };
   setVoucher = (voucher) => {
     this.setState({ voucher });
@@ -94,16 +98,24 @@ export default class ProductProvider extends Component {
     this.setState({ name, phone, address });
   };
 
-  getDefaultCheckedByCartItem = (cartItems) => {
-    let defaultChecked = cartItems.map((item) => false);
-    defaultChecked = [false, ...defaultChecked, false];
-    return defaultChecked;
-  };
+  setDefaultChecked = () => {
+    const { checkoutItems, cartItems } = this.state;
+    let defaultChecked = [];
+    if (checkoutItems.length === cartItems.length) {
+      defaultChecked = cartItems.map((item) => true);
+      defaultChecked = [true, ...defaultChecked, true];
+    } else {
+      defaultChecked = cartItems.map((item) => {
+        const element = checkoutItems.find((el) => (el.id === item.id));
+        if (element) {
+          return true;
+        } else {
+          return false;
+        }
+      });
 
-  setDefaultCheckedByCartItem = () => {
-    const { cartItems } = this.state;
-    let defaultChecked = cartItems.map((item) => false);
-    defaultChecked = [false, ...defaultChecked, false];
+      defaultChecked = [false, ...defaultChecked, false];
+    }
     this.setChecked(defaultChecked);
   };
 
@@ -304,14 +316,14 @@ export default class ProductProvider extends Component {
 
     if (name === "addToCartBtn") {
       this.addToCartItems(id, () => {
-        this.setDefaultCheckedByCartItem();
+        this.setDefaultChecked();
         this.saveCartItemsToStorage();
       });
     }
 
     if (name === "delCartBtn") {
       this.delCartItem(id, () => {
-        this.setDefaultCheckedByCartItem();
+        this.setDefaultChecked();
         this.saveCartItemsToStorage();
       });
     }
@@ -408,7 +420,17 @@ export default class ProductProvider extends Component {
   };
 
   setCheckoutItems = (items) => {
-    this.setState({ checkoutItems: items });
+    this.setState({ checkoutItems: items }, this.saveCheckoutItemsToStorage);
+  };
+
+  saveCheckoutItemsToStorage = () => {
+    const { checkoutItems } = this.state;
+    localStorage.setItem("checkoutProduct", JSON.stringify(checkoutItems));
+  };
+
+  getCheckoutItemsFromStorage = () => {
+    let savedCheckoutItems = localStorage.getItem("checkoutProduct");
+    return savedCheckoutItems === null ? [] : JSON.parse(savedCheckoutItems);
   };
 
   saveCartItemsToStorage = () => {
@@ -549,7 +571,7 @@ export default class ProductProvider extends Component {
       <ProductContext.Provider
         value={{
           ...this.state,
-          setDefaultCheckedByCartItem: this.setDefaultCheckedByCartItem,
+          setDefaultChecked: this.setDefaultChecked,
           setDefaultType: this.setDefaultType,
           setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,

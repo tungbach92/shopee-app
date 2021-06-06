@@ -29,7 +29,7 @@ export default function CartProduct(props) {
     setCheckoutItems,
     checked,
     setChecked,
-    setDefaultCheckedByCartItem,
+    setDefaultChecked,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
@@ -132,7 +132,7 @@ export default function CartProduct(props) {
       idArr = idArr.filter((id) => id !== null);
       delCartItems(idArr, () => {
         saveCartItemsToStorage();
-        setDefaultCheckedByCartItem();
+        setDefaultChecked();
       });
     }
   };
