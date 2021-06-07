@@ -1,17 +1,26 @@
 import classNames from "classnames";
 import React from "react";
 import { Link } from "react-router-dom";
-
+import useModal from "../hooks/useModal";
+import AddCartModal from "./AddCartModal";
 export default function ProductItem(props) {
-  const { id, imageUrl, name, price, soldAmount, location } = props.item;
+  console.log("product item render");
+  const { item, similarDisPlay, cartItems, handleClick } = props;
+  const { id, imageUrl, name, price, soldAmount, location } = item;
+  const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   let isInCart = false;
-  isInCart = props.cartItems.some((item) => item.id === Number(id));
+  isInCart = cartItems.some((item) => item.id === Number(id));
+
+  const handleAddCart = (e) => {
+    handleClick(e);
+    toggleIsAddCardPopup(!isAddCartPopup);
+  };
   return (
     <div
       className={classNames(
-        { "grid__col-2c4x": !props.similarDisPlay },
+        { "grid__col-2c4x": !similarDisPlay },
         {
-          "grid__col-2x": props.similarDisPlay,
+          "grid__col-2x": similarDisPlay,
         }
       )}
     >
@@ -19,7 +28,7 @@ export default function ProductItem(props) {
         <button
           data-name="addToCartBtn"
           data-id={id}
-          onClick={isInCart ? undefined : props.event}
+          onClick={isInCart ? undefined : handleAddCart}
           className={classNames("btn app__product-cart-btn", {
             "app__product-cart-btn--disabled": isInCart,
           })}
@@ -27,6 +36,13 @@ export default function ProductItem(props) {
           <i className="app__product-cart-btn-icon bi bi-cart"></i>
           {isInCart ? `In Cart` : `Add to cart`}
         </button>
+        {isAddCartPopup && (
+          <AddCartModal
+            isAddCartPopup={isAddCartPopup}
+            toggleIsAddCardPopup={toggleIsAddCardPopup}
+          ></AddCartModal>
+        )}
+
         <Link to="/" className="app__product-link">
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">

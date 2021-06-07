@@ -33,7 +33,7 @@ export default class ProductList extends Component {
         cartItems={cartItems}
         similarDisPlay={this.props.similarDisPlay}
         item={item}
-        event={handleClick}
+        handleClick={handleClick}
       ></ProductItem>
     ));
   }
