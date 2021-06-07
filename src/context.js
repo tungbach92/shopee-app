@@ -90,8 +90,8 @@ export default class ProductProvider extends Component {
     this.setState({ voucher });
   };
 
-  setChecked = (cheked) => {
-    this.setState({ checked: cheked });
+  setChecked = (cheked, callback) => {
+    this.setState({ checked: cheked }, callback);
   };
 
   setCustomerInfo = (name, phone, address) => {
@@ -106,7 +106,7 @@ export default class ProductProvider extends Component {
       defaultChecked = [true, ...defaultChecked, true];
     } else {
       defaultChecked = cartItems.map((item) => {
-        const element = checkoutItems.find((el) => (el.id === item.id));
+        const element = checkoutItems.find((el) => el.id === item.id);
         if (element) {
           return true;
         } else {
@@ -419,8 +419,17 @@ export default class ProductProvider extends Component {
     this.setState({ cartNumb }, callback);
   };
 
-  setCheckoutItems = (items) => {
-    this.setState({ checkoutItems: items }, this.saveCheckoutItemsToStorage);
+  setCheckoutItems = () => {
+    //
+    const { checked, cartItems } = this.state;
+    const lastIndex = cartItems.length + 1;
+    let checkoutItems = checked.map((checkItem, index) => {
+      if (checkItem === true && index > 0 && index < lastIndex) {
+        return cartItems[index - 1];
+      } else return null;
+    });
+    checkoutItems = checkoutItems.filter((item) => item !== null);
+    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
 
   saveCheckoutItemsToStorage = () => {

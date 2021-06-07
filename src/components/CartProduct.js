@@ -92,16 +92,7 @@ export default function CartProduct(props) {
     const { checked } = event.target;
     let newChecked = cartItems.map((item) => checked);
     newChecked = [checked, ...newChecked, checked];
-
-    //
-    let items = newChecked.map((checkItem, index) => {
-      if (checkItem === true && index > 0 && index < lastIndex) {
-        return cartItems[index - 1];
-      } else return null;
-    });
-    items = items.filter((item) => item !== null);
-    setChecked(newChecked);
-    setCheckoutItems(items);
+    setChecked(newChecked, setCheckoutItems);
   };
 
   const selectOne = (index, event) => {
@@ -110,16 +101,7 @@ export default function CartProduct(props) {
     checked[index + 1] = event.target.checked;
     checked[lastIndex] = false;
     const newChecked = [...checked];
-
-    //
-    let items = newChecked.map((checkItem, index) => {
-      if (checkItem === true && index > 0 && index < lastIndex) {
-        return cartItems[index - 1];
-      } else return null;
-    });
-    items = items.filter((item) => item !== null);
-    setChecked(newChecked);
-    setCheckoutItems(items);
+    setChecked(newChecked, setCheckoutItems);
   };
 
   const handleDeleteSelection = (event) => {
