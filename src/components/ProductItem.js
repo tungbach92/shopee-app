@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
-export default function ProductItem(props) {
+const ProductItem = React.memo(function (props) {
   console.log("product item render");
   const { item, similarDisPlay, cartItems, handleClick } = props;
   const { id, imageUrl, name, price, soldAmount, location } = item;
@@ -140,4 +140,5 @@ export default function ProductItem(props) {
       </div>
     </div>
   );
-}
+});
+export default ProductItem;

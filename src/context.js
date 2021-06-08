@@ -316,7 +316,7 @@ export default class ProductProvider extends Component {
 
     if (name === "addToCartBtn") {
       this.addToCartItems(id, () => {
-        this.setDefaultChecked();
+        this.setDefaultChecked(); // provider render
         this.saveCartItemsToStorage();
       });
     }

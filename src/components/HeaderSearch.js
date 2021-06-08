@@ -5,7 +5,7 @@ import HeaderSearchHistory from "./HeaderSearchHistory";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-export default function HeaderSearch(props) {
+const HeaderSearch = React.memo(function (props) {
   console.log("header search render");
   const {
     filterProductBySearch,
@@ -172,4 +172,5 @@ export default function HeaderSearch(props) {
       ) : null}
     </div>
   );
-}
+});
+export default HeaderSearch;
