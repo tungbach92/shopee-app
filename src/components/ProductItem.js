@@ -6,7 +6,7 @@ import AddCartModal from "./AddCartModal";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
   const { item, similarDisPlay, cartItems, handleClick } = props;
-  const { id, imageUrl, name, price, soldAmount, location } = item;
+  const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   let isInCart = false;
   isInCart = cartItems.some((item) => item.id === Number(id));
@@ -43,7 +43,7 @@ const ProductItem = React.memo(function (props) {
           ></AddCartModal>
         )}
 
-        <Link to="/" className="app__product-link">
+        <Link to={`/product/${metaTitle}`} className="app__product-link">
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">
             <span className="app__product-sale-off-percent">43%</span>
