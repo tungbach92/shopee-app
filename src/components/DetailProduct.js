@@ -1,5 +1,6 @@
 import React from "react";
 import img from "../img/bag.png";
+import protectImg from "../img/protect.png";
 export default function DetailProduct() {
   return (
     <div className="container">
@@ -37,15 +38,30 @@ export default function DetailProduct() {
             <div className="detail-product__more">
               <div className="detail-product__rating">
                 <span className="detail-product__rating-number">4.9</span>
-                <span className="detail-product__rating-icon"></span>
+                <div className="detail-product__rating-icons">
+                  <svg
+                    enableBackground="new 0 0 15 15"
+                    viewBox="0 0 15 15"
+                    x="0"
+                    y="0"
+                    className="detail-product__rating-icon"
+                  >
+                    <polygon
+                      points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeMiterlimit="10"
+                    ></polygon>
+                  </svg>
+                </div>
               </div>
               <div className="detail-product__review">
                 <span className="detail-product__review-number">1.2k</span>
-                <span className="detail-product__review-label">đánh giá</span>
+                <span className="detail-product__review-label">Đánh giá</span>
               </div>
               <div className="detail-product__sold">
                 <span className="detail-product__sold-number">7.1k</span>
-                <span className="detail-product__sold-label">đã bán</span>
+                <span className="detail-product__sold-label">Đã bán</span>
               </div>
             </div>
             <div className="detail-product__price">₫45.000 - ₫159.000</div>
@@ -56,48 +72,229 @@ export default function DetailProduct() {
               <div className="detail-product__combo-value">Mua 2 + giảm 2%</div>
 
               <div className="detail-product__ship-label">Vận Chuyển</div>
-              <div className="detail-product__ship-wrapper">
-                <span className="detail-product__ship-icon">icon</span>
+              <div className="detail-product__shipshipto-wrapper">
+                <svg
+                  height="12"
+                  viewBox="0 0 20 12"
+                  width="20"
+                  className="detail-product__ship-icon"
+                >
+                  <g fill="none" fill-rule="evenodd" transform="">
+                    <rect
+                      fill="#00bfa5"
+                      fill-rule="evenodd"
+                      height="9"
+                      rx="1"
+                      width="12"
+                      x="4"
+                    ></rect>
+                    <rect
+                      height="8"
+                      rx="1"
+                      stroke="#00bfa5"
+                      width="11"
+                      x="4.5"
+                      y=".5"
+                    ></rect>
+                    <rect
+                      fill="#00bfa5"
+                      fill-rule="evenodd"
+                      height="7"
+                      rx="1"
+                      width="7"
+                      x="13"
+                      y="2"
+                    ></rect>
+                    <rect
+                      height="6"
+                      rx="1"
+                      stroke="#00bfa5"
+                      width="6"
+                      x="13.5"
+                      y="2.5"
+                    ></rect>
+                    <circle cx="8" cy="10" fill="#00bfa5" r="2"></circle>
+                    <circle cx="15" cy="10" fill="#00bfa5" r="2"></circle>
+                    <path
+                      d="m6.7082481 6.7999878h-.7082481v-4.2275391h2.8488017v.5976563h-2.1405536v1.2978515h1.9603297v.5800782h-1.9603297zm2.6762505 0v-3.1904297h.6544972v.4892578h.0505892c.0980164-.3134765.4774351-.5419922.9264138-.5419922.0980165 0 .2276512.0087891.3003731.0263672v.6210938c-.053751-.0175782-.2624312-.038086-.3762568-.038086-.5122152 0-.8758247.3017578-.8758247.75v1.8837891zm3.608988-2.7158203c-.5027297 0-.8536919.328125-.8916338.8261719h1.7390022c-.0158092-.5009766-.3446386-.8261719-.8473684-.8261719zm.8442065 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187zm2.6224996-1.8544922c-.5027297 0-.853692.328125-.8916339.8261719h1.7390022c-.0158091-.5009766-.3446386-.8261719-.8473683-.8261719zm.8442064 1.8544922h.6544972c-.1549293.571289-.7050863.9228515-1.49238.9228515-.9864885 0-1.5903965-.6269531-1.5903965-1.6464843 0-1.0195313.6165553-1.6669922 1.5872347-1.6669922.9580321 0 1.5366455.6064453 1.5366455 1.6083984v.2197266h-2.4314412v.0351562c.0221328.5595703.373095.9140625.9169284.9140625.4110369 0 .6924391-.1376953.8189119-.3867187z"
+                      fill="#fff"
+                    ></path>
+                    <path d="m .5 8.5h3.5v1h-3.5z" fill="#00bfa5"></path>
+                    <path d="m0 10.15674h3.5v1h-3.5z" fill="#00bfa5"></path>
+                    <circle cx="8" cy="10" fill="#047565" r="1"></circle>
+                    <circle cx="15" cy="10" fill="#047565" r="1"></circle>
+                  </g>
+                </svg>
                 <span className="detail-product__ship-content">
-                  Miễn Phí Vận Chuyển Miễn Phí Vận Chuyển khi đơn đạt giá trị
-                  tối thiểu
+                  Miễn Phí Vận Chuyển
                 </span>
-                <span className="detail-product__shipto-icon">icon</span>
+                <span className="detail-product__ship-contentplus">
+                  Miễn Phí Vận Chuyển khi đơn đạt giá trị tối thiểu
+                </span>
+
+                <svg
+                  enableBackground="new 0 0 15 15"
+                  viewBox="0 0 15 15"
+                  x="0"
+                  y="0"
+                  className="detail-product__shipto-icon"
+                >
+                  <g>
+                    <line
+                      fill="none"
+                      stroke-linejoin="round"
+                      strokeMiterlimit="10"
+                      x1="8.6"
+                      x2="4.2"
+                      y1="9.8"
+                      y2="9.8"
+                    ></line>
+                    <circle
+                      cx="3"
+                      cy="11.2"
+                      fill="none"
+                      r="2"
+                      strokeMiterlimit="10"
+                    ></circle>
+                    <circle
+                      cx="10"
+                      cy="11.2"
+                      fill="none"
+                      r="2"
+                      strokeMiterlimit="10"
+                    ></circle>
+                    <line
+                      fill="none"
+                      strokeMiterlimit="10"
+                      x1="10.5"
+                      x2="14.4"
+                      y1="7.3"
+                      y2="7.3"
+                    ></line>
+                    <polyline
+                      fill="none"
+                      points="1.5 9.8 .5 9.8 .5 1.8 10 1.8 10 9.1"
+                      stroke-linejoin="round"
+                      strokeMiterlimit="10"
+                    ></polyline>
+                    <polyline
+                      fill="none"
+                      points="9.9 3.8 14 3.8 14.5 10.2 11.9 10.2"
+                      stroke-linejoin="round"
+                      strokeMiterlimit="10"
+                    ></polyline>
+                  </g>
+                </svg>
+
                 <span className="detail-product__shipto-label">
                   Vận Chuyển Tới
                 </span>
                 <span className="detail-product__shipto-content">
                   Quận Hoàng Mai, Hà Nội
+                  <svg
+                    enable-background="new 0 0 11 11"
+                    viewBox="0 0 11 11"
+                    x="0"
+                    y="0"
+                    className="detail-product__content-icon"
+                  >
+                    <g>
+                      <path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path>
+                    </g>
+                  </svg>
                 </span>
+
                 <span className="detail-product__shipprice-label">
                   Phí Vận Chuyển
                 </span>
                 <span className="detail-product__shipprice-content">
                   ₫34.500 - ₫46.676
+                  <svg
+                    enable-background="new 0 0 11 11"
+                    viewBox="0 0 11 11"
+                    x="0"
+                    y="0"
+                    className="detail-product__shipprice-icon"
+                  >
+                    <g>
+                      <path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path>
+                    </g>
+                  </svg>
                 </span>
               </div>
 
               <div className="detail-product__variation-label">Variation</div>
               <div className="detail-product__variation-list">
-                <div className="detail-product__variation-item">item</div>
+                <button className="btn detail-product__variation-item">
+                  item3424234
+                </button>
               </div>
 
               <div className="detail-product__amount-label">Số Lượng</div>
               <div className="detail-product__amount-wrapper">
-                <button className="detail-product__amount-desc">-</button>
+                <button className="btn detail-product__amount-desc">-</button>
                 <input type="text" className="detail-product__amount-input" />
-                <button className="detail-product__amount-incre">+</button>
-                <div className="detail-product__amount-left"></div>
+                <button className="btn detail-product__amount-incre">+</button>
+                <div className="detail-product__amount-left">
+                  645 sản phẩm có sẵn
+                </div>
               </div>
             </div>
-            <button className="btn detail-product__btn-cart">
-              thêm vào giỏ hàng
-            </button>
-            <button className="btn detail-product__btn-checkout">
-              Mua ngay
-            </button>
+            <div className="detail-product__btn-wrapper">
+              <button className="btn detail-product__btn-cart">
+                <svg
+                  enable-background="new 0 0 15 15"
+                  viewBox="0 0 15 15"
+                  x="0"
+                  y="0"
+                  className="detail-product__btn-cart-icon"
+                >
+                  <g>
+                    <g>
+                      <polyline
+                        fill="none"
+                        points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-miterlimit="10"
+                      ></polyline>
+                      <circle cx="6" cy="13.5" r="1" stroke="none"></circle>
+                      <circle cx="11.5" cy="13.5" r="1" stroke="none"></circle>
+                    </g>
+                    <line
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-miterlimit="10"
+                      x1="7.5"
+                      x2="10.5"
+                      y1="7"
+                      y2="7"
+                    ></line>
+                    <line
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-miterlimit="10"
+                      x1="9"
+                      x2="9"
+                      y1="8.5"
+                      y2="5.5"
+                    ></line>
+                  </g>
+                </svg>
+                <span className="detail-product__btn-cart-text">
+                  thêm vào giỏ hàng
+                </span>
+              </button>
+              <button className="btn detail-product__btn-checkout">
+                Mua ngay
+              </button>
+            </div>
             <div className="detail-product__protect-wrapper">
-              <div className="detail-product__protect-icon">icon</div>
+              <img
+                src={protectImg}
+                alt="protect"
+                className="detail-product__protect-icon"
+              />
               <div className="detail-product__protect-label">
                 Shopee Đảm Bảo
               </div>
@@ -117,7 +314,7 @@ export default function DetailProduct() {
               <div className="detail-content__detail-breadcrumb">
                 <div className="detail-content__breadcrumb-label">Danh Mục</div>
                 <div className="detail-content__breadcrumb-item">
-                  Shopee Sức Khỏe > Sắc Đẹp> Chăm sóc tóc
+                  Shopee Sức Khỏe Sắc Đẹp Chăm sóc tóc
                 </div>
               </div>
               <div className="detail-content__detail-brand">
@@ -181,7 +378,9 @@ export default function DetailProduct() {
             </div>
           </div>
           <div className="detail-content__right">
-            <div className="detail-content__right-label">Top Sản Phẩm Bán Chạy</div>
+            <div className="detail-content__right-label">
+              Top Sản Phẩm Bán Chạy
+            </div>
             <div className="detail-content__hot-list">
               <div className="detail-content__hot-item">
                 <div className="detail-content__hot-img"></div>
