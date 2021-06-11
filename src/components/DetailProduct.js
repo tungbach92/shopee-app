@@ -4,7 +4,10 @@ import protectImg from "../img/protect.png";
 export default function DetailProduct() {
   return (
     <div className="container">
-      <div className="grid detail-breadcrumb">breadcrumb</div>
+      <div className="grid detail-breadcrumb">
+        Shopee Sức Khỏe + Sắc Đẹp + Chăm sóc tóc + Tinh chất bôi tóc Kirkland
+        chính hãng Mỹ, ngăn rụng hói và mọc tóc, râu, mày cho nam
+      </div>
       <div className="grid detail-product">
         <div className="detail-product__info">
           <div className="detail-product__info-left">
@@ -14,7 +17,7 @@ export default function DetailProduct() {
                 <img
                   src={img}
                   alt="detail-img"
-                  className="detail-product__slider-img"
+                  className="detail-product__slider-item"
                 />
               </div>
             </div>
@@ -311,68 +314,107 @@ export default function DetailProduct() {
               <div className="detail-content__detail-label">
                 CHI TIẾT SẢN PHẨM
               </div>
-              <div className="detail-content__detail-breadcrumb">
-                <div className="detail-content__breadcrumb-label">Danh Mục</div>
-                <div className="detail-content__breadcrumb-item">
-                  Shopee Sức Khỏe Sắc Đẹp Chăm sóc tóc
-                </div>
+
+              <div className="detail-content__breadcrumb-label">Danh Mục</div>
+              <div className="detail-content__breadcrumb-item">
+                Shopee Sức Khỏe Sắc Đẹp Chăm sóc tóc
               </div>
-              <div className="detail-content__detail-brand">
-                <div className="detail-content__brand-label">Thương hiệu</div>
-                <div className="detail-content__brand-item">No Brand</div>
+
+              <div className="detail-content__brand-label">Thương hiệu</div>
+              <div className="detail-content__brand-item">No Brand</div>
+
+              <div className="detail-content__variation-label">
+                Khối lượng (g)
               </div>
-              <div className="detail-content__detail-variation">
-                <div className="detail-content__variation-label">
-                  Khối lượng (g)
-                </div>
-                <div className="detail-content__variation-item">60</div>
+              <div className="detail-content__variation-item">60</div>
+
+              <div className="detail-content__gender-label">Giới tính</div>
+              <div className="detail-content__gender-item">Dành cho Nam</div>
+
+              <div className="detail-content__madeby-label">Xuất xứ</div>
+              <div className="detail-content__madeby-item">USA</div>
+
+              <div className="detail-content__amount-label">Kho hàng</div>
+              <div className="detail-content__amount-item">662</div>
+
+              <div className="detail-content__location-label">Gửi từ</div>
+              <div className="detail-content__location-item">
+                Quận 12, TP. Hồ Chí Minh
               </div>
-              <div className="detail-content__detail-gender">
-                <div className="detail-content__gender-label">Giới tính</div>
-                <div className="detail-content__gender-item">Dành cho Nam</div>
-              </div>
-              <div className="detail-content__detail-madeby">
-                <div className="detail-content__madeby-label">Xuất xứ</div>
-                <div className="detail-content__madeby-item">USA</div>
-              </div>
-              <div className="detail-content__detail-amount">
-                <div className="detail-content__amount-label">Kho hàng</div>
-                <div className="detail-content__amount-item">662</div>
-              </div>
-              <div className="detail-content__detail-location">
-                <div className="detail-content__location-label">Gửi từ</div>
-                <div className="detail-content__location-item">
-                  Quận 12, TP. Hồ Chí Minh
-                </div>
-              </div>
-            </div>
-            <div className="detail-content__description">
               <div className="detail-content__description-label">
                 MÔ TẢ SẢN PHẨM
               </div>
               <div className="detail-content__description-content">MÔ TẢ </div>
             </div>
+
             <div className="detail-content__rating">
               <div className="detail-content__rating-label">
                 ĐÁNH GIÁ SẢN PHẨM
               </div>
+
               <div className="detail-content__rating-overview">
                 <div className="detail-content__rating-score">
-                  <div className="detail-content__score-result"></div>
-                  <div className="detail-content__score-icon"></div>
+                  <div className="detail-content__score-result">4.9 trên 5</div>
+                  <div className="detail-content__score-icons">
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__score-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
+                  </div>
                 </div>
                 <div className="detail-content__overview-list">
-                  <div className="detail-content__overview-item"></div>
+                  <button className="btn detail-content__overview-item">
+                    Tất cả
+                  </button>
                 </div>
               </div>
               <div className="detail-content__rating-list">
                 <div className="detail-content__rating-item">
-                  <div className="detail-content__rating-name"></div>
-                  <div className="detail-content__rating-icon"></div>
-                  <div className="detail-content__rating-variation"></div>
-                  <div className="detail-content__rating-content"></div>
-                  <div className="detail-content__rating-date"></div>
-                  <div className="detail-content__rating-rate"></div>
+                  <div className="detail-content__rating-name">
+                    tengicunglaten
+                  </div>
+                  <div className="detail-content__rating-icons">
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__rating-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
+                  </div>
+                  <div className="detail-content__rating-variation">
+                    <span className="detail-content__variation-type">
+                      Phân loại hàng:
+                    </span>
+                    <span className="detail-content__variation-result">
+                      1 lọ Kirkland 60ml
+                    </span>
+                  </div>
+                  <div className="detail-content__rating-content">
+                    Giao hang hoi lau, dong goi san pham can than, chat luong
+                    san pham ok
+                  </div>
+                  <div className="detail-content__rating-date">
+                    2021-04-23 07:57
+                  </div>
+                  {/* <div className="detail-content__rating-rate"></div> */}
                 </div>
               </div>
             </div>
@@ -383,9 +425,18 @@ export default function DetailProduct() {
             </div>
             <div className="detail-content__hot-list">
               <div className="detail-content__hot-item">
-                <div className="detail-content__hot-img"></div>
-                <div className="detail-content__hot-name"></div>
-                <div className="detail-content__hot-price"></div>
+                <img
+                  src={img}
+                  alt="hot-img"
+                  className="detail-content__hot-img"
+                />
+                <div className="detail-content__hot-name">
+                  [HÀNG TUYỂN] Tinh chất bôi tóc Kirkland 5% dung dịch chính
+                  hãng Costco, giúp mọc tóc, mày, râu và ngăn rụng, hói cho nam
+                </div>
+                <div className="detail-content__hot-price">
+                  ₫198.000 - ₫288.000
+                </div>
               </div>
             </div>
           </div>
