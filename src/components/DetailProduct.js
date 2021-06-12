@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 
 export default function DetailProduct({ metaTitle }) {
+  const scrolltoEl = useRef();
   const { singleProduct, handleClick } = useContext(ProductContext);
   let itemByMetaTitle = singleProduct(metaTitle);
   itemByMetaTitle = { ...itemByMetaTitle, amount: 1 };
@@ -44,6 +45,10 @@ export default function DetailProduct({ metaTitle }) {
   const handleAddCart = (e) => {
     handleClick(e, item);
     toggleIsAddCardPopup(!isAddCartPopup);
+  };
+
+  const handleScrollTo = (e) => {
+    scrolltoEl.current.scrollIntoView();
   };
 
   return (
@@ -84,7 +89,7 @@ export default function DetailProduct({ metaTitle }) {
           <div className="detail-product__info-right">
             <div className="detail-product__name">{item.name}</div>
             <div className="detail-product__more">
-              <div className="detail-product__rating">
+              <div onClick={handleScrollTo} className="detail-product__rating">
                 <span className="detail-product__rating-number">4.9</span>
                 <div className="detail-product__rating-icons">
                   <svg
@@ -103,12 +108,14 @@ export default function DetailProduct({ metaTitle }) {
                   </svg>
                 </div>
               </div>
-              <div className="detail-product__review">
+              <div onClick={handleScrollTo} className="detail-product__review">
                 <span className="detail-product__review-number">1.2k</span>
                 <span className="detail-product__review-label">Đánh giá</span>
               </div>
               <div className="detail-product__sold">
-                <span className="detail-product__sold-number">7.1k</span>
+                <span className="detail-product__sold-number">
+                  {item.soldAmount}
+                </span>
                 <span className="detail-product__sold-label">Đã bán</span>
               </div>
             </div>
@@ -435,7 +442,7 @@ export default function DetailProduct({ metaTitle }) {
               <div className="detail-content__description-content">MÔ TẢ </div>
             </div>
 
-            <div className="detail-content__rating">
+            <div ref={scrolltoEl} className="detail-content__rating">
               <div className="detail-content__rating-label">
                 ĐÁNH GIÁ SẢN PHẨM
               </div>
