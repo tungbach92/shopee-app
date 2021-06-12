@@ -1,7 +1,51 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
-export default function DetailProduct() {
+import { Link } from "react-router-dom";
+import { ProductContext } from "../context";
+import useModal from "../hooks/useModal";
+import AddCartModal from "./AddCartModal";
+
+export default function DetailProduct({ metaTitle }) {
+  const { singleProduct, handleClick } = useContext(ProductContext);
+  let itemByMetaTitle = singleProduct(metaTitle);
+  itemByMetaTitle = { ...itemByMetaTitle, amount: 1 };
+  const [item, setItem] = useState(itemByMetaTitle);
+  const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
+  const handleDecreAmount = () => {
+    const newItem = { ...item };
+    newItem.amount--;
+    newItem.amount = newItem.amount <= 0 ? 1 : newItem.amount;
+    setItem(newItem);
+  };
+  const handleIncreAmount = () => {
+    const newItem = { ...item };
+    newItem.amount++;
+    setItem(newItem);
+  };
+
+  const handleInputAmountChange = (e) => {
+    const amount = e.target.value;
+    const newItem = { ...item };
+    newItem.amount = Number(amount);
+    setItem(newItem);
+  };
+
+  const handleVariationClick = (e) => {
+    const newItem = { ...item };
+    newItem.variation = e.target.innerText;
+    setItem(newItem);
+  };
+
+  const handleBuyNow = (e) => {
+    handleClick(e, item);
+  };
+
+  const handleAddCart = (e) => {
+    handleClick(e, item);
+    toggleIsAddCardPopup(!isAddCartPopup);
+  };
+
   return (
     <div className="container">
       <div className="grid detail-breadcrumb">
@@ -12,10 +56,14 @@ export default function DetailProduct() {
         <div className="detail-product__info">
           <div className="detail-product__info-left">
             <div className="detail-product__img-wrapper">
-              <img src={img} alt="detail-img" className="detail-product__img" />
+              <img
+                src={require(`../img/${item.imageUrl}`).default}
+                alt="detail-img"
+                className="detail-product__img"
+              />
               <div className="detail-product__slider">
                 <img
-                  src={img}
+                  src={require(`../img/${item.imageUrl}`).default}
                   alt="detail-img"
                   className="detail-product__slider-item"
                 />
@@ -34,10 +82,7 @@ export default function DetailProduct() {
           </div>
 
           <div className="detail-product__info-right">
-            <div className="detail-product__name">
-              Tinh chất bôi tóc Kirkland chính hãng Mỹ, ngăn rụng hói và mọc
-              tóc, râu, mày cho nam
-            </div>
+            <div className="detail-product__name">{item.name}</div>
             <div className="detail-product__more">
               <div className="detail-product__rating">
                 <span className="detail-product__rating-number">4.9</span>
@@ -67,7 +112,7 @@ export default function DetailProduct() {
                 <span className="detail-product__sold-label">Đã bán</span>
               </div>
             </div>
-            <div className="detail-product__price">₫45.000 - ₫159.000</div>
+            <div className="detail-product__price">₫{item.price}</div>
             <div className="detail-product__info-wrapper">
               <div className="detail-product__combo-label">
                 Combo Khuyến Mãi
@@ -82,10 +127,10 @@ export default function DetailProduct() {
                   width="20"
                   className="detail-product__ship-icon"
                 >
-                  <g fill="none" fill-rule="evenodd" transform="">
+                  <g fill="none" fillRule="evenodd" transform="">
                     <rect
                       fill="#00bfa5"
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       height="9"
                       rx="1"
                       width="12"
@@ -101,7 +146,7 @@ export default function DetailProduct() {
                     ></rect>
                     <rect
                       fill="#00bfa5"
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       height="7"
                       rx="1"
                       width="7"
@@ -145,7 +190,7 @@ export default function DetailProduct() {
                   <g>
                     <line
                       fill="none"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                       strokeMiterlimit="10"
                       x1="8.6"
                       x2="4.2"
@@ -177,13 +222,13 @@ export default function DetailProduct() {
                     <polyline
                       fill="none"
                       points="1.5 9.8 .5 9.8 .5 1.8 10 1.8 10 9.1"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                       strokeMiterlimit="10"
                     ></polyline>
                     <polyline
                       fill="none"
                       points="9.9 3.8 14 3.8 14.5 10.2 11.9 10.2"
-                      stroke-linejoin="round"
+                      strokeLinejoin="round"
                       strokeMiterlimit="10"
                     ></polyline>
                   </g>
@@ -195,7 +240,7 @@ export default function DetailProduct() {
                 <span className="detail-product__shipto-content">
                   Quận Hoàng Mai, Hà Nội
                   <svg
-                    enable-background="new 0 0 11 11"
+                    enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"
                     x="0"
                     y="0"
@@ -213,7 +258,7 @@ export default function DetailProduct() {
                 <span className="detail-product__shipprice-content">
                   ₫34.500 - ₫46.676
                   <svg
-                    enable-background="new 0 0 11 11"
+                    enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"
                     x="0"
                     y="0"
@@ -228,25 +273,55 @@ export default function DetailProduct() {
 
               <div className="detail-product__variation-label">Variation</div>
               <div className="detail-product__variation-list">
-                <button className="btn detail-product__variation-item">
-                  item3424234
-                </button>
+                {item.variationList.map((variationItem, index) => (
+                  <button
+                    key={index}
+                    onClick={handleVariationClick}
+                    className={
+                      variationItem === item.variation
+                        ? "detail-product__variation-item detail-product__variation-item--selected"
+                        : "detail-product__variation-item"
+                    }
+                  >
+                    {variationItem}
+                  </button>
+                ))}
               </div>
 
               <div className="detail-product__amount-label">Số Lượng</div>
               <div className="detail-product__amount-wrapper">
-                <button className="btn detail-product__amount-desc">-</button>
-                <input type="text" className="detail-product__amount-input" />
-                <button className="btn detail-product__amount-incre">+</button>
+                <button
+                  onClick={handleDecreAmount}
+                  className="btn detail-product__amount-desc"
+                >
+                  -
+                </button>
+                <input
+                  onChange={handleInputAmountChange}
+                  value={Number(item.amount)}
+                  type="text"
+                  className="detail-product__amount-input"
+                />
+                <button
+                  onClick={handleIncreAmount}
+                  className="btn detail-product__amount-incre"
+                >
+                  +
+                </button>
                 <div className="detail-product__amount-left">
                   645 sản phẩm có sẵn
                 </div>
               </div>
             </div>
             <div className="detail-product__btn-wrapper">
-              <button className="btn detail-product__btn-cart">
+              <button
+                onClick={handleAddCart}
+                data-id={item.id}
+                data-name="addToCartBtn"
+                className="btn detail-product__btn-cart"
+              >
                 <svg
-                  enable-background="new 0 0 15 15"
+                  enableBackground="new 0 0 15 15"
                   viewBox="0 0 15 15"
                   x="0"
                   y="0"
@@ -257,17 +332,17 @@ export default function DetailProduct() {
                       <polyline
                         fill="none"
                         points=".5 .5 2.7 .5 5.2 11 12.4 11 14.5 3.5 3.7 3.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-miterlimit="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
                       ></polyline>
                       <circle cx="6" cy="13.5" r="1" stroke="none"></circle>
                       <circle cx="11.5" cy="13.5" r="1" stroke="none"></circle>
                     </g>
                     <line
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-miterlimit="10"
+                      strokeLinecap="round"
+                      strokeMiterlimit="10"
                       x1="7.5"
                       x2="10.5"
                       y1="7"
@@ -275,8 +350,8 @@ export default function DetailProduct() {
                     ></line>
                     <line
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-miterlimit="10"
+                      strokeLinecap="round"
+                      strokeMiterlimit="10"
                       x1="9"
                       x2="9"
                       y1="8.5"
@@ -288,9 +363,22 @@ export default function DetailProduct() {
                   thêm vào giỏ hàng
                 </span>
               </button>
-              <button className="btn detail-product__btn-checkout">
+              {isAddCartPopup && (
+                <AddCartModal
+                  isAddCartPopup={isAddCartPopup}
+                  toggleIsAddCardPopup={toggleIsAddCardPopup}
+                ></AddCartModal>
+              )}
+
+              <Link
+                to="/cart"
+                onClick={handleBuyNow}
+                data-id={item.id}
+                data-name="addToCartBtn"
+                className="detail-product__btn-checkout"
+              >
                 Mua ngay
-              </button>
+              </Link>
             </div>
             <div className="detail-product__protect-wrapper">
               <img

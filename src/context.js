@@ -265,7 +265,7 @@ export default class ProductProvider extends Component {
     }
   };
 
-  handleClick = (event) => {
+  handleClick = (event, item) => {
     console.log(event);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
@@ -335,7 +335,7 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "addToCartBtn") {
-      this.addToCartItems(id, () => {
+      this.addToCartItems(id, item, () => {
         this.setDefaultChecked(); // provider render
         this.saveCartItemsToStorage();
       });
@@ -369,12 +369,24 @@ export default class ProductProvider extends Component {
     this.setState({ searchHistory });
   };
 
-  addToCartItems = (id, callback) => {
-    const { items, cartItems } = this.state;
+  addToCartItems = (id, item, callback) => {
+    let { items, cartItems } = this.state;
     const tempItems = [...items];
-    let item = tempItems.find((item) => item.id === Number(id));
-    item = { ...item, amount: 1 };
-    let cartItemsModified = [...cartItems, item];
+    let cartItemsModified = [];
+    let existItems = cartItems.find((cartItem) => cartItem.id === Number(id));
+
+    if (!item) {
+      let item = tempItems.find((item) => item.id === Number(id));
+      item = { ...item, amount: 1 };
+      cartItemsModified = [...cartItems, item];
+    } else if (existItems) {
+      cartItems = cartItems.filter((cartItem) => cartItem.id !== Number(id));
+      let newItem = { ...item };
+      newItem.amount += existItems.amount;
+      cartItemsModified = [...cartItems, newItem];
+    } else {
+      cartItemsModified = [...cartItems, item];
+    }
     this.setState(
       {
         cartItems: cartItemsModified,
@@ -513,6 +525,12 @@ export default class ProductProvider extends Component {
     });
   };
 
+  singleProduct = (metaTitle) => {
+    const items = [...this.state.items];
+    const item = items.find((item) => item.metaTitle === metaTitle);
+    return item;
+  };
+
   filterCategoryProduct = () => {
     //get sortedItems by filter using categoryItems
     let { categoryItems, filter, filterPrice } = this.state;
@@ -615,6 +633,7 @@ export default class ProductProvider extends Component {
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
+          singleProduct: this.singleProduct,
         }}
       >
         {this.props.children}
