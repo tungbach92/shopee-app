@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
+import ImageGallery from "react-image-gallery";
 
 export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
@@ -51,6 +52,20 @@ export default function DetailProduct({ metaTitle }) {
     scrolltoEl.current.scrollIntoView();
   };
 
+  const images = [
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+  ];
   return (
     <div className="container">
       <div className="grid detail-breadcrumb">
@@ -61,23 +76,18 @@ export default function DetailProduct({ metaTitle }) {
         <div className="detail-product__info">
           <div className="detail-product__info-left">
             <div className="detail-product__img-wrapper">
-              <img
-                src={require(`../img/${item.imageUrl}`).default}
-                alt="detail-img"
-                className="detail-product__img"
-              />
-              <div className="detail-product__slider">
-                <img
-                  src={require(`../img/${item.imageUrl}`).default}
-                  alt="detail-img"
-                  className="detail-product__slider-item"
-                />
-              </div>
+              <ImageGallery
+                showPlayButton={false}
+                items={images}
+              ></ImageGallery>
             </div>
             <div className="detail-product__sharelike-wrapper">
               <div className="detail-product__share">
                 <div className="detail-product__share-label">Chia sẻ:</div>
-                <div className="detail-product__share-icon">icon</div>
+                <div className="detail-product__share-background detail-product__share-fm"></div>
+                <div className="detail-product__share-background detail-product__share-fb"></div>
+                <div className="detail-product__share-background detail-product__share-pinterest"></div>
+                <div className="detail-product__share-background detail-product__share-twitter"></div>
               </div>
               <div className="detail-product__like">
                 <div className="detail-product__like-icon">icon</div>
@@ -121,10 +131,10 @@ export default function DetailProduct({ metaTitle }) {
             </div>
             <div className="detail-product__price">₫{item.price}</div>
             <div className="detail-product__info-wrapper">
-              <div className="detail-product__combo-label">
+              {/* <div className="detail-product__combo-label">
                 Combo Khuyến Mãi
               </div>
-              <div className="detail-product__combo-value">Mua 2 + giảm 2%</div>
+              <div className="detail-product__combo-value">Mua 2 + giảm 2%</div> */}
 
               <div className="detail-product__ship-label">Vận Chuyển</div>
               <div className="detail-product__shipshipto-wrapper">
