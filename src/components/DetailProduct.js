@@ -11,16 +11,19 @@ export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
   const { singleProduct, handleClick, items, bestSelling } =
     useContext(ProductContext);
+  //
   let itemByMetaTitle = singleProduct(metaTitle);
   itemByMetaTitle = { ...itemByMetaTitle, amount: 1 };
   const [item, setItem] = useState(itemByMetaTitle);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
+  //
   const bestSellingItems = [...items].filter(
     (item) => item.soldAmount >= bestSelling
   );
   const sortedBestSellingItems = [...bestSellingItems].sort(
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
+  //
   const handleDecreAmount = () => {
     const newItem = { ...item };
     newItem.amount--;
