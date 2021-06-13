@@ -9,11 +9,18 @@ import ImageGallery from "react-image-gallery";
 
 export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
-  const { singleProduct, handleClick } = useContext(ProductContext);
+  const { singleProduct, handleClick, items, bestSelling } =
+    useContext(ProductContext);
   let itemByMetaTitle = singleProduct(metaTitle);
   itemByMetaTitle = { ...itemByMetaTitle, amount: 1 };
   const [item, setItem] = useState(itemByMetaTitle);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
+  const bestSellingItems = [...items].filter(
+    (item) => item.soldAmount >= bestSelling
+  );
+  const sortedBestSellingItems = [...bestSellingItems].sort(
+    (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
+  );
   const handleDecreAmount = () => {
     const newItem = { ...item };
     newItem.amount--;
@@ -529,20 +536,25 @@ export default function DetailProduct({ metaTitle }) {
               Top Sản Phẩm Bán Chạy
             </div>
             <div className="detail-content__hot-list">
-              <div className="detail-content__hot-item">
-                <img
-                  src={img}
-                  alt="hot-img"
-                  className="detail-content__hot-img"
-                />
-                <div className="detail-content__hot-name">
-                  [HÀNG TUYỂN] Tinh chất bôi tóc Kirkland 5% dung dịch chính
-                  hãng Costco, giúp mọc tóc, mày, râu và ngăn rụng, hói cho nam
-                </div>
-                <div className="detail-content__hot-price">
-                  ₫198.000 - ₫288.000
-                </div>
-              </div>
+              {sortedBestSellingItems.map((item, index) => {
+                if (index <= 7) {
+                  return (
+                    <div key={index} className="detail-content__hot-item">
+                      <img
+                        src={require(`../img/${item.imageUrl}`).default}
+                        alt="hot-img"
+                        className="detail-content__hot-img"
+                      />
+                      <div className="detail-content__hot-name">
+                        {item.name}
+                      </div>
+                      <div className="detail-content__hot-price">
+                        {item.price}
+                      </div>
+                    </div>
+                  );
+                } else return null;
+              })}
             </div>
           </div>
         </div>
