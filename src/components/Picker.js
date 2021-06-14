@@ -5,12 +5,21 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
   const [isDistrictSelected, setIsDistrictSelected] = useState(false);
   const [province, setProvince] = useState();
   const [district, setDistrict] = useState();
-  const provinces = ProvincesCitiesVN.getProvinces();
-  const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
-    province?.code
-  );
-  console.log(provinces);
-  console.log(districts);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+
+  useEffect(() => {
+    const provinces = ProvincesCitiesVN.getProvinces();
+    const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+      province?.code
+    );
+    setProvinces(provinces);
+    setDistricts(districts);
+    return () => {
+      // cleanup
+    };
+  }, [province?.code]);
+
   useEffect(() => {
     // effect
     if (province && district) {
@@ -45,21 +54,39 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
       setIsDistrictSelected(true);
     }
   };
+
+  const handleSelectedClick = () => {
+    setIsProvinceSelected(false);
+  };
+
+  const handlePickerInput = (e) => {
+    let text = e.target.value;
+    text = text.trim().toLowerCase();
+    const inputProvinces = provinces.filter((province) =>
+      province.name.toLowerCase().includes(text)
+    );
+    const inputDistricts = districts.filter((district) =>
+      district.name.toLowerCase().includes(text)
+    );
+    setProvinces(inputProvinces);
+    setDistricts(inputDistricts);
+  };
   return (
     <>
       <div className="detail-product__picker">
         <input
-          onChange={() => {
-            console.log("sdds");
-          }}
+          type="text"
+          onKeyUp={handlePickerInput}
           placeholder="Tìm"
-          value=""
           className="detail-product__picker-input"
         />
 
         <div className="detail-product__picker-list-wrapper">
           {isProvinceSelected && (
-            <div className="detail-product__selected-item">
+            <div
+              onClick={handleSelectedClick}
+              className="detail-product__selected-item"
+            >
               <svg
                 enableBackground="new 0 0 11 11"
                 viewBox="0 0 11 11"

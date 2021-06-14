@@ -32,13 +32,6 @@ export default function DetailProduct({ metaTitle }) {
     setIsPickerShow(!isPickerShow);
   };
 
-  const onChange = (value, selectedRows) => {
-    const address = selectedRows.map((item) => item.title).join(",");
-    setAddress(address);
-    setIsPickerShow(!isPickerShow);
-    console.log("选择值:", value);
-  };
-
   const handleDecreAmount = () => {
     const newItem = { ...item };
     newItem.amount--;
@@ -289,7 +282,11 @@ export default function DetailProduct({ metaTitle }) {
                     viewBox="0 0 11 11"
                     x="0"
                     y="0"
-                    className="detail-product__content-icon"
+                    className={
+                      isPickerShow
+                        ? "detail-product__content-icon detail-product__content-icon--rotate"
+                        : "detail-product__content-icon"
+                    }
                   >
                     <g>
                       <path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path>
@@ -301,7 +298,6 @@ export default function DetailProduct({ metaTitle }) {
                     isPickerShow={isPickerShow}
                     togglePicker={togglePicker}
                     setAddress={setAddress}
-                    // dataSource={ProvincesCitiesVN.getDistricts()}
                   />
                 )}
 

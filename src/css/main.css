@@ -2977,10 +2977,16 @@ header {
   cursor: pointer;
   padding: 1rem;
 }
+
+.detail-product__picker-item:hover {
+  background-color: #f5f5f5;
+}
 .detail-product__selected-item {
   padding: 1rem;
   background-color: #f5f5f5;
+  cursor: pointer;
 }
+
 .detail-product__selected-icon {
   margin-right: 1rem;
   height: 1rem;
@@ -2991,6 +2997,10 @@ header {
   stroke: #636363;
   margin-left: 5px;
   width: 1rem;
+}
+
+.detail-product__content-icon--rotate {
+  transform: rotate(180deg);
 }
 .detail-product__shipprice-label {
   grid-column-start: 2;
