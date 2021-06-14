@@ -6,6 +6,7 @@ import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
+import Picker from "./Picker";
 
 export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
@@ -17,6 +18,9 @@ export default function DetailProduct({ metaTitle }) {
   const [item, setItem] = useState(itemByMetaTitle);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
+  const [isPickerShow, setIsPickerShow] = useState(false);
+  const [address, setAddress] = useState("Chua co thong tin");
+  //
   const bestSellingItems = [...items].filter(
     (item) => item.soldAmount >= bestSelling
   );
@@ -24,6 +28,17 @@ export default function DetailProduct({ metaTitle }) {
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
   //
+  const togglePicker = () => {
+    setIsPickerShow(!isPickerShow);
+  };
+
+  const onChange = (value, selectedRows) => {
+    const address = selectedRows.map((item) => item.title).join(",");
+    setAddress(address);
+    setIsPickerShow(!isPickerShow);
+    console.log("选择值:", value);
+  };
+
   const handleDecreAmount = () => {
     const newItem = { ...item };
     newItem.amount--;
@@ -264,8 +279,11 @@ export default function DetailProduct({ metaTitle }) {
                 <span className="detail-product__shipto-label">
                   Vận Chuyển Tới
                 </span>
-                <span className="detail-product__shipto-content">
-                  Quận Hoàng Mai, Hà Nội
+                <div
+                  onClick={togglePicker}
+                  className="detail-product__shipto-content"
+                >
+                  {address}
                   <svg
                     enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"
@@ -277,7 +295,15 @@ export default function DetailProduct({ metaTitle }) {
                       <path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path>
                     </g>
                   </svg>
-                </span>
+                </div>
+                {isPickerShow && (
+                  <Picker
+                    isPickerShow={isPickerShow}
+                    togglePicker={togglePicker}
+                    setAddress={setAddress}
+                    // dataSource={ProvincesCitiesVN.getDistricts()}
+                  />
+                )}
 
                 <span className="detail-product__shipprice-label">
                   Phí Vận Chuyển
