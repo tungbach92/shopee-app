@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
+
 import ProvincesCitiesVN from "pc-vn";
-export default function Picker({ setAddress, isPickerShow, togglePicker }) {
+export default function Picker({
+  setAddress,
+  isPickerShow,
+  togglePicker,
+  setShipPriceProvince,
+}) {
   const [isProvinceSelected, setIsProvinceSelected] = useState(false);
   const [isDistrictSelected, setIsDistrictSelected] = useState(false);
   const [province, setProvince] = useState();
@@ -10,21 +16,30 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
 
   useEffect(() => {
     const provinces = ProvincesCitiesVN.getProvinces();
-    const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
-      province?.code
-    );
-    setProvinces(provinces);
-    setDistricts(districts);
+    const provincesWithShipPrice = provinces.map((item, index) => {
+      return { ...item, shipPrice: 10000 + 2000 * index };
+    });
+    console.log(provincesWithShipPrice);
+    if (province) {
+      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+        province.code
+      );
+      setDistricts(districts);
+    }
+    setProvinces(provincesWithShipPrice);
+
     return () => {
       // cleanup
     };
-  }, [province?.code]);
+  }, [province]);
 
   useEffect(() => {
     // effect
     if (province && district) {
       const address = district.full_name;
       setAddress(address);
+      const shipPrice = province.shipPrice;
+      setShipPriceProvince(shipPrice);
     }
     if (isDistrictSelected) {
       togglePicker(!isPickerShow);
@@ -39,6 +54,7 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
     isPickerShow,
     togglePicker,
     isDistrictSelected,
+    setShipPriceProvince,
   ]);
 
   const handleClick = (e) => {

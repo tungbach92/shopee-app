@@ -40,14 +40,14 @@ export default class ProductProvider extends Component {
       {
         id: 0,
         name: "Giao Hàng Tiết Kiệm",
-        price: "20000",
-        date: "2~3 ngày",
+        price: "10000",
+        date: "4~5 ngày",
         method: "Cho phép Thanh toán khi nhận hàng",
       },
       {
         id: 1,
         name: "JT Express",
-        price: "30000",
+        price: "20000",
         date: "2~3 ngày",
         method: "Cho phép Thanh toán khi nhận hàng",
       },
@@ -86,6 +86,7 @@ export default class ProductProvider extends Component {
       this.setDefaultChecked
     );
   };
+
   setVoucher = (voucher) => {
     this.setState({ voucher });
   };
@@ -374,18 +375,26 @@ export default class ProductProvider extends Component {
     const tempItems = [...items];
     let cartItemsModified = [];
     let existItems = cartItems.find((cartItem) => cartItem.id === Number(id));
-
+    let modifiedItem = {
+      ...item,
+      amount: 1,
+      shipPriceProvince: 0,
+    };
     if (!item) {
       let item = tempItems.find((item) => item.id === Number(id));
-      item = { ...item, amount: 1 };
+      item = {
+        ...item,
+        amount: 1,
+        shipPriceProvince: 0,
+      };
       cartItemsModified = [...cartItems, item];
     } else if (existItems) {
       cartItems = cartItems.filter((cartItem) => cartItem.id !== Number(id));
-      let newItem = { ...item };
+      let newItem = { ...modifiedItem };
       newItem.amount += existItems.amount;
       cartItemsModified = [...cartItems, newItem];
     } else {
-      cartItemsModified = [...cartItems, item];
+      cartItemsModified = [...cartItems, modifiedItem];
     }
     this.setState(
       {

@@ -19,13 +19,8 @@ export default function CheckoutProduct() {
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
-  const {
-    shipUnitList,
-    voucherList,
-    voucher,
-    setVoucher,
-    checkoutItems,
-  } = useContext(ProductContext);
+  const { shipUnitList, voucherList, voucher, setVoucher, checkoutItems } =
+    useContext(ProductContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -82,7 +77,13 @@ export default function CheckoutProduct() {
   checkoutItems.forEach((item) => (checkoutItemTotal += item.amount));
 
   //Calc shipPrice
-  let shipPrice = Number(shipUnit.price === undefined ? 0 : shipUnit.price);
+  let shipPriceProvinceTotal = 0;
+  checkoutItems.forEach(
+    (item) => (shipPriceProvinceTotal += item.shipPriceProvince)
+  );
+  let shipPrice =
+    (Number(shipUnit.price) ? Number(shipUnit.price) : 0) +
+    shipPriceProvinceTotal;
 
   //Calc saved
   let saved = 0;
@@ -121,12 +122,7 @@ export default function CheckoutProduct() {
     return () => {
       // cleanup
     };
-  }, [
-    shipUnit,
-    shipUnitList,
-    isInformation,
-    customerInfo,
-  ]);
+  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
 
   const handleClick = () => {
     setIsInformation(!isInformation);
@@ -717,7 +713,7 @@ export default function CheckoutProduct() {
               {checkoutPriceTotal}
             </span>
             <span className="checkout-product__ship-label">
-              Phí vận chuyển:
+              Tổng phí vận chuyển:
             </span>
             <span className="checkout-product__ship">{shipPrice}</span>
             <span className="checkout-product__discount-label">Tiết kiệm:</span>

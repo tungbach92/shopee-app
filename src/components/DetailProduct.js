@@ -13,13 +13,18 @@ export default function DetailProduct({ metaTitle }) {
   const { singleProduct, handleClick, items, bestSelling } =
     useContext(ProductContext);
   //
+  const [shipPriceProvince, setShipPriceProvince] = useState(0);
   let itemByMetaTitle = singleProduct(metaTitle);
-  itemByMetaTitle = { ...itemByMetaTitle, amount: 1 };
+  itemByMetaTitle = {
+    ...itemByMetaTitle,
+    amount: 1,
+    shipPriceProvince: shipPriceProvince,
+  };
   const [item, setItem] = useState(itemByMetaTitle);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
   const [isPickerShow, setIsPickerShow] = useState(false);
-  const [address, setAddress] = useState("Chua co thong tin");
+  const [address, setAddress] = useState("Chọn địa điểm");
   //
   const bestSellingItems = [...items].filter(
     (item) => item.soldAmount >= bestSelling
@@ -298,6 +303,7 @@ export default function DetailProduct({ metaTitle }) {
                     isPickerShow={isPickerShow}
                     togglePicker={togglePicker}
                     setAddress={setAddress}
+                    setShipPriceProvince={setShipPriceProvince}
                   />
                 )}
 
@@ -305,7 +311,7 @@ export default function DetailProduct({ metaTitle }) {
                   Phí Vận Chuyển
                 </span>
                 <span className="detail-product__shipprice-content">
-                  ₫34.500 - ₫46.676
+                  ₫{shipPriceProvince}
                   <svg
                     enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"

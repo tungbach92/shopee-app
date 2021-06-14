@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
 export default function ShipUnitsModal(props) {
@@ -76,7 +76,7 @@ export default function ShipUnitsModal(props) {
                   {item.name}
                 </label>
                 <span className="cart-product__shipunit-price">
-                  {item.price}
+                  {Number(item.price)}
                 </span>
                 <span className="cart-product__shipunit-date">{item.date}</span>
                 <span className="cart-product__shipunit-pay">
