@@ -6,7 +6,9 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
   const [province, setProvince] = useState();
   const [district, setDistrict] = useState();
   const provinces = ProvincesCitiesVN.getProvinces();
-  const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(province?.code);
+  const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+    province?.code
+  );
   console.log(provinces);
   console.log(districts);
   useEffect(() => {
@@ -15,9 +17,10 @@ export default function Picker({ setAddress, isPickerShow, togglePicker }) {
       const address = district.full_name;
       setAddress(address);
     }
-
+    if (isDistrictSelected) {
+      togglePicker(!isPickerShow);
+    }
     return () => {
-      if (isDistrictSelected) togglePicker(!isPickerShow);
       // cleanup
     };
   }, [
