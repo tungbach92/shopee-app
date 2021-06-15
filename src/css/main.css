@@ -2370,6 +2370,11 @@ header {
   flex: 1;
   text-align: end;
 }
+.checkout-product__first-addition {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
 .checkout-product__second-addition {
   text-align: end;
   font-size: 1.6rem;
@@ -2383,13 +2388,6 @@ header {
 .checkout-product__additon-price {
   margin-left: 2.6rem;
   color: var(--primary-color);
-}
-
-.checkout-product__first-addition {
-  display: flex;
-  align-items: center;
-  background-color: var(--while-color);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 
 .checkout-product__checkout-wrapper {

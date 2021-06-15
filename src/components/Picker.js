@@ -17,7 +17,10 @@ export default function Picker({
   useEffect(() => {
     const provinces = ProvincesCitiesVN.getProvinces();
     const provincesWithShipPrice = provinces.map((item, index) => {
-      return { ...item, shipPrice: 10000 + 2000 * index };
+      return {
+        ...item,
+        shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
+      };
     });
     console.log(provincesWithShipPrice);
     if (province) {

@@ -16,11 +16,17 @@ import Picker from "./Picker";
 
 export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
-  const { singleProduct, handleClick, items, bestSelling } =
-    useContext(ProductContext);
+  const {
+    singleProduct,
+    handleClick,
+    items,
+    bestSelling,
+    shipPriceProvince,
+    setShipPriceProvince,
+  } = useContext(ProductContext);
   //
-  const [shipPriceProvince, setShipPriceProvince] = useState(0);
-  const getCurrentItemWithAmount = useCallback(() => {
+
+  const getModifiedItem = useCallback(() => {
     let itemByMetaTitle = singleProduct(metaTitle);
     itemByMetaTitle = {
       ...itemByMetaTitle,
@@ -29,7 +35,7 @@ export default function DetailProduct({ metaTitle }) {
     };
     return itemByMetaTitle;
   }, [metaTitle, shipPriceProvince, singleProduct]);
-  const defaultItem = getCurrentItemWithAmount();
+  const defaultItem = getModifiedItem();
   const [item, setItem] = useState(defaultItem);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
@@ -59,12 +65,12 @@ export default function DetailProduct({ metaTitle }) {
   ];
   useEffect(() => {
     // effect
-    const item = getCurrentItemWithAmount();
+    const item = getModifiedItem();
     setItem(item);
     return () => {
       // cleanup
     };
-  }, [shipPriceProvince, getCurrentItemWithAmount]);
+  }, [shipPriceProvince, getModifiedItem]);
 
   //
   const togglePicker = () => {
@@ -331,7 +337,7 @@ export default function DetailProduct({ metaTitle }) {
                   Phí Vận Chuyển
                 </span>
                 <span className="detail-product__shipprice-content">
-                  ₫{shipPriceProvince}
+                  ₫{shipPriceProvince[0]} - ₫{shipPriceProvince[1]}
                   <svg
                     enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"

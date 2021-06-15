@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -19,14 +19,31 @@ export default function CheckoutProduct() {
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
-  const { shipUnitList, voucherList, voucher, setVoucher, checkoutItems } =
+  const { shipPriceProvince, voucherList, voucher, setVoucher, checkoutItems } =
     useContext(ProductContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
     address: "",
   });
-
+  const shipUnitList = useMemo(() => {
+    return [
+      {
+        id: 0,
+        name: "Giao Hàng Tiết Kiệm",
+        price: shipPriceProvince[0],
+        date: "4~5 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+      {
+        id: 1,
+        name: "JT Express",
+        price: shipPriceProvince[1],
+        date: "2~3 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+    ];
+  }, [shipPriceProvince]);
   const [message, setMessage] = useState("");
   const [cardInfo, setCardInfo] = useState({});
   const [shipUnit, setShipUnit] = useState({});
@@ -98,6 +115,7 @@ export default function CheckoutProduct() {
 
   useEffect(() => {
     // effect
+    //
     const setInputCustomerInfo = () => {
       if (isInformation === true) {
         inputEl.current[0].value = customerInfo.name;
@@ -122,7 +140,7 @@ export default function CheckoutProduct() {
     return () => {
       // cleanup
     };
-  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
+  }, [shipUnit, shipUnitList, isInformation, shipPriceProvince, customerInfo]);
 
   const handleClick = () => {
     setIsInformation(!isInformation);
@@ -339,6 +357,65 @@ export default function CheckoutProduct() {
                 </span>
               </li>
               <div className="checkout-product__addition">
+                <div className="checkout-product__first-addition">
+                  <span className="checkout-product__message-wrapper">
+                    <span className="checkout-product__message-label">
+                      Lời nhắn:
+                    </span>
+                    <input
+                      ref={inputMessageEl}
+                      onBlur={handleInputBlur}
+                      onKeyUp={handleInputEnter}
+                      type="text"
+                      placeholder="Lưu ý cho người bán..."
+                      className="checkout-product__message-input"
+                    />
+                  </span>
+                  <span className="checkout-product__transport-wrapper">
+                    <span className="checkout-product__transport-label">
+                      Đơn vị vận chuyển:
+                    </span>
+
+                    {Object.keys(shipUnit).length <= 0 ? (
+                      <span className="checkout-product__transport-notchoose">
+                        Chưa chọn đơn vị vận chuyển
+                      </span>
+                    ) : (
+                      <span className="checkout-product__transport-info">
+                        <span className="checkout-product__transport-name">
+                          {shipUnit.name}
+                        </span>
+                        <span className="checkout-product__transport-date">
+                          {shipUnit.date}
+                        </span>
+                        <span className="checkout-product__transport-method">
+                          {shipUnit.method}
+                        </span>
+                      </span>
+                    )}
+
+                    <span
+                      onClick={handleShipUnitModal}
+                      className="checkout-product__transport-action"
+                    >
+                      {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
+                    </span>
+                    {isShipUnits && (
+                      <ShipUnitsModal
+                        isShipUnits={isShipUnits}
+                        toggleShipUnits={toggleShipUnits}
+                        shipUnit={shipUnit}
+                        shipUnitList={shipUnitList}
+                        setShipUnit={setShipUnit}
+                        shipChecked={shipChecked}
+                        setShipChecked={setShipChecked}
+                      ></ShipUnitsModal>
+                    )}
+                    <span className="checkout-product__transport-price">
+                      {shipUnit.price}
+                    </span>
+                  </span>
+                </div>
                 <span className="checkout-product__second-addition">
                   <span className="checkout-product__price-label">
                     Tổng số tiền ({item.amount} sản phẩm):
@@ -351,62 +428,7 @@ export default function CheckoutProduct() {
             </div>
           ))}
         </ul>
-        <div className="checkout-product__first-addition">
-          <span className="checkout-product__message-wrapper">
-            <span className="checkout-product__message-label">Lời nhắn:</span>
-            <input
-              ref={inputMessageEl}
-              onBlur={handleInputBlur}
-              onKeyUp={handleInputEnter}
-              type="text"
-              placeholder="Lưu ý cho người bán..."
-              className="checkout-product__message-input"
-            />
-          </span>
-          <span className="checkout-product__transport-wrapper">
-            <span className="checkout-product__transport-label">
-              Đơn vị vận chuyển:
-            </span>
 
-            {Object.keys(shipUnit).length <= 0 ? (
-              <span className="checkout-product__transport-notchoose">
-                Chưa chọn đơn vị vận chuyển
-              </span>
-            ) : (
-              <span className="checkout-product__transport-info">
-                <span className="checkout-product__transport-name">
-                  {shipUnit.name}
-                </span>
-                <span className="checkout-product__transport-date">
-                  {shipUnit.date}
-                </span>
-                <span className="checkout-product__transport-method">
-                  {shipUnit.method}
-                </span>
-              </span>
-            )}
-
-            <span
-              onClick={handleShipUnitModal}
-              className="checkout-product__transport-action"
-            >
-              {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
-            </span>
-            {isShipUnits && (
-              <ShipUnitsModal
-                isShipUnits={isShipUnits}
-                toggleShipUnits={toggleShipUnits}
-                shipUnit={shipUnit}
-                setShipUnit={setShipUnit}
-                shipChecked={shipChecked}
-                setShipChecked={setShipChecked}
-              ></ShipUnitsModal>
-            )}
-            <span className="checkout-product__transport-price">
-              {shipUnit.price}
-            </span>
-          </span>
-        </div>
         <div className="checkout-product__checkout-wrapper">
           <div className="checkout-product__voucher-wrapper">
             {Object.keys(voucher).length ? (

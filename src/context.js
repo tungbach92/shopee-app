@@ -36,22 +36,7 @@ export default class ProductProvider extends Component {
       { code: "LUNARSALE", discount: "50%" },
       { code: "CHRISTMASSALE", discount: "100000" },
     ],
-    shipUnitList: [
-      {
-        id: 0,
-        name: "Giao Hàng Tiết Kiệm",
-        price: "10000",
-        date: "4~5 ngày",
-        method: "Cho phép Thanh toán khi nhận hàng",
-      },
-      {
-        id: 1,
-        name: "JT Express",
-        price: "20000",
-        date: "2~3 ngày",
-        method: "Cho phép Thanh toán khi nhận hàng",
-      },
-    ],
+    shipPriceProvince: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -85,6 +70,10 @@ export default class ProductProvider extends Component {
       },
       this.setDefaultChecked
     );
+  };
+
+  setShipPriceProvince = (shipPriceProvince) => {
+    this.setState({ shipPriceProvince });
   };
 
   setVoucher = (voucher) => {
@@ -381,7 +370,7 @@ export default class ProductProvider extends Component {
       item = {
         ...item,
         amount: 1,
-        shipPriceProvince: 0,
+        shipPriceProvince: [0, 0],
       };
       cartItemsModified = [...cartItems, item];
     } else if (existItems) {
@@ -639,6 +628,7 @@ export default class ProductProvider extends Component {
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
           singleProduct: this.singleProduct,
+          setShipPriceProvince: this.setShipPriceProvince,
         }}
       >
         {this.props.children}

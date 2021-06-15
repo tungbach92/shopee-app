@@ -1,16 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import { ProductContext } from "../context";
 export default function ShipUnitsModal(props) {
   const {
     shipChecked,
     setShipChecked,
     shipUnit,
     setShipUnit,
+    shipUnitList,
     isShipUnits,
     toggleShipUnits,
   } = props;
-  const { shipUnitList } = useContext(ProductContext);
 
   const handleClick = () => {
     toggleShipUnits(!isShipUnits);
