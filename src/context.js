@@ -375,11 +375,7 @@ export default class ProductProvider extends Component {
     const tempItems = [...items];
     let cartItemsModified = [];
     let existItems = cartItems.find((cartItem) => cartItem.id === Number(id));
-    let modifiedItem = {
-      ...item,
-      amount: 1,
-      shipPriceProvince: 0,
-    };
+
     if (!item) {
       let item = tempItems.find((item) => item.id === Number(id));
       item = {
@@ -390,11 +386,11 @@ export default class ProductProvider extends Component {
       cartItemsModified = [...cartItems, item];
     } else if (existItems) {
       cartItems = cartItems.filter((cartItem) => cartItem.id !== Number(id));
-      let newItem = { ...modifiedItem };
+      let newItem = { ...item };
       newItem.amount += existItems.amount;
       cartItemsModified = [...cartItems, newItem];
     } else {
-      cartItemsModified = [...cartItems, modifiedItem];
+      cartItemsModified = [...cartItems, item];
     }
     this.setState(
       {

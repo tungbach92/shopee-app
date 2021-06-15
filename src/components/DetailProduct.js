@@ -1,4 +1,10 @@
-import React, { useContext, useState, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
 import { Link } from "react-router-dom";
@@ -14,13 +20,17 @@ export default function DetailProduct({ metaTitle }) {
     useContext(ProductContext);
   //
   const [shipPriceProvince, setShipPriceProvince] = useState(0);
-  let itemByMetaTitle = singleProduct(metaTitle);
-  itemByMetaTitle = {
-    ...itemByMetaTitle,
-    amount: 1,
-    shipPriceProvince: shipPriceProvince,
-  };
-  const [item, setItem] = useState(itemByMetaTitle);
+  const getCurrentItemWithAmount = useCallback(() => {
+    let itemByMetaTitle = singleProduct(metaTitle);
+    itemByMetaTitle = {
+      ...itemByMetaTitle,
+      amount: 1,
+      shipPriceProvince: shipPriceProvince,
+    };
+    return itemByMetaTitle;
+  }, [metaTitle, shipPriceProvince, singleProduct]);
+  const defaultItem = getCurrentItemWithAmount();
+  const [item, setItem] = useState(defaultItem);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
   const [isPickerShow, setIsPickerShow] = useState(false);
@@ -32,6 +42,30 @@ export default function DetailProduct({ metaTitle }) {
   const sortedBestSellingItems = [...bestSellingItems].sort(
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
+
+  const images = [
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+    {
+      original: require(`../img/${item.imageUrl}`).default,
+      thumbnail: require(`../img/${item.imageUrl}`).default,
+    },
+  ];
+  useEffect(() => {
+    // effect
+    const item = getCurrentItemWithAmount();
+    setItem(item);
+    return () => {
+      // cleanup
+    };
+  }, [shipPriceProvince, getCurrentItemWithAmount]);
+
   //
   const togglePicker = () => {
     setIsPickerShow(!isPickerShow);
@@ -75,20 +109,6 @@ export default function DetailProduct({ metaTitle }) {
     scrolltoEl.current.scrollIntoView();
   };
 
-  const images = [
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-  ];
   return (
     <div className="container">
       <div className="grid detail-breadcrumb">
