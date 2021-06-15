@@ -36,7 +36,7 @@ export default class ProductProvider extends Component {
       { code: "LUNARSALE", discount: "50%" },
       { code: "CHRISTMASSALE", discount: "100000" },
     ],
-    shipPriceProvince: [],
+    shipPriceProvince: [0,0],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {

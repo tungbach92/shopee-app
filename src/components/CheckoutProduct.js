@@ -13,18 +13,26 @@ import visaImg from "../img/visa.png";
 import masterImg from "../img/master.png";
 import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
+import ProvincesCitiesVN from "pc-vn";
 export default function CheckoutProduct() {
   console.log("check out render");
 
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
-  const { shipPriceProvince, voucherList, voucher, setVoucher, checkoutItems } =
-    useContext(ProductContext);
+  const {
+    shipPriceProvince,
+    setShipPriceProvince,
+    voucherList,
+    voucher,
+    setVoucher,
+    checkoutItems,
+  } = useContext(ProductContext);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
     address: "",
+    districtFullName: "",
   });
   const shipUnitList = useMemo(() => {
     return [
@@ -53,6 +61,35 @@ export default function CheckoutProduct() {
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
+  const [isProvince, setIsProvince] = useState(false);
+  const [isDistrict, setIsDistrict] = useState(false);
+  const [province, setProvince] = useState();
+  const [district, setDistrict] = useState();
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+
+  useEffect(() => {
+    // effect
+    const provinces = ProvincesCitiesVN.getProvinces();
+    const provincesWithShipPrice = provinces.map((item, index) => {
+      return {
+        ...item,
+        shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
+      };
+    });
+    if (province) {
+      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+        province.code
+      );
+      setDistricts(districts);
+    }
+    setProvinces(provincesWithShipPrice);
+
+    return () => {
+      // cleanup
+    };
+  }, [province]);
+
   const {
     isPopupShowing,
     togglePopup,
@@ -72,7 +109,8 @@ export default function CheckoutProduct() {
   if (
     customerInfo.name === "" ||
     customerInfo.phone === "" ||
-    customerInfo.address === ""
+    customerInfo.address === "" ||
+    customerInfo.districtFullName === ""
   ) {
     isInfoEmpty = true;
   }
@@ -94,13 +132,7 @@ export default function CheckoutProduct() {
   checkoutItems.forEach((item) => (checkoutItemTotal += item.amount));
 
   //Calc shipPrice
-  let shipPriceProvinceTotal = 0;
-  checkoutItems.forEach(
-    (item) => (shipPriceProvinceTotal += item.shipPriceProvince)
-  );
-  let shipPrice =
-    (Number(shipUnit.price) ? Number(shipUnit.price) : 0) +
-    shipPriceProvinceTotal;
+  let shipPrice = Number(shipUnit.price) ? Number(shipUnit.price) : 0;
 
   //Calc saved
   let saved = 0;
@@ -124,8 +156,8 @@ export default function CheckoutProduct() {
       }
     };
 
+    let checked = [];
     const setCheckedByShipUnit = () => {
-      let checked = [];
       shipUnitList.forEach((item) => {
         if (item.id === shipUnit.id) {
           checked[item.id] = true;
@@ -135,12 +167,34 @@ export default function CheckoutProduct() {
       });
       setShipChecked(checked);
     };
+
     setCheckedByShipUnit();
     setInputCustomerInfo();
     return () => {
       // cleanup
     };
-  }, [shipUnit, shipUnitList, isInformation, shipPriceProvince, customerInfo]);
+  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
+
+  const handleProvinceChoose = (e) => {
+    const value = e.target.innerText;
+    const province = provinces.find((province) => province.name === value);
+    setProvince(province);
+    setIsProvince(!isProvince);
+  };
+  const handleDistrictChoose = (e) => {
+    const value = e.target.innerText;
+    const district = districts.find((district) => district.name === value);
+    setDistrict(district);
+    setIsDistrict(!isDistrict);
+  };
+
+  const handleProvinceClick = () => {
+    setIsProvince(!isProvince);
+  };
+
+  const handleDistrict = () => {
+    setIsDistrict(!isDistrict);
+  };
 
   const handleClick = () => {
     setIsInformation(!isInformation);
@@ -148,7 +202,13 @@ export default function CheckoutProduct() {
       const name = inputEl.current[0].value;
       const phone = inputEl.current[1].value;
       const address = inputEl.current[2].value;
-      setCustomerInfo({ name, phone, address });
+      const districtFullName = district.full_name;
+      setCustomerInfo({ name, phone, address, districtFullName });
+      if (province) {
+        const shipPrice = province.shipPrice;
+        setShipPriceProvince(shipPrice);
+        setShipUnit({});
+      }
     }
   };
 
@@ -259,8 +319,8 @@ export default function CheckoutProduct() {
             {!isInformation && (
               <>
                 <span className="checkout-product__info">
-                  {customerInfo.name} {customerInfo.phone}{" "}
-                  {customerInfo.address}
+                  {customerInfo.name}, {customerInfo.phone}{" "}
+                  {customerInfo.address} {customerInfo.districtFullName}
                 </span>
                 <span
                   onClick={handleClick}
@@ -301,11 +361,60 @@ export default function CheckoutProduct() {
                 <label className="checkout-product__location-label">
                   Địa chỉ:
                 </label>
+                <div
+                  onClick={handleProvinceClick}
+                  className={
+                    province
+                      ? "checkout-product__location-province checkout-product__location-province--selected"
+                      : "checkout-product__location-province"
+                  }
+                >
+                  {province ? province.name : `Thành phố`}
+                  <div className="checkout-product__province-arrow"></div>
+                </div>
+                {isProvince && (
+                  <div className="checkout-product__location-provinces">
+                    {provinces.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={handleProvinceChoose}
+                        className="checkout-product__provinces-item"
+                      >
+                        {item.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div
+                  onClick={handleDistrict}
+                  className={
+                    district
+                      ? "checkout-product__location-district checkout-product__location-district--selected"
+                      : "checkout-product__location-district"
+                  }
+                >
+                  {district ? district.name : `Quận/Huyện`}
+                  <div className="checkout-product__district-arrow"></div>
+                </div>
+                {isDistrict && (
+                  <div className="checkout-product__location-districts">
+                    {districts.map((item, index) => (
+                      <div
+                        key={index}
+                        onClick={handleDistrictChoose}
+                        className="checkout-product__districts-item"
+                      >
+                        {item.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <input
                   ref={(el) => (inputEl.current[2] = el)}
                   type="text"
                   className="checkout-product__location-input"
-                  placeholder="Địa chỉ..."
+                  placeholder="Số nhà, Ngõ, Ngách, Tên đường,..."
                   required
                 />
                 <button
@@ -357,65 +466,6 @@ export default function CheckoutProduct() {
                 </span>
               </li>
               <div className="checkout-product__addition">
-                <div className="checkout-product__first-addition">
-                  <span className="checkout-product__message-wrapper">
-                    <span className="checkout-product__message-label">
-                      Lời nhắn:
-                    </span>
-                    <input
-                      ref={inputMessageEl}
-                      onBlur={handleInputBlur}
-                      onKeyUp={handleInputEnter}
-                      type="text"
-                      placeholder="Lưu ý cho người bán..."
-                      className="checkout-product__message-input"
-                    />
-                  </span>
-                  <span className="checkout-product__transport-wrapper">
-                    <span className="checkout-product__transport-label">
-                      Đơn vị vận chuyển:
-                    </span>
-
-                    {Object.keys(shipUnit).length <= 0 ? (
-                      <span className="checkout-product__transport-notchoose">
-                        Chưa chọn đơn vị vận chuyển
-                      </span>
-                    ) : (
-                      <span className="checkout-product__transport-info">
-                        <span className="checkout-product__transport-name">
-                          {shipUnit.name}
-                        </span>
-                        <span className="checkout-product__transport-date">
-                          {shipUnit.date}
-                        </span>
-                        <span className="checkout-product__transport-method">
-                          {shipUnit.method}
-                        </span>
-                      </span>
-                    )}
-
-                    <span
-                      onClick={handleShipUnitModal}
-                      className="checkout-product__transport-action"
-                    >
-                      {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
-                    </span>
-                    {isShipUnits && (
-                      <ShipUnitsModal
-                        isShipUnits={isShipUnits}
-                        toggleShipUnits={toggleShipUnits}
-                        shipUnit={shipUnit}
-                        shipUnitList={shipUnitList}
-                        setShipUnit={setShipUnit}
-                        shipChecked={shipChecked}
-                        setShipChecked={setShipChecked}
-                      ></ShipUnitsModal>
-                    )}
-                    <span className="checkout-product__transport-price">
-                      {shipUnit.price}
-                    </span>
-                  </span>
-                </div>
                 <span className="checkout-product__second-addition">
                   <span className="checkout-product__price-label">
                     Tổng số tiền ({item.amount} sản phẩm):
@@ -428,7 +478,63 @@ export default function CheckoutProduct() {
             </div>
           ))}
         </ul>
+        <div className="checkout-product__first-addition">
+          <span className="checkout-product__message-wrapper">
+            <span className="checkout-product__message-label">Lời nhắn:</span>
+            <input
+              ref={inputMessageEl}
+              onBlur={handleInputBlur}
+              onKeyUp={handleInputEnter}
+              type="text"
+              placeholder="Lưu ý cho người bán..."
+              className="checkout-product__message-input"
+            />
+          </span>
+          <span className="checkout-product__transport-wrapper">
+            <span className="checkout-product__transport-label">
+              Đơn vị vận chuyển:
+            </span>
 
+            {Object.keys(shipUnit).length <= 0 ? (
+              <span className="checkout-product__transport-notchoose">
+                Chưa chọn đơn vị vận chuyển
+              </span>
+            ) : (
+              <span className="checkout-product__transport-info">
+                <span className="checkout-product__transport-name">
+                  {shipUnit.name}
+                </span>
+                <span className="checkout-product__transport-date">
+                  {shipUnit.date}
+                </span>
+                <span className="checkout-product__transport-method">
+                  {shipUnit.method}
+                </span>
+              </span>
+            )}
+
+            <span
+              onClick={handleShipUnitModal}
+              className="checkout-product__transport-action"
+            >
+              {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
+            </span>
+            {isShipUnits && (
+              <ShipUnitsModal
+                isShipUnits={isShipUnits}
+                toggleShipUnits={toggleShipUnits}
+                shipUnit={shipUnit}
+                shipUnitList={shipUnitList}
+                setShipUnit={setShipUnit}
+                shipChecked={shipChecked}
+                setShipChecked={setShipChecked}
+              ></ShipUnitsModal>
+            )}
+            <span className="checkout-product__transport-price">
+              {shipUnit.price}
+            </span>
+          </span>
+        </div>
         <div className="checkout-product__checkout-wrapper">
           <div className="checkout-product__voucher-wrapper">
             {Object.keys(voucher).length ? (

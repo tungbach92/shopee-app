@@ -5,7 +5,7 @@ export default function Picker({
   setAddress,
   isPickerShow,
   togglePicker,
-  setShipPriceProvince,
+  setLookupShipPrice,
 }) {
   const [isProvinceSelected, setIsProvinceSelected] = useState(false);
   const [isDistrictSelected, setIsDistrictSelected] = useState(false);
@@ -42,7 +42,7 @@ export default function Picker({
       const address = district.full_name;
       setAddress(address);
       const shipPrice = province.shipPrice;
-      setShipPriceProvince(shipPrice);
+      setLookupShipPrice(shipPrice);
     }
     if (isDistrictSelected) {
       togglePicker(!isPickerShow);
@@ -57,7 +57,7 @@ export default function Picker({
     isPickerShow,
     togglePicker,
     isDistrictSelected,
-    setShipPriceProvince,
+    setLookupShipPrice,
   ]);
 
   const handleClick = (e) => {

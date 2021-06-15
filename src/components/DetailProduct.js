@@ -16,14 +16,8 @@ import Picker from "./Picker";
 
 export default function DetailProduct({ metaTitle }) {
   const scrolltoEl = useRef();
-  const {
-    singleProduct,
-    handleClick,
-    items,
-    bestSelling,
-    shipPriceProvince,
-    setShipPriceProvince,
-  } = useContext(ProductContext);
+  const { singleProduct, handleClick, items, bestSelling } =
+    useContext(ProductContext);
   //
 
   const getModifiedItem = useCallback(() => {
@@ -31,16 +25,16 @@ export default function DetailProduct({ metaTitle }) {
     itemByMetaTitle = {
       ...itemByMetaTitle,
       amount: 1,
-      shipPriceProvince: shipPriceProvince,
     };
     return itemByMetaTitle;
-  }, [metaTitle, shipPriceProvince, singleProduct]);
+  }, [metaTitle, singleProduct]);
   const defaultItem = getModifiedItem();
   const [item, setItem] = useState(defaultItem);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
   const [isPickerShow, setIsPickerShow] = useState(false);
   const [address, setAddress] = useState("Chọn địa điểm");
+  const [lookupShipPrice, setLookupShipPrice] = useState([]);
   //
   const bestSellingItems = [...items].filter(
     (item) => item.soldAmount >= bestSelling
@@ -70,7 +64,7 @@ export default function DetailProduct({ metaTitle }) {
     return () => {
       // cleanup
     };
-  }, [shipPriceProvince, getModifiedItem]);
+  }, [getModifiedItem]);
 
   //
   const togglePicker = () => {
@@ -329,7 +323,7 @@ export default function DetailProduct({ metaTitle }) {
                     isPickerShow={isPickerShow}
                     togglePicker={togglePicker}
                     setAddress={setAddress}
-                    setShipPriceProvince={setShipPriceProvince}
+                    setLookupShipPrice={setLookupShipPrice}
                   />
                 )}
 
@@ -337,7 +331,7 @@ export default function DetailProduct({ metaTitle }) {
                   Phí Vận Chuyển
                 </span>
                 <span className="detail-product__shipprice-content">
-                  ₫{shipPriceProvince[0]} - ₫{shipPriceProvince[1]}
+                  ₫{lookupShipPrice[0]} - ₫{lookupShipPrice[1]}
                   <svg
                     enableBackground="new 0 0 11 11"
                     viewBox="0 0 11 11"
