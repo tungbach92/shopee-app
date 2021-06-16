@@ -2255,21 +2255,22 @@ header {
 .checkout-product__location-provinces,
 .checkout-product__location-districts {
   position: absolute;
-  top: 55%;
-  left: 9.6%;
+  top: 100%;
+  left: 0%;
   width: 22rem;
   padding: 1.2rem 0.6rem;
   max-height: 36vh;
   overflow-y: auto;
   border: 1px solid rgba(0, 0, 0, 0.09);
   font-size: 1.4rem;
+  font-style: normal;
   background: var(--while-color);
   z-index: 3;
 }
-.checkout-product__location-districts {
+/* .checkout-product__location-districts {
   top: 55%;
   left: 30.4%;
-}
+} */
 .checkout-product__provinces-item,
 .checkout-product__districts-item {
   margin-bottom: 1rem;

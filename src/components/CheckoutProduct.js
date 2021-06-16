@@ -195,7 +195,9 @@ export default function CheckoutProduct() {
   };
 
   const handleDistrict = () => {
-    setIsDistrict(!isDistrict);
+    if (province) {
+      setIsDistrict(!isDistrict);
+    }
   };
 
   const handleInformationClick = () => {
@@ -395,24 +397,23 @@ export default function CheckoutProduct() {
                 >
                   {province ? province.name : `Thành phố`}
                   <div className="checkout-product__province-arrow"></div>
+                  {isProvince && (
+                    <div className="checkout-product__location-provinces">
+                      {provinces.map((item, index) => (
+                        <div
+                          key={index}
+                          onClick={handleProvinceChoose}
+                          className="checkout-product__provinces-item"
+                        >
+                          {item.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {isProvinceSelected === false && (
                   <div className="checkout-product__province-required">
                     Chưa chọn Thành phố!
-                  </div>
-                )}
-
-                {isProvince && (
-                  <div className="checkout-product__location-provinces">
-                    {provinces.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={handleProvinceChoose}
-                        className="checkout-product__provinces-item"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
                   </div>
                 )}
 
@@ -426,6 +427,19 @@ export default function CheckoutProduct() {
                 >
                   {district ? district.name : `Quận/Huyện`}
                   <div className="checkout-product__district-arrow"></div>
+                  {isDistrict && (
+                    <div className="checkout-product__location-districts">
+                      {districts.map((item, index) => (
+                        <div
+                          key={index}
+                          onClick={handleDistrictChoose}
+                          className="checkout-product__districts-item"
+                        >
+                          {item.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {isDistrictSelected === false && (
                   <div className="checkout-product__district-required">
@@ -433,19 +447,6 @@ export default function CheckoutProduct() {
                   </div>
                 )}
 
-                {isDistrict && (
-                  <div className="checkout-product__location-districts">
-                    {districts.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={handleDistrictChoose}
-                        className="checkout-product__districts-item"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
                 <input
                   ref={(el) => (inputEl.current[2] = el)}
                   type="text"
