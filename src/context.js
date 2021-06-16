@@ -36,7 +36,7 @@ export default class ProductProvider extends Component {
       { code: "LUNARSALE", discount: "50%" },
       { code: "CHRISTMASSALE", discount: "100000" },
     ],
-    shipPriceProvince: [0,0],
+    shipPriceProvince: [0, 0],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount = async () => {
@@ -91,7 +91,7 @@ export default class ProductProvider extends Component {
   setDefaultChecked = () => {
     const { checkoutItems, cartItems } = this.state;
     let defaultChecked = [];
-    if (checkoutItems.length === cartItems.length) {
+    if (JSON.stringify(checkoutItems) === JSON.stringify(cartItems)) {
       defaultChecked = cartItems.map((item) => true);
       defaultChecked = [true, ...defaultChecked, true];
     } else {
@@ -623,6 +623,7 @@ export default class ProductProvider extends Component {
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,
+          saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
           setCheckoutItems: this.setCheckoutItems,
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,

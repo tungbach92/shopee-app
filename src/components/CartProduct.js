@@ -23,6 +23,7 @@ export default function CartProduct(props) {
     changeSimilarDisPlayCartItems,
     delCartItems,
     saveCartItemsToStorage,
+    saveCheckoutItemsToStorage,
     setDefaultState,
     setDefaultType,
     checkoutItems,
@@ -55,6 +56,7 @@ export default function CartProduct(props) {
     return () => {
       setDefaultType();
       saveCartItemsToStorage();
+      saveCheckoutItemsToStorage();
       togglePopup(false);
       toggleVoucher(false);
     };
@@ -62,6 +64,7 @@ export default function CartProduct(props) {
     setDefaultState,
     setDefaultType,
     saveCartItemsToStorage,
+    saveCheckoutItemsToStorage,
     togglePopup,
     toggleVoucher,
   ]);
@@ -114,6 +117,7 @@ export default function CartProduct(props) {
       idArr = idArr.filter((id) => id !== null);
       delCartItems(idArr, () => {
         saveCartItemsToStorage();
+        saveCheckoutItemsToStorage();
         setDefaultChecked();
       });
     }
