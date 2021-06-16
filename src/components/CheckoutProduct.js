@@ -67,6 +67,8 @@ export default function CheckoutProduct() {
   const [district, setDistrict] = useState();
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [isProvinceSelected, setIsProvinceSelected] = useState();
+  const [isDistrictSelected, setIsDistrictSelected] = useState();
 
   useEffect(() => {
     // effect
@@ -196,21 +198,43 @@ export default function CheckoutProduct() {
     setIsDistrict(!isDistrict);
   };
 
-  const handleClick = () => {
+  const handleInformationClick = () => {
     setIsInformation(!isInformation);
-    if (isInformation) {
+  };
+
+  const handleSubmit = (e) => {
+    if (province && district) {
       const name = inputEl.current[0].value;
       const phone = inputEl.current[1].value;
       const address = inputEl.current[2].value;
+      setIsProvinceSelected(true);
       const districtFullName = district.full_name;
       setCustomerInfo({ name, phone, address, districtFullName });
-      if (province) {
-        const shipPrice = province.shipPrice;
-        setShipPriceProvince(shipPrice);
-        setShipUnit({});
-      }
+
+      const shipPrice = province.shipPrice;
+      setShipPriceProvince(shipPrice);
+      setShipUnit({});
+      setIsInformation(!isInformation);
+    }
+    if (!province) {
+      e.preventDefault();
+      setIsProvinceSelected(false);
+    }
+    if (!district) {
+      e.preventDefault();
+      setIsDistrictSelected(false);
     }
   };
+
+  useEffect(() => {
+    if (province) {
+      setIsProvinceSelected(true);
+    }
+
+    if (district) {
+      setIsDistrictSelected(true);
+    }
+  }, [province, district]);
 
   const handleInputBlur = (e) => {
     let text = e.target.value;
@@ -319,11 +343,11 @@ export default function CheckoutProduct() {
             {!isInformation && (
               <>
                 <span className="checkout-product__info">
-                  {customerInfo.name}, {customerInfo.phone}{" "}
+                  {customerInfo.name} {customerInfo.phone}{" "}
                   {customerInfo.address} {customerInfo.districtFullName}
                 </span>
                 <span
-                  onClick={handleClick}
+                  onClick={handleInformationClick}
                   className="checkout-product__address-action"
                 >
                   {isInfoEmpty ? "Thêm" : "Sửa"}
@@ -333,7 +357,7 @@ export default function CheckoutProduct() {
             {isInformation && (
               <form
                 className="checkout-product__info-input"
-                onSubmit={handleClick}
+                onSubmit={handleSubmit}
               >
                 <label className="checkout-product__name-label">
                   Họ và tên:
@@ -372,6 +396,12 @@ export default function CheckoutProduct() {
                   {province ? province.name : `Thành phố`}
                   <div className="checkout-product__province-arrow"></div>
                 </div>
+                {isProvinceSelected === false && (
+                  <div className="checkout-product__province-required">
+                    Chưa chọn Thành phố!
+                  </div>
+                )}
+
                 {isProvince && (
                   <div className="checkout-product__location-provinces">
                     {provinces.map((item, index) => (
@@ -397,6 +427,12 @@ export default function CheckoutProduct() {
                   {district ? district.name : `Quận/Huyện`}
                   <div className="checkout-product__district-arrow"></div>
                 </div>
+                {isDistrictSelected === false && (
+                  <div className="checkout-product__district-required">
+                    Chưa chọn Quận/Huyện!
+                  </div>
+                )}
+
                 {isDistrict && (
                   <div className="checkout-product__location-districts">
                     {districts.map((item, index) => (

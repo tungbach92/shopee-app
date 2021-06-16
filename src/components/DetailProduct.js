@@ -33,7 +33,7 @@ export default function DetailProduct({ metaTitle }) {
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
   const [isPickerShow, setIsPickerShow] = useState(false);
-  const [address, setAddress] = useState("Chọn địa điểm");
+  const [address, setAddress] = useState("Tra cứu địa điểm");
   const [lookupShipPrice, setLookupShipPrice] = useState([]);
   //
   const bestSellingItems = [...items].filter(

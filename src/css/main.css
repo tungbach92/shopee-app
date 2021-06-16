@@ -2216,7 +2216,22 @@ header {
   grid-column-start: 2;
   grid-column-end: 3;
 }
-
+.checkout-product__province-required {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  /* grid-row-start: 3;
+  grid-row-end: 4; */
+}
+.checkout-product__district-required {
+  grid-column-start: 3;
+  grid-column-end: 4;
+}
+.checkout-product__district-required,
+.checkout-product__province-required {
+  display: block;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
 .checkout-product__location-province--selected,
 .checkout-product__location-district--selected {
   color: var(--text-color);
@@ -2240,7 +2255,7 @@ header {
 .checkout-product__location-provinces,
 .checkout-product__location-districts {
   position: absolute;
-  top: 60%;
+  top: 55%;
   left: 9.6%;
   width: 22rem;
   padding: 1.2rem 0.6rem;
@@ -2252,7 +2267,7 @@ header {
   z-index: 3;
 }
 .checkout-product__location-districts {
-  top: 60%;
+  top: 55%;
   left: 30.4%;
 }
 .checkout-product__provinces-item,
