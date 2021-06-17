@@ -271,14 +271,17 @@ export default function CartProduct(props) {
               onChange={selectOne.bind(this, index)}
               className="grid__col cart-product__checkbox"
             />
-            <div className="grid__col cart-product__overview">
+            <Link
+              to={`/product/${item.metaTitle}`}
+              className="grid__col cart-product__overview"
+            >
               <img
                 src={require(`../img/${item.imageUrl}`).default}
                 alt="cart-product"
                 className="cart-product__img"
               />
               <span className="cart-product__name">{item.name}</span>
-            </div>
+            </Link>
             <div
               data-name="variation"
               onClick={handlePopup.bind(this, index)}

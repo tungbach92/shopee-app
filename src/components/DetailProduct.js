@@ -112,8 +112,19 @@ export default function DetailProduct({ metaTitle }) {
   return (
     <div className="container">
       <div className="grid detail-breadcrumb">
-        Shopee Sức Khỏe + Sắc Đẹp + Chăm sóc tóc + Tinh chất bôi tóc Kirkland
-        chính hãng Mỹ, ngăn rụng hói và mọc tóc, râu, mày cho nam
+        <Link to="/" className="detail-breadcrumb__home">
+          Shopee
+        </Link>
+        <svg
+          enableBackground="new 0 0 11 11"
+          viewBox="0 0 11 11"
+          x="0"
+          y="0"
+          className="detail-breadcrumb__icon"
+        >
+          <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
+        </svg>
+        <span className="detail-breadcrumb__current">{defaultItem.name}</span>
       </div>
       <div className="grid detail-product">
         <div className="detail-product__info">
@@ -480,7 +491,21 @@ export default function DetailProduct({ metaTitle }) {
 
               <div className="detail-content__breadcrumb-label">Danh Mục</div>
               <div className="detail-content__breadcrumb-item">
-                Shopee Sức Khỏe Sắc Đẹp Chăm sóc tóc
+                <Link to="/" className="detail-breadcrumb__home">
+                  Shopee
+                </Link>
+                <svg
+                  enableBackground="new 0 0 11 11"
+                  viewBox="0 0 11 11"
+                  x="0"
+                  y="0"
+                  className="detail-breadcrumb__icon"
+                >
+                  <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
+                </svg>
+                <span className="detail-breadcrumb__current">
+                  {defaultItem.name}
+                </span>
               </div>
 
               <div className="detail-content__brand-label">Thương hiệu</div>
@@ -492,7 +517,7 @@ export default function DetailProduct({ metaTitle }) {
               <div className="detail-content__variation-item">60</div>
 
               <div className="detail-content__gender-label">Giới tính</div>
-              <div className="detail-content__gender-item">Dành cho Nam</div>
+              <div className="detail-content__gender-item">{defaultItem.gender}</div>
 
               <div className="detail-content__madeby-label">Xuất xứ</div>
               <div className="detail-content__madeby-item">USA</div>
@@ -502,12 +527,14 @@ export default function DetailProduct({ metaTitle }) {
 
               <div className="detail-content__location-label">Gửi từ</div>
               <div className="detail-content__location-item">
-                Quận 12, TP. Hồ Chí Minh
+                {defaultItem.location}
               </div>
               <div className="detail-content__description-label">
                 MÔ TẢ SẢN PHẨM
               </div>
-              <div className="detail-content__description-content">MÔ TẢ </div>
+              <div className="detail-content__description-content">
+                {defaultItem.description}
+              </div>
             </div>
 
             <div ref={scrolltoEl} className="detail-content__rating">
@@ -590,7 +617,7 @@ export default function DetailProduct({ metaTitle }) {
               {sortedBestSellingItems.map((item, index) => {
                 if (index <= 7) {
                   return (
-                    <div key={index} className="detail-content__hot-item">
+                    <Link to={`/product/${item.metaTitle}`} key={index} className="detail-content__hot-item">
                       <img
                         src={require(`../img/${item.imageUrl}`).default}
                         alt="hot-img"
@@ -602,7 +629,7 @@ export default function DetailProduct({ metaTitle }) {
                       <div className="detail-content__hot-price">
                         {item.price}
                       </div>
-                    </div>
+                    </Link>
                   );
                 } else return null;
               })}

@@ -30,7 +30,7 @@ export default class HeaderCart extends Component {
               <div className="header__cart-list-item">
                 {cartItems.map((item, index) => (
                   <div key={index} className="header__cart-item">
-                    <Link to="/:metaName" className="header__cart-link">
+                    <Link to={`/product/${item.metaTitle}`} className="header__cart-link">
                       <img
                         className="header__cart-img"
                         src={require(`../img/${item.imageUrl}`).default}
