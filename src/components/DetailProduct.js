@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
@@ -82,10 +77,6 @@ export default function DetailProduct() {
     }
   }, [item]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [item]);
-
   const togglePicker = () => {
     setIsPickerShow(!isPickerShow);
   };
@@ -128,6 +119,9 @@ export default function DetailProduct() {
     scrolltoEl.current.scrollIntoView();
   };
 
+  const handleScrollTop = (e) => {
+    window.scrollTo(0, 0);
+  };
   return (
     <div className="container">
       <div className="grid detail-breadcrumb">
@@ -635,6 +629,7 @@ export default function DetailProduct() {
                 if (index <= 7) {
                   return (
                     <Link
+                      onClick={handleScrollTop}
                       to={`/product/${item.metaTitle}`}
                       key={index}
                       className="detail-content__hot-item"
