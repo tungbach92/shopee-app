@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -39,37 +38,30 @@ export default class ProductProvider extends Component {
     shipPriceProvince: [0, 0],
   }; // json server->fetch data to here and pass to value of Provider component
 
-  componentDidMount = async () => {
-    console.log("did Mount");
-    //get items
-    const items = await this.getData();
-    const categoryItems = items.filter((item) => item.type !== this.state.type);
-    const sortedItems = categoryItems.filter(
-      (item) =>
-        new Date(item.date).getDate() > new Date().getDate() - 20 ||
-        item.soldAmount >= this.state.bestSelling
-    );
-    const pageIndex = this.state.pageIndex;
-    const pageTotal = this.calcPageTotals(sortedItems);
-    //get and set cartItems state
-    const cartItems = this.getCartItemsFromStorage();
-    const cartNumb = this.calcCartNumb(cartItems);
-    //get and set checkoutItems state
-    const checkoutItems = this.getCheckoutItemsFromStorage();
+  setCheckoutItems = (checkoutItems) => {
+    this.setState({ checkoutItems });
+  };
+  setCartNumb = (cartNumb) => {
+    this.setState({ cartNumb });
+  };
+  setCartProduct = (cartItems) => {
+    this.setState({ cartItems });
+  };
 
-    this.setState(
-      {
-        items,
-        categoryItems,
-        sortedItems,
-        pageIndex,
-        pageTotal,
-        cartItems,
-        cartNumb,
-        checkoutItems,
-      },
-      this.setDefaultChecked
-    );
+  setPageTotal = (pageTotal) => {
+    this.setState({ pageTotal });
+  };
+
+  setPageIndex = (pageIndex) => {
+    this.setState({ pageIndex });
+  };
+
+  setCategoryProduct = (categoryItems) => {
+    this.setState({ categoryItems });
+  };
+
+  setSortedProducts = (sortedItems) => {
+    this.setState({ sortedItems });
   };
 
   setShipPriceProvince = (shipPriceProvince) => {
@@ -138,7 +130,7 @@ export default class ProductProvider extends Component {
       const itemsWithVariation = await this.addVariationProp(
         itemsWithVariationSimilarDisPlay
       );
-      return itemsWithVariation;
+      this.setState({ items: itemsWithVariation });
     } catch (error) {
       console.log(error);
     }
@@ -519,11 +511,6 @@ export default class ProductProvider extends Component {
     });
   };
 
-  singleProduct = (metaTitle) => {
-    const items = [...this.state.items];
-    const item = items.find((item) => item.metaTitle === metaTitle);
-    return item;
-  };
 
   filterCategoryProduct = () => {
     //get sortedItems by filter using categoryItems
@@ -630,6 +617,17 @@ export default class ProductProvider extends Component {
           setVoucher: this.setVoucher,
           singleProduct: this.singleProduct,
           setShipPriceProvince: this.setShipPriceProvince,
+          getData: this.getData,
+          setCategoryProduct: this.setCategoryProduct,
+          setSortedProducts: this.setSortedProducts,
+          setPageIndex: this.setPageIndex,
+          setPageTotal: this.setPageTotal,
+          setCartProduct: this.setCartProduct,
+          calcCartNumb: this.calcCartNumb,
+          calcPageTotals: this.calcPageTotals,
+          getCartItemsFromStorage: this.getCartItemsFromStorage,
+          setCartNumb: this.setCartNumb,
+          getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
         }}
       >
         {this.props.children}

@@ -1,40 +1,103 @@
-import React, { Component } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
-export default class ProductList extends Component {
-  static contextType = ProductContext;
 
-  render() {
-    console.log("product list render");
-    let {
-      sortedItems,
-      similarItems,
-      cartItems,
-      pageIndex,
-      pageSize,
-      similarPageIndex,
-      similarPageSize,
-      handleClick,
-    } = this.context;
+export default function ProductList(props) {
+  const context = useContext(ProductContext);
+  let {
+    items,
+    getData,
+    type,
+    bestSelling,
+    setCategoryProduct,
+    setSortedProducts,
+    setPageIndex,
+    setPageTotal,
+    setCartProduct,
+    getCartItemsFromStorage,
+    calcPageTotals,
+    setCartNumb,
+    getCheckoutItemsFromStorage,
+    setCheckoutItems,
+    calcCartNumb,
+    setDefaultChecked,
+    checkoutItems,
 
-    if (this.props.similarDisPlay) {
-      sortedItems = similarItems;
-      pageIndex = similarPageIndex;
-      pageSize = similarPageSize;
+    sortedItems,
+    similarItems,
+    cartItems,
+    pageIndex,
+    pageSize,
+    similarPageIndex,
+    similarPageSize,
+    handleClick,
+  } = context;
+
+  useEffect(() => {
+    if (items.length <= 0) {
+      getData();
     }
-    const items = sortedItems.slice(
-      (pageIndex - 1) * pageSize,
-      pageIndex * pageSize
-    );
+  }, [items, getData]);
 
-    return items.map((item) => (
-      <ProductItem
-        key={item.id}
-        cartItems={cartItems}
-        similarDisPlay={this.props.similarDisPlay}
-        item={item}
-        handleClick={handleClick}
-      ></ProductItem>
-    ));
+  useEffect(() => {
+    const categoryItems = items.filter((item) => item.type !== type);
+
+    const sortedItems = categoryItems.filter(
+      (item) =>
+        new Date(item.date).getDate() > new Date().getDate() - 20 ||
+        item.soldAmount >= bestSelling
+    );
+    const pageIndex = 1;
+    const pageTotal = calcPageTotals(sortedItems);
+    //get and set cartItems state
+    const cartItems = getCartItemsFromStorage();
+    const cartNumb = calcCartNumb(cartItems);
+    //get and set checkoutItems state
+    const checkoutItems = getCheckoutItemsFromStorage();
+    setCategoryProduct(categoryItems);
+    setSortedProducts(sortedItems);
+    setPageIndex(pageIndex);
+    setPageTotal(pageTotal);
+    setCartProduct(cartItems);
+    setCartNumb(cartNumb);
+    setCheckoutItems(checkoutItems);
+  }, [
+    bestSelling,
+    setCategoryProduct,
+    setSortedProducts,
+    items,
+    type,
+    calcPageTotals,
+    getCartItemsFromStorage,
+    calcCartNumb,
+    getCheckoutItemsFromStorage,
+    setPageIndex,
+    setPageTotal,
+    setCartProduct,
+    setCartNumb,
+    setCheckoutItems,
+  ]);
+
+  useEffect(() => {
+    setDefaultChecked();
+  }, [checkoutItems, cartItems, setDefaultChecked]);
+
+  if (props.similarDisPlay) {
+    sortedItems = similarItems;
+    pageIndex = similarPageIndex;
+    pageSize = similarPageSize;
   }
+  const renderItem = sortedItems.slice(
+    (pageIndex - 1) * pageSize,
+    pageIndex * pageSize
+  );
+  return renderItem.map((item) => (
+    <ProductItem
+      key={item.id}
+      cartItems={cartItems}
+      similarDisPlay={props.similarDisPlay}
+      item={item}
+      handleClick={handleClick}
+    ></ProductItem>
+  ));
 }

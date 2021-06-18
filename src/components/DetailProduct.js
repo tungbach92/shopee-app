@@ -3,8 +3,8 @@ import React, {
   useState,
   useRef,
   useEffect,
-  useCallback,
 } from "react";
+import { useParams } from "react-router-dom";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
 import { Link } from "react-router-dom";
@@ -14,22 +14,24 @@ import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
 
-export default function DetailProduct({ metaTitle }) {
+export default function DetailProduct() {
+  const { metaTitle } = useParams();
   const scrolltoEl = useRef();
-  const { singleProduct, handleClick, items, bestSelling } =
+  const { handleClick, items, getData, bestSelling } =
     useContext(ProductContext);
   //
-
-  const getModifiedItem = useCallback(() => {
-    let itemByMetaTitle = singleProduct(metaTitle);
-    itemByMetaTitle = {
-      ...itemByMetaTitle,
-      amount: 1,
+  useEffect(() => {
+    // effect
+    if (items.length <= 0) {
+      getData();
+    }
+    return () => {
+      // cleanup
     };
-    return itemByMetaTitle;
-  }, [metaTitle, singleProduct]);
-  const defaultItem = getModifiedItem();
-  const [item, setItem] = useState(defaultItem);
+  }, [getData, items]);
+
+  const [item, setItem] = useState();
+  const [images, setImages] = useState([]);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
   const [isPickerShow, setIsPickerShow] = useState(false);
@@ -42,31 +44,48 @@ export default function DetailProduct({ metaTitle }) {
   const sortedBestSellingItems = [...bestSellingItems].sort(
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
-
-  const images = [
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-    {
-      original: require(`../img/${item.imageUrl}`).default,
-      thumbnail: require(`../img/${item.imageUrl}`).default,
-    },
-  ];
   useEffect(() => {
     // effect
-    const item = getModifiedItem();
-    setItem(item);
+    if (items.length > 0) {
+      let itemByMetaTitle = items.find((item) => item.metaTitle === metaTitle);
+      itemByMetaTitle = {
+        ...itemByMetaTitle,
+        amount: 1,
+      };
+      setItem(itemByMetaTitle);
+    }
+
     return () => {
       // cleanup
     };
-  }, [getModifiedItem]);
+  }, [items, metaTitle]);
 
-  //
+  useEffect(() => {
+    //Img by item
+    if (item) {
+      console.log("dssdsd");
+      const images = [
+        {
+          original: require(`../img/${item.imageUrl}`).default,
+          thumbnail: require(`../img/${item.imageUrl}`).default,
+        },
+        {
+          original: require(`../img/${item.imageUrl}`).default,
+          thumbnail: require(`../img/${item.imageUrl}`).default,
+        },
+        {
+          original: require(`../img/${item.imageUrl}`).default,
+          thumbnail: require(`../img/${item.imageUrl}`).default,
+        },
+      ];
+      setImages(images);
+    }
+  }, [item]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [item]);
+
   const togglePicker = () => {
     setIsPickerShow(!isPickerShow);
   };
@@ -124,7 +143,7 @@ export default function DetailProduct({ metaTitle }) {
         >
           <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
         </svg>
-        <span className="detail-breadcrumb__current">{defaultItem.name}</span>
+        <span className="detail-breadcrumb__current">{item?.name}</span>
       </div>
       <div className="grid detail-product">
         <div className="detail-product__info">
@@ -151,7 +170,7 @@ export default function DetailProduct({ metaTitle }) {
           </div>
 
           <div className="detail-product__info-right">
-            <div className="detail-product__name">{item.name}</div>
+            <div className="detail-product__name">{item?.name}</div>
             <div className="detail-product__more">
               <div onClick={handleScrollTo} className="detail-product__rating">
                 <span className="detail-product__rating-number">4.9</span>
@@ -178,12 +197,12 @@ export default function DetailProduct({ metaTitle }) {
               </div>
               <div className="detail-product__sold">
                 <span className="detail-product__sold-number">
-                  {item.soldAmount}
+                  {item?.soldAmount}
                 </span>
                 <span className="detail-product__sold-label">Đã bán</span>
               </div>
             </div>
-            <div className="detail-product__price">₫{item.price}</div>
+            <div className="detail-product__price">₫{item?.price}</div>
             <div className="detail-product__info-wrapper">
               {/* <div className="detail-product__combo-label">
                 Combo Khuyến Mãi
@@ -359,7 +378,7 @@ export default function DetailProduct({ metaTitle }) {
 
               <div className="detail-product__variation-label">Variation</div>
               <div className="detail-product__variation-list">
-                {item.variationList.map((variationItem, index) => (
+                {item?.variationList?.map((variationItem, index) => (
                   <button
                     key={index}
                     onClick={handleVariationClick}
@@ -384,7 +403,7 @@ export default function DetailProduct({ metaTitle }) {
                 </button>
                 <input
                   onChange={handleInputAmountChange}
-                  value={Number(item.amount)}
+                  value={item?.amount ? item?.amount : 1}
                   type="text"
                   className="detail-product__amount-input"
                 />
@@ -402,7 +421,7 @@ export default function DetailProduct({ metaTitle }) {
             <div className="detail-product__btn-wrapper">
               <button
                 onClick={handleAddCart}
-                data-id={item.id}
+                data-id={item?.id}
                 data-name="addToCartBtn"
                 className="btn detail-product__btn-cart"
               >
@@ -459,7 +478,7 @@ export default function DetailProduct({ metaTitle }) {
               <Link
                 to="/cart"
                 onClick={handleBuyNow}
-                data-id={item.id}
+                data-id={item?.id}
                 data-name="addToCartBtn"
                 className="detail-product__btn-checkout"
               >
@@ -503,9 +522,7 @@ export default function DetailProduct({ metaTitle }) {
                 >
                   <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
                 </svg>
-                <span className="detail-breadcrumb__current">
-                  {defaultItem.name}
-                </span>
+                <span className="detail-breadcrumb__current">{item?.name}</span>
               </div>
 
               <div className="detail-content__brand-label">Thương hiệu</div>
@@ -517,7 +534,7 @@ export default function DetailProduct({ metaTitle }) {
               <div className="detail-content__variation-item">60</div>
 
               <div className="detail-content__gender-label">Giới tính</div>
-              <div className="detail-content__gender-item">{defaultItem.gender}</div>
+              <div className="detail-content__gender-item">{item?.gender}</div>
 
               <div className="detail-content__madeby-label">Xuất xứ</div>
               <div className="detail-content__madeby-item">USA</div>
@@ -527,13 +544,13 @@ export default function DetailProduct({ metaTitle }) {
 
               <div className="detail-content__location-label">Gửi từ</div>
               <div className="detail-content__location-item">
-                {defaultItem.location}
+                {item?.location}
               </div>
               <div className="detail-content__description-label">
                 MÔ TẢ SẢN PHẨM
               </div>
               <div className="detail-content__description-content">
-                {defaultItem.description}
+                {item?.description}
               </div>
             </div>
 
@@ -617,7 +634,11 @@ export default function DetailProduct({ metaTitle }) {
               {sortedBestSellingItems.map((item, index) => {
                 if (index <= 7) {
                   return (
-                    <Link to={`/product/${item.metaTitle}`} key={index} className="detail-content__hot-item">
+                    <Link
+                      to={`/product/${item.metaTitle}`}
+                      key={index}
+                      className="detail-content__hot-item"
+                    >
                       <img
                         src={require(`../img/${item.imageUrl}`).default}
                         alt="hot-img"
