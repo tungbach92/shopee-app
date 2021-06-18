@@ -70,28 +70,6 @@ export default function CheckoutProduct() {
   const [isProvinceSelected, setIsProvinceSelected] = useState();
   const [isDistrictSelected, setIsDistrictSelected] = useState();
 
-  useEffect(() => {
-    // effect
-    const provinces = ProvincesCitiesVN.getProvinces();
-    const provincesWithShipPrice = provinces.map((item, index) => {
-      return {
-        ...item,
-        shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
-      };
-    });
-    if (province) {
-      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
-        province.code
-      );
-      setDistricts(districts);
-    }
-    setProvinces(provincesWithShipPrice);
-
-    return () => {
-      // cleanup
-    };
-  }, [province]);
-
   const {
     isPopupShowing,
     togglePopup,
@@ -147,42 +125,13 @@ export default function CheckoutProduct() {
   //Calc checkoutPriceFinal
   let checkoutPriceFinal = checkoutPriceTotal + shipPrice - saved;
 
-  useEffect(() => {
-    // effect
-    //
-    const setInputCustomerInfo = () => {
-      if (isInformation === true) {
-        inputEl.current[0].value = customerInfo.name;
-        inputEl.current[1].value = customerInfo.phone;
-        inputEl.current[2].value = customerInfo.address;
-      }
-    };
-
-    let checked = [];
-    const setCheckedByShipUnit = () => {
-      shipUnitList.forEach((item) => {
-        if (item.id === shipUnit.id) {
-          checked[item.id] = true;
-        } else {
-          checked[item.id] = false;
-        }
-      });
-      setShipChecked(checked);
-    };
-
-    setCheckedByShipUnit();
-    setInputCustomerInfo();
-    return () => {
-      // cleanup
-    };
-  }, [shipUnit, shipUnitList, isInformation, customerInfo]);
-
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;
     const province = provinces.find((province) => province.name === value);
     setProvince(province);
     setIsProvince(!isProvince);
   };
+
   const handleDistrictChoose = (e) => {
     const value = e.target.innerText;
     const district = districts.find((district) => district.name === value);
@@ -190,13 +139,47 @@ export default function CheckoutProduct() {
     setIsDistrict(!isDistrict);
   };
 
+  //Get and set province and set districts and district depend on province
+  useEffect(() => {
+    // effect
+    if (!province) {
+      const provinces = ProvincesCitiesVN.getProvinces();
+      const provincesWithShipPrice = provinces.map((item, index) => {
+        return {
+          ...item,
+          shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
+        };
+      });
+      setProvinces(provincesWithShipPrice);
+    } else {
+      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+        province.code
+      );
+      setDistrict(undefined);
+      setDistricts(districts);
+    }
+  }, [province]);
+
+  //Update isSelected after change province+district
+  useEffect(() => {
+    if (province) {
+      setIsProvinceSelected(true);
+    }
+
+    if (district) {
+      setIsDistrictSelected(true);
+    }
+  }, [province, district]);
+
   const handleProvinceClick = () => {
     setIsProvince(!isProvince);
+    setIsDistrict(false);
   };
 
-  const handleDistrict = () => {
+  const handleDistrictClick = () => {
     if (province) {
       setIsDistrict(!isDistrict);
+      setIsProvince(false);
     }
   };
 
@@ -209,13 +192,12 @@ export default function CheckoutProduct() {
       const name = inputEl.current[0].value;
       const phone = inputEl.current[1].value;
       const address = inputEl.current[2].value;
-      setIsProvinceSelected(true);
       const districtFullName = district.full_name;
       setCustomerInfo({ name, phone, address, districtFullName });
 
       const shipPrice = province.shipPrice;
       setShipPriceProvince(shipPrice);
-      setShipUnit({});
+      // setShipUnit({});
       setIsInformation(!isInformation);
     }
     if (!province) {
@@ -228,15 +210,36 @@ export default function CheckoutProduct() {
     }
   };
 
+  //Fill input after click edit info (isInformation)
   useEffect(() => {
-    if (province) {
-      setIsProvinceSelected(true);
-    }
+    const setInputCustomerInfo = () => {
+      if (isInformation === true) {
+        inputEl.current[0].value = customerInfo.name;
+        inputEl.current[1].value = customerInfo.phone;
+        inputEl.current[2].value = customerInfo.address;
+      }
+    };
+    setInputCustomerInfo();
+  }, [customerInfo, isInformation]);
 
-    if (district) {
-      setIsDistrictSelected(true);
-    }
-  }, [province, district]);
+  //Update after edit shipchecked + edit info
+  useEffect(() => {
+    //set checked, set shipUnit
+    let checked = [];
+    const setCheckedAndShipUnit = () => {
+      shipUnitList.forEach((item) => {
+        if (item.id === shipUnit.id) {
+          checked[item.id] = true;
+          setShipUnit(item);
+        } else {
+          checked[item.id] = false;
+        }
+      });
+      setShipChecked(checked);
+    };
+
+    setCheckedAndShipUnit();
+  }, [shipUnit, shipUnitList]);
 
   const handleInputBlur = (e) => {
     let text = e.target.value;
@@ -418,7 +421,7 @@ export default function CheckoutProduct() {
                 )}
 
                 <div
-                  onClick={handleDistrict}
+                  onClick={handleDistrictClick}
                   className={
                     district
                       ? "checkout-product__location-district checkout-product__location-district--selected"

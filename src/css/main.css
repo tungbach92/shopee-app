@@ -2207,6 +2207,7 @@ header {
   font-size: 1.2rem;
   font-style: italic;
   color: #bbb;
+  cursor: pointer;
 }
 .checkout-product__location-province {
   grid-column-start: 2;
@@ -2269,10 +2270,11 @@ header {
 } */
 .checkout-product__provinces-item,
 .checkout-product__districts-item {
-  margin-bottom: 1rem;
+  padding: 0.6rem 0;
+  color: var(--text-color);
   cursor: pointer;
 }
-
+.checkout-product__districts-item:hover,
 .checkout-product__provinces-item:hover {
   color: var(--primary-color);
 }
