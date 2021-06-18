@@ -25,7 +25,6 @@ export default function CartProduct(props) {
     saveCartItemsToStorage,
     saveCheckoutItemsToStorage,
     setDefaultState,
-    setDefaultType,
     checkoutItems,
     setCheckoutItemsByChecked,
     checked,
@@ -58,7 +57,6 @@ export default function CartProduct(props) {
     console.log("useEffect");
     setDefaultState();
     return () => {
-      setDefaultType();
       saveCartItemsToStorage();
       saveCheckoutItemsToStorage();
       togglePopup(false);
@@ -66,7 +64,6 @@ export default function CartProduct(props) {
     };
   }, [
     setDefaultState,
-    setDefaultType,
     saveCartItemsToStorage,
     saveCheckoutItemsToStorage,
     togglePopup,

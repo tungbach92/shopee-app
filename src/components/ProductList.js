@@ -18,7 +18,7 @@ export default function ProductList(props) {
     calcPageTotals,
     setCartNumb,
     getCheckoutItemsFromStorage,
-    setCheckoutItems,
+    setCheckoutProduct,
     calcCartNumb,
     setDefaultChecked,
     checkoutItems,
@@ -40,26 +40,28 @@ export default function ProductList(props) {
   }, [items, getData]);
 
   useEffect(() => {
-    const categoryItems = items.filter((item) => item.type !== type);
+    if (type === "allProduct") {
+      const categoryItems = items.filter((item) => item.type !== type);
 
-    const sortedItems = categoryItems.filter(
-      (item) =>
-        new Date(item.date).getDate() > new Date().getDate() - 20 ||
-        item.soldAmount >= bestSelling
-    );
-    const pageIndex = 1;
-    const pageTotal = calcPageTotals(sortedItems);
-    //get and set cartItems state
-    const cartItems = getCartItemsFromStorage();
-    const cartNumb = calcCartNumb(cartItems);
-    //get and set checkoutItems state
-    const checkoutItems = getCheckoutItemsFromStorage();
-    setCategoryProduct(categoryItems);
-    setSortedProducts(sortedItems);
-    setPageIndex(pageIndex);
-    setPageTotal(pageTotal);
-    setCartNumb(cartNumb);
-    setCheckoutItems(checkoutItems);
+      const sortedItems = categoryItems.filter(
+        (item) =>
+          new Date(item.date).getDate() > new Date().getDate() - 20 ||
+          item.soldAmount >= bestSelling
+      );
+      const pageIndex = 1;
+      const pageTotal = calcPageTotals(sortedItems);
+      //get and set cartItems state
+      const cartItems = getCartItemsFromStorage();
+      const cartNumb = calcCartNumb(cartItems);
+      //get and set checkoutItems state
+      const checkoutItems = getCheckoutItemsFromStorage();
+      setCategoryProduct(categoryItems);
+      setSortedProducts(sortedItems);
+      setPageIndex(pageIndex);
+      setPageTotal(pageTotal);
+      setCartNumb(cartNumb);
+      setCheckoutProduct(checkoutItems);
+    }
   }, [
     bestSelling,
     setCategoryProduct,
@@ -73,7 +75,7 @@ export default function ProductList(props) {
     setPageIndex,
     setPageTotal,
     setCartNumb,
-    setCheckoutItems,
+    setCheckoutProduct,
   ]);
   useEffect(() => {
     const cartItems = getCartItemsFromStorage();
