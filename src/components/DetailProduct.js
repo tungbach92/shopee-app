@@ -156,10 +156,10 @@ export default function DetailProduct() {
                 <div className="detail-product__share-background detail-product__share-pinterest"></div>
                 <div className="detail-product__share-background detail-product__share-twitter"></div>
               </div>
-              <div className="detail-product__like">
+              {/* <div className="detail-product__like">
                 <div className="detail-product__like-icon">icon</div>
                 <div className="detail-product__like-label">Đã thích (346)</div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -555,8 +555,65 @@ export default function DetailProduct() {
 
               <div className="detail-content__rating-overview">
                 <div className="detail-content__rating-score">
-                  <div className="detail-content__score-result">4.9 trên 5</div>
+                  <span className="detail-content__score-result">4.9</span>
+                  <span className="detail-content__score-oufof">trên 5</span>
                   <div className="detail-content__score-icons">
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__score-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__score-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__score-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="detail-content__score-icon"
+                    >
+                      <polygon
+                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeMiterlimit="10"
+                      ></polygon>
+                    </svg>
                     <svg
                       enableBackground="new 0 0 15 15"
                       viewBox="0 0 15 15"
@@ -577,8 +634,30 @@ export default function DetailProduct() {
                   <button className="btn detail-content__overview-item">
                     Tất cả
                   </button>
+                  <button className="btn detail-content__overview-item">
+                    5 Sao (49)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    4 Sao (1)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    3 Sao (0)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    2 Sao (0)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    1 Sao (0)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    Có Bình luận (19)
+                  </button>
+                  <button className="btn detail-content__overview-item">
+                    Có hình ảnh / video (17)
+                  </button>
                 </div>
               </div>
+              {/* ĐÁNH GIÁ SẢN PHẨM */}
               <div className="detail-content__rating-list">
                 <div className="detail-content__rating-item">
                   <div className="detail-content__rating-name">
@@ -615,7 +694,6 @@ export default function DetailProduct() {
                   <div className="detail-content__rating-date">
                     2021-04-23 07:57
                   </div>
-                  {/* <div className="detail-content__rating-rate"></div> */}
                 </div>
               </div>
             </div>
