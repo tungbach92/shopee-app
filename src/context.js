@@ -38,12 +38,14 @@ export default class ProductProvider extends Component {
     shipPriceProvince: [0, 0],
   }; // json server->fetch data to here and pass to value of Provider component
 
-  setCheckoutItems = (checkoutItems) => {
-    this.setState({ checkoutItems });
-  };
   setCartNumb = (cartNumb) => {
     this.setState({ cartNumb });
   };
+
+  setCheckoutProduct = (checkoutItems) => {
+    this.setState({ checkoutItems });
+  };
+
   setCartProduct = (cartItems) => {
     this.setState({ cartItems });
   };
@@ -437,7 +439,7 @@ export default class ProductProvider extends Component {
     this.setState({ cartNumb }, callback);
   };
 
-  setCheckoutItems = () => {
+  setCheckoutItemsByChecked = () => {
     //
     const { checked, cartItems } = this.state;
     const lastIndex = cartItems.length + 1;
@@ -616,11 +618,10 @@ export default class ProductProvider extends Component {
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,
           saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
-          setCheckoutItems: this.setCheckoutItems,
+          setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
           setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
-          singleProduct: this.singleProduct,
           setShipPriceProvince: this.setShipPriceProvince,
           getData: this.getData,
           setCategoryProduct: this.setCategoryProduct,
@@ -633,6 +634,7 @@ export default class ProductProvider extends Component {
           getCartItemsFromStorage: this.getCartItemsFromStorage,
           setCartNumb: this.setCartNumb,
           getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
+          setCheckoutProduct: this.setCheckoutProduct,
         }}
       >
         {this.props.children}

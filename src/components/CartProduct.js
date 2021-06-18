@@ -27,7 +27,7 @@ export default function CartProduct(props) {
     setDefaultState,
     setDefaultType,
     checkoutItems,
-    setCheckoutItems,
+    setCheckoutItemsByChecked,
     checked,
     setChecked,
     setDefaultChecked,
@@ -80,9 +80,11 @@ export default function CartProduct(props) {
   }, [items, getData]);
 
   useEffect(() => {
-    const cartItems = getCartItemsFromStorage();
-    setCartProduct(cartItems);
-  }, [getCartItemsFromStorage, setCartProduct]);
+    if (cartItems.length <= 0) {
+      const cartItems = getCartItemsFromStorage();
+      setCartProduct(cartItems);
+    }
+  }, [cartItems, getCartItemsFromStorage, setCartProduct]);
 
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;
@@ -110,7 +112,7 @@ export default function CartProduct(props) {
     const { checked } = event.target;
     let newChecked = cartItems.map((item) => checked);
     newChecked = [checked, ...newChecked, checked];
-    setChecked(newChecked, setCheckoutItems);
+    setChecked(newChecked, setCheckoutItemsByChecked);
   };
 
   const selectOne = (index, event) => {
@@ -119,7 +121,7 @@ export default function CartProduct(props) {
     checked[index + 1] = event.target.checked;
     checked[lastIndex] = false;
     const newChecked = [...checked];
-    setChecked(newChecked, setCheckoutItems);
+    setChecked(newChecked, setCheckoutItemsByChecked);
   };
 
   const handleDeleteSelection = (event) => {

@@ -27,7 +27,10 @@ export default function CheckoutProduct() {
     voucher,
     setVoucher,
     checkoutItems,
+    setCheckoutProduct,
+    getCheckoutItemsFromStorage,
   } = useContext(ProductContext);
+
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     phone: "",
@@ -125,6 +128,13 @@ export default function CheckoutProduct() {
   //Calc checkoutPriceFinal
   let checkoutPriceFinal = checkoutPriceTotal + shipPrice - saved;
 
+  useEffect(() => {
+    if (checkoutItems.length <= 0) {
+      const checkoutItems = getCheckoutItemsFromStorage();
+      setCheckoutProduct(checkoutItems);
+    }
+  }, [checkoutItems, getCheckoutItemsFromStorage, setCheckoutProduct]);
+  
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;
     const province = provinces.find((province) => province.name === value);
