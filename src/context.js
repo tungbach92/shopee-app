@@ -511,7 +511,6 @@ export default class ProductProvider extends Component {
     });
   };
 
-
   filterCategoryProduct = () => {
     //get sortedItems by filter using categoryItems
     let { categoryItems, filter, filterPrice } = this.state;
@@ -571,7 +570,10 @@ export default class ProductProvider extends Component {
     items.forEach((item) => {
       item.variationDisPlay = false;
     });
-    cartItems[index].variationDisPlay = !cartItems[index].variationDisPlay;
+    cartItems[index] = {
+      ...cartItems[index],
+      variationDisPlay: !cartItems[index].variationDisPlay,
+    };
     this.setState({ cartItems });
   };
 
@@ -588,7 +590,10 @@ export default class ProductProvider extends Component {
     items.forEach((item) => {
       item.similarDisPlay = false;
     });
-    cartItems[index].similarDisPlay = !cartItems[index].similarDisPlay;
+    cartItems[index] = {
+      ...cartItems[index],
+      similarDisPlay: !cartItems[index].similarDisPlay,
+    };
     type = cartItems[index].type;
     this.setState({ cartItems, type }, this.similarProduct);
   };

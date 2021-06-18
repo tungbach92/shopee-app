@@ -31,6 +31,10 @@ export default function CartProduct(props) {
     checked,
     setChecked,
     setDefaultChecked,
+    getCartItemsFromStorage,
+    setCartProduct,
+    items,
+    getData,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
@@ -68,6 +72,17 @@ export default function CartProduct(props) {
     togglePopup,
     toggleVoucher,
   ]);
+
+  useEffect(() => {
+    if (items.length <= 0) {
+      getData();
+    }
+  }, [items, getData]);
+
+  useEffect(() => {
+    const cartItems = getCartItemsFromStorage();
+    setCartProduct(cartItems);
+  }, [getCartItemsFromStorage, setCartProduct]);
 
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;

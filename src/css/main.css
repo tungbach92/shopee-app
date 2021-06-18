@@ -1261,6 +1261,7 @@ header {
 } */
 
 .cart-product__variation-label {
+  cursor: pointer;
 }
 .cart-product__variation-icon {
   display: inline-block;

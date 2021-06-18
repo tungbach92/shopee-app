@@ -58,7 +58,6 @@ export default function ProductList(props) {
     setSortedProducts(sortedItems);
     setPageIndex(pageIndex);
     setPageTotal(pageTotal);
-    setCartProduct(cartItems);
     setCartNumb(cartNumb);
     setCheckoutItems(checkoutItems);
   }, [
@@ -73,10 +72,15 @@ export default function ProductList(props) {
     getCheckoutItemsFromStorage,
     setPageIndex,
     setPageTotal,
-    setCartProduct,
     setCartNumb,
     setCheckoutItems,
   ]);
+  useEffect(() => {
+    const cartItems = getCartItemsFromStorage();
+    if (!props.similarDisPlay) {
+      setCartProduct(cartItems);
+    }
+  }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
 
   useEffect(() => {
     setDefaultChecked();
