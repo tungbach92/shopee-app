@@ -117,10 +117,6 @@ export default class ProductProvider extends Component {
     );
   };
 
-  setDefaultType = () => {
-    this.setState({ type: "allProduct" });
-  };
-
   getData = async () => {
     try {
       const response = await fetch(itemsApi);
@@ -607,7 +603,6 @@ export default class ProductProvider extends Component {
         value={{
           ...this.state,
           setDefaultChecked: this.setDefaultChecked,
-          setDefaultType: this.setDefaultType,
           setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
