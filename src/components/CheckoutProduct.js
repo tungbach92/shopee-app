@@ -33,8 +33,6 @@ export default function CheckoutProduct() {
     setOrderItems,
     setCartProduct,
     getOrderItemsFromStorage,
-    setSoldAmount,
-    items,
   } = useContext(ProductContext);
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -317,23 +315,13 @@ export default function CheckoutProduct() {
         checkoutPrice: checkoutPriceFinal,
       };
 
-      let newOrderItems = [];
-      if (orderItems) {
-        newOrderItems = [...orderItems, orderItem];
-      } else {
-        newOrderItems = [orderItem];
-      }
-      console.log(orderItem); // order output
+      const oldOrder = getOrderItemsFromStorage();
+      let newOrderItems = [...oldOrder, orderItem];
+      console.log(newOrderItems); // order output
       setOrderItems(newOrderItems);
       setCartProduct([]);
     }
   };
-  // setSoldAmount after checkout
-  useEffect(() => {
-    if (orderItems.length > 0 && items.length > 0) {
-      setSoldAmount();
-    }
-  }, [items, orderItems, setSoldAmount]);
 
   useEffect(() => {
     if (!orderItems) {

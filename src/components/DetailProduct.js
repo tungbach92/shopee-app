@@ -53,21 +53,6 @@ export default function DetailProduct() {
   );
 
   useEffect(() => {
-    // effect
-    // const setSoldAmount = (item) => {
-    //   let checkoutItems = [];
-    //   orderItems.forEach((orderItem) => {
-    //     console.log(orderItem.checkoutItems);
-    //     checkoutItems = [...checkoutItems, ...orderItem.checkoutItems];
-    //   });
-
-    //   checkoutItems.forEach((checkoutItem) => {
-    //     if (checkoutItem.id === item.id) {
-    //       item = { ...item, soldAmount: checkoutItem.amount };
-    //     }
-    //   });
-    // };
-
     if (items.length > 0 && orderItems.length > 0) {
       let item = items.find((item) => item.metaTitle === metaTitle);
 
@@ -79,15 +64,15 @@ export default function DetailProduct() {
 
       checkoutItems.forEach((checkoutItem) => {
         if (checkoutItem.id === item.id) {
-          item = { ...item, amount: 1 ,soldAmount: checkoutItem.amount };
+          item = {
+            ...item,
+            amount: 1,
+            soldAmount: item.soldAmount + checkoutItem.amount,
+          };
         }
       });
       setItem(item);
     }
-
-    return () => {
-      // cleanup
-    };
   }, [items, metaTitle, orderItems]);
 
   useEffect(() => {

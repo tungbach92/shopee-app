@@ -649,7 +649,6 @@ export default class ProductProvider extends Component {
           setOrderItems: this.setOrderItems,
           saveOrderItemsToStorage: this.saveOrderItemsToStorage,
           getOrderItemsFromStorage: this.getOrderItemsFromStorage,
-          setSoldAmount: this.setSoldAmount,
         }}
       >
         {this.props.children}
