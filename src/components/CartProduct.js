@@ -56,19 +56,7 @@ export default function CartProduct(props) {
   useEffect(() => {
     console.log("useEffect");
     setDefaultState();
-    return () => {
-      saveCartItemsToStorage();
-      saveCheckoutItemsToStorage();
-      togglePopup(false);
-      toggleVoucher(false);
-    };
-  }, [
-    setDefaultState,
-    saveCartItemsToStorage,
-    saveCheckoutItemsToStorage,
-    togglePopup,
-    toggleVoucher,
-  ]);
+  }, [setDefaultState]);
 
   useEffect(() => {
     if (items.length <= 0) {

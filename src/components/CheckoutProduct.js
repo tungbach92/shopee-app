@@ -29,6 +29,12 @@ export default function CheckoutProduct() {
     checkoutItems,
     setCheckoutProduct,
     getCheckoutItemsFromStorage,
+    orderItems,
+    setOrderItems,
+    setCartProduct,
+    getOrderItemsFromStorage,
+    setSoldAmount,
+    items,
   } = useContext(ProductContext);
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -85,9 +91,6 @@ export default function CheckoutProduct() {
   } = useModal();
 
   //
-  let orderItems = {};
-
-  //
   let isInfoEmpty = false;
   if (
     customerInfo.name === "" ||
@@ -134,7 +137,7 @@ export default function CheckoutProduct() {
       setCheckoutProduct(checkoutItems);
     }
   }, [checkoutItems, getCheckoutItemsFromStorage, setCheckoutProduct]);
-  
+
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;
     const province = provinces.find((province) => province.name === value);
@@ -303,7 +306,7 @@ export default function CheckoutProduct() {
       Object.keys(shipUnit).length > 0 &&
       isCardInfoMustFilled === false
     ) {
-      orderItems = {
+      const orderItem = {
         date: new Date(),
         checkoutItems: checkoutItems,
         customerInfo: customerInfo,
@@ -313,9 +316,32 @@ export default function CheckoutProduct() {
         message: message,
         checkoutPrice: checkoutPriceFinal,
       };
-      console.log(orderItems); // order output
+
+      let newOrderItems = [];
+      if (orderItems) {
+        newOrderItems = [...orderItems, orderItem];
+      } else {
+        newOrderItems = [orderItem];
+      }
+      console.log(orderItem); // order output
+      setOrderItems(newOrderItems);
+      setCartProduct([]);
     }
   };
+  // setSoldAmount after checkout
+  useEffect(() => {
+    if (orderItems.length > 0 && items.length > 0) {
+      setSoldAmount();
+    }
+  }, [items, orderItems, setSoldAmount]);
+
+  useEffect(() => {
+    if (!orderItems) {
+      const orderItems = getOrderItemsFromStorage();
+      setOrderItems(orderItems);
+    }
+  }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
+
   const handleVoucherDelete = () => {
     setVoucher({});
   };
@@ -487,7 +513,10 @@ export default function CheckoutProduct() {
           {checkoutItems.map((item, index) => (
             <div key={index} className="checkout-product-item-wrapper">
               <li className="checkout-product__item">
-                <span className="checkout-product__name-wrapper">
+                <Link
+                  to={`/product/${item.metaTitle}`}
+                  className="checkout-product__name-wrapper"
+                >
                   <img
                     src={require(`../img/${item.imageUrl}`).default}
                     alt="product__item-img"
@@ -504,7 +533,7 @@ export default function CheckoutProduct() {
                       {item.variation}
                     </span>
                   </span>
-                </span>
+                </Link>
                 <span className="checkout-product__item-price">
                   {item.price}
                 </span>

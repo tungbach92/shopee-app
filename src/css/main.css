@@ -2358,6 +2358,7 @@ header {
   flex-basis: 66rem;
   display: flex;
   align-items: center;
+  text-decoration: none;
 }
 
 .checkout-product__item-img {
@@ -2367,6 +2368,8 @@ header {
 .checkout-product__item-name {
   margin-left: 1.6rem;
   flex-basis: 42rem;
+  text-decoration: none;
+  color: var(--text-color);
 }
 .checkout-product__variation-wrapper {
   flex: 1;
@@ -2374,6 +2377,7 @@ header {
   opacity: 0.6;
 }
 .checkout-product__variation-label {
+  color: var(--text-color);
 }
 .checkout-product__variation {
 }

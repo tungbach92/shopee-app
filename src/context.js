@@ -36,7 +36,23 @@ export default class ProductProvider extends Component {
       { code: "CHRISTMASSALE", discount: "100000" },
     ],
     shipPriceProvince: [0, 0],
+    orderItems: [],
   }; // json server->fetch data to here and pass to value of Provider component
+
+ 
+  setOrderItems = (orderItems) => {
+    this.setState({ orderItems }, this.saveOrderItemsToStorage);
+  };
+
+  saveOrderItemsToStorage = () => {
+    const { orderItems } = this.state;
+    localStorage.setItem("orders", JSON.stringify(orderItems));
+  };
+
+  getOrderItemsFromStorage = () => {
+    let savedOrderItems = localStorage.getItem("orders");
+    return savedOrderItems === null ? [] : JSON.parse(savedOrderItems);
+  };
 
   setCartNumb = (cartNumb) => {
     this.setState({ cartNumb });
@@ -47,7 +63,7 @@ export default class ProductProvider extends Component {
   };
 
   setCartProduct = (cartItems) => {
-    this.setState({ cartItems });
+    this.setState({ cartItems }, this.saveCartItemsToStorage);
   };
 
   setPageTotal = (pageTotal) => {
@@ -630,6 +646,10 @@ export default class ProductProvider extends Component {
           setCartNumb: this.setCartNumb,
           getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
           setCheckoutProduct: this.setCheckoutProduct,
+          setOrderItems: this.setOrderItems,
+          saveOrderItemsToStorage: this.saveOrderItemsToStorage,
+          getOrderItemsFromStorage: this.getOrderItemsFromStorage,
+          setSoldAmount: this.setSoldAmount,
         }}
       >
         {this.props.children}

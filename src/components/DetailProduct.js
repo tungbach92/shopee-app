@@ -12,17 +12,29 @@ import Picker from "./Picker";
 export default function DetailProduct() {
   const { metaTitle } = useParams();
   const scrolltoEl = useRef();
-  const { handleClick, items, getData, bestSelling } =
-    useContext(ProductContext);
+  const {
+    handleClick,
+    items,
+    getData,
+    bestSelling,
+    orderItems,
+    setOrderItems,
+    getOrderItemsFromStorage,
+  } = useContext(ProductContext);
   //
+
+  useEffect(() => {
+    if (orderItems.length <= 0) {
+      const orderItems = getOrderItemsFromStorage();
+      setOrderItems(orderItems);
+    }
+  }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
+
   useEffect(() => {
     // effect
     if (items.length <= 0) {
       getData();
     }
-    return () => {
-      // cleanup
-    };
   }, [getData, items]);
 
   const [item, setItem] = useState();
@@ -39,21 +51,44 @@ export default function DetailProduct() {
   const sortedBestSellingItems = [...bestSellingItems].sort(
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
+
   useEffect(() => {
     // effect
-    if (items.length > 0) {
-      let itemByMetaTitle = items.find((item) => item.metaTitle === metaTitle);
-      itemByMetaTitle = {
-        ...itemByMetaTitle,
-        amount: 1,
-      };
-      setItem(itemByMetaTitle);
+    // const setSoldAmount = (item) => {
+    //   let checkoutItems = [];
+    //   orderItems.forEach((orderItem) => {
+    //     console.log(orderItem.checkoutItems);
+    //     checkoutItems = [...checkoutItems, ...orderItem.checkoutItems];
+    //   });
+
+    //   checkoutItems.forEach((checkoutItem) => {
+    //     if (checkoutItem.id === item.id) {
+    //       item = { ...item, soldAmount: checkoutItem.amount };
+    //     }
+    //   });
+    // };
+
+    if (items.length > 0 && orderItems.length > 0) {
+      let item = items.find((item) => item.metaTitle === metaTitle);
+
+      let checkoutItems = [];
+      orderItems.forEach((orderItem) => {
+        console.log(orderItem.checkoutItems);
+        checkoutItems = [...checkoutItems, ...orderItem.checkoutItems];
+      });
+
+      checkoutItems.forEach((checkoutItem) => {
+        if (checkoutItem.id === item.id) {
+          item = { ...item, amount: 1 ,soldAmount: checkoutItem.amount };
+        }
+      });
+      setItem(item);
     }
 
     return () => {
       // cleanup
     };
-  }, [items, metaTitle]);
+  }, [items, metaTitle, orderItems]);
 
   useEffect(() => {
     //Img by item
