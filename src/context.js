@@ -39,7 +39,6 @@ export default class ProductProvider extends Component {
     orderItems: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
- 
   setOrderItems = (orderItems) => {
     this.setState({ orderItems }, this.saveOrderItemsToStorage);
   };
@@ -105,15 +104,7 @@ export default class ProductProvider extends Component {
       defaultChecked = cartItems.map((item) => true);
       defaultChecked = [true, ...defaultChecked, true];
     } else {
-      defaultChecked = cartItems.map((item) => {
-        const element = checkoutItems.find((el) => el.id === item.id);
-        if (element) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-
+      defaultChecked = cartItems.map((item) => false);
       defaultChecked = [false, ...defaultChecked, false];
     }
     this.setChecked(defaultChecked);
@@ -511,7 +502,7 @@ export default class ProductProvider extends Component {
   };
 
   similarProduct = () => {
-    let { items, type } = this.state;
+    const { items, type } = this.state;
     let tempItems = [...items];
     //filter by category
     if (type !== "allProduct") {
@@ -598,18 +589,20 @@ export default class ProductProvider extends Component {
   };
 
   changeSimilarDisPlayCartItems = (index) => {
-    let { type, cartItems } = this.state;
+    const { cartItems } = this.state;
+    const newCartItems = [...cartItems];
 
-    let items = cartItems.filter((item) => cartItems.indexOf(item) !== index);
+    let items = newCartItems.filter((item) => newCartItems.indexOf(item) !== index);
     items.forEach((item) => {
       item.similarDisPlay = false;
     });
-    cartItems[index] = {
-      ...cartItems[index],
+
+    newCartItems[index] = {
+      ...newCartItems[index],
       similarDisPlay: !cartItems[index].similarDisPlay,
     };
-    type = cartItems[index].type;
-    this.setState({ cartItems, type }, this.similarProduct);
+    const type = cartItems[index].type;
+    this.setState({ cartItems: newCartItems, type }, this.similarProduct);
   };
 
   render() {

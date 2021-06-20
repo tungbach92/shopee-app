@@ -10,11 +10,13 @@ export default function AddCartModal(props) {
   };
   useEffect(() => {
     //   effect
-    setTimeout(() => {
+
+    let idValue = setTimeout(() => {
       toggleIsAddCardPopup(!isAddCartPopup);
     }, 2000);
     return () => {
       //   cleanup
+      clearTimeout(idValue);
     };
   }, [toggleIsAddCardPopup, isAddCartPopup]);
   return ReactDOM.createPortal(

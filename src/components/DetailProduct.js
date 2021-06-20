@@ -52,21 +52,26 @@ export default function DetailProduct() {
     (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
   );
 
+  // set rendering item with amount + soldAmount 
   useEffect(() => {
     if (items.length > 0 && orderItems.length > 0) {
       let item = items.find((item) => item.metaTitle === metaTitle);
+      item = {
+        ...item,
+        amount: 1,
+        soldAmount: 0,
+      };
 
-      let checkoutItems = [];
+      let orderedCheckoutItems = [];
       orderItems.forEach((orderItem) => {
         console.log(orderItem.checkoutItems);
-        checkoutItems = [...checkoutItems, ...orderItem.checkoutItems];
+        orderedCheckoutItems = [...orderedCheckoutItems, ...orderItem.checkoutItems];
       });
 
-      checkoutItems.forEach((checkoutItem) => {
+      orderedCheckoutItems.forEach((checkoutItem) => {
         if (checkoutItem.id === item.id) {
           item = {
             ...item,
-            amount: 1,
             soldAmount: item.soldAmount + checkoutItem.amount,
           };
         }

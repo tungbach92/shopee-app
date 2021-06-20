@@ -3,6 +3,7 @@ import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 
 export default function ProductList(props) {
+  // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
     items,
@@ -20,9 +21,6 @@ export default function ProductList(props) {
     getCheckoutItemsFromStorage,
     setCheckoutProduct,
     calcCartNumb,
-    setDefaultChecked,
-    checkoutItems,
-
     sortedItems,
     similarItems,
     cartItems,
@@ -31,6 +29,7 @@ export default function ProductList(props) {
     similarPageIndex,
     similarPageSize,
     handleClick,
+    setDefaultState,
   } = context;
 
   useEffect(() => {
@@ -78,15 +77,11 @@ export default function ProductList(props) {
     setCheckoutProduct,
   ]);
   useEffect(() => {
-    const cartItems = getCartItemsFromStorage();
     if (!props.similarDisPlay) {
+      const cartItems = getCartItemsFromStorage();
       setCartProduct(cartItems);
     }
   }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
-
-  useEffect(() => {
-    setDefaultChecked();
-  }, [checkoutItems, cartItems, setDefaultChecked]);
 
   if (props.similarDisPlay) {
     sortedItems = similarItems;
@@ -97,6 +92,12 @@ export default function ProductList(props) {
     (pageIndex - 1) * pageSize,
     pageIndex * pageSize
   );
+
+  //set default some states
+  useEffect(() => {
+    setDefaultState();
+  }, [setDefaultState]);
+
   return renderItem.map((item) => (
     <ProductItem
       key={item.id}
