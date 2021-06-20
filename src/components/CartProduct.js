@@ -54,15 +54,15 @@ export default function CartProduct(props) {
   }
   let idArr = [];
 
-  useEffect(() => {
-    if (checkoutItems.length > 0 && cartItems.length > 0) {
-      setDefaultChecked();
-    }
-  }, [
-    setDefaultChecked,
-    checkoutItems,
-    cartItems,
-  ]);
+  // useEffect(() => {
+  //   if (checkoutItems.length > 0 && cartItems.length > 0) {
+  //     setDefaultChecked();
+  //   }
+  // }, [
+  //   setDefaultChecked,
+  //   checkoutItems,
+  //   cartItems,
+  // ]);
 
   useEffect(() => {
     if (items.length <= 0) {
@@ -71,20 +71,14 @@ export default function CartProduct(props) {
   }, [items, getData]);
 
   useEffect(() => {
-    if (cartItems.length <= 0 || checkoutItems.length <= 0) {
-      const cartItems = getCartItemsFromStorage();
-      const checkoutItems = getCheckoutItemsFromStorage();
-      setCartProduct(cartItems);
-      setCheckoutProduct(checkoutItems);
-    }
-  }, [
-    cartItems,
-    checkoutItems,
-    getCartItemsFromStorage,
-    getCheckoutItemsFromStorage,
-    setCartProduct,
-    setCheckoutProduct,
-  ]);
+    const cartItems = getCartItemsFromStorage();
+    setCartProduct(cartItems);
+  }, [getCartItemsFromStorage, setCartProduct]);
+
+  useEffect(() => {
+    const checkoutItems = getCheckoutItemsFromStorage();
+    setCheckoutProduct(checkoutItems);
+  }, [getCheckoutItemsFromStorage, setCheckoutProduct]);
 
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;
