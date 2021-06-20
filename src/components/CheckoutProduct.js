@@ -130,11 +130,9 @@ export default function CheckoutProduct() {
   let checkoutPriceFinal = checkoutPriceTotal + shipPrice - saved;
 
   useEffect(() => {
-    if (checkoutItems.length <= 0) {
-      const checkoutItems = getCheckoutItemsFromStorage();
-      setCheckoutProduct(checkoutItems);
-    }
-  }, [checkoutItems, getCheckoutItemsFromStorage, setCheckoutProduct]);
+    const checkoutItems = getCheckoutItemsFromStorage();
+    setCheckoutProduct(checkoutItems);
+  }, [getCheckoutItemsFromStorage, setCheckoutProduct]);
 
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;

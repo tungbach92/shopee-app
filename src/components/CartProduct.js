@@ -95,8 +95,14 @@ export default function CartProduct(props) {
     changeVariationDisPlayCartItems(index);
   };
   const handleCheckout = (event) => {
-    const allUncheck = checked.some((item) => item === false);
-    if (allUncheck) {
+    let isCheck = false;
+    if (checked.length <= 0) {
+      isCheck = false;
+    } else {
+      isCheck = checked.some((item) => item === true);
+    }
+
+    if (isCheck === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     }

@@ -25,7 +25,8 @@ const HeaderSearch = React.memo(function (props) {
     let text = inputEl.current.value;
     filterProductBySearch(text);
     addToSearchHistory(text);
-    history.push("/");
+    history.push("/"); // return to path "/"
+    console.log(history);
   }
 
   function inputOnKeyUp(event) {
@@ -35,6 +36,7 @@ const HeaderSearch = React.memo(function (props) {
       filterProductBySearch(text);
       addToSearchHistory(text);
       history.push("/");
+      console.log(history);
     }
   }
 
