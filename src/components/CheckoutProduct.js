@@ -14,6 +14,8 @@ import masterImg from "../img/master.png";
 import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
 import ProvincesCitiesVN from "pc-vn";
+import ErrorModal from "./ErrorModal";
+
 export default function CheckoutProduct() {
   console.log("check out render");
 
@@ -945,6 +947,7 @@ export default function CheckoutProduct() {
           </div>
         </div>
       </div>
+      {checkoutItems.length <= 0 && <ErrorModal></ErrorModal>}
     </div>
   );
 }
