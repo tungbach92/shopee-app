@@ -13,6 +13,13 @@ export default function PopupModal(props) {
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
+    if (isInformation === true || isInfoEmpty === true) {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    } else if (!Object.keys(shipUnit).length) {
+      window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+    }
   };
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
