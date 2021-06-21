@@ -44,38 +44,28 @@ export default function DetailProduct() {
   const [isPickerShow, setIsPickerShow] = useState(false);
   const [address, setAddress] = useState("Tra cứu địa điểm");
   const [lookupShipPrice, setLookupShipPrice] = useState([]);
+  const [bestSellingItems, setBestSellingItems] = useState([]);
   //
-  const bestSellingItems = [...items].filter(
-    (item) => item.soldAmount >= bestSelling
-  );
-  const sortedBestSellingItems = [...bestSellingItems].sort(
-    (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
-  );
+  useEffect(() => {
+    if (items.length > 0) {
+      const bestSellingItems = [...items].filter(
+        (item) => item.soldAmount >= bestSelling
+      );
+      const sortedBestSellingItems = [...bestSellingItems].sort(
+        (a, b) => parseFloat(b.soldAmount) - parseFloat(a.soldAmount)
+      );
+      setBestSellingItems(sortedBestSellingItems);
+    }
+  }, [bestSelling, items]);
 
-  // set rendering item with amount + soldAmount 
+  // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0 && orderItems.length > 0) {
       let item = items.find((item) => item.metaTitle === metaTitle);
       item = {
         ...item,
         amount: 1,
-        soldAmount: 0,
       };
-
-      let orderedCheckoutItems = [];
-      orderItems.forEach((orderItem) => {
-        console.log(orderItem.checkoutItems);
-        orderedCheckoutItems = [...orderedCheckoutItems, ...orderItem.checkoutItems];
-      });
-
-      orderedCheckoutItems.forEach((checkoutItem) => {
-        if (checkoutItem.id === item.id) {
-          item = {
-            ...item,
-            soldAmount: item.soldAmount + checkoutItem.amount,
-          };
-        }
-      });
       setItem(item);
     }
   }, [items, metaTitle, orderItems]);
@@ -728,7 +718,7 @@ export default function DetailProduct() {
               Top Sản Phẩm Bán Chạy
             </div>
             <div className="detail-content__hot-list">
-              {sortedBestSellingItems.map((item, index) => {
+              {bestSellingItems.map((item, index) => {
                 if (index <= 7) {
                   return (
                     <Link

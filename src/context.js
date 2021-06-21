@@ -135,12 +135,32 @@ export default class ProductProvider extends Component {
       const itemsWithVariation = await this.addVariationProp(
         itemsWithVariationSimilarDisPlay
       );
-      this.setState({ items: itemsWithVariation });
+      const finalItems = await this.updateSoldAmount(itemsWithVariation);
+      this.setState({ items: finalItems });
     } catch (error) {
       console.log(error);
     }
   };
 
+  updateSoldAmount = async (items) => {
+    const orderItems = this.getOrderItemsFromStorage();
+    let orderedCheckoutItems = [];
+    orderItems.forEach((orderItem) => {
+      console.log(orderItem.checkoutItems);
+      orderedCheckoutItems = [
+        ...orderedCheckoutItems,
+        ...orderItem.checkoutItems,
+      ];
+    });
+    items.forEach((item) =>
+      orderedCheckoutItems.forEach((orderItem) => {
+        if (orderItem.id === item.id) {
+          item.soldAmount += Number(orderItem.amount);
+        }
+      })
+    );
+    return items;
+  };
   //add id cho item
   addItemId = async (items) => {
     items.forEach((item, index) => {
@@ -340,7 +360,7 @@ export default class ProductProvider extends Component {
 
     if (name === "inputAmount") {
       event.target.value = event.target.value
-        .replace(/[^1-9.]/g, "")
+        .replace(/[^0-9.]/g, "")
         .replace(/(\..*)\./g, "$1");
       const value = event.target.value;
       this.changeAmountCartItem(id, value, this.saveCartItemsToStorage);
@@ -592,7 +612,9 @@ export default class ProductProvider extends Component {
     const { cartItems } = this.state;
     const newCartItems = [...cartItems];
 
-    let items = newCartItems.filter((item) => newCartItems.indexOf(item) !== index);
+    let items = newCartItems.filter(
+      (item) => newCartItems.indexOf(item) !== index
+    );
     items.forEach((item) => {
       item.similarDisPlay = false;
     });
