@@ -39,6 +39,11 @@ export default class ProductProvider extends Component {
     orderItems: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
+  componentDidMount() {
+    const orderItems = this.getOrderItemsFromStorage();
+    this.setState({orderItems});
+  }
+
   setOrderItems = (orderItems) => {
     this.setState({ orderItems }, this.saveOrderItemsToStorage);
   };

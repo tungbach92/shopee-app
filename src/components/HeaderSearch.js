@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import shopeeLogo from "../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import HeaderSearchHistory from "./HeaderSearchHistory";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
+import {ProductContext } from "../context";
 
 const HeaderSearch = React.memo(function (props) {
   console.log("header search render");
@@ -14,12 +15,36 @@ const HeaderSearch = React.memo(function (props) {
     isCartPageLoaded,
     isCheckoutPage,
   } = props;
+  const context= useContext(ProductContext);
+  const {orderItems} = context;
   const inputEl = useRef("");
   const history = useHistory();
+  const [recommendSearch, setRecommendSearch] = useState([]);
   function getUnique(items) {
     let uniqueItems = new Set(items);
     return [...uniqueItems];
   }
+
+  useEffect(() => {
+    function createRecommendedSearch () { 
+      let orderedCheckoutItems = [];
+      orderItems.forEach((orderItem) => {
+        console.log(orderItem.checkoutItems);
+        orderedCheckoutItems = [
+          ...orderedCheckoutItems,
+          ...orderItem.checkoutItems,
+        ];
+      });
+  
+      let allTags = [];
+      orderedCheckoutItems.forEach(item => {
+        // allTags = [...allTags,...item.tags] //TODO: add tag to item and enable this
+      })
+      allTags = getUnique(allTags);
+      setRecommendSearch(allTags);
+    }
+    createRecommendedSearch();
+  },[orderItems])
 
   function handleSearchIconClick() {
     let text = inputEl.current.value;
@@ -92,46 +117,12 @@ const HeaderSearch = React.memo(function (props) {
               </div>
 
               <ul className="header__search-list">
+                {recommendSearch.map(item =>
                 <li className="header__search-item">
                   <a href="# " className="header__item-link">
-                    Hoodie Nam
+                    {item}
                   </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Sandal Nữ
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Áo Nữ
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Quần Nam
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Dép Nam
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Balo Nữ
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Váy Trắng
-                  </a>
-                </li>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    Tất Nữ
-                  </a>
-                </li>
+                </li>)}
               </ul>
             </div>
             <HeaderCart></HeaderCart>
