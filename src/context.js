@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { commerce } from "./lib/commerce";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -41,8 +42,14 @@ export default class ProductProvider extends Component {
 
   componentDidMount() {
     const orderItems = this.getOrderItemsFromStorage();
-    this.setState({orderItems});
+    this.setState({ orderItems });
+    this.fetchProduct();
   }
+
+  fetchProduct = async () => {
+    const data = await commerce.products.list();
+    console.log(data);
+  };
 
   setOrderItems = (orderItems) => {
     this.setState({ orderItems }, this.saveOrderItemsToStorage);
