@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
@@ -11,6 +11,7 @@ import Picker from "./Picker";
 
 export default function DetailProduct() {
   const { metaTitle } = useParams();
+  const location = useLocation();
   const scrolltoEl = useRef();
   const {
     handleClick,
@@ -60,7 +61,7 @@ export default function DetailProduct() {
 
   // set rendering item with amount + soldAmount
   useEffect(() => {
-    if (items.length > 0 && orderItems.length > 0) {
+    if (items.length > 0) {
       let item = items.find((item) => item.metaTitle === metaTitle);
       item = {
         ...item,
@@ -485,7 +486,10 @@ export default function DetailProduct() {
               )}
 
               <Link
-                to="/cart"
+                to={{
+                  pathname: '/cart',
+                  state: { from: location }
+                }}
                 onClick={handleBuyNow}
                 data-id={item?.id}
                 data-name="addToCartBtn"

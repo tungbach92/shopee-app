@@ -5,14 +5,21 @@ import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
+import AddCartModal from "./AddCartModal";
 
 export default function CartProduct(props) {
   console.log("render");
+  const location = useLocation();
   const { isPopupShowing, togglePopup, popupModal } = props;
   const [variation, setVariation] = useState("");
-  const { isVoucherShowing, toggleVoucher } = useModal();
+  const {
+    isVoucherShowing,
+    toggleVoucher,
+    isAddCartPopup,
+    toggleIsAddCardPopup,
+  } = useModal();
   const {
     voucherList,
     voucher,
@@ -55,16 +62,11 @@ export default function CartProduct(props) {
   }
   let idArr = [];
 
-  // useEffect(() => {
-  //   if (checkoutItems.length > 0 && cartItems.length > 0) {
-  //     setDefaultChecked();
-  //   }
-  // }, [
-  //   setDefaultChecked,
-  //   checkoutItems,
-  //   cartItems,
-  // ]);
-
+  useEffect(() => {
+    if (location.state) {
+      toggleIsAddCardPopup(true);
+    }
+  }, [location, toggleIsAddCardPopup]);
   useEffect(() => {
     if (items.length <= 0) {
       getData();
@@ -775,6 +777,12 @@ export default function CartProduct(props) {
             mua ngay
           </Link>
         </div>
+      )}
+      {isAddCartPopup && (
+        <AddCartModal
+          isAddCartPopup={isAddCartPopup}
+          toggleIsAddCardPopup={toggleIsAddCardPopup}
+        ></AddCartModal>
       )}
     </div>
   );

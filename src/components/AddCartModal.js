@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import useModal from "../hooks/useModal";
+
 export default function AddCartModal(props) {
   console.log("add cart popup render");
   const { isAddCartPopup, toggleIsAddCardPopup } = props;
