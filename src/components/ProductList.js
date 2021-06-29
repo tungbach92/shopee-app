@@ -38,15 +38,16 @@ export default function ProductList(props) {
     }
   }, [items, getData]);
 
+  //set default some states
+  useEffect(() => {
+    setDefaultState();
+  }, [setDefaultState]);
+
+  //default when open main page
   useEffect(() => {
     if (type === "allProduct") {
       const categoryItems = items.filter((item) => item.type !== type);
-
-      const sortedItems = categoryItems.filter(
-        (item) =>
-          new Date(item.date).getDate() > new Date().getDate() - 20 ||
-          item.soldAmount >= bestSelling
-      );
+      const sortedItems = [...categoryItems];
       const pageIndex = 1;
       const pageTotal = calcPageTotals(sortedItems);
       //get and set cartItems state
@@ -84,19 +85,16 @@ export default function ProductList(props) {
   }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
 
   if (props.similarDisPlay) {
-    sortedItems = similarItems;
+    sortedItems = [...similarItems];
     pageIndex = similarPageIndex;
     pageSize = similarPageSize;
   }
-  const renderItem = sortedItems.slice(
+
+  let renderItem = [];
+  renderItem = sortedItems.slice(
     (pageIndex - 1) * pageSize,
     pageIndex * pageSize
   );
-
-  //set default some states
-  useEffect(() => {
-    setDefaultState();
-  }, [setDefaultState]);
 
   return renderItem.map((item) => (
     <ProductItem

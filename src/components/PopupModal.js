@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { useHistory } from "react-router-dom";
+
 export default function PopupModal(props) {
+  const history = useHistory();
   const {
     isCartPageLoaded,
     isCardInfoMustFilled,
@@ -10,15 +13,21 @@ export default function PopupModal(props) {
     isInformation,
     isInfoEmpty,
     paymentMethod,
+    setCheckoutProduct,
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
-    if (isInformation === true || isInfoEmpty === true) {
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-    } else if (!Object.keys(shipUnit).length) {
-      window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
-    } else {
-      window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+    if (!isCartPageLoaded) {
+      if (isInformation === true || isInfoEmpty === true) {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      } else if (!Object.keys(shipUnit).length) {
+        window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
+      } else if (isCardInfoMustFilled) {
+        window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+      } else {
+        setCheckoutProduct([]);
+        history.push("/");
+      }
     }
   };
   return ReactDOM.createPortal(

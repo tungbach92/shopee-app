@@ -942,6 +942,7 @@ export default function CheckoutProduct() {
                 isInfoEmpty={isInfoEmpty}
                 isCardInfoMustFilled={isCardInfoMustFilled}
                 paymentMethod={paymentMethod}
+                setCheckoutProduct={setCheckoutProduct}
               ></PopupModal>
             )}
           </div>

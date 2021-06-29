@@ -12,7 +12,7 @@ export default class ProductProvider extends Component {
     defaultPageIndex: 1,
     bestSelling: 20,
     type: "allProduct",
-    filter: "popular",
+    filter: "",
     filterPrice: "default",
     pageIndex: 1,
     pageSize: 10,
@@ -41,7 +41,7 @@ export default class ProductProvider extends Component {
 
   componentDidMount() {
     const orderItems = this.getOrderItemsFromStorage();
-    this.setState({orderItems});
+    this.setState({ orderItems });
   }
 
   setOrderItems = (orderItems) => {
@@ -63,7 +63,7 @@ export default class ProductProvider extends Component {
   };
 
   setCheckoutProduct = (checkoutItems) => {
-    this.setState({ checkoutItems });
+    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
 
   setCartProduct = (cartItems) => {
@@ -116,12 +116,11 @@ export default class ProductProvider extends Component {
   };
 
   setDefaultState = () => {
-    //clean function when destroy cartProduct component
     //reset sortItem, dom button, pageIndex, pageTotal, searchInput to default
     this.setState(
       {
         type: "allProduct",
-        filter: "popular",
+        filter: "",
         filterPrice: "default",
         searchInput: "",
       },
@@ -285,7 +284,7 @@ export default class ProductProvider extends Component {
 
     if (name === "type") {
       this.setState(
-        { [name]: value, filter: "popular", filterPrice: "default" },
+        { [name]: value, filter: "", filterPrice: "default" },
         this.categoryProduct
       );
       // set type filter filterPrice state, and sortedItems categoryItem pageIndex after state mutate
@@ -512,15 +511,10 @@ export default class ProductProvider extends Component {
     if (type !== "allProduct") {
       tempItems = tempItems.filter((item) => item.type === type);
     }
-    const sortedItems = tempItems.filter(
-      (item) =>
-        new Date(item.date).getDate() > new Date().getDate() - 20 ||
-        item.soldAmount >= this.state.bestSelling
-    );
     //change state
     this.setState({
-      sortedItems,
       categoryItems: tempItems,
+      sortedItems: tempItems,
       pageIndex: 1,
       pageTotal: this.calcPageTotals(tempItems),
     });
