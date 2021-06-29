@@ -41,7 +41,8 @@ export default class ProductProvider extends Component {
 
   componentDidMount() {
     const orderItems = this.getOrderItemsFromStorage();
-    this.setState({ orderItems });
+    const checkoutItems = this.getCheckoutItemsFromStorage();
+    this.setState({ orderItems, checkoutItems });
   }
 
   setOrderItems = (orderItems) => {
@@ -94,8 +95,8 @@ export default class ProductProvider extends Component {
     this.setState({ voucher });
   };
 
-  setChecked = (cheked, callback) => {
-    this.setState({ checked: cheked }, callback);
+  setChecked = (checked) => {
+    this.setState({ checked });
   };
 
   setCustomerInfo = (name, phone, address) => {
@@ -105,11 +106,23 @@ export default class ProductProvider extends Component {
   setDefaultChecked = () => {
     const { checkoutItems, cartItems } = this.state;
     let defaultChecked = [];
-    if (JSON.stringify(checkoutItems) === JSON.stringify(cartItems)) {
+    if (
+      (checkoutItems.length > 0 || cartItems.length > 0) &&
+      JSON.stringify(checkoutItems) === JSON.stringify(cartItems)
+    ) {
       defaultChecked = cartItems.map((item) => true);
       defaultChecked = [true, ...defaultChecked, true];
     } else {
-      defaultChecked = cartItems.map((item) => false);
+      defaultChecked = cartItems.map((cartItem) => {
+        let result = false;
+        checkoutItems.forEach((checkoutItem) => {
+          if (JSON.stringify(checkoutItem) === JSON.stringify(cartItem)) {
+            result = true;
+          }
+        });
+        return result;
+      });
+      // defaultChecked = cartItems.map((item) => false);
       defaultChecked = [false, ...defaultChecked, false];
     }
     this.setChecked(defaultChecked);

@@ -83,6 +83,10 @@ export default function CartProduct(props) {
     setCheckoutProduct(checkoutItems);
   }, [getCheckoutItemsFromStorage, setCheckoutProduct]);
 
+  useEffect(() => {
+    setDefaultChecked();
+  }, [setDefaultChecked, checkoutItems, cartItems]);
+
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;
     setVariation(variation);
@@ -108,6 +112,8 @@ export default function CartProduct(props) {
     if (isCheck === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
+    } else {
+      setCheckoutItemsByChecked();
     }
   };
 
@@ -116,7 +122,7 @@ export default function CartProduct(props) {
     const { checked } = event.target;
     let newChecked = cartItems.map((item) => checked);
     newChecked = [checked, ...newChecked, checked];
-    setChecked(newChecked, setCheckoutItemsByChecked);
+    setChecked(newChecked);
   };
 
   const selectOne = (index, event) => {
@@ -125,7 +131,7 @@ export default function CartProduct(props) {
     checked[index + 1] = event.target.checked;
     checked[lastIndex] = false;
     const newChecked = [...checked];
-    setChecked(newChecked, setCheckoutItemsByChecked);
+    setChecked(newChecked);
   };
 
   const handleDeleteSelection = (event) => {
