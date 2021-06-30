@@ -614,10 +614,10 @@ export default class ProductProvider extends Component {
     this.setState({ cartItems });
   };
 
-  changeVariation = (variation, index) => {
+  changeCartItemsVariation = (variation, index) => {
     let { cartItems } = this.state;
-    cartItems[index].variation = variation;
-    this.setState({ cartItems });
+    cartItems[index] = { ...cartItems[index], variation: variation };
+    this.setState({ cartItems }, this.saveCartItemsToStorage);
   };
 
   changeSimilarDisPlayCartItems = (index) => {
@@ -651,7 +651,7 @@ export default class ProductProvider extends Component {
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
-          changeVariation: this.changeVariation,
+          changeCartItemsVariation: this.changeCartItemsVariation,
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,
