@@ -27,7 +27,7 @@ export default function CartProduct(props) {
     cartItems,
     handleClick,
     changeVariationDisPlayCartItems,
-    changeVariation,
+    changeCartItemsVariation,
     changeSimilarDisPlayCartItems,
     delCartItems,
     saveCartItemsToStorage,
@@ -98,7 +98,7 @@ export default function CartProduct(props) {
   };
 
   const handleVariationApply = (index, event) => {
-    changeVariation(variation, index);
+    changeCartItemsVariation(variation, index);
     changeVariationDisPlayCartItems(index);
   };
   const handleCheckout = (event) => {
