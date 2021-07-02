@@ -18,12 +18,14 @@ export default function PopupModal(props) {
   const handleClick = () => {
     togglePopup(!isPopupShowing);
     if (!isCartPageLoaded) {
-      if (isInformation === true || isInfoEmpty === true) {
+      if (isInformation || isInfoEmpty) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else if (!Object.keys(shipUnit).length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
       } else if (isCardInfoMustFilled) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+      } else if (paymentMethod.length <= 0) {
+        window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else {
         setCheckoutProduct([]);
         history.push("/");

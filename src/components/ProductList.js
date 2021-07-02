@@ -7,6 +7,7 @@ export default function ProductList(props) {
   const context = useContext(ProductContext);
   let {
     items,
+    orderItems,
     getData,
     type,
     bestSelling,
@@ -36,7 +37,7 @@ export default function ProductList(props) {
     if (items.length <= 0) {
       getData();
     }
-  }, [items, getData]);
+  }, [items, getData, orderItems]);
 
   //set default some states
   useEffect(() => {
