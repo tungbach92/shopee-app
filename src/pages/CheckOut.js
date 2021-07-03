@@ -23,6 +23,7 @@ export default function Checkout() {
   return (
     <>
       <Header
+        isCheckoutPage={isCheckoutPage}
         headerSearch={
           <HeaderSearch
             searchInput={searchInput}
