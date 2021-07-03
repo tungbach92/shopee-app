@@ -1,12 +1,12 @@
 import React from "react";
 import HeaderNav from "./HeaderNav";
 
-export default function Header(props) {
+export default function Header({ isCartPageLoaded, headerSearch }) {
   return (
-    <header className="header">
+    <header className={isCartPageLoaded ? "header header--cart" : "header"}>
       <div className="grid grid--fullheight">
         <HeaderNav></HeaderNav>
-        {props.headerSearch}
+        {headerSearch}
       </div>
     </header>
   );

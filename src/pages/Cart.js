@@ -25,6 +25,7 @@ export default function Cart() {
   return (
     <>
       <Header
+        isCartPageLoaded={isCartPageLoaded}
         headerSearch={
           <HeaderSearch
             searchInput={searchInput}
