@@ -199,6 +199,7 @@ export default function CheckoutProduct() {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     if (province && district) {
       const name = inputEl.current[0].value;
       const phone = inputEl.current[1].value;
@@ -212,11 +213,9 @@ export default function CheckoutProduct() {
       setIsInformation(!isInformation);
     }
     if (!province) {
-      e.preventDefault();
       setIsProvinceSelected(false);
     }
     if (!district) {
-      e.preventDefault();
       setIsDistrictSelected(false);
     }
   };

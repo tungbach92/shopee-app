@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Header from "../components/Header";
 import CartProduct from "../components/CartProduct";
 import HeaderSearch from "../components/HeaderSearch";
+import HeaderNav from "../components/HeaderNav";
 import { ProductContext } from "../context";
 import PopupModal from "../components/PopupModal";
 import useModal from "../hooks/useModal";
@@ -26,6 +27,7 @@ export default function Cart() {
     <>
       <Header
         isCartPageLoaded={isCartPageLoaded}
+        headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
             searchInput={searchInput}

@@ -129,14 +129,14 @@ export default function HeaderNav() {
           </a>
         </li>
         {/* Logged:  header__nav-item-right--user */}
-        <div className="header__nav-item-right header__nav-item-right--reg header__nav-item-right--user">
+        <div className="header__nav-item-right header__nav-item-right--reg">
           <div className="header__nav-reg">
-            <a href="# " className="header__nav-login">
+            <Link to="/register" className="header__nav-login">
               Đăng ký
-            </a>
-            <a href="# " className="header__nav-register">
+            </Link>
+            <Link to="/login" className="header__nav-register">
               Đăng nhập
-            </a>
+            </Link>
           </div>
           <a href="# " className="header__nav-login-link">
             <i className="header__nav-icon bi bi-question-circle"></i>

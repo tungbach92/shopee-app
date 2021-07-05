@@ -10,6 +10,12 @@ header {
   position: unset;
 }
 
+.header--login {
+  position: unset;
+  background-image: none;
+  background: var(--while-color);
+}
+
 .header__nav {
   display: flex;
   justify-content: space-between;
@@ -345,16 +351,12 @@ header {
   padding-bottom: 2.4rem;
 }
 
-.header__logo-wrapper {
-  display: flex;
-}
-
 .header__logo-link {
   margin-right: 4rem;
-  flex-basis: 20rem;
 }
 
-.header__logo-link--notHome {
+.header__logo-link--notHome,
+.header__logo-link--login {
   margin-right: 0;
 }
 
@@ -365,9 +367,15 @@ header {
   text-transform: capitalize;
   border-left: 0.0625rem solid var(--while-color);
   padding-left: 1rem;
-  margin: auto 0;
-  margin-top: 1.4rem;
+  margin: 0.8rem 0 0;
   color: var(--while-color);
+}
+
+.header__page-name--login {
+  margin: unset;
+  margin-left: 1rem;
+  color: var(--primary-color);
+  border-left: 0.0625rem solid var(--primary-color);
 }
 
 .header__logo-link img {
@@ -375,6 +383,30 @@ header {
   height: 5rem;
   color: #fff;
   margin-top: -1.3rem;
+}
+
+.header__simple-wrapper {
+  display: flex;
+  padding: 2.4rem 0;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.header__logo-link--login svg {
+  display: block;
+  height: 5rem;
+  fill: var(--primary-color);
+  margin-top: -1.3rem;
+}
+
+.header__help {
+  font-size: 1.4rem;
+  color: var(--primary-color);
 }
 
 .header__search-content {
@@ -1145,6 +1177,11 @@ header {
 
 .container {
   background-color: #f5f5f5;
+}
+
+.container--login {
+  background-color: none;
+  background-image: linear-gradient(0, #ff6333, #f53e2d);
 }
 
 .cart-product,
@@ -3546,6 +3583,36 @@ header {
   color: var(--primary-color);
 }
 
+.grid--login {
+  width: 100rem;
+}
+.login-content__img {
+  padding: 6rem 0;
+}
+.login-content__input {
+  margin-left: auto;
+  padding: 3.2rem;
+  display: flex;
+  flex-direction: column;
+  width: 40rem;
+  min-height: 48rem;
+  background: var(--while-color);
+}
+.login-content__email-label {
+}
+.login-content__email {
+}
+.login-content__password-label {
+}
+.login-content__password {
+}
+.login-content__submit {
+  background-color: var(--primary-color);
+}
+.login-content__register-wrapper {
+}
+.login-content__register {
+}
 .footer {
   background-color: #fbfbfb;
 }

@@ -10,6 +10,8 @@ import Detail from "./pages/Detail";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import ProductProvider from "./context";
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route exact path="/product/:metaTitle" component={Detail}></Route>
         <Route exact path="/account" component={Account}></Route>
         <Route exact path="/checkout" component={Checkout}></Route>
+        <Route exact path="/login" component={Login}></Route>
+        <Route exact path="/register" component={Register}></Route>
         <Route component={Error} />
       </Switch>
       <Footer></Footer>

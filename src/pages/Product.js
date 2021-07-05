@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import ProductContainer from "../components/ProductContainer";
 import Header from "../components/Header";
 import HeaderSearch from "../components/HeaderSearch";
+import HeaderNav from "../components/HeaderNav";
 import { ProductContext } from "../context";
 export default function Product() {
   const context = useContext(ProductContext);
@@ -14,6 +15,7 @@ export default function Product() {
   return (
     <>
       <Header
+        headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
             searchInput={searchInput}
