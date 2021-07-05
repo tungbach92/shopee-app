@@ -2,16 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
 import reportWebVitals from "./reportWebVitals";
-import ProductProvider from "./context";
+import ProductProvider from "./ProductProvider";
+import { initialState } from "./reducer.js";
+import reducer from "./reducer.js";
 import { BrowserRouter as Router } from "react-router-dom";
 ReactDOM.render(
-  <ProductProvider>
-    <React.StrictMode>
+  <React.StrictMode>
+    <ProductProvider initialState={initialState} reducer={reducer}>
       <Router>
         <App />
       </Router>
-    </React.StrictMode>
-  </ProductProvider>,
+    </ProductProvider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 

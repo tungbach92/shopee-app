@@ -1,18 +1,25 @@
 import classNames from "classnames";
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
+import { ProductContext } from "../ProductProvider";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
-  const { item, similarDisPlay, cartItems, handleClick } = props;
+  const { item, similarDisPlay, handleClick } = props;
   const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   let isInCart = false;
   isInCart = cartItems.some((item) => item.id === Number(id));
 
+  const [{ cartItems }, dispatch] = useContext(ProductContext);
   const handleAddCart = (e) => {
-    handleClick(e);
+    // handleClick(e);
+    const id = e.currentTarget.dataset.id;
+    dispatch({
+      type: "ADD_TO_CART",
+      id: id,
+    });
     toggleIsAddCardPopup(!isAddCartPopup);
   };
   return (
