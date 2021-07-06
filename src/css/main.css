@@ -3598,20 +3598,55 @@ header {
   min-height: 48rem;
   background: var(--while-color);
 }
-.login-content__email-label {
+.login-content__title {
+  font-size: 1.6rem;
+  text-transform: capitalize;
+  font-weight: 600;
 }
-.login-content__email {
-}
-.login-content__password-label {
-}
+
+.login-content__email,
 .login-content__password {
+  margin-top: 2rem;
+  height: 3.4rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  outline: none;
 }
+
+.login-content__email:focus,
+.login-content__password:focus {
+  border: 1px solid rgba(0, 0, 0, 1);
+}
+
 .login-content__submit {
+  margin-top: 2rem;
+  padding: 1.2rem 0;
+  text-transform: uppercase;
+  color: var(--while-color);
   background-color: var(--primary-color);
 }
-.login-content__register-wrapper {
+
+.login-content__submit:hover {
+  opacity: 0.7;
 }
+
+.login-content__register-wrapper {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+.login-content__rule {
+  margin-top: 2rem;
+  padding: 0 1.6rem;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
 .login-content__register {
+  margin-left: 0.6rem;
+  color: var(--primary-color);
+  text-decoration: none;
 }
 .footer {
   background-color: #fbfbfb;

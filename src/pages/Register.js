@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import HeaderSimpleContent from "../components/HeaderSimpleContent";
+import LoginContent from "../components/LoginContent";
 const Register = () => {
   const [isRegisterPage, setIsRegisterPage] = useState(false);
 
@@ -17,6 +18,7 @@ const Register = () => {
           ></HeaderSimpleContent>
         }
       ></Header>
+      <LoginContent isRegisterPage={isRegisterPage}></LoginContent>
     </>
   );
 };

@@ -17,7 +17,7 @@ const Login = () => {
           <HeaderSimpleContent isLoginPage={isLoginPage}></HeaderSimpleContent>
         }
       ></Header>
-      <LoginContent></LoginContent>
+      <LoginContent isLoginPage={isLoginPage}></LoginContent>
     </>
   );
 };
