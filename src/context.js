@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { auth } from "./firebase";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -37,13 +38,29 @@ export default class ProductProvider extends Component {
     ],
     shipPriceProvince: [0, 0],
     orderItems: [],
+    user: null,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
     const orderItems = this.getOrderItemsFromStorage();
     const checkoutItems = this.getCheckoutItemsFromStorage();
     this.setState({ orderItems, checkoutItems });
+
+    auth.onAuthStateChanged((authUser) => {
+      console.log(authUser);
+      if (authUser) {
+        //user will log in or logged in
+        this.setUser(authUser);
+      } else {
+        //user logged out
+        this.setUser(null);
+      }
+    });
   }
+
+  setUser = (user) => {
+    this.setState({ user });
+  };
 
   setOrderItems = (orderItems) => {
     this.setState({ orderItems }, this.saveOrderItemsToStorage);

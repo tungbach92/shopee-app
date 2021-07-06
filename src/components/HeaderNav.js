@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import qrCodeNavImg from "../img/qr-code-home.png";
 import appShopeeImg from "../img/app-shopee.png";
 import ggShopeeImg from "../img/gg-shopee.png";
 import appGalShopeeImg from "../img/app-gal-shopee.png";
 import shirtImg from "../img/ao.png";
 import { Link } from "react-router-dom";
+import { ProductContext } from "../context";
+import { auth } from "../firebase";
 
 export default function HeaderNav() {
+  const { user } = useContext(ProductContext);
+  const handleLogout = () => {
+    auth.signOut();
+  };
   return (
     <nav className="header__nav">
       <div className="header__nav-list">
@@ -129,7 +135,13 @@ export default function HeaderNav() {
           </a>
         </li>
         {/* Logged:  header__nav-item-right--user */}
-        <div className="header__nav-item-right header__nav-item-right--reg">
+        <div
+          className={
+            user
+              ? "header__nav-item-right header__nav-item-right--user"
+              : "header__nav-item-right header__nav-item-right--reg"
+          }
+        >
           <div className="header__nav-reg">
             <Link to="/register" className="header__nav-login">
               Đăng ký
@@ -140,7 +152,7 @@ export default function HeaderNav() {
           </div>
           <a href="# " className="header__nav-login-link">
             <i className="header__nav-icon bi bi-question-circle"></i>
-            User2131243
+            {user?.displayName}
           </a>
 
           <div className="header__user-list">
@@ -151,9 +163,9 @@ export default function HeaderNav() {
             <Link to="/purchased" className="header__user-item">
               Đơn mua
             </Link>
-            <a href="# " className="header__user-item">
+            <div onClick={handleLogout} className="header__user-item">
               Đăng xuất
-            </a>
+            </div>
           </div>
         </div>
       </ul>

@@ -24,6 +24,7 @@ header {
 
 .header__nav-list {
   display: flex;
+  align-items: center;
 }
 
 .header__nav-item {
@@ -89,7 +90,6 @@ header {
   display: none;
   color: var(--while-color);
   text-decoration: none;
-  line-height: 3rem;
 }
 
 .header__nav-qr {
@@ -247,7 +247,8 @@ header {
 
 .header__nav-item-right--user .header__nav-login-link,
 .header__user-list {
-  display: block;
+  display: flex;
+  align-items: center;
 }
 
 .header__nav-item-right--user .header__nav-reg {
@@ -333,6 +334,7 @@ header {
   padding-left: 1.3rem;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 .header__user-item:hover {

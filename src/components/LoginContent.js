@@ -1,14 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { db, auth } from "../firebase";
 function LoginContent({ isLoginPage, isRegisterPage }) {
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
+    auth.signInWithEmailAndPassword(email, password).then((auth) => {
+      console.log(auth);
+      history.push("/");
+    });
     console.log("log in");
   };
   const handleRegister = (e) => {
     e.preventDefault();
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((auth) => {
+        console.log(auth);
+        if (auth) {
+          //create account success
+          const user = auth.user;
+          const randomName = Math.random().toString(36).substring(2);
+          user
+            .updateProfile({
+              displayName: randomName,
+            })
+            .then(() => {
+              history.push("/");
+            });
+        }
+      })
+      .catch((error) => alert(error.message));
     console.log("register");
   };
   return (
