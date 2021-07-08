@@ -4,14 +4,16 @@ import appShopeeImg from "../img/app-shopee.png";
 import ggShopeeImg from "../img/gg-shopee.png";
 import appGalShopeeImg from "../img/app-gal-shopee.png";
 import shirtImg from "../img/ao.png";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { ProductContext } from "../context";
 import { auth } from "../firebase";
 
 export default function HeaderNav() {
+  const history = useHistory();
   const { user } = useContext(ProductContext);
   const handleLogout = () => {
     auth.signOut();
+    history.push("/");
   };
   return (
     <nav className="header__nav">
