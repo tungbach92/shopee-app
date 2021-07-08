@@ -7,10 +7,13 @@ function LoginContent({ isLoginPage, isRegisterPage }) {
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).then((auth) => {
-      console.log(auth);
-      history.push("/");
-    });
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((auth) => {
+        console.log(auth);
+        history.push("/");
+      })
+      .catch((error) => alert(error));
     console.log("log in");
   };
   const handleRegister = (e) => {
