@@ -6,6 +6,7 @@ import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
 import validCardCheck from "card-validator";
 import classNames from "classnames";
+
 export default function CardInfoModal(props) {
   const inputEl = useRef([]);
   const { isCardInfoShowing, toggleCardInfo, cardInfo, setCardInfo } = props;
@@ -18,6 +19,7 @@ export default function CardInfoModal(props) {
   const [isMaster, setIsMaster] = useState(false);
   const [isJcb, setIsJcb] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
+  
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
   };
@@ -55,10 +57,8 @@ export default function CardInfoModal(props) {
     }
   };
 
-  const handleSubmit = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     inputEl.current.forEach((item) => {
       item.focus();
       item.blur();
@@ -89,8 +89,6 @@ export default function CardInfoModal(props) {
       };
       setCardInfo(newCardInfo);
       toggleCardInfo(!isCardInfoShowing);
-    } else {
-      e.preventDefault();
     }
   };
   const handleKeyDown = (e) => {

@@ -14,6 +14,7 @@ export default function CartProduct(props) {
   const location = useLocation();
   const { isPopupShowing, togglePopup, popupModal } = props;
   const [variation, setVariation] = useState("");
+  const [selectedItems, setSelectedItems] = useState();
   const {
     isVoucherShowing,
     toggleVoucher,
@@ -43,23 +44,12 @@ export default function CartProduct(props) {
     setCheckoutProduct,
     items,
     getData,
+    getItemsPriceTotal,
+    getItemsTotal,
+    getSaved,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
-
-  let checkoutPriceTotal = 0;
-  let checkoutItemTotal = 0;
-  checkoutItems.forEach(
-    (item) => (checkoutPriceTotal += item.amount * item.price)
-  );
-  cartItems.forEach((item) => (checkoutItemTotal += item.amount));
-  //Calc saved
-  let saved = 0;
-  if (Object.keys(voucher).length > 0) {
-    saved = voucher.discount.includes("%")
-      ? (checkoutPriceTotal * Number(voucher.discount.slice(0, -1))) / 100
-      : voucher.discount;
-  }
   let idArr = [];
 
   useEffect(() => {
@@ -133,6 +123,22 @@ export default function CartProduct(props) {
     const newChecked = [...checked];
     setChecked(newChecked);
   };
+  
+  // set selectedItems by checked
+  useEffect(() => {
+    const setSelectedItemsByChecked = () => {
+      //
+      const lastIndex = cartItems.length + 1;
+      let selectedItems = checked.map((checkItem, index) => {
+        if (checkItem === true && index > 0 && index < lastIndex) {
+          return cartItems[index - 1];
+        } else return null;
+      });
+      selectedItems = selectedItems.filter((item) => item !== null);
+      setSelectedItems(selectedItems);
+    };
+    setSelectedItemsByChecked();
+  }, [checked, cartItems]);
 
   const handleDeleteSelection = (event) => {
     if (cartItems.length > 0) {
@@ -750,15 +756,18 @@ export default function CartProduct(props) {
               <div className="cart-product__checkout-total-wrapper">
                 <div className="cart-product__checkout-total">
                   <span className="cart-product__total-label">
-                    Tổng thanh toán ({checkoutItemTotal} sản phẩm):
+                    Tổng thanh toán ({getItemsTotal(selectedItems)} sản
+                    phẩm):
                   </span>
                   <span className="cart-product__total-value">
-                    {checkoutPriceTotal}
+                    {getItemsPriceTotal(selectedItems)}
                   </span>
                 </div>
                 <div className="cart-product__checkout-saved">
                   <span className="cart-product__saved-label">Tiết kiệm:</span>
-                  <span className="cart-product__saved-value">{saved}</span>
+                  <span className="cart-product__saved-value">
+                    {getSaved(voucher, selectedItems)}
+                  </span>
                 </div>
               </div>
               <Link

@@ -58,6 +58,48 @@ export default class ProductProvider extends Component {
     });
   }
 
+  getItemsPriceTotal = (items) => {
+    const result = items?.reduce(
+      (checkoutPriceTotal, item) =>
+        checkoutPriceTotal + item.price * item.amount,
+      0
+    );
+    return result ? result : 0;
+  };
+
+  getItemsTotal = (items) => {
+    const result = items?.reduce(
+      (checkoutItemTotal, item) => checkoutItemTotal + item.amount,
+      0
+    );
+    return result ? result : 0;
+  };
+
+  getShipPrice = (shipUnit) =>
+    Number(shipUnit?.price) ? Number(shipUnit?.price) : 0;
+
+  getSaved = (voucher, checkoutItems) => {
+    if (Object.keys(voucher).length > 0) {
+      let result = voucher.discount.includes("%")
+        ? (this.getItemsPriceTotal(checkoutItems) *
+            Number(voucher.discount.slice(0, -1))) /
+          100
+        : voucher.discount;
+      console.log(result);
+      return result;
+    } else {
+      return 0;
+    }
+  };
+
+  getItemsPriceFinal = (items, shipUnit, voucher) => {
+    let result =
+      this.getItemsPriceTotal(items) +
+      this.getShipPrice(shipUnit) -
+      this.getSaved(voucher, items);
+    return result;
+  };
+
   setUser = (user) => {
     this.setState({ user });
   };
@@ -693,6 +735,11 @@ export default class ProductProvider extends Component {
           setOrderItems: this.setOrderItems,
           saveOrderItemsToStorage: this.saveOrderItemsToStorage,
           getOrderItemsFromStorage: this.getOrderItemsFromStorage,
+          getItemsPriceTotal: this.getItemsPriceTotal,
+          getItemsTotal: this.getItemsTotal,
+          getShipPrice: this.getShipPrice,
+          getSaved: this.getSaved,
+          getItemsPriceFinal: this.getItemsPriceFinal,
         }}
       >
         {this.props.children}

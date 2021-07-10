@@ -12,7 +12,12 @@ import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ProductProvider from "./context";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51JB5XCLveZMOamkE7YBOsq6C9xFH3NM26c3UGHpbZe1cYnPgUYaYNUGJQ8cT5d60ZYwCoFMlBA2WeHwLjjRfLPAh00R3vOY9JQ"
+);
 
 function App() {
   return (
@@ -22,7 +27,11 @@ function App() {
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/product/:metaTitle" component={Detail}></Route>
         <Route exact path="/account" component={Account}></Route>
-        <Route exact path="/checkout" component={Checkout}></Route>
+        <Route exact path="/checkout">
+          <Elements stripe={stripePromise}>
+            <Checkout />
+          </Elements>
+        </Route>
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>
         <Route component={Error} />
