@@ -111,7 +111,7 @@ export default function CheckoutProduct() {
       setClientSecret(response.data.clientSecret);
     };
     getClientSecret();
-  }, [checkoutItems, getItemsPriceFinal]);
+  }, [checkoutItems, getItemsPriceFinal, shipUnit, voucher]);
 
   //
   let isInfoEmpty = false;

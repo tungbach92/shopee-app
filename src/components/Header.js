@@ -1,8 +1,7 @@
 import React from "react";
 
 export default function Header({
-  isCheckoutPage,
-  isCartPageLoaded,
+  isProductPage,
   headerSearch,
   headerNav,
   isLoginPage,
@@ -14,9 +13,9 @@ export default function Header({
       className={
         isLoginPage || isRegisterPage
           ? "header header--login"
-          : isCartPageLoaded || isCheckoutPage
-          ? "header header--support"
-          : "header"
+          : isProductPage
+          ? "header"
+          : "header header--support"
       }
     >
       <div className="grid grid--fullheight">

@@ -5,13 +5,14 @@ import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 
 export default function CartProduct(props) {
   console.log("render");
   const location = useLocation();
+  const history = useHistory();
   const { isPopupShowing, togglePopup, popupModal } = props;
   const [variation, setVariation] = useState("");
   const [selectedItems, setSelectedItems] = useState();
@@ -56,7 +57,8 @@ export default function CartProduct(props) {
     if (location.state) {
       toggleIsAddCardPopup(true);
     }
-  }, [location, toggleIsAddCardPopup]);
+    history.replace();
+  }, [toggleIsAddCardPopup, location.state, history]);
   useEffect(() => {
     if (items.length <= 0) {
       getData();
@@ -123,7 +125,7 @@ export default function CartProduct(props) {
     const newChecked = [...checked];
     setChecked(newChecked);
   };
-  
+
   // set selectedItems by checked
   useEffect(() => {
     const setSelectedItemsByChecked = () => {
@@ -756,8 +758,7 @@ export default function CartProduct(props) {
               <div className="cart-product__checkout-total-wrapper">
                 <div className="cart-product__checkout-total">
                   <span className="cart-product__total-label">
-                    Tổng thanh toán ({getItemsTotal(selectedItems)} sản
-                    phẩm):
+                    Tổng thanh toán ({getItemsTotal(selectedItems)} sản phẩm):
                   </span>
                   <span className="cart-product__total-value">
                     {getItemsPriceTotal(selectedItems)}

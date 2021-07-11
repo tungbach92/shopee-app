@@ -24,7 +24,6 @@ export default function Checkout() {
   return (
     <>
       <Header
-        isCheckoutPage={isCheckoutPage}
         headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch

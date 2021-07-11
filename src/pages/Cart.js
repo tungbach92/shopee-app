@@ -26,7 +26,6 @@ export default function Cart() {
   return (
     <>
       <Header
-        isCartPageLoaded={isCartPageLoaded}
         headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
