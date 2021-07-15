@@ -23,15 +23,8 @@ export default function CardInfoModal(props) {
     setPaymentMethodID,
   } = props;
   const [isNameValid, setIsNameValid] = useState(true);
-  const [isNumberValid, setIsNumberValid] = useState(true);
-  const [isExpireValid, setIsExpireValid] = useState(true);
-  const [isCvvValid, setIsCvvValid] = useState(true);
+  const [errorNumberMsg, setErrorNumberMsg] = useState(null);
   const [isPostalCodeValid, setIsPostalCodeValid] = useState(true);
-  const [isVisa, setIsVisa] = useState(false);
-  const [isMaster, setIsMaster] = useState(false);
-  const [isJcb, setIsJcb] = useState(false);
-  const [isExpress, setIsExpress] = useState(false);
-  const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
   const [successed, setSuccessed] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -41,9 +34,13 @@ export default function CardInfoModal(props) {
     toggleCardInfo(!isCardInfoShowing);
   };
 
-  const handleChange = (e) => {
-    setDisabled(e.empty);
-    setError(e.error ? e.error.message : "");
+  const handleCardElChange = (e) => {
+    if (e.error) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+    setErrorNumberMsg(e.error ? e.error.message : "");
   };
 
   const handleSubmit = async (e) => {
@@ -90,61 +87,65 @@ export default function CardInfoModal(props) {
         let nameValidation = validCardCheck.cardholderName(e.target.value);
         if (!nameValidation.isValid) {
           setIsNameValid(false);
+          setDisabled(true);
         } else {
           setIsNameValid(true);
+          setDisabled(false);
         }
         break;
-      case "number":
-        let numberValidation = validCardCheck.number(e.target.value);
-        if (!numberValidation.isValid) {
-          setIsNumberValid(false);
-        } else {
-          setIsNumberValid(true);
-        }
-        const type = numberValidation.card?.type;
-        if (type === "visa") {
-          setIsVisa((isVisa) => (isVisa = true));
-        } else {
-          setIsVisa((isVisa) => (isVisa = false));
-        }
-        if (type === "american-express") {
-          setIsExpress((isExpress) => (isExpress = true));
-        } else {
-          setIsExpress((isExpress) => (isExpress = false));
-        }
-        if (type === "mastercard") {
-          setIsMaster((isMaster) => (isMaster = true));
-        } else {
-          setIsMaster((isMaster) => (isMaster = false));
-        }
-        if (type === "jcb") {
-          setIsJcb((isJcb) => (isJcb = true));
-        } else {
-          setIsJcb((isJcb) => (isJcb = false));
-        }
-        break;
-      case "expire":
-        let expireValidation = validCardCheck.expirationDate(e.target.value);
-        if (!expireValidation.isValid) {
-          setIsExpireValid(false);
-        } else {
-          setIsExpireValid(true);
-        }
-        break;
-      case "cvv":
-        let cvvValidation = validCardCheck.cvv(e.target.value);
-        if (!cvvValidation.isValid) {
-          setIsCvvValid(false);
-        } else {
-          setIsCvvValid(true);
-        }
-        break;
+      // case "number":
+      //   let numberValidation = validCardCheck.number(e.target.value);
+      //   if (!numberValidation.isValid) {
+      //     setIsNumberValid(false);
+      //   } else {
+      //     setIsNumberValid(true);
+      //   }
+      //   const type = numberValidation.card?.type;
+      //   if (type === "visa") {
+      //     setIsVisa((isVisa) => (isVisa = true));
+      //   } else {
+      //     setIsVisa((isVisa) => (isVisa = false));
+      //   }
+      //   if (type === "american-express") {
+      //     setIsExpress((isExpress) => (isExpress = true));
+      //   } else {
+      //     setIsExpress((isExpress) => (isExpress = false));
+      //   }
+      //   if (type === "mastercard") {
+      //     setIsMaster((isMaster) => (isMaster = true));
+      //   } else {
+      //     setIsMaster((isMaster) => (isMaster = false));
+      //   }
+      //   if (type === "jcb") {
+      //     setIsJcb((isJcb) => (isJcb = true));
+      //   } else {
+      //     setIsJcb((isJcb) => (isJcb = false));
+      //   }
+      //   break;
+      // case "expire":
+      //   let expireValidation = validCardCheck.expirationDate(e.target.value);
+      //   if (!expireValidation.isValid) {
+      //     setIsExpireValid(false);
+      //   } else {
+      //     setIsExpireValid(true);
+      //   }
+      //   break;
+      // case "cvv":
+      //   let cvvValidation = validCardCheck.cvv(e.target.value);
+      //   if (!cvvValidation.isValid) {
+      //     setIsCvvValid(false);
+      //   } else {
+      //     setIsCvvValid(true);
+      //   }
+      //   break;
       case "postalcode":
         let postalcodeValidation = validCardCheck.postalCode(e.target.value);
         if (!postalcodeValidation.isValid) {
           setIsPostalCodeValid(false);
+          setDisabled(true);
         } else {
           setIsPostalCodeValid(true);
+          setDisabled(false);
         }
         break;
       default:
@@ -186,6 +187,13 @@ export default function CardInfoModal(props) {
   //     // cleanup
   //   };
   // }, [cardInfo, isCardInfoShowing]);
+  useEffect(() => {
+    if (isNameValid || isPostalCodeValid || errorNumberMsg) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [isNameValid, isPostalCodeValid, errorNumberMsg]);
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
       <div className="cart-product__modal-overlay"></div>
@@ -222,8 +230,8 @@ export default function CardInfoModal(props) {
           <div className="cart-product__card-info">
             <label className="cart-product__card-label">Chi tiết thẻ</label>
             <input
-              onBlur={handleBlur}
               onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
               ref={(el) => (inputEl.current[0] = el)}
               type="text"
               name="name"
@@ -237,8 +245,13 @@ export default function CardInfoModal(props) {
               </label>
             )}
             <div className="cart-product__number-wrapper">
-              <CardElement onChange={handleChange}></CardElement>
+              <CardElement onChange={handleCardElChange}></CardElement>
             </div>
+            {errorNumberMsg && (
+              <label className="cart-product__number-error">
+                {errorNumberMsg}
+              </label>
+            )}
           </div>
           <div className="cart-product__card-address">
             <label className="cart-product__address-label">
@@ -255,7 +268,6 @@ export default function CardInfoModal(props) {
             <input
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
-              onChange={handleChange}
               ref={(el) => (inputEl.current[5] = el)}
               type="text"
               name="postalcode"
@@ -285,7 +297,6 @@ export default function CardInfoModal(props) {
             >
               {processing ? "Processing" : "Submit"}
             </button>
-            {error && <div>{error}</div>}
           </div>
         </form>
       </div>
