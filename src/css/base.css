@@ -6,7 +6,7 @@
   --grey-color: #888;
   --lighter-grey-color: #f8f8f8;
   --primary-color: #ee4d2d;
-  --primary-light-color: rgba(255,87,34,0.1);
+  --primary-light-color: rgba(255, 87, 34, 0.1);
 }
 
 /* shopee customize responsive */
@@ -57,6 +57,12 @@
   border-right: 0.2rem solid hsla(0, 0%, 100%, 0.22);
 }
 
+button[disabled] {
+  cursor: default;
+  background: rgba(0, 0, 0, 0.09);
+  color: rgba(0, 0, 0, 0.26);
+}
+
 .btn {
   padding: 0 1.5rem;
   background-color: var(--while-color);
@@ -90,13 +96,13 @@
 .pagination-item {
   margin-left: 1rem;
   margin-right: 1rem;
-  color:var(--grey-color);
+  color: var(--grey-color);
   font-size: 2rem;
   border-radius: 0.2rem;
   cursor: pointer;
 }
 
-.pagination-item--non-click{
+.pagination-item--non-click {
   cursor: default;
 }
 
@@ -120,7 +126,7 @@
 }
 
 .pagination-item__link {
-  display:block;
+  display: block;
   min-width: 4rem;
   line-height: 3rem;
   width: 100%;

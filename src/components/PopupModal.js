@@ -14,6 +14,7 @@ export default function PopupModal(props) {
     isInfoEmpty,
     paymentMethod,
     setCheckoutProduct,
+    setCartProduct,
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
@@ -27,8 +28,9 @@ export default function PopupModal(props) {
       } else if (paymentMethod.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else {
+        setCartProduct([]);
         setCheckoutProduct([]);
-        history.push("/");
+        history.replace("/cart");
       }
     }
   };

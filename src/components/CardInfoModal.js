@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import visaImg from "../img/visa.png";
 import masterImg from "../img/master.png";
@@ -6,10 +6,22 @@ import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
 import validCardCheck from "card-validator";
 import classNames from "classnames";
-
+import { ProductContext } from "../context";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import axios from "../axios";
 export default function CardInfoModal(props) {
+  const stripe = useStripe();
+  const elements = useElements();
   const inputEl = useRef([]);
-  const { isCardInfoShowing, toggleCardInfo, cardInfo, setCardInfo } = props;
+  const { checkoutItems, getItemsPriceFinal, voucher } =
+    useContext(ProductContext);
+  const {
+    isCardInfoShowing,
+    toggleCardInfo,
+    setCard4digits,
+    setCardBrand,
+    setPaymentMethodID,
+  } = props;
   const [isNameValid, setIsNameValid] = useState(true);
   const [isNumberValid, setIsNumberValid] = useState(true);
   const [isExpireValid, setIsExpireValid] = useState(true);
@@ -19,76 +31,52 @@ export default function CardInfoModal(props) {
   const [isMaster, setIsMaster] = useState(false);
   const [isJcb, setIsJcb] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
-  
+  const [error, setError] = useState(null);
+  const [disabled, setDisabled] = useState(true);
+  const [successed, setSuccessed] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [setUpClientSecret, setSetUpClientSecret] = useState();
+
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
   };
 
   const handleChange = (e) => {
-    const name = e.target.name;
-    if (name === "number") {
-      let value = e.target.value;
-      let newValue = "";
-      value = value.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
-      for (let i = 0; i < value.length; i++) {
-        if (i % 4 === 0 && i > 0) newValue = newValue.concat(" ");
-        newValue = newValue.concat(value[i]);
-      }
-      e.target.value = newValue;
-    }
-    if (name === "expire") {
-      let expdate = e.target.value;
-      let expDateFormatter =
-        expdate
-          .replace(/[^0-9.]/g, "")
-          .replace(/(\..*)\./g, "$1")
-          .substring(0, 2) +
-        (expdate.length > 2 ? "/" : "") +
-        expdate
-          .replace(/[^0-9.]/g, "")
-          .replace(/(\..*)\./g, "$1")
-          .substring(2, 4);
-      e.target.value = expDateFormatter;
-    }
-    if (name === "cvv" || name === "postalcode") {
-      e.target.value = e.target.value
-        .replace(/[^0-9.]/g, "")
-        .replace(/(\..*)\./g, "$1");
-    }
+    setDisabled(e.empty);
+    setError(e.error ? e.error.message : "");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    inputEl.current.forEach((item) => {
-      item.focus();
-      item.blur();
-    });
-    if (
-      isNameValid &&
-      isNumberValid &&
-      isExpireValid &&
-      isCvvValid &&
-      isPostalCodeValid
-    ) {
-      const name = inputEl.current[0].value;
-      const number = inputEl.current[1].value;
-      const type = validCardCheck.number(number).card.type;
-      const expire = inputEl.current[2].value;
-      const cvv = inputEl.current[3].value;
-      const address = inputEl.current[4].value;
-      const postalCode = inputEl.current[5].value;
+    setProcessing(true);
+    if (!stripe || !elements) {
+      return;
+    }
+    const cardEl = elements.getElement(CardElement);
+    console.log(cardEl);
 
-      const newCardInfo = {
-        name,
-        type,
-        number,
-        expire,
-        cvv,
-        address,
-        postalCode,
-      };
-      setCardInfo(newCardInfo);
-      toggleCardInfo(!isCardInfoShowing);
+    try {
+      const setUpIntentResult = await stripe.confirmCardSetup(
+        setUpClientSecret,
+        {
+          payment_method: {
+            card: cardEl,
+          },
+        }
+      );
+      if (setUpIntentResult.setupIntent.status === "succeeded") {
+        const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
+        console.log("create payment method success", paymentMethodID);
+        setPaymentMethodID(paymentMethodID);
+
+        const token = await stripe.createToken(cardEl);
+        setCard4digits(token.token.card.last4);
+        setCardBrand(token.token.card.brand);
+
+        toggleCardInfo(!isCardInfoShowing);
+      }
+    } catch (error) {
+      alert(error);
     }
   };
   const handleKeyDown = (e) => {
@@ -164,28 +152,40 @@ export default function CardInfoModal(props) {
     }
   };
   useEffect(() => {
-    // effect
-    const setInputCardInfo = () => {
-      if (isCardInfoShowing === true) {
-        inputEl.current[0].value =
-          cardInfo.name === undefined ? "" : cardInfo.name;
-        inputEl.current[1].value =
-          cardInfo.number === undefined ? "" : cardInfo.number;
-        inputEl.current[2].value =
-          cardInfo.expire === undefined ? "" : cardInfo.expire;
-        inputEl.current[3].value =
-          cardInfo.cvv === undefined ? "" : cardInfo.cvv;
-        inputEl.current[4].value =
-          cardInfo.address === undefined ? "" : cardInfo.address;
-        inputEl.current[5].value =
-          cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
-      }
+    //generate the special stripe secret
+    const getSetUpClientSecret = async () => {
+      const response = await axios({
+        method: "GET",
+        url: "/create-setup-intent",
+      });
+      setSetUpClientSecret(response.data.clientSecret);
     };
-    setInputCardInfo();
-    return () => {
-      // cleanup
-    };
-  }, [cardInfo, isCardInfoShowing]);
+    getSetUpClientSecret();
+  }, []);
+  console.log("The clientSecret is", setUpClientSecret);
+  // useEffect(() => {
+  //   // effect
+  //   const setInputCardInfo = () => {
+  //     if (isCardInfoShowing === true) {
+  //       inputEl.current[0].value =
+  //         cardInfo.name === undefined ? "" : cardInfo.name;
+  //       inputEl.current[1].value =
+  //         cardInfo.number === undefined ? "" : cardInfo.number;
+  //       inputEl.current[2].value =
+  //         cardInfo.expire === undefined ? "" : cardInfo.expire;
+  //       inputEl.current[3].value =
+  //         cardInfo.cvv === undefined ? "" : cardInfo.cvv;
+  //       inputEl.current[4].value =
+  //         cardInfo.address === undefined ? "" : cardInfo.address;
+  //       inputEl.current[5].value =
+  //         cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
+  //     }
+  //   };
+  //   setInputCardInfo();
+  //   return () => {
+  //     // cleanup
+  //   };
+  // }, [cardInfo, isCardInfoShowing]);
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
       <div className="cart-product__modal-overlay"></div>
@@ -237,91 +237,7 @@ export default function CardInfoModal(props) {
               </label>
             )}
             <div className="cart-product__number-wrapper">
-              <input
-                type="tel"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                onKeyDown={handleKeyDown}
-                ref={(el) => (inputEl.current[1] = el)}
-                name="number"
-                className="cart-product__card-number"
-                placeholder="Số thẻ"
-                maxLength="19"
-                required
-              />
-              <img
-                src={visaImg}
-                alt="visa"
-                className={classNames("cart-product__card-visa", {
-                  "cart-product__card-visa--enable": isVisa,
-                })}
-              />
-              {/* if cardInfo.number => img */}
-              <img
-                src={masterImg}
-                alt="master"
-                className={classNames("cart-product__card-master", {
-                  "cart-product__card-master--enable": isMaster,
-                })}
-              />
-              <img
-                src={jcbImg}
-                alt="jcb"
-                className={classNames("cart-product__card-jcb", {
-                  "cart-product__card-jcb--enable": isJcb,
-                })}
-              />
-              <img
-                src={expressImg}
-                alt="express"
-                className={classNames("cart-product__card-express", {
-                  "cart-product__card-express--enable": isExpress,
-                })}
-              />
-            </div>
-            {!isNumberValid && (
-              <label className="cart-product__number-error">
-                Số thẻ không đúng
-              </label>
-            )}
-            <div className="cart-product__expirecvv-wrapper">
-              <div className="cart-product__expire-wrapper">
-                <input
-                  onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  onChange={handleChange}
-                  ref={(el) => (inputEl.current[2] = el)}
-                  type="text"
-                  name="expire"
-                  className="cart-product__card-expire"
-                  placeholder="Ngày hết hạn (MM / YY)"
-                  required
-                />
-                {!isExpireValid && (
-                  <label className="cart-product__expire-error">
-                    HSD không đúng
-                  </label>
-                )}
-              </div>
-              <div className="cart-product__cvv-wrapper">
-                <input
-                  onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  onChange={handleChange}
-                  ref={(el) => (inputEl.current[3] = el)}
-                  type="text"
-                  name="cvv"
-                  className="cart-product__card-cvv"
-                  placeholder="Mã CVV"
-                  maxLength="3"
-                  required
-                />
-                {!isCvvValid && (
-                  <label className="cart-product__cvv-error">
-                    Mã CVV không đúng
-                  </label>
-                )}
-              </div>
+              <CardElement onChange={handleChange}></CardElement>
             </div>
           </div>
           <div className="cart-product__card-address">
@@ -356,14 +272,20 @@ export default function CardInfoModal(props) {
           </div>
           <div className="cart-product__modal-footer">
             <button
+              disabled={processing}
               onClick={handleClick}
               className="btn cart-product__modal-close"
             >
               Trở lại
             </button>
-            <button type="submit" className="btn cart-product__modal-apply">
-              OK
+            <button
+              disabled={processing || disabled || successed}
+              type="submit"
+              className="btn cart-product__modal-apply"
+            >
+              {processing ? "Processing" : "Submit"}
             </button>
+            {error && <div>{error}</div>}
           </div>
         </form>
       </div>

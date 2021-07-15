@@ -15,15 +15,13 @@ import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
 import ProvincesCitiesVN from "pc-vn";
 import ErrorModal from "./ErrorModal";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
-
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 export default function CheckoutProduct() {
   console.log("check out render");
-  //
   const stripe = useStripe();
   const elements = useElements();
-
   const history = useHistory();
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
@@ -88,7 +86,11 @@ export default function CheckoutProduct() {
   const [districts, setDistricts] = useState([]);
   const [isProvinceSelected, setIsProvinceSelected] = useState();
   const [isDistrictSelected, setIsDistrictSelected] = useState();
+  const [card4digits, setCard4digits] = useState("");
+  const [cardBrand, setCardBrand] = useState("");
   const [clientSecret, setClientSecret] = useState(true);
+  const [paymentMethodID, setPaymentMethodID] = useState();
+  const [processing, setProcessing] = useState(false);
 
   const {
     isPopupShowing,
@@ -100,18 +102,6 @@ export default function CheckoutProduct() {
     isCardInfoShowing,
     toggleCardInfo,
   } = useModal();
-
-  //When checkoutItems change -> update the clientSecret get from backend
-  useEffect(() => {
-    const getClientSecret = async () => {
-      const response = await axios({
-        method: "POST",
-        url: `/payment/create?total=${getItemsPriceFinal(checkoutItems, shipUnit, voucher) * 1000}`, // sub currency usd-> cent *100
-      });
-      setClientSecret(response.data.clientSecret);
-    };
-    getClientSecret();
-  }, [checkoutItems, getItemsPriceFinal, shipUnit, voucher]);
 
   //
   let isInfoEmpty = false;
@@ -126,10 +116,32 @@ export default function CheckoutProduct() {
 
   //
   let isCardInfoMustFilled = false;
-  if (Object.keys(cardInfo).length <= 0 && isCardPayment === true) {
+  if (!card4digits && !cardBrand && isCardPayment === true) {
     isCardInfoMustFilled = true;
   }
 
+  // useEffect(() => {
+  //   //generate the special stripe secret which allow us to charge customer
+  //   const getClientSecret = async () => {
+  //     const response = await axios({
+  //       method: "POST",
+  //       url: `/payment/create?total=${getItemsPriceFinal(
+  //         checkoutItems,
+  //         shipUnit,
+  //         voucher
+  //       )}&paymentMethodID=${paymentMethodID}`, // sub currency usd-> cent *100
+  //     });
+  //     setClientSecret(response.data.clientSecret);
+  //   };
+  //   getClientSecret();
+  // }, [
+  //   checkoutItems,
+  //   customerID,
+  //   getItemsPriceFinal,
+  //   paymentMethodID,
+  //   shipUnit,
+  //   voucher,
+  // ]);
   useEffect(() => {
     const checkoutItems = getCheckoutItemsFromStorage();
     setCheckoutProduct(checkoutItems);
@@ -297,7 +309,7 @@ export default function CheckoutProduct() {
     toggleVoucher(!isVoucherShowing);
   };
 
-  const handleOrder = async () => {
+  const handleOrder = () => {
     togglePopup(!isPopupShowing);
     if (
       isInformation === false &&
@@ -306,36 +318,58 @@ export default function CheckoutProduct() {
       Object.keys(shipUnit).length > 0 &&
       isCardInfoMustFilled === false
     ) {
-      const orderItem = {
-        date: new Date(),
-        checkoutItems: checkoutItems,
-        customerInfo: customerInfo,
-        shipUnit: shipUnit,
-        paymentMethod: paymentMethod,
-        cardInfo: cardInfo,
-        message: message,
-        checkoutPrice: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
-      };
+      // const orderItem = {
+      //   date: new Date(),
+      //   checkoutItems: checkoutItems,
+      //   customerInfo: customerInfo,
+      //   shipUnit: shipUnit,
+      //   paymentMethod: paymentMethod,
+      //   cardInfo: cardInfo,
+      //   message: message,
+      //   checkoutPrice: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
+      // };
 
-      const oldOrder = getOrderItemsFromStorage();
-      let newOrderItems = [...oldOrder, orderItem];
-      console.log(newOrderItems); // order output
-      setOrderItems(newOrderItems);
-      setCartProduct([]);
-
-      //SetProcessing(true);
-      const payload = await stripe
-        .confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: elements.getElement(CardElement),
-          },
+      // const oldOrder = getOrderItemsFromStorage();
+      // let newOrderItems = [...oldOrder, orderItem];
+      // console.log(newOrderItems); // order output
+      // setOrderItems(newOrderItems);
+      // stripe
+      //   .confirmCardPayment(clientSecret, {
+      //     payment_method: {
+      //       id: paymentMethodID,
+      //       customer: customerID,
+      //     },
+      //   })
+      //   .then(({ paymentIntent }) => {
+      //     // paymentIntent = payment confirmation
+      //     // SetSuccess(true);
+      //     // SetError(null);
+      //     //SetProcessing(false);
+      //     // history.replace("/cart");
+      //     // result.token.card.last4
+      //   });
+      setProcessing(true);
+      axios({
+        method: "POST",
+        url: `/payment/create?total=${getItemsPriceFinal(
+          checkoutItems,
+          shipUnit,
+          voucher
+        )}`,
+        data: { paymentMethod: paymentMethodID }, // sub currency usd-> cent *100
+      })
+        .then((data) => {
+          if (data.succeeded) {
+            setProcessing(false);
+          }
         })
-        .then(({ paymentIntent }) => {
-          // paymentIntent = payment confirmation
-          // SetSuccess(true);
-          // SetError(null);
-          //SetProcessing(false);
-          history.replace("/cart");
+        .catch((error) => {
+          console.log("Lỗi", error.code);
+          stripe.paymentIntents
+            .retrieve(error.raw.payment_intent.id)
+            .then((paymentIntentRetrieved) =>
+              console.log("PI retrieved:", paymentIntentRetrieved.id)
+            );
         });
     }
   };
@@ -352,16 +386,16 @@ export default function CheckoutProduct() {
   };
 
   const getCardImgByType = (type) => {
-    if (type === "visa") {
+    if (type === "Visa") {
       return visaImg;
     }
-    if (type === "american-express") {
+    if (type === "American Express") {
       return expressImg;
     }
-    if (type === "mastercard") {
+    if (type === "Mastercard") {
       return masterImg;
     }
-    if (type === "jcb") {
+    if (type === "Jcb") {
       return jcbImg;
     }
   };
@@ -540,13 +574,25 @@ export default function CheckoutProduct() {
                   </span>
                 </Link>
                 <span className="checkout-product__item-price">
-                  {item.price}
+                  <CurrencyFormat
+                    decimalScale={2}
+                    value={item.price}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"₫"}
+                  ></CurrencyFormat>
                 </span>
                 <span className="checkout-product__item-amount">
                   {item.amount}
                 </span>
                 <span className="checkout-product__item-total">
-                  {item.price * item.amount}
+                  <CurrencyFormat
+                    decimalScale={2}
+                    value={item.price * item.amount}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"₫"}
+                  ></CurrencyFormat>
                 </span>
               </li>
               <div className="checkout-product__addition">
@@ -555,7 +601,13 @@ export default function CheckoutProduct() {
                     Tổng số tiền ({item.amount} sản phẩm):
                   </span>
                   <span className="checkout-product__additon-price">
-                    {item.price * item.amount}
+                    <CurrencyFormat
+                      decimalScale={2}
+                      value={item.price * item.amount}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"₫"}
+                    ></CurrencyFormat>
                   </span>
                 </span>
               </div>
@@ -615,7 +667,13 @@ export default function CheckoutProduct() {
               ></ShipUnitsModal>
             )}
             <span className="checkout-product__transport-price">
-              {shipUnit.price}
+              <CurrencyFormat
+                decimalScale={2}
+                value={shipUnit.price}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₫"}
+              ></CurrencyFormat>
             </span>
           </span>
         </div>
@@ -832,22 +890,22 @@ export default function CheckoutProduct() {
               </span>
               {isCardPayment && (
                 <div className="checkout-product__notify-item">
-                  {Object.keys(cardInfo).length > 0 && (
+                  {card4digits && cardBrand && (
                     <>
                       <img
-                        src={getCardImgByType(cardInfo.type)} //if cardInfo.number => img
+                        src={getCardImgByType(cardBrand)} //if cardInfo.number => img
                         alt="card"
                         className="checkout-product__card-img"
                       ></img>
                       <span className="checkout-product__card-type">
-                        {cardInfo.type}
+                        {cardBrand}
                       </span>
                       <span
                         onClick={handleShowCardInfo}
                         className="checkout-product__card-numb"
                       >
                         ***
-                        {cardInfo.number.substring(cardInfo.number.length - 5)}
+                        {card4digits}
                       </span>
                     </>
                   )}
@@ -873,8 +931,9 @@ export default function CheckoutProduct() {
                     <CardInfoModal
                       isCardInfoShowing={isCardInfoShowing}
                       toggleCardInfo={toggleCardInfo}
-                      cardInfo={cardInfo}
-                      setCardInfo={setCardInfo}
+                      setCard4digits={setCard4digits}
+                      setCardBrand={setCardBrand}
+                      setPaymentMethodID={setPaymentMethodID}
                     ></CardInfoModal>
                   )}
                 </div>
@@ -922,23 +981,47 @@ export default function CheckoutProduct() {
               Tổng tiền hàng:
             </span>
             <span className="checkout-product__payment">
-              {getItemsPriceTotal(checkoutItems)}
+              <CurrencyFormat
+                decimalScale={2}
+                value={getItemsPriceTotal(checkoutItems)}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₫"}
+              ></CurrencyFormat>
             </span>
             <span className="checkout-product__ship-label">
               Tổng phí vận chuyển:
             </span>
             <span className="checkout-product__ship">
-              {getShipPrice(shipUnit)}
+              <CurrencyFormat
+                decimalScale={2}
+                value={getShipPrice(shipUnit)}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₫"}
+              ></CurrencyFormat>
             </span>
             <span className="checkout-product__discount-label">Tiết kiệm:</span>
             <span className="checkout-product__discount">
-              {getSaved(voucher, checkoutItems)}
+              <CurrencyFormat
+                decimalScale={2}
+                value={getSaved(voucher, checkoutItems)}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₫"}
+              ></CurrencyFormat>
             </span>
             <span className="checkout-product__final-label">
               Tổng thanh toán:
             </span>
             <span className="checkout-product__final">
-              {getItemsPriceFinal(checkoutItems, shipUnit, voucher)}
+              <CurrencyFormat
+                decimalScale={2}
+                value={getItemsPriceFinal(checkoutItems, shipUnit, voucher)}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"₫"}
+              ></CurrencyFormat>
             </span>
           </div>
           <div className="checkout-product__order-wrapper">
@@ -949,10 +1032,11 @@ export default function CheckoutProduct() {
               Điều khoản Shopee
             </span>
             <button
+              disabled={processing}
               onClick={handleOrder}
               className="btn checkout-product__order-btn"
             >
-              Đặt hàng
+              {processing ? "Processing" : " Đặt hàng"}
             </button>
             {isPopupShowing && (
               <PopupModal
@@ -964,6 +1048,7 @@ export default function CheckoutProduct() {
                 isCardInfoMustFilled={isCardInfoMustFilled}
                 paymentMethod={paymentMethod}
                 setCheckoutProduct={setCheckoutProduct}
+                setCartProduct={setCartProduct}
               ></PopupModal>
             )}
           </div>

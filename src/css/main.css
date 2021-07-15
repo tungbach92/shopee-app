@@ -1935,7 +1935,6 @@ header {
 .cart-product__modal-apply:hover {
   opacity: 0.9;
 }
-
 .cart-product__modal-protect {
   margin-top: 3rem;
   padding: 1rem;
@@ -1974,6 +1973,7 @@ header {
   flex-direction: column;
 }
 .cart-product__card-name {
+  padding-left: 1rem;
   margin-top: 1rem;
   height: 4rem;
   outline: none;
@@ -1989,6 +1989,12 @@ header {
   height: 4rem;
   outline: none;
   border: 1px solid rgb(0 0 0 / 20%);
+}
+.StripeElement {
+  flex: 1 1;
+  border: 1px solid rgb(0 0 0 / 20%);
+  padding: 1rem;
+  height: 4rem;
 }
 .cart-product__card-visa,
 .cart-product__card-master,
@@ -2042,12 +2048,14 @@ header {
   opacity: 0.7;
 }
 .cart-product__address-text {
+  padding-left: 1rem;
   margin-top: 1rem;
   height: 4rem;
   outline: none;
   border: 1px solid rgb(0 0 0 / 20%);
 }
 .cart-product__address-postalcode {
+  padding-left: 1rem;
   margin-top: 1rem;
   height: 4rem;
   outline: none;
@@ -2637,6 +2645,8 @@ header {
 }
 .checkout-product__notify-item {
   margin-left: 14rem;
+  display: flex;
+  align-items: center;
 }
 
 .checkout-product__immediatepay-notify {
