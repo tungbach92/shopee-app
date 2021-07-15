@@ -1,20 +1,12 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import visaImg from "../img/visa.png";
-import masterImg from "../img/master.png";
-import jcbImg from "../img/jcb.png";
-import expressImg from "../img/express.png";
 import validCardCheck from "card-validator";
-import classNames from "classnames";
-import { ProductContext } from "../context";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../axios";
 export default function CardInfoModal(props) {
   const stripe = useStripe();
   const elements = useElements();
   const inputEl = useRef([]);
-  const { checkoutItems, getItemsPriceFinal, voucher } =
-    useContext(ProductContext);
   const {
     isCardInfoShowing,
     toggleCardInfo,
@@ -22,9 +14,10 @@ export default function CardInfoModal(props) {
     setCardBrand,
     setPaymentMethodID,
   } = props;
-  const [isNameValid, setIsNameValid] = useState(true);
+  const [nameIsValid, setNameIsValid] = useState(false);
+  const [numberIsValid, setNumberIsValid] = useState(false);
   const [errorNumberMsg, setErrorNumberMsg] = useState(null);
-  const [isPostalCodeValid, setIsPostalCodeValid] = useState(true);
+  const [errorNameMsg, setErrorNameMsg] = useState(null);
   const [disabled, setDisabled] = useState(true);
   const [successed, setSuccessed] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -35,11 +28,7 @@ export default function CardInfoModal(props) {
   };
 
   const handleCardElChange = (e) => {
-    if (e.error) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
+    setNumberIsValid(!e.error && e.complete ? true : false);
     setErrorNumberMsg(e.error ? e.error.message : "");
   };
 
@@ -71,6 +60,7 @@ export default function CardInfoModal(props) {
         setCardBrand(token.token.card.brand);
 
         toggleCardInfo(!isCardInfoShowing);
+        alert("Save card information success!");
       }
     } catch (error) {
       alert(error);
@@ -81,71 +71,23 @@ export default function CardInfoModal(props) {
       e.preventDefault();
     }
   };
-  const handleBlur = (e) => {
+  const handleInputChange = (e) => {
     switch (e.target.name) {
       case "name":
         let nameValidation = validCardCheck.cardholderName(e.target.value);
-        if (!nameValidation.isValid) {
-          setIsNameValid(false);
-          setDisabled(true);
+        if (e.target.value) {
+          if (!nameValidation.isValid) {
+            setNameIsValid(false);
+            setErrorNameMsg(
+              "The value must be alphabet characters or the following characters: apostrophe('), minus(-) and dot(.)."
+            );
+          } else {
+            setNameIsValid(true);
+            setErrorNameMsg("");
+          }
         } else {
-          setIsNameValid(true);
-          setDisabled(false);
-        }
-        break;
-      // case "number":
-      //   let numberValidation = validCardCheck.number(e.target.value);
-      //   if (!numberValidation.isValid) {
-      //     setIsNumberValid(false);
-      //   } else {
-      //     setIsNumberValid(true);
-      //   }
-      //   const type = numberValidation.card?.type;
-      //   if (type === "visa") {
-      //     setIsVisa((isVisa) => (isVisa = true));
-      //   } else {
-      //     setIsVisa((isVisa) => (isVisa = false));
-      //   }
-      //   if (type === "american-express") {
-      //     setIsExpress((isExpress) => (isExpress = true));
-      //   } else {
-      //     setIsExpress((isExpress) => (isExpress = false));
-      //   }
-      //   if (type === "mastercard") {
-      //     setIsMaster((isMaster) => (isMaster = true));
-      //   } else {
-      //     setIsMaster((isMaster) => (isMaster = false));
-      //   }
-      //   if (type === "jcb") {
-      //     setIsJcb((isJcb) => (isJcb = true));
-      //   } else {
-      //     setIsJcb((isJcb) => (isJcb = false));
-      //   }
-      //   break;
-      // case "expire":
-      //   let expireValidation = validCardCheck.expirationDate(e.target.value);
-      //   if (!expireValidation.isValid) {
-      //     setIsExpireValid(false);
-      //   } else {
-      //     setIsExpireValid(true);
-      //   }
-      //   break;
-      // case "cvv":
-      //   let cvvValidation = validCardCheck.cvv(e.target.value);
-      //   if (!cvvValidation.isValid) {
-      //     setIsCvvValid(false);
-      //   } else {
-      //     setIsCvvValid(true);
-      //   }
-      //   break;
-      case "postalcode":
-        let postalcodeValidation = validCardCheck.postalCode(e.target.value);
-        if (!postalcodeValidation.isValid) {
-          setIsPostalCodeValid(false);
-          setDisabled(true);
-        } else {
-          setIsPostalCodeValid(true);
-          setDisabled(false);
+          setNameIsValid(false);
+          setErrorNameMsg("Please enter credit card holder's name.");
         }
         break;
       default:
@@ -153,7 +95,7 @@ export default function CardInfoModal(props) {
     }
   };
   useEffect(() => {
-    //generate the special stripe secret
+    //generate the special stripe setup secret
     const getSetUpClientSecret = async () => {
       const response = await axios({
         method: "GET",
@@ -163,7 +105,6 @@ export default function CardInfoModal(props) {
     };
     getSetUpClientSecret();
   }, []);
-  console.log("The clientSecret is", setUpClientSecret);
   // useEffect(() => {
   //   // effect
   //   const setInputCardInfo = () => {
@@ -187,13 +128,10 @@ export default function CardInfoModal(props) {
   //     // cleanup
   //   };
   // }, [cardInfo, isCardInfoShowing]);
+  // Set submit button disabled
   useEffect(() => {
-    if (isNameValid || isPostalCodeValid || errorNumberMsg) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [isNameValid, isPostalCodeValid, errorNumberMsg]);
+    setDisabled(nameIsValid && numberIsValid ? false : true);
+  }, [nameIsValid, numberIsValid]);
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
       <div className="cart-product__modal-overlay"></div>
@@ -231,7 +169,8 @@ export default function CardInfoModal(props) {
             <label className="cart-product__card-label">Chi tiết thẻ</label>
             <input
               onKeyDown={handleKeyDown}
-              onBlur={handleBlur}
+              onChange={handleInputChange}
+              onBlur={handleInputChange}
               ref={(el) => (inputEl.current[0] = el)}
               type="text"
               name="name"
@@ -239,10 +178,8 @@ export default function CardInfoModal(props) {
               placeholder="Họ tên trên thẻ"
               required
             />
-            {!isNameValid && (
-              <label className="cart-product__name-error">
-                Tên thẻ không đúng
-              </label>
+            {errorNameMsg && (
+              <label className="cart-product__name-error">{errorNameMsg}</label>
             )}
             <div className="cart-product__number-wrapper">
               <CardElement onChange={handleCardElChange}></CardElement>
@@ -265,9 +202,10 @@ export default function CardInfoModal(props) {
               className="cart-product__address-text"
               placeholder="Address"
             />
-            <input
-              onBlur={handleBlur}
+            {/* <input
               onKeyDown={handleKeyDown}
+              onChange={handleInputChange}
+              onBlur={handleInputChange}
               ref={(el) => (inputEl.current[5] = el)}
               type="text"
               name="postalcode"
@@ -276,11 +214,11 @@ export default function CardInfoModal(props) {
               maxLength="5"
               required
             />
-            {!isPostalCodeValid && (
+            {errorPostalCodeMsg && (
               <label className="cart-product__postalcode-error">
-                Mã Postal không đúng
+                {errorPostalCodeMsg}
               </label>
-            )}
+            )} */}
           </div>
           <div className="cart-product__modal-footer">
             <button
