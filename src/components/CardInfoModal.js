@@ -13,6 +13,7 @@ export default function CardInfoModal(props) {
     setCard4digits,
     setCardBrand,
     setPaymentMethodID,
+    setCustomerID,
   } = props;
   const [nameIsValid, setNameIsValid] = useState(false);
   const [numberIsValid, setNumberIsValid] = useState(false);
@@ -21,7 +22,6 @@ export default function CardInfoModal(props) {
   const [disabled, setDisabled] = useState(true);
   const [successed, setSuccessed] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [setUpClientSecret, setSetUpClientSecret] = useState();
 
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
@@ -39,31 +39,41 @@ export default function CardInfoModal(props) {
       return;
     }
     const cardEl = elements.getElement(CardElement);
-    console.log(cardEl);
 
-    try {
-      const setUpIntentResult = await stripe.confirmCardSetup(
-        setUpClientSecret,
-        {
-          payment_method: {
-            card: cardEl,
-          },
-        }
-      );
-      if (setUpIntentResult.setupIntent.status === "succeeded") {
-        const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
-        console.log("create payment method success", paymentMethodID);
-        setPaymentMethodID(paymentMethodID);
+    const response = await axios({
+      method: "GET",
+      url: "/create-setup-intent",
+    });
+    setCustomerID(response.data.customerID);
 
-        const token = await stripe.createToken(cardEl);
-        setCard4digits(token.token.card.last4);
-        setCardBrand(token.token.card.brand);
-
-        toggleCardInfo(!isCardInfoShowing);
-        alert("Save card information success!");
+    const setUpIntentResult = await stripe.confirmCardSetup(
+      response.data.setUpIntentSecret,
+      {
+        payment_method: {
+          card: cardEl,
+        },
       }
-    } catch (error) {
-      alert(error);
+    );
+    if (
+      setUpIntentResult.setupIntent &&
+      setUpIntentResult.setupIntent.status === "succeeded"
+    ) {
+      const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
+      console.log("create payment method success", paymentMethodID);
+      setPaymentMethodID(paymentMethodID);
+
+      const token = await stripe.createToken(cardEl);
+      console.log(token);
+      setCard4digits(token.token.card.last4);
+      setCardBrand(token.token.card.brand);
+
+      toggleCardInfo(!isCardInfoShowing);
+      window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+      alert("Save card information success!");
+    } else {
+      console.log(setUpIntentResult);
+      alert(setUpIntentResult.error.message);
+      setProcessing(false);
     }
   };
   const handleKeyDown = (e) => {
@@ -94,40 +104,42 @@ export default function CardInfoModal(props) {
         break;
     }
   };
-  useEffect(() => {
-    //generate the special stripe setup secret
-    const getSetUpClientSecret = async () => {
-      const response = await axios({
-        method: "GET",
-        url: "/create-setup-intent",
-      });
-      setSetUpClientSecret(response.data.clientSecret);
-    };
-    getSetUpClientSecret();
-  }, []);
   // useEffect(() => {
-  //   // effect
-  //   const setInputCardInfo = () => {
-  //     if (isCardInfoShowing === true) {
-  //       inputEl.current[0].value =
-  //         cardInfo.name === undefined ? "" : cardInfo.name;
-  //       inputEl.current[1].value =
-  //         cardInfo.number === undefined ? "" : cardInfo.number;
-  //       inputEl.current[2].value =
-  //         cardInfo.expire === undefined ? "" : cardInfo.expire;
-  //       inputEl.current[3].value =
-  //         cardInfo.cvv === undefined ? "" : cardInfo.cvv;
-  //       inputEl.current[4].value =
-  //         cardInfo.address === undefined ? "" : cardInfo.address;
-  //       inputEl.current[5].value =
-  //         cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
-  //     }
-  //   };
-  //   setInputCardInfo();
-  //   return () => {
-  //     // cleanup
-  //   };
-  // }, [cardInfo, isCardInfoShowing]);
+  //   //create setup intent and get intent secret for Confirm later in client
+  //   if (!setUpIntentSecret) {
+  //     const getSetUpIntentSecret = async () => {
+  //       const response = await axios({
+  //         method: "GET",
+  //         url: "/create-setup-intent",
+  //       });
+  //       setSetUpIntentSecret(response.data.setUpIntentSecret);
+  //       setCustomerID(response.data.customerID);
+  //     };
+  //     getSetUpIntentSecret();
+  //   }
+  // }, [setCustomerID, setSetUpIntentSecret, setUpIntentSecret]);
+  // set saved customer card info
+  useEffect(() => {
+    // effect
+    const setInputCardInfo = () => {
+      if (isCardInfoShowing === true) {
+        // inputEl.current[0].value =
+        //   cardInfo.name === undefined ? "" : cardInfo.name;
+        // inputEl.current[1].value =
+        //   cardInfo.number === undefined ? "" : cardInfo.number;
+        // inputEl.current[2].value =
+        //   cardInfo.expire === undefined ? "" : cardInfo.expire;
+        // inputEl.current[3].value =
+        //   cardInfo.cvv === undefined ? "" : cardInfo.cvv;
+        // inputEl.current[4].value =
+        //   cardInfo.address === undefined ? "" : cardInfo.address;
+        // inputEl.current[5].value =
+        //   cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
+      }
+    };
+    setInputCardInfo();
+  }, [isCardInfoShowing]);
+
   // Set submit button disabled
   useEffect(() => {
     setDisabled(nameIsValid && numberIsValid ? false : true);

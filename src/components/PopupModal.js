@@ -15,6 +15,7 @@ export default function PopupModal(props) {
     paymentMethod,
     setCheckoutProduct,
     setCartProduct,
+    succeeded
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
@@ -27,7 +28,7 @@ export default function PopupModal(props) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
       } else if (paymentMethod.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
-      } else {
+      } else if(succeeded){
         setCartProduct([]);
         setCheckoutProduct([]);
         history.replace("/cart");
@@ -50,7 +51,9 @@ export default function PopupModal(props) {
               ? "Vui lòng chọn phương thức thanh toán."
               : isCardInfoMustFilled
               ? "Vui lòng điền đầy đủ thông tin Thẻ Tín dụng/Ghi nợ"
-              : "Đặt hàng thành công"}
+              : succeeded 
+              ? "Đặt hàng thành công"
+              : "Có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ tổng đài"}
           </span>
         </div>
         <div className="cart-product__popup-footer">
