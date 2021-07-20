@@ -68,7 +68,7 @@ export default function CardInfoModal(props) {
       setCardBrand(token.token.card.brand);
 
       toggleCardInfo(!isCardInfoShowing);
-      window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+      window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
       alert("Save card information success!");
     } else {
       console.log(setUpIntentResult);

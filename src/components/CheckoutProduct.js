@@ -25,6 +25,7 @@ import ErrorModal from "./ErrorModal";
 import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { db } from "../firebase";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
@@ -50,6 +51,7 @@ export default function CheckoutProduct() {
     getShipPrice,
     getSaved,
     getItemsPriceFinal,
+    user,
   } = useContext(ProductContext);
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -223,6 +225,17 @@ export default function CheckoutProduct() {
     toggleCardInfo(true);
   };
 
+  const handleOrderSucceeded = ({ id, amount, created }) => {
+    db.collection("users").doc(user?.uid).collection("orders").doc(id).set({
+      basket: checkoutItems,
+      amount: amount,
+      created: created,
+    });
+    setSucceeded(true);
+    setProcessing(false);
+    togglePopup(!isPopupShowing);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (province && district) {
@@ -374,7 +387,9 @@ export default function CheckoutProduct() {
           // Card needs to be authenticatied
           // Reuse the card details we have to use confirmCardPayment() to prompt for authentication
           // showAuthenticationView(data);
-          alert("Card needs to be authenticatied for charging. Press OK and wait.");
+          alert(
+            "Card needs to be authenticatied for charging. Press OK and wait."
+          );
           stripe
             .confirmCardPayment(result.data.clientSecret, {
               payment_method: result.data.paymentMethod,
@@ -401,9 +416,7 @@ export default function CheckoutProduct() {
                 // There's a risk your customer will drop-off or close the browser before this callback executes
                 // We recommend handling any business-critical post-payment logic in a webhook
                 // paymentIntentSucceeded(clientSecret, ".requires-auth");
-                setSucceeded(true);
-                setProcessing(false);
-                togglePopup(!isPopupShowing);
+                handleOrderSucceeded(stripeJsResult.paymentIntent);
               }
               // paymentIntent = payment confirmation
               // SetSuccess(true);
@@ -424,9 +437,7 @@ export default function CheckoutProduct() {
           // Card was successfully charged off-session
           // No recovery flow needed
           // paymentIntentSucceeded(data.clientSecret, ".sr-select-pm");
-          setSucceeded(true);
-          setProcessing(false);
-          togglePopup(!isPopupShowing);
+          handleOrderSucceeded(result.data.paymentIntent);
         }
       });
     } else {

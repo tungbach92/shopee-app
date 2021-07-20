@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { auth } from "./firebase";
+import { db } from "./firebase";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -42,10 +43,6 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
-    const orderItems = this.getOrderItemsFromStorage();
-    const checkoutItems = this.getCheckoutItemsFromStorage();
-    this.setState({ orderItems, checkoutItems });
-
     auth.onAuthStateChanged((authUser) => {
       console.log(authUser);
       if (authUser) {
@@ -56,6 +53,9 @@ export default class ProductProvider extends Component {
         this.setUser(null);
       }
     });
+    const cartItems = this.getCartItemsFromStorage();
+    const checkoutItems = this.getCheckoutItemsFromStorage();
+    this.setState({ cartItems, checkoutItems });
   }
 
   getItemsPriceTotal = (items) => {
@@ -101,21 +101,22 @@ export default class ProductProvider extends Component {
   };
 
   setUser = (user) => {
-    this.setState({ user });
+    this.setState({ user }, this.setOrderItems);
   };
 
-  setOrderItems = (orderItems) => {
-    this.setState({ orderItems }, this.saveOrderItemsToStorage);
-  };
-
-  saveOrderItemsToStorage = () => {
-    const { orderItems } = this.state;
-    localStorage.setItem("orders", JSON.stringify(orderItems));
-  };
-
-  getOrderItemsFromStorage = () => {
-    let savedOrderItems = localStorage.getItem("orders");
-    return savedOrderItems === null ? [] : JSON.parse(savedOrderItems);
+  setOrderItems = () => {
+    let { user } = this.state;
+    if (user) {
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("orders")
+        .orderBy("created", "desc")
+        .onSnapshot((snapshot) => {
+          this.setState({ orderItems: snapshot.docs.map((doc) => doc.data()) });
+        });
+    } else {
+      this.setState({ orderItems: [] });
+    }
   };
 
   setCartNumb = (cartNumb) => {
@@ -219,14 +220,10 @@ export default class ProductProvider extends Component {
   };
 
   updateSoldAmount = async (items) => {
-    const orderItems = this.getOrderItemsFromStorage();
+    const { orderItems } = this.state;
     let orderedCheckoutItems = [];
     orderItems.forEach((orderItem) => {
-      console.log(orderItem.checkoutItems);
-      orderedCheckoutItems = [
-        ...orderedCheckoutItems,
-        ...orderItem.checkoutItems,
-      ];
+      orderedCheckoutItems = [...orderedCheckoutItems, ...orderItem.basket];
     });
     items.forEach((item) =>
       orderedCheckoutItems.forEach((orderItem) => {
@@ -733,8 +730,6 @@ export default class ProductProvider extends Component {
           getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
           setCheckoutProduct: this.setCheckoutProduct,
           setOrderItems: this.setOrderItems,
-          saveOrderItemsToStorage: this.saveOrderItemsToStorage,
-          getOrderItemsFromStorage: this.getOrderItemsFromStorage,
           getItemsPriceTotal: this.getItemsPriceTotal,
           getItemsTotal: this.getItemsTotal,
           getShipPrice: this.getShipPrice,

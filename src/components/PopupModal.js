@@ -31,7 +31,7 @@ export default function PopupModal(props) {
       } else if(succeeded){
         setCartProduct([]);
         setCheckoutProduct([]);
-        history.replace("/cart");
+        history.replace("/users/order");
       }
     }
   };

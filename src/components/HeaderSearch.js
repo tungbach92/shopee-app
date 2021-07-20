@@ -4,19 +4,18 @@ import HeaderCart from "./HeaderCart";
 import HeaderSearchHistory from "./HeaderSearchHistory";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
-import {ProductContext } from "../context";
+import { ProductContext } from "../context";
 
 const HeaderSearch = React.memo(function (props) {
   console.log("header search render");
+  const { isCartPageLoaded, isCheckoutPage } = props;
+  const context = useContext(ProductContext);
   const {
+    orderItems,
     filterProductBySearch,
     addToSearchHistory,
     searchHistory,
-    isCartPageLoaded,
-    isCheckoutPage,
-  } = props;
-  const context= useContext(ProductContext);
-  const {orderItems} = context;
+  } = context;
   const inputEl = useRef("");
   const history = useHistory();
   const [recommendSearch, setRecommendSearch] = useState([]);
@@ -26,25 +25,26 @@ const HeaderSearch = React.memo(function (props) {
   }
 
   useEffect(() => {
-    function createRecommendedSearch () { 
-      let orderedCheckoutItems = [];
-      orderItems.forEach((orderItem) => {
-        console.log(orderItem.checkoutItems);
-        orderedCheckoutItems = [
-          ...orderedCheckoutItems,
-          ...orderItem.checkoutItems,
-        ];
-      });
-  
-      let allTags = [];
-      orderedCheckoutItems.forEach(item => {
-        // allTags = [...allTags,...item.tags] //TODO: add tag to item and enable this
-      })
-      allTags = getUnique(allTags);
-      setRecommendSearch(allTags);
+    if (orderItems) {
+      function createRecommendedSearch() {
+        let orderedCheckoutItems = [];
+        orderItems.forEach((orderItem) => {
+          // console.log(orderItem.checkoutItems);
+          orderedCheckoutItems = [
+            ...orderedCheckoutItems,
+            ...orderItem.basket,
+          ];
+        });
+        let allTags = [];
+        orderedCheckoutItems.forEach((item) => {
+          // allTags = [...allTags,...item.tags] //TODO: add tag to item and enable this
+        });
+        allTags = getUnique(allTags);
+        setRecommendSearch(allTags);
+      }
+      createRecommendedSearch();
     }
-    createRecommendedSearch();
-  },[orderItems])
+  }, [orderItems]);
 
   function handleSearchIconClick() {
     let text = inputEl.current.value;
@@ -117,12 +117,13 @@ const HeaderSearch = React.memo(function (props) {
               </div>
 
               <ul className="header__search-list">
-                {recommendSearch.map(item =>
-                <li className="header__search-item">
-                  <a href="# " className="header__item-link">
-                    {item}
-                  </a>
-                </li>)}
+                {recommendSearch.map((item) => (
+                  <li className="header__search-item">
+                    <a href="# " className="header__item-link">
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <HeaderCart></HeaderCart>

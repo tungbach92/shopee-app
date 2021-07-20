@@ -162,7 +162,7 @@ export default function HeaderNav() {
             <Link to="/account" className="header__user-item">
               Tài khoản của tôi
             </Link>
-            <Link to="/purchased" className="header__user-item">
+            <Link to="/user/order" className="header__user-item">
               Đơn mua
             </Link>
             <div onClick={handleLogout} className="header__user-item">

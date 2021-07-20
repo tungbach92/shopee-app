@@ -34,7 +34,7 @@ export default function ProductList(props) {
   } = context;
 
   useEffect(() => {
-    if (items.length <= 0) {
+    if (items.length <= 0 || orderItems.length <= 0) {
       getData();
     }
   }, [items, getData, orderItems]);

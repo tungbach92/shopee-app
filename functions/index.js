@@ -69,7 +69,7 @@ app.post("/charge-card-off-session", async (request, response) => {
     response.send({
       succeeded: true,
       clientSecret: paymentIntent.client_secret,
-      paymentIntentID: paymentIntent.id,
+      paymentIntent: paymentIntent,
     });
   } catch (error) {
     if (error.code === "authentication_required") {

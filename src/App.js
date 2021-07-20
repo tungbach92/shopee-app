@@ -12,6 +12,7 @@ import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Order from "./pages/Order";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -34,6 +35,7 @@ function App() {
         </Route>
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>
+        <Route exact path="/user/order" component={Order}></Route>
         <Route component={Error} />
       </Switch>
       <Footer></Footer>
