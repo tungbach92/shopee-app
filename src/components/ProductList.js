@@ -7,6 +7,7 @@ export default function ProductList(props) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
+    user,
     items,
     orderItems,
     getData,
@@ -39,6 +40,15 @@ export default function ProductList(props) {
     if (items.length <= 0) {
       getDataFireBase();
     }
+    // if (user) {
+    //   db.collection("products")
+    //     .doc(user?.uid)
+    //     .set({
+    //       email: user.email,
+    //       uid: user.uid,
+    //       items: items,
+    //     });
+    // }
   }, [getDataFireBase, items, orderItems]);
 
   //set default some states
