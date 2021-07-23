@@ -32,7 +32,7 @@ const HeaderSearch = React.memo(function (props) {
           // console.log(orderItem.checkoutItems);
           orderedCheckoutItems = [
             ...orderedCheckoutItems,
-            ...orderItem.basket,
+            ...orderItem.data.basket,
           ];
         });
         let allTags = [];

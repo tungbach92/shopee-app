@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
+import { db } from "../firebase";
 
 export default function ProductList(props) {
   // const _isMounted = useRef(true);
@@ -31,13 +32,14 @@ export default function ProductList(props) {
     similarPageSize,
     handleClick,
     setDefaultState,
+    getDataFireBase,
   } = context;
 
   useEffect(() => {
-    if (items.length <= 0 || orderItems.length <= 0) {
-      getData();
+    if (items.length <= 0) {
+      getDataFireBase();
     }
-  }, [items, getData, orderItems]);
+  }, [getDataFireBase, items, orderItems]);
 
   //set default some states
   useEffect(() => {

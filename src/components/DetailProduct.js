@@ -24,12 +24,12 @@ export default function DetailProduct() {
   } = useContext(ProductContext);
   //
 
-  useEffect(() => {
-    if (orderItems.length <= 0) {
-      const orderItems = getOrderItemsFromStorage();
-      setOrderItems(orderItems);
-    }
-  }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
+  // useEffect(() => {
+  //   if (orderItems.length <= 0) {
+  //     const orderItems = getOrderItemsFromStorage();
+  //     setOrderItems(orderItems);
+  //   }
+  // }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
 
   useEffect(() => {
     // effect

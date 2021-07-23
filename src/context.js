@@ -112,7 +112,12 @@ export default class ProductProvider extends Component {
         .collection("orders")
         .orderBy("created", "desc")
         .onSnapshot((snapshot) => {
-          this.setState({ orderItems: snapshot.docs.map((doc) => doc.data()) });
+          this.setState({
+            orderItems: snapshot.docs.map((doc) => ({
+              id: doc.id,
+              data: doc.data(),
+            })),
+          });
         });
     } else {
       this.setState({ orderItems: [] });
@@ -219,11 +224,28 @@ export default class ProductProvider extends Component {
     }
   };
 
+  getDataFireBase = async () => {
+    try {
+      let items = [];
+      db.collection("products").onSnapshot((snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          items = [...items, ...doc.data().items];
+          this.setState({ items });
+        });
+      });
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   updateSoldAmount = async (items) => {
     const { orderItems } = this.state;
     let orderedCheckoutItems = [];
     orderItems.forEach((orderItem) => {
-      orderedCheckoutItems = [...orderedCheckoutItems, ...orderItem.basket];
+      orderedCheckoutItems = [
+        ...orderedCheckoutItems,
+        ...orderItem.data.basket,
+      ];
     });
     items.forEach((item) =>
       orderedCheckoutItems.forEach((orderItem) => {
@@ -735,6 +757,7 @@ export default class ProductProvider extends Component {
           getShipPrice: this.getShipPrice,
           getSaved: this.getSaved,
           getItemsPriceFinal: this.getItemsPriceFinal,
+          getDataFireBase: this.getDataFireBase,
         }}
       >
         {this.props.children}

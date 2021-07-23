@@ -10,7 +10,6 @@ import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 
 export default function CartProduct(props) {
-  console.log("render");
   const location = useLocation();
   const history = useHistory();
   const { isPopupShowing, togglePopup, popupModal } = props;
@@ -250,7 +249,7 @@ export default function CartProduct(props) {
             <div className="grid__col cart-product__product">Sản Phẩm</div>
             <div className="grid__col cart-product__price">Đơn Giá</div>
             <div className="grid__col cart-product__amount">Số Lượng</div>
-            <div className="grid__col cart-product__total">Số Tiền</div>
+            <div className="grid__col cart-product__header-total">Số Tiền</div>
             <div className="grid__col cart-product__action">Thao Tác</div>
           </div>
           {/* <div className="cart-shop">
@@ -760,7 +759,7 @@ export default function CartProduct(props) {
                   <span className="cart-product__total-label">
                     Tổng thanh toán ({getItemsTotal(selectedItems)} sản phẩm):
                   </span>
-                  <span className="cart-product__total-value">
+                  <span className="cart-product__total-all">
                     {getItemsPriceTotal(selectedItems)}
                   </span>
                 </div>
