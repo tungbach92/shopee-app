@@ -247,7 +247,7 @@ export default function CheckoutProduct() {
                 const newItem = { ...item, soldAmount: updatedSoldAmount };
                 console.log(item);
                 transaction.update(productsDocRef, {
-                  items: firebase.firestore.FieldValue.arrayRemove(item), 
+                  items: firebase.firestore.FieldValue.arrayRemove(item),
                 });
                 transaction.update(productsDocRef, {
                   items: firebase.firestore.FieldValue.arrayUnion(newItem), // append to the end of the array
@@ -274,7 +274,9 @@ export default function CheckoutProduct() {
 
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
-    updateSoldAmount();
+    if (isCardPayment) {
+      updateSoldAmount();
+    }
     setSucceeded(true);
     setProcessing(false);
     togglePopup(!isPopupShowing);
@@ -384,106 +386,87 @@ export default function CheckoutProduct() {
       Object.keys(shipUnit).length > 0 &&
       isCardInfoMustFilled === false
     ) {
-      // const orderItem = {
-      //   date: new Date(),
-      //   checkoutItems: checkoutItems,
-      //   customerInfo: customerInfo,
-      //   shipUnit: shipUnit,
-      //   paymentMethod: paymentMethod,
-      //   cardInfo: cardInfo,
-      //   message: message,
-      //   checkoutPrice: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
-      // };
-
-      // const oldOrder = getOrderItemsFromStorage();
-      // let newOrderItems = [...oldOrder, orderItem];
-      // console.log(newOrderItems); // order output
-      // setOrderItems(newOrderItems);
-      // stripe
-      //   .confirmCardPayment(clientSecret, {
-      //     payment_method: {
-      //       id: paymentMethodID,
-      //       customer: customerID,
-      //     },
-      //   })
-      //   .then(({ paymentIntent }) => {
-      //     // paymentIntent = payment confirmation
-      //     // SetSuccess(true);
-      //     // SetError(null);
-      //     //SetProcessing(false);
-      //     // history.replace("/cart");
-      //     // result.token.card.last4
-      //   });
       setProcessing(true);
-      axios({
-        method: "POST",
-        url: `/charge-card-off-session?total=${getItemsPriceFinal(
-          checkoutItems,
-          shipUnit,
-          voucher
-        )}`,
-        data: { paymentMethodID, customerID }, // sub currency usd-> cent *100
-      }).then((result) => {
-        if (
-          result.data.error &&
-          result.data.error === "authentication_required"
-        ) {
-          // Card needs to be authenticatied
-          // Reuse the card details we have to use confirmCardPayment() to prompt for authentication
-          // showAuthenticationView(data);
-          alert(
-            "Card needs to be authenticatied for charging. Press OK and wait."
-          );
-          stripe
-            .confirmCardPayment(result.data.clientSecret, {
-              payment_method: result.data.paymentMethod,
-            })
-            .then((stripeJsResult) => {
-              if (
-                stripeJsResult.error &&
-                stripeJsResult.error.code ===
-                  "payment_intent_authentication_failure"
-              ) {
-                // Authentication failed -- prompt for a new payment method since this one is failing to authenticate
-                // hideEl(".requires-auth");
-                // showEl(".requires-pm");
-                alert(
-                  `${result.data.card.brand} ****${result.data.card.last4} authentication failed. Please provide an new card or try again.`
-                );
-                setSucceeded(false);
-                setProcessing(false);
-              } else if (
-                stripeJsResult.paymentIntent &&
-                stripeJsResult.paymentIntent.status === "succeeded"
-              ) {
-                // Order was authenticated and the card was charged
-                // There's a risk your customer will drop-off or close the browser before this callback executes
-                // We recommend handling any business-critical post-payment logic in a webhook
-                // paymentIntentSucceeded(clientSecret, ".requires-auth");
-                handleOrderSucceeded(stripeJsResult.paymentIntent);
-              }
-              // paymentIntent = payment confirmation
-              // SetSuccess(true);
-              // SetError(null);
-              //SetProcessing(false);
-              // history.replace("/cart");
-              // result.token.card.last4
-            });
-        } else if (result.data.error) {
-          // Card was declined off-session -- ask customer for a new card
-          // showEl(".requires-pm");
-          alert(
-            `${result.data.card.brand} ****${result.data.card.last4} was declined off-session or insufficient funds. Please enter a new card detail`
-          );
-          setSucceeded(false);
-          setProcessing(false);
-        } else if (result.data.succeeded) {
-          // Card was successfully charged off-session
-          // No recovery flow needed
-          // paymentIntentSucceeded(data.clientSecret, ".sr-select-pm");
-          handleOrderSucceeded(result.data.paymentIntent);
-        }
-      });
+      if (isCardPayment) {
+        axios({
+          method: "POST",
+          url: `/charge-card-off-session?total=${getItemsPriceFinal(
+            checkoutItems,
+            shipUnit,
+            voucher
+          )}`,
+          data: { paymentMethodID, customerID }, // sub currency usd-> cent *100
+        }).then((result) => {
+          if (
+            result.data.error &&
+            result.data.error === "authentication_required"
+          ) {
+            // Card needs to be authenticatied
+            // Reuse the card details we have to use confirmCardPayment() to prompt for authentication
+            // showAuthenticationView(data);
+            alert(
+              "Card needs to be authenticatied for charging. Press OK and wait."
+            );
+            stripe
+              .confirmCardPayment(result.data.clientSecret, {
+                payment_method: result.data.paymentMethod,
+              })
+              .then((stripeJsResult) => {
+                if (
+                  stripeJsResult.error &&
+                  stripeJsResult.error.code ===
+                    "payment_intent_authentication_failure"
+                ) {
+                  // Authentication failed -- prompt for a new payment method since this one is failing to authenticate
+                  // hideEl(".requires-auth");
+                  // showEl(".requires-pm");
+                  alert(
+                    `${result.data.card.brand} ****${result.data.card.last4} authentication failed. Please provide an new card or try again.`
+                  );
+                  setSucceeded(false);
+                  setProcessing(false);
+                } else if (
+                  stripeJsResult.paymentIntent &&
+                  stripeJsResult.paymentIntent.status === "succeeded"
+                ) {
+                  // Order was authenticated and the card was charged
+                  // There's a risk your customer will drop-off or close the browser before this callback executes
+                  // We recommend handling any business-critical post-payment logic in a webhook
+                  // paymentIntentSucceeded(clientSecret, ".requires-auth");
+                  console.log(stripeJsResult.paymentIntent);
+                  handleOrderSucceeded(stripeJsResult.paymentIntent);
+                }
+                // paymentIntent = payment confirmation
+                // SetSuccess(true);
+                // SetError(null);
+                //SetProcessing(false);
+                // history.replace("/cart");
+                // result.token.card.last4
+              });
+          } else if (result.data.error) {
+            // Card was declined off-session -- ask customer for a new card
+            // showEl(".requires-pm");
+            alert(
+              `${result.data.card.brand} ****${result.data.card.last4} was declined off-session or insufficient funds. Please enter a new card detail`
+            );
+            setSucceeded(false);
+            setProcessing(false);
+          } else if (result.data.succeeded) {
+            // Card was successfully charged off-session
+            // No recovery flow needed
+            // paymentIntentSucceeded(data.clientSecret, ".sr-select-pm");
+            console.log(result.data.paymentIntent);
+            handleOrderSucceeded(result.data.paymentIntent);
+          }
+        });
+      } else {
+        const paymentIntent = {
+          id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
+          amount: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
+          created: Date.now(),
+        };
+        handleOrderSucceeded(paymentIntent);
+      }
     } else {
       togglePopup(!isPopupShowing);
     }
