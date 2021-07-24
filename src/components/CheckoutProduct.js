@@ -26,6 +26,8 @@ import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
+import firebase from "firebase/app";
+import "firebase/firestore";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
@@ -225,12 +227,54 @@ export default function CheckoutProduct() {
     toggleCardInfo(true);
   };
 
-  const handleOrderSucceeded = ({ id, amount, created }) => {
+  const updateSoldAmount = () => {
+    const productsDocRef = db
+      .collection("products")
+      .doc("mg8veWgZLESw0ute00ZgkTc3GEK2"); // doc id of product, need to change later
+
+    return db
+      .runTransaction((transaction) => {
+        return transaction.get(productsDocRef).then((productsDoc) => {
+          if (!productsDoc.exists) {
+            throw new Error("Document does not exist!");
+          }
+          productsDoc.data().items.forEach((item) =>
+            checkoutItems.forEach((checkoutItem) => {
+              if (checkoutItem.id === item.id) {
+                // const id = item.id;
+                const updatedSoldAmount =
+                  item.soldAmount + Number(checkoutItem.amount);
+                const newItem = { ...item, soldAmount: updatedSoldAmount };
+                console.log(item);
+                transaction.update(productsDocRef, {
+                  items: firebase.firestore.FieldValue.arrayRemove(item), 
+                });
+                transaction.update(productsDocRef, {
+                  items: firebase.firestore.FieldValue.arrayUnion(newItem), // append to the end of the array
+                });
+              }
+            })
+          );
+        });
+      })
+      .then(() => {
+        console.log("update soldAmount");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const saveOrdersToFirebase = (id, amount, created) => {
     db.collection("users").doc(user?.uid).collection("orders").doc(id).set({
       basket: checkoutItems,
       amount: amount,
       created: created,
     });
+  };
+
+  const handleOrderSucceeded = ({ id, amount, created }) => {
+    saveOrdersToFirebase(id, amount, created);
+    updateSoldAmount();
     setSucceeded(true);
     setProcessing(false);
     togglePopup(!isPopupShowing);

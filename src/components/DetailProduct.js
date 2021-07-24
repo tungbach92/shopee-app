@@ -14,6 +14,7 @@ export default function DetailProduct() {
   const location = useLocation();
   const scrolltoEl = useRef();
   const {
+    getDataFireBase,
     handleClick,
     items,
     getData,
@@ -34,9 +35,9 @@ export default function DetailProduct() {
   useEffect(() => {
     // effect
     if (items.length <= 0) {
-      getData();
+      getDataFireBase();
     }
-  }, [getData, items]);
+  }, [getDataFireBase, items]);
 
   const [item, setItem] = useState();
   const [images, setImages] = useState([]);
@@ -74,7 +75,6 @@ export default function DetailProduct() {
   useEffect(() => {
     //Img by item
     if (item) {
-      console.log("dssdsd");
       const images = [
         {
           original: require(`../img/${item.imageUrl}`).default,
@@ -487,8 +487,8 @@ export default function DetailProduct() {
 
               <Link
                 to={{
-                  pathname: '/cart',
-                  state: { from: location }
+                  pathname: "/cart",
+                  state: { from: location },
                 }}
                 onClick={handleBuyNow}
                 data-id={item?.id}

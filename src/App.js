@@ -4,7 +4,7 @@ import "./css/main.css";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Product from "./pages/Product";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
@@ -30,11 +30,11 @@ function App() {
       <Switch>
         <Route exact path="/" component={Product}></Route>
         <Route exact path="/cart">
-          {user ? <Cart /> : <Redirect to="/login" />}
+          {user ? <Cart /> : <Login />}
         </Route>
         <Route exact path="/product/:metaTitle" component={Detail}></Route>
         <Route exact path="/account" component={Account}>
-          {user ? <Account /> : <Redirect to="/login" />}
+          {user ? <Account /> : <Login />}
         </Route>
         <Route exact path="/checkout">
           {user ? (
@@ -42,13 +42,13 @@ function App() {
               <Checkout />
             </Elements>
           ) : (
-            <Redirect to="/login" />
+            <Login />
           )}
         </Route>
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>
         <Route exact path="/user/order">
-          {user ? <Order /> : <Redirect to="/login" />}
+          {user ? <Order /> : <Login />}
         </Route>
         <Route component={Error} />
       </Switch>

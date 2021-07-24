@@ -41,15 +41,14 @@ export default function ProductList(props) {
       getDataFireBase();
     }
     // if (user) {
-    //   db.collection("products")
-    //     .doc(user?.uid)
-    //     .set({
-    //       email: user.email,
-    //       uid: user.uid,
-    //       items: items,
-    //     });
+    //   db.collection("products").doc(user?.uid).set({
+    //     user: user.displayName,
+    //     email: user.email,
+    //     uid: user.uid,
+    //     items: items,
+    //   });
     // }
-  }, [getDataFireBase, items, orderItems]);
+  }, [getDataFireBase, items, orderItems, user]);
 
   //set default some states
   useEffect(() => {
@@ -109,7 +108,7 @@ export default function ProductList(props) {
     pageIndex * pageSize
   );
 
-  return renderItem.map((item) => (
+  return renderItem.map((item,index) => (
     <ProductItem
       key={item.id}
       cartItems={cartItems}
