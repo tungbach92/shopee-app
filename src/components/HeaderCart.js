@@ -28,7 +28,10 @@ const HeaderCart = () => {
               {cartItems.map((item, index) => (
                 <div key={index} className="header__cart-item">
                   <Link
-                    to={`/product/${item.metaTitle}`}
+                    to={{
+                      pathname: `/product/${item.metaTitle}`,
+                      state: { id: item.id },
+                    }}
                     className="header__cart-link"
                   >
                     <img

@@ -6,7 +6,7 @@ import CurrencyFormat from "react-currency-format";
 import moment from "moment";
 const OrderContent = () => {
   const { orderItems, setOrderItems, user } = useContext(ProductContext);
-   // read order from db and set state
+  // read order from db and set state
   // useEffect(() => {
   //   if (user) {
   //     db.collection("users")
@@ -47,7 +47,10 @@ const OrderContent = () => {
           {item.data.basket.map((basketItem, index) => (
             <div key={index} className="order-product__item">
               <Link
-                to={`/product/${basketItem.metaTitle}`}
+                to={{
+                  pathname: `/product/${basketItem.metaTitle}`,
+                  state: { id: basketItem.id },
+                }}
                 className="grid__col order-product__overview"
               >
                 <img

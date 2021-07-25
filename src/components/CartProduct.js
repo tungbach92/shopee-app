@@ -53,11 +53,11 @@ export default function CartProduct(props) {
   let idArr = [];
 
   useEffect(() => {
-    if (location.state) {
+    if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
     }
     history.replace();
-  }, [toggleIsAddCardPopup, location.state, history]);
+  }, [toggleIsAddCardPopup, history, location.state?.from.pathname]);
   useEffect(() => {
     if (items.length <= 0) {
       getData();
@@ -307,7 +307,10 @@ export default function CartProduct(props) {
                 className="grid__col cart-product__checkbox"
               />
               <Link
-                to={`/product/${item.metaTitle}`}
+                to={{
+                  pathname: `/product/${item.metaTitle}`,
+                  state: { id: item.id },
+                }}
                 className="grid__col cart-product__overview"
               >
                 <img

@@ -43,7 +43,13 @@ const ProductItem = React.memo(function (props) {
           ></AddCartModal>
         )}
 
-        <Link to={`/product/${metaTitle}`} className="app__product-link">
+        <Link
+          to={{
+            pathname: `/product/${metaTitle}`,
+            state: { id: id },
+          }}
+          className="app__product-link"
+        >
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">
             <span className="app__product-sale-off-percent">43%</span>

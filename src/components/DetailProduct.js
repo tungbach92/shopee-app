@@ -31,7 +31,9 @@ export default function DetailProduct() {
   //     setOrderItems(orderItems);
   //   }
   // }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
-
+  useEffect(() => {
+    handleScrollTop();
+  }, []);
   useEffect(() => {
     // effect
     if (items.length <= 0) {
@@ -63,14 +65,15 @@ export default function DetailProduct() {
   // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0) {
-      let item = items.find((item) => item.metaTitle === metaTitle);
+      const id = location.state?.id;
+      let item = items.find((item) => item.id === id);
       item = {
         ...item,
         amount: 1,
       };
       setItem(item);
     }
-  }, [items, metaTitle, orderItems]);
+  }, [items, location.state?.id, metaTitle, orderItems]);
 
   useEffect(() => {
     //Img by item
