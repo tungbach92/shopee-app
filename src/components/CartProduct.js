@@ -8,18 +8,22 @@ import { ProductContext } from "../context";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
+import PopupModal from "../components/PopupModal";
 
 export default function CartProduct(props) {
   const location = useLocation();
   const history = useHistory();
-  const { isPopupShowing, togglePopup, popupModal } = props;
+  const { isCartPageLoaded } = props;
   const [variation, setVariation] = useState("");
-  const [selectedItems, setSelectedItems] = useState();
+  const [isVariationChoose, setIsVariationChoose] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
   const {
     isVoucherShowing,
     toggleVoucher,
     isAddCartPopup,
     toggleIsAddCardPopup,
+    isPopupShowing,
+    togglePopup,
   } = useModal();
   const {
     voucherList,
@@ -78,6 +82,15 @@ export default function CartProduct(props) {
     setDefaultChecked();
   }, [setDefaultChecked, checkoutItems, cartItems]);
 
+  useEffect(() => {
+    if (selectedItems.length > 0) {
+      const isVariationChoose = selectedItems.every(
+        (item) => item.variation.length > 0
+      );
+      setIsVariationChoose(isVariationChoose);
+    }
+  }, [selectedItems]);
+
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;
     setVariation(variation);
@@ -88,8 +101,18 @@ export default function CartProduct(props) {
     changeVariationDisPlayCartItems(index);
   };
 
+  const changeSelectedItemsVariation = (index) => {
+    const newSelectedItems = selectedItems.map((item) => {
+      if (item.id === cartItems[index].id) {
+        return (item = { ...item, variation: cartItems[index].variation });
+      } else return item;
+    });
+    setSelectedItems(newSelectedItems);
+  };
+
   const handleVariationApply = (index, event) => {
     changeCartItemsVariation(variation, index);
+    changeSelectedItemsVariation(index);
     changeVariationDisPlayCartItems(index);
   };
   const handleCheckout = (event) => {
@@ -100,7 +123,7 @@ export default function CartProduct(props) {
       isCheck = checked.some((item) => item === true);
     }
 
-    if (isCheck === false) {
+    if (isCheck === false || isVariationChoose === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     } else {
@@ -780,7 +803,15 @@ export default function CartProduct(props) {
               >
                 Mua hàng
               </Link>
-              {isPopupShowing && popupModal}
+              {isPopupShowing && (
+                <PopupModal
+                  isCartPageLoaded={isCartPageLoaded}
+                  isVariationChoose={isVariationChoose}
+                  isPopupShowing={isPopupShowing}
+                  togglePopup={togglePopup}
+                  selectedItems={selectedItems}
+                ></PopupModal>
+              )}
             </div>
           </div>
         </div>

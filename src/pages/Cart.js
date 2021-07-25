@@ -15,7 +15,7 @@ export default function Cart() {
     addToSearchHistory,
   } = useContext(ProductContext);
   const [isCartPageLoaded, setIsCartPageLoaded] = useState(false);
-  const { isPopupShowing, togglePopup } = useModal();
+  // const { isPopupShowing, togglePopup } = useModal();
   useEffect(() => {
     // effect
     setIsCartPageLoaded(true);
@@ -38,15 +38,14 @@ export default function Cart() {
         }
       ></Header>
       <CartProduct
-        isPopupShowing={isPopupShowing}
-        togglePopup={togglePopup}
-        popupModal={
-          <PopupModal
-            isCartPageLoaded={isCartPageLoaded}
-            isPopupShowing={isPopupShowing}
-            togglePopup={togglePopup}
-          ></PopupModal>
-        }
+        isCartPageLoaded={isCartPageLoaded}
+        // popupModal={
+        //   <PopupModal
+        //     isCartPageLoaded={isCartPageLoaded}
+        //     isPopupShowing={isPopupShowing}
+        //     togglePopup={togglePopup}
+        //   ></PopupModal>
+        // }
       ></CartProduct>
     </>
   );

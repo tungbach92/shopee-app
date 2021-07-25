@@ -6,6 +6,8 @@ export default function PopupModal(props) {
   const history = useHistory();
   const {
     isCartPageLoaded,
+    isVariationChoose,
+    selectedItems,
     isCardInfoMustFilled,
     shipUnit,
     isPopupShowing,
@@ -15,7 +17,7 @@ export default function PopupModal(props) {
     paymentMethod,
     setCheckoutProduct,
     setCartProduct,
-    succeeded
+    succeeded,
   } = props;
   const handleClick = () => {
     togglePopup(!isPopupShowing);
@@ -28,7 +30,7 @@ export default function PopupModal(props) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
       } else if (paymentMethod.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
-      } else if(succeeded){
+      } else if (succeeded) {
         setCartProduct([]);
         setCheckoutProduct([]);
         history.replace("/user/order");
@@ -41,8 +43,10 @@ export default function PopupModal(props) {
       <div className="cart-product__modal-container">
         <div className="cart-product__modal-header">
           <span className="cart-product__popup-label">
-            {isCartPageLoaded
+            {isCartPageLoaded && selectedItems.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
+              : isCartPageLoaded && isVariationChoose === false
+              ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
               : isInformation === true || isInfoEmpty === true
               ? "Vui lòng điền thông tin người mua và ấn Lưu."
               : !Object.keys(shipUnit).length
@@ -51,7 +55,7 @@ export default function PopupModal(props) {
               ? "Vui lòng chọn phương thức thanh toán."
               : isCardInfoMustFilled
               ? "Vui lòng điền đầy đủ thông tin Thẻ Tín dụng/Ghi nợ"
-              : succeeded 
+              : succeeded
               ? "Đặt hàng thành công"
               : "Có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ tổng đài"}
           </span>
