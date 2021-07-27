@@ -212,12 +212,7 @@ export default class ProductProvider extends Component {
       const items = await response.json();
       const itemsWithID = await this.addItemId(items);
       const itemsWithMetaTitle = await this.addMetaTitleProp(itemsWithID);
-      const itemsWithVariationSimilarDisPlay =
-        await this.addVariationSimilarDisplayProp(itemsWithMetaTitle);
-      const itemsWithVariation = await this.addVariationProp(
-        itemsWithVariationSimilarDisPlay
-      );
-      const finalItems = await this.updateSoldAmount(itemsWithVariation);
+      const finalItems = await this.addVariationProp(itemsWithMetaTitle);
       this.setState({ items: finalItems });
     } catch (error) {
       console.log(error);
@@ -238,24 +233,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  updateSoldAmount = async (items) => {
-    const { orderItems } = this.state;
-    let orderedCheckoutItems = [];
-    orderItems.forEach((orderItem) => {
-      orderedCheckoutItems = [
-        ...orderedCheckoutItems,
-        ...orderItem.data.basket,
-      ];
-    });
-    items.forEach((item) =>
-      orderedCheckoutItems.forEach((orderItem) => {
-        if (orderItem.id === item.id) {
-          item.soldAmount += Number(orderItem.amount);
-        }
-      })
-    );
-    return items;
-  };
   //add id cho item
   addItemId = async (items) => {
     items.forEach((item, index) => {
@@ -268,27 +245,21 @@ export default class ProductProvider extends Component {
     items.forEach((item) => {
       switch (item.type) {
         case "shirt":
-          item.variation = "";
           item.variationList = ["M", "L", "XL"];
           break;
         case "set":
-          item.variation = "";
           item.variationList = ["M", "L"];
           break;
         case "bag":
-          item.variation = "";
           item.variationList = ["S", "M", "L"];
           break;
         case "shoe":
-          item.variation = "";
           item.variationList = ["38", "39", "40", "41"];
           break;
         case "accessories":
-          item.variation = "";
           item.variationList = ["M", "L", "XL"];
           break;
         default:
-          item.variation = "";
           item.variationList = ["M", "L", "XL"];
           break;
       }
@@ -482,7 +453,9 @@ export default class ProductProvider extends Component {
       item = {
         ...item,
         amount: 1,
-        shipPriceProvince: [0, 0],
+        variation: "",
+        variationDisPlay: false,
+        similarDisPlay: false,
       };
       cartItemsModified = [...cartItems, item];
     } else if (existItems) {
@@ -563,7 +536,13 @@ export default class ProductProvider extends Component {
     const lastIndex = cartItems.length + 1;
     let checkoutItems = checked.map((checkItem, index) => {
       if (checkItem === true && index > 0 && index < lastIndex) {
-        return cartItems[index - 1];
+        // return cartItems[index-1] without uneccessary field
+        const newCartItems = {
+          ...cartItems[index - 1],
+          variationDisPlay: undefined,
+          similarDisPlay: undefined,
+        };
+        return newCartItems;
       } else return null;
     });
     checkoutItems = checkoutItems.filter((item) => item !== null);
@@ -586,11 +565,11 @@ export default class ProductProvider extends Component {
       item.variationDisPlay = false;
       item.similarDisPlay = false;
     }); // reset properties first
-    localStorage.setItem("product", JSON.stringify(cartItems));
+    localStorage.setItem("cartProduct", JSON.stringify(cartItems));
   };
 
   getCartItemsFromStorage = () => {
-    let savedCartItems = localStorage.getItem("product");
+    let savedCartItems = localStorage.getItem("cartProduct");
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 

@@ -70,6 +70,9 @@ export default function DetailProduct() {
       item = {
         ...item,
         amount: 1,
+        variation: "",
+        variationDisPlay: false,
+        similarDisPlay: false,
       };
       setItem(item);
     }

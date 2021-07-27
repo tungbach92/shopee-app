@@ -232,31 +232,30 @@ export default function CheckoutProduct() {
       .collection("products")
       .doc("mg8veWgZLESw0ute00ZgkTc3GEK2"); // doc id of product, need to change later
 
-    return db
-      .runTransaction((transaction) => {
-        return transaction.get(productsDocRef).then((productsDoc) => {
-          if (!productsDoc.exists) {
-            throw new Error("Document does not exist!");
-          }
-          productsDoc.data().items.forEach((item) =>
-            checkoutItems.forEach((checkoutItem) => {
-              if (checkoutItem.id === item.id) {
-                // const id = item.id;
-                const updatedSoldAmount =
-                  item.soldAmount + Number(checkoutItem.amount);
-                const newItem = { ...item, soldAmount: updatedSoldAmount };
-                console.log(item);
-                transaction.update(productsDocRef, {
-                  items: firebase.firestore.FieldValue.arrayRemove(item),
-                });
-                transaction.update(productsDocRef, {
-                  items: firebase.firestore.FieldValue.arrayUnion(newItem), // append to the end of the array
-                });
-              }
-            })
-          );
-        });
-      })
+    db.runTransaction((transaction) => {
+      return transaction.get(productsDocRef).then((productsDoc) => {
+        if (!productsDoc.exists) {
+          throw new Error("Document does not exist!");
+        }
+        productsDoc.data().items.forEach((item) =>
+          checkoutItems.forEach((checkoutItem) => {
+            if (checkoutItem.id === item.id) {
+              // const id = item.id;
+              const updatedSoldAmount =
+                item.soldAmount + Number(checkoutItem.amount);
+              const newItem = { ...item, soldAmount: updatedSoldAmount };
+              console.log(item);
+              transaction.update(productsDocRef, {
+                items: firebase.firestore.FieldValue.arrayRemove(item),
+              });
+              transaction.update(productsDocRef, {
+                items: firebase.firestore.FieldValue.arrayUnion(newItem), // append to the end of the array
+              });
+            }
+          })
+        );
+      });
+    })
       .then(() => {
         console.log("update soldAmount");
       })
