@@ -48,14 +48,16 @@ export default class ProductProvider extends Component {
       if (authUser) {
         //user will log in or logged in
         this.setUser(authUser);
+        // cartItems = this.getCartItemsFromFirebase(authUser);
+        this.setCartItemsFromFirebase(authUser);
       } else {
         //user logged out
         this.setUser(null);
       }
     });
-    const cartItems = this.getCartItemsFromStorage();
+
     const checkoutItems = this.getCheckoutItemsFromStorage();
-    this.setState({ cartItems, checkoutItems });
+    this.setState({ checkoutItems });
   }
 
   getItemsPriceTotal = (items) => {
@@ -696,6 +698,39 @@ export default class ProductProvider extends Component {
     this.setState({ cartItems: newCartItems, type }, this.similarProduct);
   };
 
+  saveCartItemsToFirebase = async (user, cartItems, created) => {
+    try {
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("cart")
+        .doc("cartItems")
+        .set({
+          basket: cartItems,
+          created: created,
+        });
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  setCartItemsFromFirebase = (user) => {
+    let cartItems = [];
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("cart")
+      .doc("cartItems")
+      .get()
+      .then((doc) => {
+        cartItems = [...cartItems, ...doc.data().basket];
+        cartItems =
+          this.getCartItemsFromStorage().length > 0
+            ? this.getCartItemsFromStorage()
+            : cartItems;
+        this.setState({ cartItems });
+      })
+      .catch((err) => alert(err));
+  };
+
   render() {
     console.log("provider render");
     return (
@@ -737,6 +772,7 @@ export default class ProductProvider extends Component {
           getSaved: this.getSaved,
           getItemsPriceFinal: this.getItemsPriceFinal,
           getDataFireBase: this.getDataFireBase,
+          saveCartItemsToFirebase: this.saveCartItemsToFirebase,
         }}
       >
         {this.props.children}

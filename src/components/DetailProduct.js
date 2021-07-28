@@ -2,7 +2,7 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
@@ -22,7 +22,9 @@ export default function DetailProduct() {
     orderItems,
     setOrderItems,
     getOrderItemsFromStorage,
+    user,
   } = useContext(ProductContext);
+  const history = useHistory();
   //
 
   // useEffect(() => {
@@ -129,12 +131,20 @@ export default function DetailProduct() {
   };
 
   const handleBuyNow = (e) => {
-    handleClick(e, item);
+    if (user) {
+      handleClick(e, item);
+    } else {
+      history.push("/login");
+    }
   };
 
   const handleAddCart = (e) => {
-    handleClick(e, item);
-    toggleIsAddCardPopup(!isAddCartPopup);
+    if (user) {
+      handleClick(e, item);
+      toggleIsAddCardPopup(!isAddCartPopup);
+    } else {
+      history.push("/login");
+    }
   };
 
   const handleScrollTo = (e) => {

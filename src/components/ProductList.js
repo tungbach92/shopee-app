@@ -62,16 +62,12 @@ export default function ProductList(props) {
       const sortedItems = [...categoryItems];
       const pageIndex = 1;
       const pageTotal = calcPageTotals(sortedItems);
-      //get and set cartItems state
-      const cartItems = getCartItemsFromStorage();
-      const cartNumb = calcCartNumb(cartItems);
       //get and set checkoutItems state
       const checkoutItems = getCheckoutItemsFromStorage();
       setCategoryProduct(categoryItems);
       setSortedProducts(sortedItems);
       setPageIndex(pageIndex);
       setPageTotal(pageTotal);
-      setCartNumb(cartNumb);
       setCheckoutProduct(checkoutItems);
     }
   }, [
@@ -89,12 +85,12 @@ export default function ProductList(props) {
     setCartNumb,
     setCheckoutProduct,
   ]);
-  useEffect(() => {
-    if (!props.similarDisPlay) {
-      const cartItems = getCartItemsFromStorage();
-      setCartProduct(cartItems);
-    }
-  }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
+  // useEffect(() => {
+  //   if (!props.similarDisPlay) {
+  //     const cartItems = getCartItemsFromStorage();
+  //     setCartProduct(cartItems);
+  //   }
+  // }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
 
   if (props.similarDisPlay) {
     sortedItems = [...similarItems];
@@ -108,13 +104,14 @@ export default function ProductList(props) {
     pageIndex * pageSize
   );
 
-  return renderItem.map((item,index) => (
+  return renderItem.map((item, index) => (
     <ProductItem
       key={item.id}
       cartItems={cartItems}
       similarDisPlay={props.similarDisPlay}
       item={item}
       handleClick={handleClick}
+      user={user}
     ></ProductItem>
   ));
 }

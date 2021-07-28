@@ -1,19 +1,24 @@
 import classNames from "classnames";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
-  const { item, similarDisPlay, cartItems, handleClick } = props;
+  const { item, similarDisPlay, cartItems, handleClick, user } = props;
   const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
+  const history = useHistory();
   let isInCart = false;
   isInCart = cartItems.some((item) => item.id === Number(id));
 
   const handleAddCart = (e) => {
-    handleClick(e);
-    toggleIsAddCardPopup(!isAddCartPopup);
+    if (user) {
+      handleClick(e);
+      toggleIsAddCardPopup(!isAddCartPopup);
+    } else {
+      history.push("/login");
+    }
   };
   return (
     <div
