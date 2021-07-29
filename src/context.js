@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { auth } from "./firebase";
 import { db } from "./firebase";
+import _ from "lodash";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
+
 export default class ProductProvider extends Component {
   state = {
     items: [],
@@ -169,19 +171,23 @@ export default class ProductProvider extends Component {
   };
 
   setDefaultChecked = () => {
-    const { checkoutItems, cartItems } = this.state;
+    let { checkoutItems, cartItems } = this.state;
     let defaultChecked = [];
+    const unmodifiedCartItems = cartItems.map((item) => {
+      const { similarDisPlay, variationDisPlay, ...rest } = item;
+      return rest;
+    });
     if (
       (checkoutItems.length > 0 || cartItems.length > 0) &&
-      JSON.stringify(checkoutItems) === JSON.stringify(cartItems)
+      _.isEqual(checkoutItems, unmodifiedCartItems)
     ) {
-      defaultChecked = cartItems.map((item) => true);
+      defaultChecked = unmodifiedCartItems.map((item) => true);
       defaultChecked = [true, ...defaultChecked, true];
     } else {
-      defaultChecked = cartItems.map((cartItem) => {
+      defaultChecked = unmodifiedCartItems.map((cartItem) => {
         let result = false;
         checkoutItems.forEach((checkoutItem) => {
-          if (JSON.stringify(checkoutItem) === JSON.stringify(cartItem)) {
+          if (_.isEqual(cartItem, checkoutItem)) {
             result = true;
           }
         });
@@ -560,11 +566,12 @@ export default class ProductProvider extends Component {
   };
 
   saveCartItemsToStorage = () => {
-    const { cartItems } = this.state;
-    cartItems.forEach((item) => {
-      item.variationDisPlay = false;
-      item.similarDisPlay = false;
-    }); // reset properties first
+    let { cartItems } = this.state;
+    cartItems = cartItems.map((item) => ({
+      ...item,
+      similarDisPlay: undefined,
+      variationDisPlay: undefined,
+    }));
     localStorage.setItem("cartProduct", JSON.stringify(cartItems));
   };
 
@@ -698,6 +705,10 @@ export default class ProductProvider extends Component {
 
   saveCartItemsToFirebase = async (user, cartItems, created) => {
     try {
+      cartItems = cartItems.map((item) => {
+        const { similarDisPlay, variationDisPlay, ...rest } = item;
+        return rest;
+      });
       db.collection("users")
         .doc(user?.uid)
         .collection("cart")
@@ -715,6 +726,11 @@ export default class ProductProvider extends Component {
     let cartItems = [];
     if (this.getCartItemsFromStorage().length > 0) {
       cartItems = this.getCartItemsFromStorage();
+      cartItems = cartItems.map((item) => ({
+        ...item,
+        similarDisPlay: false,
+        variationDisPlay: false,
+      }));
       this.setState({ cartItems });
     } else {
       db.collection("users")
@@ -725,6 +741,11 @@ export default class ProductProvider extends Component {
         .then((doc) => {
           if (doc.exists) {
             cartItems = doc.data().basket;
+            cartItems = cartItems.map((item) => ({
+              ...item,
+              similarDisPlay: false,
+              variationDisPlay: false,
+            }));
           }
           this.setState({ cartItems });
         })

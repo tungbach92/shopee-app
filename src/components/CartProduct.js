@@ -68,12 +68,18 @@ export default function CartProduct(props) {
   }, [items, getData]);
 
   useEffect(() => {
-    setCartItemsFromFirebase(user);
-    setCheckoutItemsFromFirebase(user);
-  }, [setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
+    if (cartItems.length < 0) {
+      setCartItemsFromFirebase(user);
+    }
+    if (checkoutItems.length < 0) {
+      setCheckoutItemsFromFirebase(user);
+    }
+  }, [cartItems.length, checkoutItems.length, setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
 
   useEffect(() => {
-    setDefaultChecked();
+    if (cartItems.length > 0 && checkoutItems.length > 0) {
+      setDefaultChecked();
+    }
   }, [setDefaultChecked, checkoutItems, cartItems]);
 
   useEffect(() => {
