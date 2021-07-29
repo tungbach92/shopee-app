@@ -54,6 +54,7 @@ export default function CheckoutProduct() {
     getSaved,
     getItemsPriceFinal,
     user,
+    setCheckoutItemsFromFirebase,
   } = useContext(ProductContext);
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -157,9 +158,8 @@ export default function CheckoutProduct() {
   //   voucher,
   // ]);
   useEffect(() => {
-    const checkoutItems = getCheckoutItemsFromStorage();
-    setCheckoutProduct(checkoutItems);
-  }, [getCheckoutItemsFromStorage, setCheckoutProduct]);
+    setCheckoutItemsFromFirebase(user);
+  }, [setCheckoutItemsFromFirebase, user]);
 
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;

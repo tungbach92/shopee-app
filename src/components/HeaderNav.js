@@ -10,12 +10,21 @@ import { auth } from "../firebase";
 
 export default function HeaderNav() {
   const history = useHistory();
-  const { user, cartItems, saveCartItemsToFirebase, setCartProduct } =
-    useContext(ProductContext);
+  const {
+    user,
+    cartItems,
+    checkoutItems,
+    saveCartItemsToFirebase,
+    saveCheckoutItemsToFirebase,
+    setCartProduct,
+    setCheckoutProduct,
+  } = useContext(ProductContext);
   const handleLogout = () => {
     const created = Date.now();
     saveCartItemsToFirebase(user, cartItems, created);
+    saveCheckoutItemsToFirebase(user, checkoutItems, created);
     setCartProduct([]);
+    setCheckoutProduct([]);
     auth.signOut();
     history.push("/");
   };
