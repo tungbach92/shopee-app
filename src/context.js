@@ -773,6 +773,7 @@ export default class ProductProvider extends Component {
           getItemsPriceFinal: this.getItemsPriceFinal,
           getDataFireBase: this.getDataFireBase,
           saveCartItemsToFirebase: this.saveCartItemsToFirebase,
+          setCartItemsFromFirebase: this.setCartItemsFromFirebase,
         }}
       >
         {this.props.children}

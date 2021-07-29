@@ -42,15 +42,15 @@ export default function CartProduct(props) {
     checked,
     setChecked,
     setDefaultChecked,
-    getCartItemsFromStorage,
     getCheckoutItemsFromStorage,
-    setCartProduct,
     setCheckoutProduct,
     items,
     getData,
     getItemsPriceTotal,
     getItemsTotal,
     getSaved,
+    user,
+    setCartItemsFromFirebase,
   } = useContext(ProductContext);
 
   const lastIndex = cartItems.length + 1;
@@ -69,9 +69,8 @@ export default function CartProduct(props) {
   }, [items, getData]);
 
   useEffect(() => {
-    const cartItems = getCartItemsFromStorage();
-    setCartProduct(cartItems);
-  }, [getCartItemsFromStorage, setCartProduct]);
+    setCartItemsFromFirebase(user);
+  }, [setCartItemsFromFirebase, user]);
 
   useEffect(() => {
     const checkoutItems = getCheckoutItemsFromStorage();

@@ -237,3 +237,102 @@ Issues? Report them at https://github.com/firebase/firebase-tools/issues and att
 [info] i  functions: Finished "us-central1-api" in ~1s {"metadata":{"emulator":{"name":"functions"},"function":{"name":"us-central1-api"},"message":"Finished \"us-central1-api\" in ~1s"}}
 [debug] [2021-07-27T20:17:32.643Z] [worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: IDLE {"metadata":{"emulator":{"name":"functions"},"message":"[worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: IDLE"}}
 [debug] [2021-07-27T20:17:32.643Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2021-07-28T00:05:12.558Z] [worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: exited {"metadata":{"emulator":{"name":"functions"},"message":"[worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: exited"}}
+[debug] [2021-07-28T00:05:12.562Z] [worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: FINISHED {"metadata":{"emulator":{"name":"functions"},"message":"[worker-us-central1-api-75ca7845-8a26-4788-925c-3a5369a6fbce]: FINISHED"}}
+[debug] [2021-07-28T00:05:12.565Z] [worker-~diagnostic~-fc803b31-aef1-4846-accc-b8cc3c845a6c]: exited {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-fc803b31-aef1-4846-accc-b8cc3c845a6c]: exited"}}
+[debug] [2021-07-28T00:05:12.566Z] [worker-~diagnostic~-fc803b31-aef1-4846-accc-b8cc3c845a6c]: FINISHED {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-fc803b31-aef1-4846-accc-b8cc3c845a6c]: FINISHED"}}
+[debug] [2021-07-28T00:05:12.570Z] Received signal SIGHUP 1
+[debug] [2021-07-29T12:37:56.810Z] ----------------------------------------------------------------------
+[debug] [2021-07-29T12:37:56.812Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js functions:shell
+[debug] [2021-07-29T12:37:56.813Z] CLI Version:   9.14.0
+[debug] [2021-07-29T12:37:56.813Z] Platform:      win32
+[debug] [2021-07-29T12:37:56.813Z] Node Version:  v14.15.1
+[debug] [2021-07-29T12:37:56.814Z] Time:          Thu Jul 29 2021 19:37:56 GMT+0700 (Indochina Time)
+[debug] [2021-07-29T12:37:56.814Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-07-29T12:37:56.817Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2021-07-29T12:37:56.845Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-07-29T12:37:56.845Z] > authorizing via signed-in user (nguyentungbach1992@gmail.com)
+[debug] [2021-07-29T12:37:56.845Z] [iam] checking project shopee-demo-c6d2b for permissions ["firebase.projects.get"]
+[debug] [2021-07-29T12:37:56.846Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-07-29T12:37:56.847Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-07-29T12:37:57.161Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Thu, 29 Jul 2021 12:38:11 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-07-29T12:37:57.176Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/shopee-demo-c6d2b:testIamPermissions  
+ {"permissions":["firebase.projects.get"]}
+[debug] [2021-07-29T12:37:57.863Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2021-07-29T12:37:57.863Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2021-07-29T12:37:58.141Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 29 Jul 2021 12:38:12 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=828","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-07-29T12:37:58.143Z] >>> HTTP REQUEST GET http://localhost:4400/emulators  
+ 
+[debug] [2021-07-29T12:37:58.275Z] Error: connect ECONNREFUSED 127.0.0.1:4400
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1146:16)
+[error] 
+[error] Error: Server Error. connect ECONNREFUSED 127.0.0.1:4400
+[debug] [2021-07-29T12:42:05.184Z] ----------------------------------------------------------------------
+[debug] [2021-07-29T12:42:05.186Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2021-07-29T12:42:05.186Z] CLI Version:   9.14.0
+[debug] [2021-07-29T12:42:05.187Z] Platform:      win32
+[debug] [2021-07-29T12:42:05.187Z] Node Version:  v14.15.1
+[debug] [2021-07-29T12:42:05.187Z] Time:          Thu Jul 29 2021 19:42:05 GMT+0700 (Indochina Time)
+[debug] [2021-07-29T12:42:05.188Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-07-29T12:42:05.195Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-07-29T12:42:05.195Z] > authorizing via signed-in user (nguyentungbach1992@gmail.com)
+[info] i  emulators: Starting emulators: functions {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: functions"}}
+[warn] !  emulators: It seems that you are running multiple instances of the emulator suite for project shopee-demo-c6d2b. This may result in unexpected behavior. 
+[debug] [2021-07-29T12:42:05.216Z] [hub] writing locator at C:\Users\Admin\AppData\Local\Temp\hub-shopee-demo-c6d2b.json
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: auth, firestore, database, hosting, pubsub, storage {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mauth, firestore, database, hosting, pubsub, storage\u001b[22m"}}
+[info] +  functions: Using node@14 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@14 from host."}}
+[debug] [2021-07-29T12:42:05.249Z] defaultcredentials: writing to file C:\Users\Admin\AppData\Roaming\firebase\nguyentungbach1992_gmail_com_application_default_credentials.json
+[debug] [2021-07-29T12:42:05.251Z] Setting GAC to C:\Users\Admin\AppData\Roaming\firebase\nguyentungbach1992_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\Admin\\AppData\\Roaming\\firebase\\nguyentungbach1992_gmail_com_application_default_credentials.json"}}
+[debug] [2021-07-29T12:42:05.252Z] > refreshing access token with scopes: []
+[debug] [2021-07-29T12:42:05.253Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-07-29T12:42:06.554Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Thu, 29 Jul 2021 12:42:20 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-07-29T12:42:06.567Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/shopee-demo-c6d2b/adminSdkConfig [none]
+[debug] [2021-07-29T12:42:07.939Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/shopee-demo-c6d2b/adminSdkConfig 200
+[debug] [2021-07-29T12:42:07.939Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/shopee-demo-c6d2b/adminSdkConfig {"projectId":"shopee-demo-c6d2b","storageBucket":"shopee-demo-c6d2b.appspot.com","locationId":"asia-southeast1"}
+[debug] [2021-07-29T12:42:07.955Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-07-29T12:42:07.955Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-07-29T12:42:07.956Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\Admin\\.cache\\firebase\\emulators\\ui-v1.5.0\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\Admin\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.5.0\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2021-07-29T12:42:08.075Z] Web / API server started at http://localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at http://localhost:4000\n"}}
+[info] i  functions: Watching "C:\Website\ShopeeReact\shopee-app\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Website\\ShopeeReact\\shopee-app\\functions\" for Cloud Functions..."}}
+[debug] [2021-07-29T12:42:08.242Z] [worker-pool] addWorker(~diagnostic~) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(~diagnostic~)"}}
+[debug] [2021-07-29T12:42:08.242Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key ~diagnostic~, total=1"}}
+[debug] [2021-07-29T12:42:08.242Z] [worker-pool] submitWork(triggerId=) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitWork(triggerId=)"}}
+[debug] [2021-07-29T12:42:08.243Z] [worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: Assigning socketPath: \\?\pipe\C:\Website\ShopeeReact\shopee-app\functions\12848 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: Assigning socketPath: \\\\?\\pipe\\C:\\Website\\ShopeeReact\\shopee-app\\functions\\12848"}}
+[debug] [2021-07-29T12:42:08.243Z] [worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: BUSY {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: BUSY"}}
+[debug] [2021-07-29T12:42:08.440Z] [runtime-status] [12848] Functions runtime initialized. {"cwd":"C:\\Website\\ShopeeReact\\shopee-app\\functions","node_version":"14.15.1"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Functions runtime initialized. {\"cwd\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\",\"node_version\":\"14.15.1\"}"}}
+[debug] [2021-07-29T12:42:08.441Z] [runtime-status] [12848] Disabled runtime features: undefined {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Disabled runtime features: undefined"}}
+[debug] [2021-07-29T12:42:08.446Z] [runtime-status] [12848] Resolved module firebase-admin {"declared":true,"installed":true,"version":"9.10.0","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"9.10.0\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.448Z] [runtime-status] [12848] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.449Z] [runtime-status] [12848] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.451Z] [runtime-status] [12848] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2021-07-29T12:42:08.452Z] [runtime-status] [12848] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.526Z] [runtime-status] [12848] Checked functions.config() {"config":{}} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Checked functions.config() {\"config\":{}}"}}
+[debug] [2021-07-29T12:42:08.526Z] [runtime-status] [12848] firebase-functions has been stubbed. {"functionsResolution":{"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] firebase-functions has been stubbed. {\"functionsResolution\":{\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}}"}}
+[debug] [2021-07-29T12:42:08.526Z] [runtime-status] [12848] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.526Z] [runtime-status] [12848] Resolved module firebase-admin {"declared":true,"installed":true,"version":"9.10.0","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"9.10.0\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.526Z] [runtime-status] [12848] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.14.1","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.14.1\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2021-07-29T12:42:08.527Z] [runtime-status] [12848] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"9.10.0","resolution":"C:\\Website\\ShopeeReact\\shopee-app\\functions\\node_modules\\firebase-admin\\lib\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [12848] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"9.10.0\",\"resolution\":\"C:\\\\Website\\\\ShopeeReact\\\\shopee-app\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}}"}}
+[info] +  functions[us-central1-api]: http function initialized (http://localhost:5001/shopee-demo-c6d2b/us-central1/api). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://localhost:5001/shopee-demo-c6d2b/us-central1/api)."}}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌───────────┬────────────────┬─────────────────────────────────┐
+│ Emulator  │ Host:Port      │ View in Emulator UI             │
+├───────────┼────────────────┼─────────────────────────────────┤
+│ Functions │ localhost:5001 │ http://localhost:4000/functions │
+└───────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[debug] [2021-07-29T12:42:08.796Z] [worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: IDLE {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-0a89f168-165d-48b4-9d5c-1fc99ea4161a]: IDLE"}}
