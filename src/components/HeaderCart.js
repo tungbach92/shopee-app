@@ -1,11 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import noCartImg from "../img/no-cart.png";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 
 const HeaderCart = () => {
-  const { cartItems, handleClick } = useContext(ProductContext);
+  const { cartItems, handleClick, user, setCartItemsFromFirebase } =
+    useContext(ProductContext);
+  useEffect(() => {
+    setCartItemsFromFirebase(user);
+  }, [setCartItemsFromFirebase, user]);
   return (
     <div className="header__cart">
       <div className="header__cart-wrapper">

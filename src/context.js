@@ -45,19 +45,7 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
-    auth.onAuthStateChanged((authUser) => {
-      console.log(authUser);
-      if (authUser) {
-        //user will log in or logged in
-        this.setUser(authUser);
-        // cartItems = this.getCartItemsFromFirebase(authUser);
-        this.setCartItemsFromFirebase(authUser);
-        this.setCheckoutItemsFromFirebase(authUser);
-      } else {
-        //user logged out
-        this.setUser(null);
-      }
-    });
+    console.log("provider mount");
   }
 
   getItemsPriceTotal = (items) => {
@@ -102,8 +90,18 @@ export default class ProductProvider extends Component {
     return result;
   };
 
-  setUser = (user) => {
-    this.setState({ user }, this.setOrderItems);
+  setUser = () => {
+    auth.onAuthStateChanged((authUser) => {
+      console.log(authUser);
+      if (authUser) {
+        //user will log in or logged in
+        this.setState({ user: authUser }, this.setOrderItems);
+        // cartItems = this.getCartItemsFromFirebase(authUser);
+      } else {
+        //user logged out
+        this.setState({ user: null });
+      }
+    });
   };
 
   setOrderItems = () => {
@@ -421,10 +419,7 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "delCartBtn") {
-      this.delCartItem(id, () => {
-        this.setDefaultChecked();
-        this.saveCartItemsToStorage();
-      });
+      this.delCartItem(id);
     }
     if (name === "incrCartItem") {
       this.incrCartItem(id, this.saveCartItemsToStorage);
@@ -481,7 +476,7 @@ export default class ProductProvider extends Component {
     );
   };
 
-  delCartItem = (id, callback) => {
+  delCartItem = (id) => {
     let { cartItems } = this.state;
     cartItems = cartItems.filter((item) => item.id !== Number(id));
     this.setState(
@@ -489,11 +484,18 @@ export default class ProductProvider extends Component {
         cartItems,
         cartNumb: this.calcCartNumb(cartItems),
       },
-      callback
+      () => {
+        this.saveCartItemsToStorage();
+        if (cartItems.length === 0) {
+          this.saveCartItemsToFirebase(this.state.user, cartItems);
+        }
+        this.saveCheckoutItemsToStorage();
+        this.setDefaultChecked();
+      }
     );
   };
 
-  delCartItems = (idArr, callback) => {
+  delCartItems = (idArr) => {
     if (idArr.length > 0) {
       let { cartItems } = this.state;
       // idArr.forEach((id) => {
@@ -507,7 +509,14 @@ export default class ProductProvider extends Component {
           cartItems,
           cartNumb: this.calcCartNumb(cartItems),
         },
-        callback
+        () => {
+          if (cartItems.length === 0) {
+            this.saveCartItemsToFirebase(this.state.user, cartItems);
+          }
+          this.saveCartItemsToStorage();
+          this.saveCheckoutItemsToStorage();
+          this.setDefaultChecked();
+        }
       );
     }
   };
@@ -703,8 +712,9 @@ export default class ProductProvider extends Component {
     this.setState({ cartItems: newCartItems, type }, this.similarProduct);
   };
 
-  saveCartItemsToFirebase = async (user, cartItems, created) => {
+  saveCartItemsToFirebase = async (user, cartItems) => {
     try {
+      const created = Date.now();
       cartItems = cartItems.map((item) => {
         const { similarDisPlay, variationDisPlay, ...rest } = item;
         return rest;
@@ -753,8 +763,9 @@ export default class ProductProvider extends Component {
     }
   };
 
-  saveCheckoutItemsToFirebase = async (user, checkoutItems, created) => {
+  saveCheckoutItemsToFirebase = async (user, checkoutItems) => {
     try {
+      const created = Date.now();
       db.collection("users")
         .doc(user?.uid)
         .collection("checkout")
@@ -795,6 +806,7 @@ export default class ProductProvider extends Component {
       <ProductContext.Provider
         value={{
           ...this.state,
+          setUser: this.setUser,
           setDefaultChecked: this.setDefaultChecked,
           setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
