@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import Order from "./pages/Order";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProductContext } from "./context";
 const stripePromise = loadStripe(
   "pk_test_51JB5XCLveZMOamkE7YBOsq6C9xFH3NM26c3UGHpbZe1cYnPgUYaYNUGJQ8cT5d60ZYwCoFMlBA2WeHwLjjRfLPAh00R3vOY9JQ"
@@ -23,8 +23,12 @@ const stripePromise = loadStripe(
 
 function App() {
   console.log("app render");
-  const { user } = useContext(ProductContext);
-
+  const { user, setUser } = useContext(ProductContext);
+  useEffect(() => {
+    if (!user) {
+      setUser();
+    }
+  }, [setUser, user]);
   return (
     <>
       <Switch>
