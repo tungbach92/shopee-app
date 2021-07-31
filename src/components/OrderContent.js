@@ -105,7 +105,7 @@ const OrderContent = () => {
           </div>
         </div>
       ))}
-      {orderItems.length <= 0 && (
+      {orderItems.length <= 0 && !user && (
         <div className="grid order-empty">No order</div>
       )}
     </div>

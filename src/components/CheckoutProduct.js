@@ -4,11 +4,10 @@ import React, {
   useState,
   useRef,
   useMemo,
-  useCallback,
 } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import ShipUnitsModal from "./ShipUnitsModal";
 import VoucherModal from "./VoucherModal";
@@ -24,15 +23,13 @@ import ProvincesCitiesVN from "pc-vn";
 import ErrorModal from "./ErrorModal";
 import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useStripe } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
-  const elements = useElements();
-  const history = useHistory();
   const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
@@ -44,7 +41,6 @@ export default function CheckoutProduct() {
     setVoucher,
     checkoutItems,
     setCheckoutProduct,
-    getCheckoutItemsFromStorage,
     orderItems,
     setOrderItems,
     setCartProduct,
@@ -100,7 +96,6 @@ export default function CheckoutProduct() {
   const [isDistrictSelected, setIsDistrictSelected] = useState();
   const [card4digits, setCard4digits] = useState("");
   const [cardBrand, setCardBrand] = useState("");
-  const [clientSecret, setClientSecret] = useState(true);
   const [paymentMethodID, setPaymentMethodID] = useState();
   const [setUpIntentSecret, setSetUpIntentSecret] = useState();
   const [customerID, setCustomerID] = useState();
@@ -158,8 +153,10 @@ export default function CheckoutProduct() {
   //   voucher,
   // ]);
   useEffect(() => {
-    setCheckoutItemsFromFirebase(user);
-  }, [setCheckoutItemsFromFirebase, user]);
+    if (checkoutItems.length === 0 && user) {
+      setCheckoutItemsFromFirebase(user);
+    }
+  }, [checkoutItems.length, setCheckoutItemsFromFirebase, user]);
 
   const handleProvinceChoose = (e) => {
     const value = e.target.innerText;
@@ -1136,7 +1133,7 @@ export default function CheckoutProduct() {
               onClick={handleOrder}
               className="btn checkout-product__order-btn"
             >
-              {processing ? "Processing" : " Đặt hàng"}
+              {processing ? "Đang xử lý" : " Đặt hàng"}
             </button>
             {isPopupShowing && (
               <PopupModal
@@ -1155,7 +1152,7 @@ export default function CheckoutProduct() {
           </div>
         </div>
       </div>
-      {checkoutItems.length <= 0 && <ErrorModal></ErrorModal>}
+      {checkoutItems.length <= 0 && user && <ErrorModal></ErrorModal>}
     </div>
   );
 }

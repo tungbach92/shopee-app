@@ -35,15 +35,13 @@ export default function CartProduct(props) {
     changeCartItemsVariation,
     changeSimilarDisPlayCartItems,
     delCartItems,
-    saveCartItemsToStorage,
-    saveCheckoutItemsToStorage,
     checkoutItems,
     setCheckoutItemsByChecked,
     checked,
     setChecked,
     setDefaultChecked,
     items,
-    getData,
+    getDataFireBase,
     getItemsPriceTotal,
     getItemsTotal,
     getSaved,
@@ -54,7 +52,6 @@ export default function CartProduct(props) {
 
   const lastIndex = cartItems.length + 1;
   let idArr = [];
-
   useEffect(() => {
     if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
@@ -63,18 +60,14 @@ export default function CartProduct(props) {
   }, [toggleIsAddCardPopup, history, location.state?.from.pathname]);
   useEffect(() => {
     if (items.length <= 0) {
-      getData();
+      getDataFireBase();
     }
-  }, [items, getData]);
+  }, [items, getDataFireBase]);
 
   useEffect(() => {
-    if (cartItems.length < 0) {
-      setCartItemsFromFirebase(user);
-    }
-    if (checkoutItems.length < 0) {
-      setCheckoutItemsFromFirebase(user);
-    }
-  }, [cartItems.length, checkoutItems.length, setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
+    setCartItemsFromFirebase(user); // called at header cart
+    setCheckoutItemsFromFirebase(user);
+  }, [setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
 
   useEffect(() => {
     if (cartItems.length > 0 && checkoutItems.length > 0) {
@@ -172,11 +165,7 @@ export default function CartProduct(props) {
         } else return null;
       });
       idArr = idArr.filter((id) => id !== null);
-      delCartItems(idArr, () => {
-        saveCartItemsToStorage();
-        saveCheckoutItemsToStorage();
-        setDefaultChecked();
-      });
+      delCartItems(idArr);
     }
   };
 
@@ -816,7 +805,7 @@ export default function CartProduct(props) {
           </div>
         </div>
       )}
-      {cartItems.length <= 0 && (
+      {cartItems.length === 0 && user && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">

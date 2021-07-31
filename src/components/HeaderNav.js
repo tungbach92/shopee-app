@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import qrCodeNavImg from "../img/qr-code-home.png";
 import appShopeeImg from "../img/app-shopee.png";
 import ggShopeeImg from "../img/gg-shopee.png";
@@ -20,13 +20,14 @@ export default function HeaderNav() {
     setCheckoutProduct,
   } = useContext(ProductContext);
   const handleLogout = () => {
-    const created = Date.now();
-    saveCartItemsToFirebase(user, cartItems, created);
-    saveCheckoutItemsToFirebase(user, checkoutItems, created);
-    setCartProduct([]);
-    setCheckoutProduct([]);
-    auth.signOut();
-    history.push("/");
+    if (user) {
+      saveCartItemsToFirebase(user, cartItems);
+      saveCheckoutItemsToFirebase(user, checkoutItems);
+      setCartProduct([]);
+      setCheckoutProduct([]);
+      auth.signOut();
+      history.replace("/login");
+    }
   };
   return (
     <nav className="header__nav">
