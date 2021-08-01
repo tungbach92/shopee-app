@@ -46,6 +46,7 @@ export default class ProductProvider extends Component {
 
   componentDidMount() {
     console.log("provider mount");
+    this.setUser(this.setOrderItems);
   }
 
   getItemsPriceTotal = (items) => {
@@ -90,12 +91,12 @@ export default class ProductProvider extends Component {
     return result;
   };
 
-  setUser = () => {
+  setUser = (cb) => {
     auth.onAuthStateChanged((authUser) => {
       console.log(authUser);
       if (authUser) {
         //user will log in or logged in
-        this.setState({ user: authUser }, this.setOrderItems);
+        this.setState({ user: authUser }, cb);
         // cartItems = this.getCartItemsFromFirebase(authUser);
       } else {
         //user logged out
@@ -199,15 +200,12 @@ export default class ProductProvider extends Component {
 
   setDefaultState = () => {
     //reset sortItem, dom button, pageIndex, pageTotal, searchInput to default
-    this.setState(
-      {
-        type: "allProduct",
-        filter: "",
-        filterPrice: "default",
-        searchInput: "",
-      },
-      this.categoryProduct
-    );
+    this.setState({
+      type: "allProduct",
+      filter: "",
+      filterPrice: "default",
+      searchInput: "",
+    });
   };
 
   getData = async () => {
@@ -334,7 +332,7 @@ export default class ProductProvider extends Component {
         categoryItems: sortedItems,
         searchInput: text,
         type: "allProduct",
-        filter: "popular",
+        filter: "",
         filterPrice: "default",
         pageIndex: 1,
         pageTotal: this.calcPageTotals(sortedItems),

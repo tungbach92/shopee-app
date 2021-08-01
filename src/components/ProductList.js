@@ -17,7 +17,7 @@ export default function ProductList(props) {
     setSortedProducts,
     setPageIndex,
     setPageTotal,
-    setCartProduct,
+    searchInput,
     getCartItemsFromStorage,
     calcPageTotals,
     setCartNumb,
@@ -55,9 +55,9 @@ export default function ProductList(props) {
     setDefaultState();
   }, [setDefaultState]);
 
-  //default when open main page
+  //set default remain state by above state
   useEffect(() => {
-    if (type === "allProduct") {
+    if (type === "allProduct" && searchInput.length === 0) { // set default only when not searching
       const categoryItems = items.filter((item) => item.type !== type);
       const sortedItems = [...categoryItems];
       const pageIndex = 1;
@@ -71,19 +71,16 @@ export default function ProductList(props) {
       setCheckoutProduct(checkoutItems);
     }
   }, [
-    bestSelling,
-    setCategoryProduct,
-    setSortedProducts,
-    items,
-    type,
     calcPageTotals,
-    getCartItemsFromStorage,
-    calcCartNumb,
     getCheckoutItemsFromStorage,
+    items,
+    searchInput.length,
+    setCategoryProduct,
+    setCheckoutProduct,
     setPageIndex,
     setPageTotal,
-    setCartNumb,
-    setCheckoutProduct,
+    setSortedProducts,
+    type,
   ]);
   // useEffect(() => {
   //   if (!props.similarDisPlay) {

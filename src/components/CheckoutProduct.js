@@ -1152,7 +1152,7 @@ export default function CheckoutProduct() {
           </div>
         </div>
       </div>
-      {checkoutItems.length <= 0 && user && <ErrorModal></ErrorModal>}
+      {checkoutItems.length <= 0 && <ErrorModal></ErrorModal>}
     </div>
   );
 }

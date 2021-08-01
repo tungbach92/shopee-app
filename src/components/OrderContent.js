@@ -5,26 +5,12 @@ import { db } from "../firebase";
 import CurrencyFormat from "react-currency-format";
 import moment from "moment";
 const OrderContent = () => {
-  const { orderItems, setOrderItems, user } = useContext(ProductContext);
+  const { orderItems, setOrderItems, user, setUser } =
+    useContext(ProductContext);
   // read order from db and set state
   // useEffect(() => {
-  //   if (user) {
-  //     db.collection("users")
-  //       .doc(user?.uid)
-  //       .collection("orders")
-  //       .orderBy("created", "desc")
-  //       .onSnapshot((snapshot) => {
-  //         setOrderItems(
-  //           snapshot.docs.map((doc) => ({
-  //             id: doc.id,
-  //             data: doc.data(),
-  //           }))
-  //         );
-  //       });
-  //   } else {
-  //     setOrderItems([]);
-  //   }
-  // }, [setOrderItems, user]);
+  //   setUser(setOrderItems);
+  // }, [setOrderItems, setUser, user]);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -105,8 +91,8 @@ const OrderContent = () => {
           </div>
         </div>
       ))}
-      {orderItems.length <= 0 && !user && (
-        <div className="grid order-empty">No order</div>
+      {orderItems.length <= 0 && (
+        <div className="grid order-empty">Chưa có đơn hàng.</div>
       )}
     </div>
   );

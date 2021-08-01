@@ -6,7 +6,7 @@ export default function ErrorModal() {
     <div className="cart-product__modal">
       <div className="cart-product__modal-overlay"></div>
       <div className="cart-product__modal-container">
-        <div className="cart-product__error-label">Có lỗi xảy ra.</div>
+        <div className="cart-product__error-label">Không có sản phẩm.</div>
         <div className="cart-product__modal-footer">
           <Link to="/cart" className="btn cart-product__error-btn">
             OK

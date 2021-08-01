@@ -24,11 +24,11 @@ const stripePromise = loadStripe(
 function App() {
   console.log("app render");
   const { user, setUser } = useContext(ProductContext);
-  useEffect(() => {
-    if (!user) {
-      setUser();
-    }
-  }, [setUser, user]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     setUser();
+  //   }
+  // }, [setUser, user]);
   return (
     <>
       <Switch>
