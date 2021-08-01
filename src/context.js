@@ -764,6 +764,10 @@ export default class ProductProvider extends Component {
   saveCheckoutItemsToFirebase = async (user, checkoutItems) => {
     try {
       const created = Date.now();
+      checkoutItems = checkoutItems.map((item) => {
+        const { similarDisPlay, variationDisPlay, ...rest } = item;
+        return rest;
+      });
       db.collection("users")
         .doc(user?.uid)
         .collection("checkout")
