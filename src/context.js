@@ -550,12 +550,9 @@ export default class ProductProvider extends Component {
     let checkoutItems = checked.map((checkItem, index) => {
       if (checkItem === true && index > 0 && index < lastIndex) {
         // return cartItems[index-1] without uneccessary field
-        const newCartItems = {
-          ...cartItems[index - 1],
-          variationDisPlay: undefined,
-          similarDisPlay: undefined,
-        };
-        return newCartItems;
+        const { similarDisPlay, variationDisPlay, ...rest } =
+          cartItems[index - 1];
+        return rest;
       } else return null;
     });
     checkoutItems = checkoutItems.filter((item) => item !== null);
@@ -764,10 +761,6 @@ export default class ProductProvider extends Component {
   saveCheckoutItemsToFirebase = async (user, checkoutItems) => {
     try {
       const created = Date.now();
-      checkoutItems = checkoutItems.map((item) => {
-        const { similarDisPlay, variationDisPlay, ...rest } = item;
-        return rest;
-      });
       db.collection("users")
         .doc(user?.uid)
         .collection("checkout")
