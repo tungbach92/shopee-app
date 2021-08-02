@@ -12,6 +12,8 @@ export default class ProductProvider extends Component {
     sortedItems: [], // items sort
     similarItems: [],
     categoryItems: [], // category
+    searchItems: [], // search
+    sortedSearchItems: [],
     today: new Date(),
     defaultPageIndex: 1,
     bestSelling: 20,
@@ -48,6 +50,13 @@ export default class ProductProvider extends Component {
     console.log("provider mount");
     this.setUser(this.setOrderItems);
   }
+  setSortedSearchItems = (sortedSearchItems) => {
+    this.setState({ sortedSearchItems });
+  };
+
+  setSearchItems = (searchItems) => {
+    this.setState({ searchItems });
+  };
 
   getItemsPriceTotal = (items) => {
     const result = items?.reduce(
@@ -324,18 +333,16 @@ export default class ProductProvider extends Component {
     text = text.trim();
     if (text.length > 0) {
       const { items } = this.state;
-      const sortedItems = [...items].filter((item) =>
+      const searchItems = [...items].filter((item) =>
         item.name.toLowerCase().includes(text)
       );
       this.setState({
-        sortedItems,
-        categoryItems: sortedItems,
+        searchItems,
         searchInput: text,
-        type: "allProduct",
         filter: "",
         filterPrice: "default",
         pageIndex: 1,
-        pageTotal: this.calcPageTotals(sortedItems),
+        pageTotal: this.calcPageTotals(searchItems),
       });
     }
   };
@@ -355,13 +362,16 @@ export default class ProductProvider extends Component {
       // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
     }
     if (name === "filter") {
-      this.setState(
-        { [name]: value, filterPrice: "default" },
-        this.filterCategoryProduct
-      );
+      this.setState({ [name]: value, filterPrice: "default" }, () => {
+        this.filterCategoryProduct();
+        this.filterSearchProduct();
+      });
     }
     if (name === "filterPrice") {
-      this.setState({ [name]: value }, this.filterCategoryProduct);
+      this.setState({ [name]: value }, () => {
+        this.filterCategoryProduct();
+        this.filterSearchProduct();
+      });
       event.currentTarget.parentElement.style.display = "none";
     }
 
@@ -668,6 +678,58 @@ export default class ProductProvider extends Component {
     });
   };
 
+  filterSearchProduct = () => {
+    //get sortedItems by filter using searchItems
+    let { searchItems, filter, filterPrice } = this.state;
+    let tempItems = [...searchItems];
+    //filter by filter
+    if (filter === "popular") {
+      tempItems = tempItems.filter(
+        (item) =>
+          new Date(item.date).getDate() > new Date().getDate() - 20 ||
+          item.soldAmount >= this.state.bestSelling
+      );
+    }
+
+    // Best Selling Filter
+    if (filter === "bestSelling") {
+      tempItems = tempItems.filter(
+        (item) => item.soldAmount >= this.state.bestSelling
+      );
+    }
+
+    // Date Filter
+    if (filter === "date") {
+      tempItems = tempItems.filter(
+        (item) => new Date(item.date).getDate() > new Date().getDate() - 20
+        // (item) => item.date.getDate() > today.getDate() - 20
+      );
+    }
+
+    //price filter
+    if (filterPrice !== "default") {
+      // priceAscFilter
+      if (filterPrice === "priceAsc" && tempItems.length !== 1) {
+        tempItems = tempItems.sort(
+          (a, b) => parseFloat(a.price) - parseFloat(b.price)
+        );
+      }
+      // priceDescFilter
+      if (filterPrice === "priceDesc" && tempItems.length !== 1) {
+        tempItems = tempItems.sort(
+          (a, b) => parseFloat(b.price) - parseFloat(a.price)
+        );
+      }
+    }
+
+    //change state
+    this.setState({
+      sortedSearchItems: tempItems,
+      pageIndex: 1,
+      pageTotal: this.calcPageTotals(tempItems),
+    });
+  };
+
   changeVariationDisPlayCartItems = (index) => {
     let { cartItems } = this.state;
 
@@ -841,6 +903,8 @@ export default class ProductProvider extends Component {
           setCartItemsFromFirebase: this.setCartItemsFromFirebase,
           saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
           setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
+          setSearchItems: this.setSearchItems,
+          setSortedSearchItems: this.setSortedSearchItems,
         }}
       >
         {this.props.children}

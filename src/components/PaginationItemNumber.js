@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { useContext } from "react";
@@ -11,11 +11,21 @@ export default function PaginationItemNumber(props) {
     pageIndex,
     similarPageIndex,
     handleClick,
+    calcPageTotals,
+    sortedSearchItems,
+    setPageTotal,
   } = context;
   if (props.similarDisPlay) {
     pageTotal = similarPageTotal;
     pageIndex = similarPageIndex;
   }
+  useEffect(() => {
+    if (props.isSearchPage) {
+      const pageTotal = calcPageTotals(sortedSearchItems);
+      setPageTotal(pageTotal);
+    }
+  }, [calcPageTotals, props.isSearchPage, setPageTotal, sortedSearchItems]);
+
   let jsxArray = [];
   for (let index = 3; index <= pageTotal; index++) {
     //Hiện 5 trang đầu

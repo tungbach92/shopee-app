@@ -50,7 +50,7 @@ const HeaderSearch = React.memo(function (props) {
     let text = inputEl.current.value;
     filterProductBySearch(text);
     addToSearchHistory(text);
-    history.push("/"); // return to path "/"
+    history.push("/search"); 
     console.log(history);
   }
 
@@ -60,7 +60,7 @@ const HeaderSearch = React.memo(function (props) {
       inputEl.current.blur();
       filterProductBySearch(text);
       addToSearchHistory(text);
-      history.push("/");
+      history.push("/search");
       console.log(history);
     }
   }

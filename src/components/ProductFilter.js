@@ -13,7 +13,8 @@ export default class ProductFilter extends Component {
   };
 
   render() {
-    const {
+    let {
+      searchItems,
       sortedItems,
       pageIndex,
       pageTotal,
@@ -21,15 +22,24 @@ export default class ProductFilter extends Component {
       filter,
       filterPrice,
       handleClick,
+      calcPageTotals,
+      sortedSearchItems,
     } = this.context;
-
+    const { isSearchPage } = this.props;
     let labelValue = "";
     var icon1,
       icon2 = "";
     var isFilterPopular,
       isFilterDate,
       isFilterBestSell = false;
-    const totalItems = sortedItems.length;
+    let totalItems = 0;
+    if (isSearchPage) {
+      totalItems = sortedSearchItems.length;
+      pageTotal = calcPageTotals(sortedSearchItems);
+    } else {
+      totalItems = sortedItems.length;
+    }
+
     //css filter price
     if (filterPrice === "priceAsc") {
       labelValue = "Giá: Thấp đến cao";

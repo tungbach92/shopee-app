@@ -47,6 +47,12 @@
   flex-basis: 83.3333%;
 }
 
+.grid__col-12x {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  flex-basis: 100%;
+}
+
 .grid__col {
   padding: 0 1rem;
   flex: 1;

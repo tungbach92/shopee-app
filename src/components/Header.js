@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function Header({
+  isSearchPage,
   isProductPage,
   isOrderPage,
   headerSearch,
@@ -14,7 +15,7 @@ export default function Header({
       className={
         isLoginPage || isRegisterPage
           ? "header header--login"
-          : isProductPage || isOrderPage
+          : isProductPage || isOrderPage || isSearchPage
           ? "header"
           : "header header--support"
       }

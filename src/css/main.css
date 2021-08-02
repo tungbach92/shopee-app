@@ -1176,7 +1176,12 @@ header {
   font-weight: 200;
   font-size: 1.1rem;
 }
-
+.app__no-product {
+  flex: 1;
+  text-align: center;
+  padding: 14.5rem;
+  font-size: 1.6rem;
+}
 .container {
   background-color: #f5f5f5;
 }
