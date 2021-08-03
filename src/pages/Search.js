@@ -25,6 +25,7 @@ const Search = () => {
         headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
+            isSearchPage={isSearchPage}
             searchInput={searchInput}
             filterProductBySearch={filterProductBySearch}
             searchHistory={searchHistory}
