@@ -8,13 +8,16 @@ import { ProductContext } from "../context";
 
 const HeaderSearch = React.memo(function (props) {
   console.log("header search render");
-  const { isCartPageLoaded, isCheckoutPage } = props;
+  const { isCartPageLoaded, isCheckoutPage, isSearchPage } = props;
   const context = useContext(ProductContext);
   const {
     orderItems,
     filterProductBySearch,
     addToSearchHistory,
     searchHistory,
+    searchInputOnChange,
+    searchInput,
+    setSearchInput,
   } = context;
   const inputEl = useRef("");
   const history = useHistory();
@@ -47,23 +50,27 @@ const HeaderSearch = React.memo(function (props) {
   }, [orderItems]);
 
   function handleSearchIconClick() {
-    let text = inputEl.current.value;
-    filterProductBySearch(text);
-    addToSearchHistory(text);
-    history.push("/search"); 
+    // let text = inputEl.current.value;
+    filterProductBySearch(searchInput);
+    addToSearchHistory(searchInput);
+    history.push("/search");
     console.log(history);
   }
 
   function inputOnKeyUp(event) {
-    let text = event.target.value;
     if (event.keyCode === 13) {
-      inputEl.current.blur();
-      filterProductBySearch(text);
-      addToSearchHistory(text);
+      event.currentTarget.blur();
+      filterProductBySearch(searchInput);
+      addToSearchHistory(searchInput);
       history.push("/search");
       console.log(history);
     }
   }
+  useEffect(() => {
+    if (isSearchPage) {
+      inputEl.current.value = searchInput;
+    }
+  }, [isSearchPage, searchInput]);
 
   return (
     <div
@@ -92,9 +99,11 @@ const HeaderSearch = React.memo(function (props) {
                 <input
                   ref={inputEl}
                   type="text"
+                  onChange={searchInputOnChange}
                   onKeyUp={inputOnKeyUp}
                   className="header__search-input"
                   placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
+                  // value={searchInput}
                 />
                 <a
                   href="# "
@@ -107,10 +116,12 @@ const HeaderSearch = React.memo(function (props) {
                   <li className="header__history-title">Lịch Sử Tìm Kiếm</li>
                   {getUnique(searchHistory).map((item, index) => (
                     <HeaderSearchHistory
+                      inputEl={inputEl}
                       key={index}
                       text={item}
-                      inputEl={inputEl}
-                      handleSearchIconClick={handleSearchIconClick}
+                      filterProductBySearch={filterProductBySearch}
+                      setSearchInput={setSearchInput}
+                      isSearchPage={isSearchPage}
                     ></HeaderSearchHistory>
                   ))}
                 </ul>
@@ -138,9 +149,11 @@ const HeaderSearch = React.memo(function (props) {
               <input
                 ref={inputEl}
                 type="text"
+                onChange={searchInputOnChange}
                 onKeyUp={inputOnKeyUp}
                 className="header__search-input"
                 placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
+                // value={searchInput}
               />
               <a
                 href="# "
@@ -156,7 +169,9 @@ const HeaderSearch = React.memo(function (props) {
                     key={index}
                     text={item}
                     inputEl={inputEl}
-                    handleSearchIconClick={handleSearchIconClick}
+                    filterProductBySearch={filterProductBySearch}
+                    setSearchInput={setSearchInput}
+                    isSearchPage={isSearchPage}
                   ></HeaderSearchHistory>
                 ))}
               </ul>

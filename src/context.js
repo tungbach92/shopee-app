@@ -50,6 +50,14 @@ export default class ProductProvider extends Component {
     console.log("provider mount");
     this.setUser(this.setOrderItems);
   }
+
+  searchInputOnChange = (event) => {
+    this.setState({ searchInput: event.currentTarget.value });
+  };
+
+  setSearchInput = (searchInput) => {
+    this.setState({ searchInput });
+  };
   setSortedSearchItems = (sortedSearchItems) => {
     this.setState({ sortedSearchItems });
   };
@@ -213,7 +221,6 @@ export default class ProductProvider extends Component {
       type: "allProduct",
       filter: "",
       filterPrice: "default",
-      searchInput: "",
     });
   };
 
@@ -338,7 +345,6 @@ export default class ProductProvider extends Component {
       );
       this.setState({
         searchItems,
-        searchInput: text,
         filter: "",
         filterPrice: "default",
         pageIndex: 1,
@@ -905,6 +911,8 @@ export default class ProductProvider extends Component {
           setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
           setSearchItems: this.setSearchItems,
           setSortedSearchItems: this.setSortedSearchItems,
+          searchInputOnChange: this.searchInputOnChange,
+          setSearchInput: this.setSearchInput,
         }}
       >
         {this.props.children}
