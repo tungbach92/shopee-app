@@ -3,7 +3,7 @@ import noCartImg from "../img/no-cart.png";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-
+import CurrencyFormat from "react-currency-format";
 const HeaderCart = () => {
   const { cartItems, handleClick, user, setCartItemsFromFirebase } =
     useContext(ProductContext);
@@ -44,7 +44,15 @@ const HeaderCart = () => {
                       alt="item-ao"
                     />
                     <div className="header__cart-name">{item.name}</div>
-                    <div className="header__cart-price">{item.price}</div>
+                    <div className="header__cart-price">
+                      <CurrencyFormat
+                        decimalScale={2}
+                        value={item.price}
+                        displayType={"text"}
+                        thousandSeparator={true}
+                        prefix={"₫"}
+                      ></CurrencyFormat>
+                    </div>
                     <span>x</span>
                   </Link>
                   <div className="header__cart-amount">

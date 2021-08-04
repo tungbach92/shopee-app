@@ -3,6 +3,7 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
+import CurrencyFormat from "react-currency-format";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
   const { item, similarDisPlay, cartItems, handleClick, user } = props;
@@ -71,7 +72,15 @@ const ProductItem = React.memo(function (props) {
             {/* app__product-discount--disabled */}
             <div className="app__product-discount">Mua 2 giảm 5%</div>
             <div className="app__product-price-wrapper">
-              <div className="app__product-price">{price}đ</div>
+              <div className="app__product-price">
+                <CurrencyFormat
+                  decimalScale={2}
+                  value={price}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₫"}
+                ></CurrencyFormat>
+              </div>
               {/* empty: app__product-free-ship--empty */}
               <div className="app__product-free-ship">
                 <svg

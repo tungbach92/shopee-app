@@ -20,7 +20,7 @@ const OrderContent = () => {
         <div key={index} className="grid order-product">
           <div className="order-product__moment">
             <div className="grid__col order-product__id">
-              Đơn hàng mã: {item.id}
+              mã Đơn hàng : {item.id}
             </div>
             <div className="grid__col order-product__time">
               Thời gian đặt:{" "}

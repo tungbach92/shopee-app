@@ -1244,7 +1244,7 @@ header {
 .cart-product__product,
 .order-product__product {
   flex: none;
-  flex-basis: 55rem;
+  flex-basis: 51rem;
   color: var(--text-color);
 }
 .cart-product__price,

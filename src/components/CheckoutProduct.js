@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -51,6 +45,8 @@ export default function CheckoutProduct() {
     getItemsPriceFinal,
     user,
     setCheckoutItemsFromFirebase,
+    saveCartItemsToFirebase,
+    saveCheckoutItemsToFirebase,
   } = useContext(ProductContext);
 
   const [customerInfo, setCustomerInfo] = useState({
@@ -270,6 +266,10 @@ export default function CheckoutProduct() {
 
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
+    setCartProduct([]);
+    setCheckoutProduct([]);
+    saveCartItemsToFirebase(user, []);
+    saveCheckoutItemsToFirebase(user, []);
     if (isCardPayment) {
       updateSoldAmount();
     }
@@ -391,7 +391,7 @@ export default function CheckoutProduct() {
             shipUnit,
             voucher
           )}`,
-          data: { paymentMethodID, customerID }, // sub currency usd-> cent *100
+          data: { paymentMethodID, customerID, email: user.email }, // sub currency usd-> cent *100
         }).then((result) => {
           if (
             result.data.error &&

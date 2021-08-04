@@ -40,7 +40,7 @@ app.post("/charge-card-off-session", async (request, response) => {
     total = request.query.total;
     const paymentMethodID = request.body.paymentMethodID;
     const customerID = request.body.customerID;
-
+    const email = request.body.email;
     // no need cause paymentmethod will auto attach to provide customer above
     // const paymentMethodID = request.body.paymentMethodID;
     // const paymentMethod = await stripe.paymentMethods.attach(paymentMethodID, {
@@ -60,6 +60,7 @@ app.post("/charge-card-off-session", async (request, response) => {
       // payment_method: paymentMethods.data[0].id,
       payment_method: paymentMethodID,
       customer: customerID,
+      receipt_email: email,
       off_session: true, // indicate that the customer is not in your checkout flow during this payment attempt.
       // This causes the PaymentIntent to throw an error if authentication is required.
       confirm: true,

@@ -18,9 +18,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import React, { useContext, useEffect } from "react";
 import { ProductContext } from "./context";
 import Search from "./pages/Search";
-const stripePromise = loadStripe(
-  "pk_test_51JB5XCLveZMOamkE7YBOsq6C9xFH3NM26c3UGHpbZe1cYnPgUYaYNUGJQ8cT5d60ZYwCoFMlBA2WeHwLjjRfLPAh00R3vOY9JQ"
-);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {
   console.log("app render");

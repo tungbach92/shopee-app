@@ -9,6 +9,7 @@ import { Link, useLocation, useHistory } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 import PopupModal from "../components/PopupModal";
+import CurrencyFormat from "react-currency-format";
 
 export default function CartProduct(props) {
   const location = useLocation();
@@ -408,10 +409,18 @@ export default function CartProduct(props) {
               <div className="grid__col cart-product__price">
                 {/* cart-product__price-item--before  */}
                 {/* cart-product__price-item--after  */}
-                <span className="cart-product__price-item cart-product__price-item--before">
+                {/* <span className="cart-product__price-item cart-product__price-item--before">
                   {item.price}
+                </span> */}
+                <span className="cart-product__price-item">
+                  <CurrencyFormat
+                    decimalScale={2}
+                    value={item.price}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"₫"}
+                  ></CurrencyFormat>
                 </span>
-                <span className="cart-product__price-item">{item.price}</span>
               </div>
               <div className="grid__col cart-product__amount">
                 <div className="cart-product__amount-wrapper">
@@ -444,7 +453,13 @@ export default function CartProduct(props) {
                 </div>
               </div>
               <div className="grid__col cart-product__total">
-                {item.price * item.amount}
+                <CurrencyFormat
+                  decimalScale={2}
+                  value={item.price * item.amount}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₫"}
+                ></CurrencyFormat>
               </div>
               <div className="grid__col cart-product__action">
                 <span
@@ -775,13 +790,25 @@ export default function CartProduct(props) {
                     Tổng thanh toán ({getItemsTotal(selectedItems)} sản phẩm):
                   </span>
                   <span className="cart-product__total-all">
-                    {getItemsPriceTotal(selectedItems)}
+                    <CurrencyFormat
+                      decimalScale={2}
+                      value={getItemsPriceTotal(selectedItems)}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"₫"}
+                    ></CurrencyFormat>
                   </span>
                 </div>
                 <div className="cart-product__checkout-saved">
                   <span className="cart-product__saved-label">Tiết kiệm:</span>
                   <span className="cart-product__saved-value">
-                    {getSaved(voucher, selectedItems)}
+                    <CurrencyFormat
+                      decimalScale={2}
+                      value={getSaved(voucher, selectedItems)}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"₫"}
+                    ></CurrencyFormat>
                   </span>
                 </div>
               </div>
