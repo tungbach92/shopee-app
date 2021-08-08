@@ -270,6 +270,7 @@ export default function CheckoutProduct() {
     setCheckoutProduct([]);
     saveCartItemsToFirebase(user, []);
     saveCheckoutItemsToFirebase(user, []);
+    setShipPriceProvince([0, 0]);
     if (isCardPayment) {
       updateSoldAmount();
     }
@@ -459,7 +460,7 @@ export default function CheckoutProduct() {
         const paymentIntent = {
           id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
           amount: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
-          created: Date.now(),
+          created: Math.floor(Date.now() / 1000),
         };
         handleOrderSucceeded(paymentIntent);
       }
@@ -760,15 +761,17 @@ export default function CheckoutProduct() {
                 setShipChecked={setShipChecked}
               ></ShipUnitsModal>
             )}
-            <span className="checkout-product__transport-price">
-              <CurrencyFormat
-                decimalScale={2}
-                value={shipUnit.price}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₫"}
-              ></CurrencyFormat>
-            </span>
+            {Object.keys(shipUnit).length > 0 && (
+              <span className="checkout-product__transport-price">
+                <CurrencyFormat
+                  decimalScale={2}
+                  value={shipUnit.price}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₫"}
+                ></CurrencyFormat>
+              </span>
+            )}
           </span>
         </div>
         <div className="checkout-product__checkout-wrapper">
@@ -1152,7 +1155,9 @@ export default function CheckoutProduct() {
           </div>
         </div>
       </div>
-      {checkoutItems.length <= 0 && <ErrorModal></ErrorModal>}
+      {checkoutItems.length <= 0 && !isPopupShowing && (
+        <ErrorModal></ErrorModal>
+      )}
     </div>
   );
 }
