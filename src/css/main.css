@@ -3727,6 +3727,227 @@ header {
   font-size: 1.6rem;
   text-align: center;
 }
+
+.user-profile {
+  background-color: #f5f5f5;
+}
+
+.user-profile__name-container {
+  display: grid;
+  padding: 2rem 0;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+  font-size: 1.4rem;
+}
+.user-profile__image-container {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  height: 4.8rem;
+  width: 4.8rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+}
+.user-profile__image {
+  stroke: #c6c6c6;
+  width: 2.6rem;
+  font-weight: 400;
+  line-height: 2rem;
+}
+
+.user-profile__name {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+
+.user-profile__name-btn {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  cursor: pointer;
+}
+.user-profile__name-btn:hover {
+  color: var(--primary-color);
+}
+
+.user-profile__category {
+  padding: 3rem 0;
+  font-size: 1.4rem;
+}
+.user-profile__my-user {
+  cursor: pointer;
+}
+.user-profile__my-user:hover {
+  color: var(--primary-color);
+}
+
+.user-profile__my-info,
+.user-profile__my-bank,
+.user-profile__my-adress,
+.user-profile__change-password,
+.user-profile__order {
+  margin-top: 1.6rem;
+  cursor: pointer;
+}
+
+.user-profile__my-info:hover,
+.user-profile__my-bank:hover,
+.user-profile__my-adress:hover,
+.user-profile__change-password:hover,
+.user-profile__order:hover {
+  color: var(--primary-color);
+}
+
+.user-profile__order {
+  margin-top: 1.6rem;
+  cursor: pointer;
+}
+
+.user-profile__title-container {
+  padding: 0 3rem;
+  background: var(--while-color);
+}
+.user-profile__title {
+  padding: 2.6rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.user-profile__label {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.user-profile__label-detail {
+  margin-top: 0.6rem;
+  font-size: 1.4rem;
+}
+
+.user-profile__content {
+  padding: 3rem 3rem;
+  display: flex;
+  background: var(--while-color);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.09);
+}
+
+.user-profile__info-input {
+  flex: 2;
+  display: grid;
+  align-items: center;
+  grid-row-gap: 2rem;
+  grid-column-gap: 1.4rem;
+  grid-template-columns: 10rem;
+}
+
+.user-profile__user-label,
+.user-profile__name-label,
+.user-profile__email-label,
+.user-profile__phone-label,
+.user-profile__gender-label,
+.user-profile__birthday-label {
+  justify-self: end;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  color: rgba(85, 85, 85, 0.8);
+  font-size: 1.4rem;
+}
+
+.user-profile__user-input,
+.user-profile__name-input,
+.user-profile__email-input,
+.user-profile__phone-input,
+.user-profile__birthday-input {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-left: 0.6rem;
+  height: 3.8rem;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+.user-profile__radio-container {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+.user-profile__man-radio {
+}
+
+.user-profile__man-label {
+  font-size: 1.4rem;
+}
+
+.user-profile__woman-radio {
+}
+
+.user-profile__woman-label {
+  font-size: 1.4rem;
+}
+
+.user-profile__other-radio {
+}
+
+.user-profile__other-label {
+  font-size: 1.4rem;
+}
+
+.user-profile__info-submit {
+  display: inline;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding: 1rem 2rem;
+  max-width: 6.2rem;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+}
+.user-profile__info-submit:hover {
+  opacity: 0.7;
+}
+
+.user-profile__image-input {
+  margin-left: 5rem;
+  flex: 1;
+  flex-direction: column;
+  border-left: 1px solid rgba(0, 0, 0, 0.09);
+  text-align: center;
+}
+.user-profile__input-image {
+  width: 10rem;
+  height: 10rem;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: #efefef;
+}
+.user-profile__input-svg {
+  stroke: #c6c6c6;
+  width: 4.6rem;
+  font-weight: 400;
+  line-height: 2rem;
+}
+.user-profile__image-btn {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+}
+
+.user-profile__image-btn:hover {
+  opacity: 0.7;
+}
+.user-profile__image-size {
+  margin-top: 1.6rem;
+  font-size: 1.4rem;
+}
+.user-profile__image-format {
+  margin-top: 0.6rem;
+  font-size: 1.4rem;
+}
+
 .footer {
   background-color: #fbfbfb;
 }
