@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import HeaderSearch from "../components/HeaderSearch";
 import HeaderNav from "../components/HeaderNav";
 import { ProductContext } from "../context";
-import HeaderContent from "../components/HeaderContent";
+import AccountContent from "../components/AccountContent";
 
 export default function Account() {
   const [isAccountPage, setIsAccountPage] = useState(false);
@@ -31,7 +31,7 @@ export default function Account() {
           ></HeaderSearch>
         }
       ></Header>
-      <HeaderContent></HeaderContent>
+      <AccountContent></AccountContent>
     </>
   );
 }
