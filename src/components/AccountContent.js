@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
+import DatePicker from "react-datepicker";
+
 const AccountContent = () => {
   const { user } = useContext(ProductContext);
   const [userName, setUsetName] = useState("");
@@ -37,6 +39,31 @@ const AccountContent = () => {
         .catch((err) => alert(err));
     }
   }, [user]);
+
+  const limit = (val, max) => {
+    if (val.length === 1 && val[0] > max[0]) {
+      val = "0" + val;
+    }
+
+    if (val.length === 2) {
+      if (Number(val) === 0) {
+        val = "01";
+
+        //this can happen when user paste number
+      } else if (val > max) {
+        val = max;
+      }
+    }
+
+    return val;
+  };
+
+  const birthdayCheck = (val) => {
+    const month = limit(val.substring(0, 2), "12");
+    const date = limit(val.substring(2, 4), "31");
+
+    return month + (date.length ? "/" + date : "");
+  };
 
   const handleInfoSubmit = (e) => {
     e.preventDefault();
@@ -162,18 +189,42 @@ const AccountContent = () => {
                 />
                 <label className="user-profile__gender-label">Giới Tính</label>
                 <div className="user-profile__radio-container">
-                  <input type="radio" className="user-profile__man-radio" />
+                  <input
+                    type="radio"
+                    id="man"
+                    name="gender"
+                    value="man"
+                    checked={gender === "man"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="user-profile__man-radio"
+                  />
                   <label className="user-profile__man-label">Nam</label>
-                  <input type="radio" className="user-profile__woman-radio" />
-                  <label className="user-profile__man-label">Nữ</label>
-                  <input type="radio" className="user-profile__other-radio" />
+                  <input
+                    type="radio"
+                    id="woman"
+                    name="gender"
+                    value="woman"
+                    checked={gender === "woman"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="user-profile__woman-radio"
+                  />
+                  <label className="user-profile__woman-label">Nữ</label>
+                  <input
+                    type="radio"
+                    id="other"
+                    name="gender"
+                    value="other"
+                    checked={gender === "other"}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="user-profile__other-radio"
+                  />
                   <label className="user-profile__man-label">Khác</label>
                 </div>
                 <label className="user-profile__birthday-label">
                   Ngày Sinh
                 </label>
                 <input
-                  type="text"
+                  type="date"
                   value={birthday}
                   onChange={(e) => setBirthday(e.target.value)}
                   className="user-profile__birthday-input"
