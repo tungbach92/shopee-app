@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
-import { db } from "../firebase";
-import DatePicker from "react-datepicker";
+import { db, storage } from "../firebase";
 
 const AccountContent = () => {
   const { user } = useContext(ProductContext);
@@ -11,7 +10,23 @@ const AccountContent = () => {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [userImageURL, setUserImageURL] = useState();
+  const [fileImage, setFileImage] = useState();
+  const [previewImage, setPreviewImage] = useState();
+  const [uploadProceesing, setUploadProcessing] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const inputEl = useRef();
 
+  //free memory file input
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
+  // set user info from db
   useEffect(() => {
     if (user) {
       const userName = user.displayName;
@@ -37,8 +52,19 @@ const AccountContent = () => {
           }
         })
         .catch((err) => alert(err));
+
+      const storageRef = storage.ref(`users/${user.uid}/avatar`);
+
+      storageRef
+        .getDownloadURL()
+        .then((userImageURL) => {
+          setUserImageURL(userImageURL);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     }
-  }, [user]);
+  }, [user, uploadSuccess]); // rerender if upload success
 
   const limit = (val, max) => {
     if (val.length === 1 && val[0] > max[0]) {
@@ -65,8 +91,33 @@ const AccountContent = () => {
     return month + (date.length ? "/" + date : "");
   };
 
+  const handleImageClick = (e) => {
+    inputEl.current.click();
+  };
+
+  const handleImageInputChange = (e) => {
+    if (uploadProceesing) {
+      return;
+    }
+    if (e.target.files && e.target.files[0]) {
+      const fileImage = e.target.files[0];
+      setFileImage(fileImage);
+      if (fileImage.size > 1048576) {
+        alert("File is larger than 1048576. Please try again.");
+      } else {
+        const previewImage = URL.createObjectURL(fileImage);
+        setPreviewImage(previewImage);
+        setUploadSuccess(false); // for uploading step
+      }
+    }
+  };
+
   const handleInfoSubmit = (e) => {
     e.preventDefault();
+
+    if (uploadProceesing) {
+      return;
+    }
 
     try {
       user.updateProfile({
@@ -87,7 +138,46 @@ const AccountContent = () => {
 
       alert("Cập nhật thành công");
     } catch (error) {
-      alert(error);
+      setUploadProcessing(false);
+      console.log(error.message);
+    }
+
+    if (fileImage && !uploadSuccess) {
+      // dont upload if no fileImage or without choose fileImage again
+      const storageRef = storage.ref(`users/${user.uid}/avatar`);
+      const uploadTask = storageRef.put(fileImage);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          switch (snapshot.state) {
+            case "running":
+              console.log("Upload is running");
+              setUploadProcessing(true);
+              break;
+            case "pause":
+              setUploadProcessing(false);
+              console.log("Upload is paused");
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          setUploadProcessing(false);
+          console.log(error.message);
+          // Handle unsuccessful uploads
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          // uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          //   console.log("File available at", downloadURL);
+          // });
+          setUploadProcessing(false);
+          setUploadSuccess(true);
+          console.log("Upload is success");
+        }
+      );
     }
   };
 
@@ -104,29 +194,37 @@ const AccountContent = () => {
           <div className="grid__col-2x">
             <div className="user-profile__name-container">
               <div className="user-profile__image-container">
-                <svg
-                  enableBackground="new 0 0 15 15"
-                  viewBox="0 0 15 15"
-                  x="0"
-                  y="0"
-                  className="user-profile__image"
-                >
-                  <g>
-                    <circle
-                      cx="7.5"
-                      cy="4.5"
-                      fill="none"
-                      r="3.8"
-                      strokeMiterlimit="10"
-                    ></circle>
-                    <path
-                      d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeMiterlimit="10"
-                    ></path>
-                  </g>
-                </svg>
+                {userImageURL ? (
+                  <img
+                    className="user-profile__image-user"
+                    src={userImageURL}
+                    alt="userImg"
+                  />
+                ) : (
+                  <svg
+                    enableBackground="new 0 0 15 15"
+                    viewBox="0 0 15 15"
+                    x="0"
+                    y="0"
+                    className="user-profile__image-svg"
+                  >
+                    <g>
+                      <circle
+                        cx="7.5"
+                        cy="4.5"
+                        fill="none"
+                        r="3.8"
+                        strokeMiterlimit="10"
+                      ></circle>
+                      <path
+                        d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeMiterlimit="10"
+                      ></path>
+                    </g>
+                  </svg>
+                )}
               </div>
               <div className="user-profile__name">sfsb3fax26</div>
 
@@ -229,37 +327,71 @@ const AccountContent = () => {
                   onChange={(e) => setBirthday(e.target.value)}
                   className="user-profile__birthday-input"
                 />
-                <button className="btn user-profile__info-submit">Lưu</button>
+                <button
+                  className={
+                    uploadProceesing
+                      ? "btn user-profile__info-submit user-profile__info-submit--disabled"
+                      : "btn user-profile__info-submit"
+                  }
+                >
+                  Lưu
+                </button>
               </form>
               <div className="user-profile__image-input">
                 <div className="user-profile__input-image">
-                  <svg
-                    enableBackground="new 0 0 15 15"
-                    viewBox="0 0 15 15"
-                    x="0"
-                    y="0"
-                    className="user-profile__input-svg"
-                  >
-                    <g>
-                      <circle
-                        cx="7.5"
-                        cy="4.5"
-                        fill="none"
-                        r="3.8"
-                        strokeMiterlimit="10"
-                      ></circle>
-                      <path
-                        d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeMiterlimit="10"
-                      ></path>
-                    </g>
-                  </svg>
+                  {userImageURL && !previewImage ? (
+                    <div
+                      className="user-profile__user-image"
+                      style={{ backgroundImage: `url(${userImageURL})` }}
+                    ></div>
+                  ) : userImageURL || previewImage ? (
+                    <div
+                      className="user-profile__preview-image"
+                      style={{ backgroundImage: `url(${previewImage})` }}
+                    ></div>
+                  ) : (
+                    <svg
+                      enableBackground="new 0 0 15 15"
+                      viewBox="0 0 15 15"
+                      x="0"
+                      y="0"
+                      className="user-profile__input-svg"
+                    >
+                      <g>
+                        <circle
+                          cx="7.5"
+                          cy="4.5"
+                          fill="none"
+                          r="3.8"
+                          strokeMiterlimit="10"
+                        ></circle>
+                        <path
+                          d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeMiterlimit="10"
+                        ></path>
+                      </g>
+                    </svg>
+                  )}
                 </div>
-                <button className="btn user-profile__image-btn">
+                <button
+                  onClick={handleImageClick}
+                  className={
+                    uploadProceesing
+                      ? "btn user-profile__image-btn user-profile__image-btn--disabled "
+                      : "btn user-profile__image-btn"
+                  }
+                >
                   Chọn ảnh
                 </button>
+                <input
+                  type="file"
+                  ref={inputEl}
+                  onChange={handleImageInputChange}
+                  className="user-profile__image-file"
+                  accept=".jpg,.jpeg,.png"
+                />
                 <div className="user-profile__image-size">
                   Dụng lượng file tối đa 1 MB
                 </div>

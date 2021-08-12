@@ -3754,7 +3754,17 @@ header {
   justify-content: center;
   justify-self: center;
 }
-.user-profile__image {
+
+.user-profile__image-user {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
+
+.user-profile__image-svg {
   stroke: #c6c6c6;
   width: 2.6rem;
   font-weight: 400;
@@ -3903,8 +3913,14 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
+
 .user-profile__info-submit:hover {
   opacity: 0.7;
+}
+
+.user-profile__info-submit--disabled {
+  cursor: default;
+  background-color: #4a4a4a;
 }
 
 .user-profile__image-input {
@@ -3924,6 +3940,19 @@ header {
   border-radius: 50%;
   background-color: #efefef;
 }
+.user-profile__preview-image,
+.user-profile__user-image {
+  width: 100%;
+  height: 100%;
+  background-position: 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.user-profile__image-file {
+  display: none;
+}
 .user-profile__input-svg {
   stroke: #c6c6c6;
   width: 4.6rem;
@@ -3935,6 +3964,11 @@ header {
   padding: 1rem 2rem;
   background-color: var(--primary-color);
   color: var(--while-color);
+}
+
+.user-profile__image-btn--disabled {
+  cursor: default;
+  background-color: #4a4a4a;
 }
 
 .user-profile__image-btn:hover {
