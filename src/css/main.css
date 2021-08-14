@@ -3777,6 +3777,7 @@ header {
   align-items: center;
   justify-content: center;
   justify-self: center;
+  background: var(--while-color);
 }
 
 .user-profile__image-user {

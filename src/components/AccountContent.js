@@ -3,8 +3,7 @@ import { ProductContext } from "../context";
 import { db, storage } from "../firebase";
 
 const AccountContent = () => {
-  const { user, userAvatar, setUserAvatar } =
-    useContext(ProductContext);
+  const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -52,10 +51,8 @@ const AccountContent = () => {
           }
         })
         .catch((err) => alert(err));
-
-      setUserAvatar();
     }
-  }, [user, uploadSuccess, setUserAvatar]); // rerender if upload success
+  }, [user]); // rerender if upload success
 
   const limit = (val, max) => {
     if (val.length === 1 && val[0] > max[0]) {
@@ -116,55 +113,71 @@ const AccountContent = () => {
         .doc(user?.uid)
         .collection("infos")
         .doc("infoItems")
-        .set({
+        .update({
           name: name,
           gender: gender,
           birthday: birthday,
           phone: phone,
         });
 
+      if (fileImage) {
+        // dont upload if no fileImage or without choose fileImage again
+        const storageRef = storage.ref(`users/${user.uid}/avatar`);
+        const uploadTask = storageRef.put(fileImage);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            switch (snapshot.state) {
+              case "running":
+                console.log("Upload is running");
+                setUploadProcessing(true);
+                break;
+              case "pause":
+                setUploadProcessing(false);
+                console.log("Upload is paused");
+                break;
+              default:
+                break;
+            }
+          },
+          (error) => {
+            setUploadProcessing(false);
+            console.log(error.message);
+            // Handle unsuccessful uploads
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then((downloadURL) => {
+                console.log("File available at", downloadURL);
+
+                //set avatar in user cloud storage
+                db.collection("users")
+                  .doc(user?.uid)
+                  .collection("infos")
+                  .doc("infoItems")
+                  .update({
+                    avatar: downloadURL,
+                  });
+                // set userAvatar
+                setUserAvatar(downloadURL);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            setUploadProcessing(false);
+            setUploadSuccess(true);
+            console.log("Upload is success");
+          }
+        );
+      }
+
       alert("Cập nhật thành công");
     } catch (error) {
       setUploadProcessing(false);
       console.log(error.message);
-    }
-
-    if (fileImage && !uploadSuccess) {
-      // dont upload if no fileImage or without choose fileImage again
-      const storageRef = storage.ref(`users/${user.uid}/avatar`);
-      const uploadTask = storageRef.put(fileImage);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          switch (snapshot.state) {
-            case "running":
-              console.log("Upload is running");
-              setUploadProcessing(true);
-              break;
-            case "pause":
-              setUploadProcessing(false);
-              console.log("Upload is paused");
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          setUploadProcessing(false);
-          console.log(error.message);
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          // uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-          //   console.log("File available at", downloadURL);
-          // });
-          setUploadProcessing(false);
-          setUploadSuccess(true);
-          console.log("Upload is success");
-        }
-      );
     }
   };
 
@@ -331,7 +344,7 @@ const AccountContent = () => {
                   }}
                   className="user-profile__input-image"
                 >
-                  {userAvatar&& !previewImage ? (
+                  {userAvatar && !previewImage ? (
                     <div
                       className="user-profile__user-image"
                       style={{ backgroundImage: `url(${userAvatar})` }}

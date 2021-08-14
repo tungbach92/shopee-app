@@ -56,38 +56,21 @@ export default class ProductProvider extends Component {
   setUserAvatar = () => {
     const user = this.state.user;
     if (user) {
-      const storageRef = storage.ref(`users/${user.uid}/avatar`);
-      console.log(storageRef);
-      if (Object.keys(storageRef).length > 0) {
-        storageRef
-          .getDownloadURL()
-          .then((userImageURL) => {
-            this.setState({ userAvatar: userImageURL });
-          })
-          .catch((error) => {
-            // A full list of error codes is available at
-            // https://firebase.google.com/docs/storage/web/handle-errors
-            switch (error.code) {
-              case "storage/object-not-found":
-                // File doesn't exist
-                break;
-              case "storage/unauthorized":
-                // User doesn't have permission to access the object
-                break;
-              case "storage/canceled":
-                // User canceled the upload
-                break;
-
-              // ...
-
-              case "storage/unknown":
-                // Unknown error occurred, inspect the server response
-                break;
-              default:
-                break;
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("infos")
+        .doc("infoItems")
+        //using onSnapshot to get updated content of doc
+        .onSnapshot(
+          (doc) => {
+            if (doc.exists) {
+              this.setState({ userAvatar: doc.data().avatar });
             }
-          });
-      }
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
     }
   };
 
@@ -169,14 +152,20 @@ export default class ProductProvider extends Component {
         .doc(user?.uid)
         .collection("orders")
         .orderBy("created", "desc")
-        .onSnapshot((snapshot) => {
-          this.setState({
-            orderItems: snapshot.docs.map((doc) => ({
-              id: doc.id,
-              data: doc.data(),
-            })),
-          });
-        });
+        //using onsnapshot for get all updated documents in the collection
+        .onSnapshot(
+          (snapshot) => {
+            this.setState({
+              orderItems: snapshot.docs.map((doc) => ({
+                id: doc.id,
+                data: doc.data(),
+              })),
+            });
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
     } else {
       this.setState({ orderItems: [] });
     }
