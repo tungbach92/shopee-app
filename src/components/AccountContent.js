@@ -3,14 +3,14 @@ import { ProductContext } from "../context";
 import { db, storage } from "../firebase";
 
 const AccountContent = () => {
-  const { user } = useContext(ProductContext);
+  const { user, userAvatar, setUserAvatar } =
+    useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
-  const [userImageURL, setUserImageURL] = useState();
   const [fileImage, setFileImage] = useState();
   const [previewImage, setPreviewImage] = useState();
   const [uploadProceesing, setUploadProcessing] = useState(false);
@@ -53,18 +53,9 @@ const AccountContent = () => {
         })
         .catch((err) => alert(err));
 
-      const storageRef = storage.ref(`users/${user.uid}/avatar`);
-
-      storageRef
-        .getDownloadURL()
-        .then((userImageURL) => {
-          setUserImageURL(userImageURL);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+      setUserAvatar();
     }
-  }, [user, uploadSuccess]); // rerender if upload success
+  }, [user, uploadSuccess, setUserAvatar]); // rerender if upload success
 
   const limit = (val, max) => {
     if (val.length === 1 && val[0] > max[0]) {
@@ -89,10 +80,6 @@ const AccountContent = () => {
     const date = limit(val.substring(2, 4), "31");
 
     return month + (date.length ? "/" + date : "");
-  };
-
-  const handleImageClick = (e) => {
-    inputEl.current.click();
   };
 
   const handleImageInputChange = (e) => {
@@ -194,10 +181,10 @@ const AccountContent = () => {
           <div className="grid__col-2x">
             <div className="user-profile__name-container">
               <div className="user-profile__image-container">
-                {userImageURL ? (
+                {userAvatar ? (
                   <img
                     className="user-profile__image-user"
-                    src={userImageURL}
+                    src={userAvatar}
                     alt="userImg"
                   />
                 ) : (
@@ -338,15 +325,23 @@ const AccountContent = () => {
                 </button>
               </form>
               <div className="user-profile__image-input">
-                <div className="user-profile__input-image">
-                  {userImageURL && !previewImage ? (
+                <div
+                  onClick={() => {
+                    inputEl.current.click();
+                  }}
+                  className="user-profile__input-image"
+                >
+                  {userAvatar&& !previewImage ? (
                     <div
                       className="user-profile__user-image"
-                      style={{ backgroundImage: `url(${userImageURL})` }}
+                      style={{ backgroundImage: `url(${userAvatar})` }}
                     ></div>
-                  ) : userImageURL || previewImage ? (
+                  ) : userAvatar || previewImage ? (
                     <div
                       className="user-profile__preview-image"
+                      onClick={() => {
+                        inputEl.current.click();
+                      }}
                       style={{ backgroundImage: `url(${previewImage})` }}
                     ></div>
                   ) : (
@@ -376,7 +371,9 @@ const AccountContent = () => {
                   )}
                 </div>
                 <button
-                  onClick={handleImageClick}
+                  onClick={() => {
+                    inputEl.current.click();
+                  }}
                   className={
                     uploadProceesing
                       ? "btn user-profile__image-btn user-profile__image-btn--disabled "

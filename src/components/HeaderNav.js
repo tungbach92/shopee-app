@@ -18,6 +18,7 @@ export default function HeaderNav() {
     saveCheckoutItemsToFirebase,
     setCartProduct,
     setCheckoutProduct,
+    userAvatar,
   } = useContext(ProductContext);
   const handleLogout = () => {
     if (user) {
@@ -167,7 +168,40 @@ export default function HeaderNav() {
             </Link>
           </div>
           <a href="# " className="header__nav-login-link">
-            <i className="header__nav-icon bi bi-question-circle"></i>
+            {userAvatar ? (
+              <img
+                src={userAvatar}
+                alt="userAvater"
+                className="header__nav-avatar"
+              />
+            ) : (
+              <div className="header__nav-noavatar">
+                <svg
+                  enableBackground="new 0 0 15 15"
+                  viewBox="0 0 15 15"
+                  x="0"
+                  y="0"
+                  className="header__noavatar-svg"
+                >
+                  <g>
+                    <circle
+                      cx="7.5"
+                      cy="4.5"
+                      fill="none"
+                      r="3.8"
+                      strokeMiterlimit="10"
+                    ></circle>
+                    <path
+                      d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeMiterlimit="10"
+                    ></path>
+                  </g>
+                </svg>
+              </div>
+            )}
+
             {user?.displayName}
           </a>
 

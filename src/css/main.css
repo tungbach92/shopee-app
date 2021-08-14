@@ -87,6 +87,30 @@ header {
   padding: 0.5rem;
 }
 
+.header__nav-avatar {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+.header__nav-noavatar {
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--while-color);
+}
+.header__noavatar-svg {
+  border-radius: 50%;
+  width: 2rem;
+  stroke: #c6c6c6;
+  font-weight: 400;
+}
+
 .header__nav-login-link {
   display: none;
   color: var(--while-color);
@@ -3939,6 +3963,7 @@ header {
   align-items: center;
   border-radius: 50%;
   background-color: #efefef;
+  cursor: pointer;
 }
 .user-profile__preview-image,
 .user-profile__user-image {

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { auth } from "./firebase";
-import { db } from "./firebase";
+import { auth, db, storage } from "./firebase";
 import _ from "lodash";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
@@ -44,12 +43,53 @@ export default class ProductProvider extends Component {
     shipPriceProvince: [0, 0],
     orderItems: [],
     user: null,
+    userAvatar: null,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
     console.log("provider mount");
-    this.setUser(this.setOrderItems);
+    this.setUser(() => {
+      this.setOrderItems();
+      this.setUserAvatar();
+    });
   }
+  setUserAvatar = () => {
+    const user = this.state.user;
+    if (user) {
+      const storageRef = storage.ref(`users/${user.uid}/avatar`);
+      console.log(storageRef);
+      if (Object.keys(storageRef).length > 0) {
+        storageRef
+          .getDownloadURL()
+          .then((userImageURL) => {
+            this.setState({ userAvatar: userImageURL });
+          })
+          .catch((error) => {
+            // A full list of error codes is available at
+            // https://firebase.google.com/docs/storage/web/handle-errors
+            switch (error.code) {
+              case "storage/object-not-found":
+                // File doesn't exist
+                break;
+              case "storage/unauthorized":
+                // User doesn't have permission to access the object
+                break;
+              case "storage/canceled":
+                // User canceled the upload
+                break;
+
+              // ...
+
+              case "storage/unknown":
+                // Unknown error occurred, inspect the server response
+                break;
+              default:
+                break;
+            }
+          });
+      }
+    }
+  };
 
   searchInputOnChange = (event) => {
     this.setState({ searchInput: event.currentTarget.value });
@@ -913,6 +953,7 @@ export default class ProductProvider extends Component {
           setSortedSearchItems: this.setSortedSearchItems,
           searchInputOnChange: this.searchInputOnChange,
           setSearchInput: this.setSearchInput,
+          setUserAvatar: this.setUserAvatar,
         }}
       >
         {this.props.children}
