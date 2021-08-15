@@ -9,8 +9,8 @@ function LoginContent({ isLoginPage, isRegisterPage }) {
     e.preventDefault();
     auth
       .signInWithEmailAndPassword(email, password)
-      .then((auth) => {
-        console.log(auth);
+      .then((userCredential) => {
+        console.log(userCredential);
         history.push("/");
       })
       .catch((error) => alert(error));
@@ -20,12 +20,13 @@ function LoginContent({ isLoginPage, isRegisterPage }) {
     e.preventDefault();
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then((auth) => {
-        console.log(auth);
-        if (auth) {
+      .then((userCredential) => {
+        console.log(userCredential);
+        if (userCredential) {
           //create account success
-          const user = auth.user;
+          const user = userCredential.user;
           const randomName = Math.random().toString(36).substring(2);
+
           user
             .updateProfile({
               displayName: randomName,

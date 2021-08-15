@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
-import { db, storage } from "../firebase";
+import { auth, db, storage } from "../firebase";
 import { Link } from "react-router-dom";
+import PopupModal from "./PopupModal";
+import useModal from "../hooks/useModal";
 
-const AccountContent = () => {
+const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
@@ -15,8 +17,13 @@ const AccountContent = () => {
   const [previewImage, setPreviewImage] = useState();
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [verifyPassword, setVerifyPassword] = useState();
+  const [isUpdateUserEmail, setIsUpdateUserEmail] = useState(false);
+  const [isUpdatingEmailProcess, setIsUpdatingEmailProcess] = useState(false);
+  const [isWrongPassword, setIsWrongPassword] = useState(false);
+  const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
   const inputEl = useRef();
-
+  const { isPopupShowing, togglePopup } = useModal();
   //free memory file input
   useEffect(() => {
     return () => {
@@ -80,6 +87,33 @@ const AccountContent = () => {
     return month + (date.length ? "/" + date : "");
   };
 
+  const updateEmail = () => {
+    auth
+      .signInWithEmailAndPassword(user.email, verifyPassword)
+      .then((userCredential) => {
+        setIsUpdatingEmailProcess(true);
+        userCredential.user
+          .updateEmail(email)
+          .then(() => {
+            // togglePopup(!isPopupShowing);
+            console.log("email updated successfully");
+            setIsUpdatingEmailProcess(false);
+            setIsUpdateUserEmail(false);
+            setIsWrongPassword(false);
+            //success
+          })
+          .catch((err) => {
+            setIsAnyUserInfoUpdateFail(true);
+            setIsUpdatingEmailProcess(false);
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        setIsUpdatingEmailProcess(false);
+        setIsWrongPassword(true);
+        console.log(err);
+      });
+  };
   const handleImageInputChange = (e) => {
     if (uploadProceesing) {
       return;
@@ -104,11 +138,25 @@ const AccountContent = () => {
       return;
     }
 
-    try {
-      user.updateProfile({
+    user
+      .updateProfile({
         displayName: userName,
+      })
+      .then(() => {
+        //success
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsAnyUserInfoUpdateFail(true);
+        return;
       });
 
+    if (user.email !== email) {
+      setIsUpdateUserEmail(true);
+      togglePopup(!isPopupShowing);
+    }
+
+    try {
       db.collection("users")
         .doc(user?.uid)
         .collection("infos")
@@ -119,63 +167,76 @@ const AccountContent = () => {
           birthday: birthday,
           phone: phone,
         });
-
-      if (fileImage) {
-        // dont upload if no fileImage or without choose fileImage again
-        const storageRef = storage.ref(`users/${user.uid}/avatar`);
-        const uploadTask = storageRef.put(fileImage);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            switch (snapshot.state) {
-              case "running":
-                console.log("Upload is running");
-                setUploadProcessing(true);
-                break;
-              case "pause":
-                setUploadProcessing(false);
-                console.log("Upload is paused");
-                break;
-              default:
-                break;
-            }
-          },
-          (error) => {
-            setUploadProcessing(false);
-            console.log(error.message);
-            // Handle unsuccessful uploads
-          },
-          () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-            uploadTask.snapshot.ref
-              .getDownloadURL()
-              .then((downloadURL) => {
-                console.log("File available at", downloadURL);
-                user
-                  .updateProfile({
-                    photoURL: downloadURL,
-                  })
-                  .then(() => {
-                    // set userAvatar
-                    setUserAvatar();
-                  });
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-            setUploadProcessing(false);
-            setUploadSuccess(true);
-            console.log("Upload is success");
-          }
-        );
-      }
-
-      alert("Cập nhật thành công");
     } catch (error) {
-      setUploadProcessing(false);
       console.log(error.message);
+      setIsAnyUserInfoUpdateFail(true);
+      return;
     }
+
+    if (fileImage) {
+      // dont upload if no fileImage or without choose fileImage again
+      const storageRef = storage.ref(`users/${user.uid}/avatar`);
+      const uploadTask = storageRef.put(fileImage);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          switch (snapshot.state) {
+            case "running":
+              console.log("Upload is running");
+              setUploadProcessing(true);
+              break;
+            case "pause":
+              setUploadProcessing(false);
+              console.log("Upload is paused");
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          setUploadProcessing(false);
+          setIsAnyUserInfoUpdateFail(true);
+          console.log(error.message);
+          return;
+          // Handle unsuccessful uploads
+        },
+        () => {
+          // Handle successful uploads on complete
+          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+          uploadTask.snapshot.ref
+            .getDownloadURL()
+            .then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              user
+                .updateProfile({
+                  photoURL: downloadURL,
+                })
+                .then(() => {
+                  // set userAvatar
+                  setUserAvatar();
+                })
+                .catch((error) => {
+                  console.log(error);
+                  setIsAnyUserInfoUpdateFail(true);
+                  return;
+                });
+            })
+            .catch((error) => {
+              console.log(error);
+              setIsAnyUserInfoUpdateFail(true);
+              return;
+            });
+          setUploadProcessing(false);
+          setUploadSuccess(true);
+          console.log("Upload is success");
+        }
+      );
+    }
+
+    if (!isUpdateUserEmail) {
+      togglePopup(!isPopupShowing);
+    }
+    // alert("Cập nhật thành công");
   };
 
   const handlePhoneChange = (e) => {
@@ -335,6 +396,19 @@ const AccountContent = () => {
                 >
                   Lưu
                 </button>
+                {isPopupShowing && (
+                  <PopupModal
+                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                    updateEmail={updateEmail}
+                    isUpdateUserEmail={isUpdateUserEmail}
+                    isUpdatingEmailProcess={isUpdatingEmailProcess}
+                    isWrongPassword={isWrongPassword}
+                    setVerifyPassword={setVerifyPassword}
+                    isAccountPage={isAccountPage}
+                    isPopupShowing={isPopupShowing}
+                    togglePopup={togglePopup}
+                  ></PopupModal>
+                )}
               </form>
               <div className="user-profile__image-input">
                 <div

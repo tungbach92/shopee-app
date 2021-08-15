@@ -31,7 +31,7 @@ export default function Account() {
           ></HeaderSearch>
         }
       ></Header>
-      <AccountContent></AccountContent>
+      <AccountContent isAccountPage={isAccountPage}></AccountContent>
     </>
   );
 }

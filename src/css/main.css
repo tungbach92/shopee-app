@@ -2160,6 +2160,10 @@ header {
   cursor: pointer;
   flex: 1;
 }
+.cart-product__popup-apply--disabled {
+  cursor: default;
+  background-color: #4a4a4a;
+}
 
 .cart-product__popup-apply:hover {
   opacity: 0.9;
@@ -3887,7 +3891,11 @@ header {
   color: rgba(85, 85, 85, 0.8);
   font-size: 1.4rem;
 }
-
+.user-profile__password-label {
+  margin-right: 0.6rem;
+  color: rgba(85, 85, 85, 0.8);
+  font-size: 1.4rem;
+}
 .user-profile__user-input,
 .user-profile__name-input,
 .user-profile__email-input,
@@ -3899,6 +3907,16 @@ header {
   height: 3.8rem;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.09);
+}
+.user-profile__password-input {
+  height: 3.8rem;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.user-profile__password-error {
+  margin-top: 0.6rem;
+  color: red;
 }
 .user-profile__radio-container {
   grid-column-start: 2;
