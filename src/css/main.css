@@ -3826,6 +3826,8 @@ header {
 .user-profile__my-adress,
 .user-profile__change-password,
 .user-profile__order {
+  display: block;
+  text-decoration: none;
   margin-top: 1.6rem;
   cursor: pointer;
 }
@@ -3836,11 +3838,6 @@ header {
 .user-profile__change-password:hover,
 .user-profile__order:hover {
   color: var(--primary-color);
-}
-
-.user-profile__order {
-  margin-top: 1.6rem;
-  cursor: pointer;
 }
 
 .user-profile__title-container {

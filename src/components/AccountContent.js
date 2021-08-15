@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
 import { db, storage } from "../firebase";
+import { Link } from "react-router-dom";
 
 const AccountContent = () => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
@@ -106,7 +107,6 @@ const AccountContent = () => {
     try {
       user.updateProfile({
         displayName: userName,
-        email: email,
       });
 
       db.collection("users")
@@ -152,17 +152,14 @@ const AccountContent = () => {
               .getDownloadURL()
               .then((downloadURL) => {
                 console.log("File available at", downloadURL);
-
-                //set avatar in user cloud storage
-                db.collection("users")
-                  .doc(user?.uid)
-                  .collection("infos")
-                  .doc("infoItems")
-                  .update({
-                    avatar: downloadURL,
+                user
+                  .updateProfile({
+                    photoURL: downloadURL,
+                  })
+                  .then(() => {
+                    // set userAvatar
+                    setUserAvatar();
                   });
-                // set userAvatar
-                setUserAvatar(downloadURL);
               })
               .catch((error) => {
                 console.log(error);
@@ -236,7 +233,9 @@ const AccountContent = () => {
               <div className="user-profile__my-bank">Ngân hàng</div>
               <div className="user-profile__my-adress">Địa chỉ</div>
               <div className="user-profile__change-password">Đổi mật khẩu</div>
-              <div className="user-profile__order">Đơn Mua</div>
+              <Link to="/user/order" className="user-profile__order">
+                Đơn Mua
+              </Link>
             </div>
           </div>
           <div className="grid__col-10x">
@@ -271,7 +270,7 @@ const AccountContent = () => {
                 />
                 <label className="user-profile__email-label">Email</label>
                 <input
-                  type="text"
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="user-profile__email-input"

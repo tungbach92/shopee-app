@@ -56,21 +56,8 @@ export default class ProductProvider extends Component {
   setUserAvatar = () => {
     const user = this.state.user;
     if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("infos")
-        .doc("infoItems")
-        //using onSnapshot to get updated content of doc
-        .onSnapshot(
-          (doc) => {
-            if (doc.exists) {
-              this.setState({ userAvatar: doc.data().avatar });
-            }
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
+      const userAvatar = user.photoURL;
+      this.setState({ userAvatar });
     }
   };
 
