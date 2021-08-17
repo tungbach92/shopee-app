@@ -3863,13 +3863,46 @@ header {
   font-size: 1.4rem;
 }
 
-.user-profile__content {
+.user-profile__content,
+.email-profile__content {
   padding: 3rem 3rem;
   display: flex;
   background: var(--while-color);
   border-bottom: 2px solid rgba(0, 0, 0, 0.09);
 }
 
+.email-profile__content {
+  display: block;
+  /* justify-content: center; */
+}
+.email-profile__email-container {
+  margin: auto;
+  font-size: 1.4rem;
+}
+.email-profile__pwd-container {
+  margin-top: 2rem;
+  font-size: 1.4rem;
+}
+.email-profile__email-label {
+}
+.email-profile__email-text {
+  margin-left: 0.6rem;
+}
+.email-profile__pwd-label {
+}
+.email-profile__pwd-input {
+  margin-left: 0.6rem;
+  height: 3.8rem;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+.email-profile__submit-btn {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  text-align: center;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+}
 .user-profile__info-input {
   flex: 2;
   display: grid;

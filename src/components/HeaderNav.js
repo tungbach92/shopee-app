@@ -207,7 +207,7 @@ export default function HeaderNav() {
 
           <div className="header__user-list">
             <div className="header__user-arrow"></div>
-            <Link to="/account" className="header__user-item">
+            <Link to="/user/account" className="header__user-item">
               Tài khoản của tôi
             </Link>
             <Link to="/user/order" className="header__user-item">
