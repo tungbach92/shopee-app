@@ -36,6 +36,9 @@ function App() {
           {user ? <Cart /> : <Login />}
         </Route>
         <Route exact path="/product/:metaTitle" component={Detail}></Route>
+        <Route exact path="/user/order">
+          {user ? <Order /> : <Login />}
+        </Route>
         <Route path={["/user", "/user/account"]} component={Account}>
           {user ? <Account /> : <Login />}
         </Route>
@@ -50,9 +53,6 @@ function App() {
         </Route>
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>
-        <Route exact path="/user/order">
-          {user ? <Order /> : <Login />}
-        </Route>
         <Route exact path="/search" component={Search}></Route>
         <Route component={Error} />
       </Switch>

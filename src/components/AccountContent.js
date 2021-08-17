@@ -18,10 +18,6 @@ const AccountContent = ({ isAccountPage }) => {
   const [previewImage, setPreviewImage] = useState();
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [verifyPassword, setVerifyPassword] = useState();
-  const [isUpdateUserEmail, setIsUpdateUserEmail] = useState(false);
-  const [isUpdatingEmailProcess, setIsUpdatingEmailProcess] = useState(false);
-  const [isWrongPassword, setIsWrongPassword] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
   const inputEl = useRef();
   const { isPopupShowing, togglePopup } = useModal();
@@ -88,33 +84,6 @@ const AccountContent = ({ isAccountPage }) => {
     return month + (date.length ? "/" + date : "");
   };
 
-  const updateEmail = () => {
-    auth
-      .signInWithEmailAndPassword(user.email, verifyPassword)
-      .then((userCredential) => {
-        setIsUpdatingEmailProcess(true);
-        userCredential.user
-          .updateEmail(email)
-          .then(() => {
-            // togglePopup(!isPopupShowing);
-            console.log("email updated successfully");
-            setIsUpdatingEmailProcess(false);
-            setIsUpdateUserEmail(false);
-            setIsWrongPassword(false);
-            //success
-          })
-          .catch((err) => {
-            setIsAnyUserInfoUpdateFail(true);
-            setIsUpdatingEmailProcess(false);
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        setIsUpdatingEmailProcess(false);
-        setIsWrongPassword(true);
-        console.log(err);
-      });
-  };
   const handleImageInputChange = (e) => {
     if (uploadProceesing) {
       return;
@@ -134,7 +103,7 @@ const AccountContent = ({ isAccountPage }) => {
 
   const handleInfoSubmit = (e) => {
     e.preventDefault();
-
+    togglePopup(!isPopupShowing);
     if (uploadProceesing) {
       return;
     }
@@ -151,11 +120,6 @@ const AccountContent = ({ isAccountPage }) => {
         setIsAnyUserInfoUpdateFail(true);
         return;
       });
-
-    if (user.email !== email) {
-      setIsUpdateUserEmail(true);
-      togglePopup(!isPopupShowing);
-    }
 
     try {
       db.collection("users")
@@ -232,10 +196,6 @@ const AccountContent = ({ isAccountPage }) => {
           console.log("Upload is success");
         }
       );
-    }
-
-    if (!isUpdateUserEmail) {
-      togglePopup(!isPopupShowing);
     }
     // alert("Cập nhật thành công");
   };
@@ -333,15 +293,16 @@ const AccountContent = ({ isAccountPage }) => {
                       className="user-profile__name-input"
                     />
                     <label className="user-profile__email-label">Email</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="user-profile__email-input"
-                    />
-                    <Link to="/user/account/email" className="change-email">
-                      Thay đổi
-                    </Link>
+                    <div className="user-profile__email-input">
+                      {email}
+                      <Link
+                        to="/user/account/email"
+                        className="user-profile__email-btn"
+                      >
+                        Thay đổi
+                      </Link>
+                    </div>
+
                     <label className="user-profile__phone-label">
                       Số Điện Thoại
                     </label>
@@ -407,11 +368,6 @@ const AccountContent = ({ isAccountPage }) => {
                     {isPopupShowing && (
                       <PopupModal
                         isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                        updateEmail={updateEmail}
-                        isUpdateUserEmail={isUpdateUserEmail}
-                        isUpdatingEmailProcess={isUpdatingEmailProcess}
-                        isWrongPassword={isWrongPassword}
-                        setVerifyPassword={setVerifyPassword}
                         isAccountPage={isAccountPage}
                         isPopupShowing={isPopupShowing}
                         togglePopup={togglePopup}
@@ -504,7 +460,9 @@ const AccountContent = ({ isAccountPage }) => {
               ></Redirect>
               <Route path="/user/account/email">
                 <EmailSmallContent
-                  setVerifyPassword={setVerifyPassword}
+                  isAccountPage={isAccountPage}
+                  email={email}
+                  setEmail={setEmail}
                 ></EmailSmallContent>
               </Route>
             </Switch>

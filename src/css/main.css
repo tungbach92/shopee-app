@@ -3888,6 +3888,17 @@ header {
 .email-profile__email-text {
   margin-left: 0.6rem;
 }
+.email-profile__newemail-container {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+}
+.email-profile__newemail-input {
+  margin-left: 0.6rem;
+  height: 3.8rem;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+
 .email-profile__pwd-label {
 }
 .email-profile__pwd-input {
@@ -3896,6 +3907,10 @@ header {
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
+.email-profile__pwd-error {
+  margin-top: 0.6rem;
+  color: red;
+}
 .email-profile__submit-btn {
   margin-top: 2rem;
   padding: 1rem 2rem;
@@ -3903,6 +3918,12 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
+
+.email-profile__submit-btn--disabled {
+  cursor: default;
+  background-color: #4a4a4a;
+}
+
 .user-profile__info-input {
   flex: 2;
   display: grid;
@@ -3924,14 +3945,9 @@ header {
   color: rgba(85, 85, 85, 0.8);
   font-size: 1.4rem;
 }
-.user-profile__password-label {
-  margin-right: 0.6rem;
-  color: rgba(85, 85, 85, 0.8);
-  font-size: 1.4rem;
-}
+
 .user-profile__user-input,
 .user-profile__name-input,
-.user-profile__email-input,
 .user-profile__phone-input,
 .user-profile__birthday-input {
   grid-column-start: 2;
@@ -3941,16 +3957,23 @@ header {
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
+.user-profile__email-input {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  padding-left: 0.6rem;
+  font-size: 1.4rem;
+}
+.user-profile__email-btn {
+  margin-left: 0.6rem;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
 .user-profile__password-input {
   height: 3.8rem;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
 
-.user-profile__password-error {
-  margin-top: 0.6rem;
-  color: red;
-}
 .user-profile__radio-container {
   grid-column-start: 2;
   grid-column-end: 3;
