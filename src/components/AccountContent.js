@@ -1,19 +1,12 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
 import { auth, db, storage } from "../firebase";
-import {
-  Link,
-  Switch,
-  useRouteMatch,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import { Link, Switch, Route, Redirect } from "react-router-dom";
 import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
-import AccountSidebar from "./AccountSidebar";
 import EmailSmallContent from "./EmailSmallContent";
 
-const AccountContent = ({ isAccountPage, isEmailPage }) => {
+const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
@@ -32,8 +25,6 @@ const AccountContent = ({ isAccountPage, isEmailPage }) => {
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
   const inputEl = useRef();
   const { isPopupShowing, togglePopup } = useModal();
-  const match = useRouteMatch();
-  const location = useLocation();
   //free memory file input
   useEffect(() => {
     return () => {
@@ -260,7 +251,54 @@ const AccountContent = ({ isAccountPage, isEmailPage }) => {
       <div className="grid user-profile">
         <div className="grid__row grid__row--padtb3">
           <div className="grid__col-2x">
-            <AccountSidebar></AccountSidebar>
+            <div className="user-profile__name-container">
+              <div className="user-profile__image-container">
+                {userAvatar ? (
+                  <img
+                    className="user-profile__image-user"
+                    src={userAvatar}
+                    alt="userImg"
+                  />
+                ) : (
+                  <svg
+                    enableBackground="new 0 0 15 15"
+                    viewBox="0 0 15 15"
+                    x="0"
+                    y="0"
+                    className="user-profile__image-svg"
+                  >
+                    <g>
+                      <circle
+                        cx="7.5"
+                        cy="4.5"
+                        fill="none"
+                        r="3.8"
+                        strokeMiterlimit="10"
+                      ></circle>
+                      <path
+                        d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeMiterlimit="10"
+                      ></path>
+                    </g>
+                  </svg>
+                )}
+              </div>
+              <div className="user-profile__name">sfsb3fax26</div>
+
+              <div className="user-profile__name-btn">Sửa Hồ Sơ</div>
+            </div>
+            <div className="user-profile__category">
+              <div className="user-profile__my-user">Tài Khoản Của Tôi</div>
+              <div className="user-profile__my-info">Hồ sơ</div>
+              <div className="user-profile__my-bank">Ngân hàng</div>
+              <div className="user-profile__my-adress">Địa chỉ</div>
+              <div className="user-profile__change-password">Đổi mật khẩu</div>
+              <Link to="/user/order" className="user-profile__order">
+                Đơn Mua
+              </Link>
+            </div>
           </div>
           <div className="grid__col-10x">
             <div className="user-profile__title-container">
@@ -271,195 +309,205 @@ const AccountContent = ({ isAccountPage, isEmailPage }) => {
                 </div>
               </div>
             </div>
-            {isEmailPage ? (
-              <EmailSmallContent
-                setVerifyPassword={setVerifyPassword}
-              ></EmailSmallContent>
-            ) : (
-              <div className="user-profile__content">
-                <form
-                  className="user-profile__info-input"
-                  onSubmit={handleInfoSubmit}
-                >
-                  <label className="user-profile__user-label">
-                    Tên Đăng Nhập
-                  </label>
-                  <input
-                    type="text"
-                    value={userName}
-                    className="user-profile__user-input"
-                    onChange={(e) => setUsetName(e.target.value)}
-                  />
-                  <label className="user-profile__name-label">Tên</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="user-profile__name-input"
-                  />
-                  <label className="user-profile__email-label">Email</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="user-profile__email-input"
-                  />
-                  <Link
-                    to="/user/account/email"
-                    className="user-profile__email-btn"
+            <Switch>
+              <Route exact path="/user/account/profile/">
+                <div className="user-profile__content">
+                  <form
+                    className="user-profile__info-input"
+                    onSubmit={handleInfoSubmit}
                   >
-                    Thay đổi
-                  </Link>
-                  <label className="user-profile__phone-label">
-                    Số Điện Thoại
-                  </label>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={handlePhoneChange}
-                    className="user-profile__phone-input"
-                  />
-                  <label className="user-profile__gender-label">
-                    Giới Tính
-                  </label>
-                  <div className="user-profile__radio-container">
+                    <label className="user-profile__user-label">
+                      Tên Đăng Nhập
+                    </label>
                     <input
-                      type="radio"
-                      id="man"
-                      name="gender"
-                      value="man"
-                      checked={gender === "man"}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="user-profile__man-radio"
+                      type="text"
+                      value={userName}
+                      className="user-profile__user-input"
+                      onChange={(e) => setUsetName(e.target.value)}
                     />
-                    <label className="user-profile__man-label">Nam</label>
+                    <label className="user-profile__name-label">Tên</label>
                     <input
-                      type="radio"
-                      id="woman"
-                      name="gender"
-                      value="woman"
-                      checked={gender === "woman"}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="user-profile__woman-radio"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="user-profile__name-input"
                     />
-                    <label className="user-profile__woman-label">Nữ</label>
+                    <label className="user-profile__email-label">Email</label>
                     <input
-                      type="radio"
-                      id="other"
-                      name="gender"
-                      value="other"
-                      checked={gender === "other"}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="user-profile__other-radio"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="user-profile__email-input"
                     />
-                    <label className="user-profile__man-label">Khác</label>
-                  </div>
-                  <label className="user-profile__birthday-label">
-                    Ngày Sinh
-                  </label>
-                  <input
-                    type="date"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e.target.value)}
-                    className="user-profile__birthday-input"
-                  />
-                  <button
-                    className={
-                      uploadProceesing
-                        ? "btn user-profile__info-submit user-profile__info-submit--disabled"
-                        : "btn user-profile__info-submit"
-                    }
-                  >
-                    Lưu
-                  </button>
-                  {isPopupShowing && (
-                    <PopupModal
-                      isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                      updateEmail={updateEmail}
-                      isUpdateUserEmail={isUpdateUserEmail}
-                      isUpdatingEmailProcess={isUpdatingEmailProcess}
-                      isWrongPassword={isWrongPassword}
-                      setVerifyPassword={setVerifyPassword}
-                      isAccountPage={isAccountPage}
-                      isPopupShowing={isPopupShowing}
-                      togglePopup={togglePopup}
-                    ></PopupModal>
-                  )}
-                </form>
-                <div className="user-profile__image-input">
-                  <div
-                    onClick={() => {
-                      inputEl.current.click();
-                    }}
-                    className="user-profile__input-image"
-                  >
-                    {userAvatar && !previewImage ? (
-                      <div
-                        className="user-profile__user-image"
-                        style={{ backgroundImage: `url(${userAvatar})` }}
-                      ></div>
-                    ) : userAvatar || previewImage ? (
-                      <div
-                        className="user-profile__preview-image"
-                        onClick={() => {
-                          inputEl.current.click();
-                        }}
-                        style={{ backgroundImage: `url(${previewImage})` }}
-                      ></div>
-                    ) : (
-                      <svg
-                        enableBackground="new 0 0 15 15"
-                        viewBox="0 0 15 15"
-                        x="0"
-                        y="0"
-                        className="user-profile__input-svg"
-                      >
-                        <g>
-                          <circle
-                            cx="7.5"
-                            cy="4.5"
-                            fill="none"
-                            r="3.8"
-                            strokeMiterlimit="10"
-                          ></circle>
-                          <path
-                            d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeMiterlimit="10"
-                          ></path>
-                        </g>
-                      </svg>
+                    <Link to="/user/account/email" className="change-email">
+                      Thay đổi
+                    </Link>
+                    <label className="user-profile__phone-label">
+                      Số Điện Thoại
+                    </label>
+                    <input
+                      type="text"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      className="user-profile__phone-input"
+                    />
+                    <label className="user-profile__gender-label">
+                      Giới Tính
+                    </label>
+                    <div className="user-profile__radio-container">
+                      <input
+                        type="radio"
+                        id="man"
+                        name="gender"
+                        value="man"
+                        checked={gender === "man"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="user-profile__man-radio"
+                      />
+                      <label className="user-profile__man-label">Nam</label>
+                      <input
+                        type="radio"
+                        id="woman"
+                        name="gender"
+                        value="woman"
+                        checked={gender === "woman"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="user-profile__woman-radio"
+                      />
+                      <label className="user-profile__woman-label">Nữ</label>
+                      <input
+                        type="radio"
+                        id="other"
+                        name="gender"
+                        value="other"
+                        checked={gender === "other"}
+                        onChange={(e) => setGender(e.target.value)}
+                        className="user-profile__other-radio"
+                      />
+                      <label className="user-profile__man-label">Khác</label>
+                    </div>
+                    <label className="user-profile__birthday-label">
+                      Ngày Sinh
+                    </label>
+                    <input
+                      type="date"
+                      value={birthday}
+                      onChange={(e) => setBirthday(e.target.value)}
+                      className="user-profile__birthday-input"
+                    />
+                    <button
+                      className={
+                        uploadProceesing
+                          ? "btn user-profile__info-submit user-profile__info-submit--disabled"
+                          : "btn user-profile__info-submit"
+                      }
+                    >
+                      Lưu
+                    </button>
+                    {isPopupShowing && (
+                      <PopupModal
+                        isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                        updateEmail={updateEmail}
+                        isUpdateUserEmail={isUpdateUserEmail}
+                        isUpdatingEmailProcess={isUpdatingEmailProcess}
+                        isWrongPassword={isWrongPassword}
+                        setVerifyPassword={setVerifyPassword}
+                        isAccountPage={isAccountPage}
+                        isPopupShowing={isPopupShowing}
+                        togglePopup={togglePopup}
+                      ></PopupModal>
                     )}
-                  </div>
-                  <button
-                    onClick={() => {
-                      inputEl.current.click();
-                    }}
-                    className={
-                      uploadProceesing
-                        ? "btn user-profile__image-btn user-profile__image-btn--disabled "
-                        : "btn user-profile__image-btn"
-                    }
-                  >
-                    Chọn ảnh
-                  </button>
-                  <input
-                    type="file"
-                    ref={inputEl}
-                    onChange={handleImageInputChange}
-                    className="user-profile__image-file"
-                    accept=".jpg,.jpeg,.png"
-                  />
-                  <div className="user-profile__image-size">
-                    Dụng lượng file tối đa 1 MB
-                  </div>
-                  <div className="user-profile__image-format">
-                    Định dạng:.JPEG, .PNG
+                  </form>
+                  <div className="user-profile__image-input">
+                    <div
+                      onClick={() => {
+                        inputEl.current.click();
+                      }}
+                      className="user-profile__input-image"
+                    >
+                      {userAvatar && !previewImage ? (
+                        <div
+                          className="user-profile__user-image"
+                          style={{ backgroundImage: `url(${userAvatar})` }}
+                        ></div>
+                      ) : userAvatar || previewImage ? (
+                        <div
+                          className="user-profile__preview-image"
+                          onClick={() => {
+                            inputEl.current.click();
+                          }}
+                          style={{ backgroundImage: `url(${previewImage})` }}
+                        ></div>
+                      ) : (
+                        <svg
+                          enableBackground="new 0 0 15 15"
+                          viewBox="0 0 15 15"
+                          x="0"
+                          y="0"
+                          className="user-profile__input-svg"
+                        >
+                          <g>
+                            <circle
+                              cx="7.5"
+                              cy="4.5"
+                              fill="none"
+                              r="3.8"
+                              strokeMiterlimit="10"
+                            ></circle>
+                            <path
+                              d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeMiterlimit="10"
+                            ></path>
+                          </g>
+                        </svg>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        inputEl.current.click();
+                      }}
+                      className={
+                        uploadProceesing
+                          ? "btn user-profile__image-btn user-profile__image-btn--disabled "
+                          : "btn user-profile__image-btn"
+                      }
+                    >
+                      Chọn ảnh
+                    </button>
+                    <input
+                      type="file"
+                      ref={inputEl}
+                      onChange={handleImageInputChange}
+                      className="user-profile__image-file"
+                      accept=".jpg,.jpeg,.png"
+                    />
+                    <div className="user-profile__image-size">
+                      Dụng lượng file tối đa 1 MB
+                    </div>
+                    <div className="user-profile__image-format">
+                      Định dạng:.JPEG, .PNG
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              </Route>
+              <Redirect
+                exact
+                from="/user"
+                to="/user/account/profile/"
+              ></Redirect>
+              <Redirect
+                exact
+                from="/user/account"
+                to="/user/account/profile/"
+              ></Redirect>
+              <Route path="/user/account/email">
+                <EmailSmallContent
+                  setVerifyPassword={setVerifyPassword}
+                ></EmailSmallContent>
+              </Route>
+            </Switch>
           </div>
         </div>
       </div>
