@@ -52,13 +52,11 @@ const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
             togglePopup(!isPopupShowing);
             setIsUpdateEmailSuccess(true);
             setEmail(newEmail);
-            setNewEmail("");
             setIsUpdatingEmailProcess(false);
             //success
           })
           .catch((err) => {
             togglePopup(!isPopupShowing);
-            setNewEmail("");
             setIsUpdatingEmailProcess(false);
             console.log(err);
           });
@@ -76,7 +74,8 @@ const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
       checkSignIn(verifyPassword);
     }
   };
-  const handleClick = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (isCredentialsValid) {
       updateEmail(newEmail, verifyPassword);
     } else {
@@ -96,47 +95,67 @@ const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
         )}
 
         {isCredentialsValid ? (
-          <div className="email-profile__newemail-container">
+          <form
+            onSubmit={
+              isUpdatingEmailProcess || isCheckSignInProcess
+                ? undefined
+                : handleSubmit
+            }
+            className="email-profile__newemail-container"
+          >
             <label className="email-profile__newemail-label">New email:</label>
             <input
               type="email"
-              value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               className="email-profile__newemail-input"
+              required
             />
-          </div>
+            <button
+              type="submit"
+              className={
+                isUpdatingEmailProcess
+                  ? "btn email-profile__submit-btn email-profile__submit-btn--disabled"
+                  : "btn email-profile__submit-btn"
+              }
+            >
+              {isUpdatingEmailProcess ? "Processing" : "Thay đổi"}
+            </button>
+          </form>
         ) : (
-          <div className="email-profile__pwd-container">
+          <form
+            onSubmit={
+              isUpdatingEmailProcess || isCheckSignInProcess
+                ? undefined
+                : handleSubmit
+            }
+            className="email-profile__pwd-container"
+          >
             <label className="email-profile__pwd-label">Password:</label>
             <input
               type="password"
               onKeyUp={handleInputPwdKeyUp}
               onChange={(e) => setVerifyPassword(e.target.value)}
               className="email-profile__pwd-input"
+              required
             />
             {isWrongPassword && (
               <div className="email-profile__pwd-error">
                 Password incorrect! Please try again
               </div>
             )}
-          </div>
+            <button
+              type="submit"
+              className={
+                isCheckSignInProcess
+                  ? "btn email-profile__submit-btn email-profile__submit-btn--disabled"
+                  : "btn email-profile__submit-btn"
+              }
+            >
+              {isCheckSignInProcess ? "Processing" : "Xác nhận"}
+            </button>
+          </form>
         )}
-        <button
-          className={
-            isUpdatingEmailProcess || isCheckSignInProcess
-              ? "btn email-profile__submit-btn email-profile__submit-btn--disabled"
-              : "btn email-profile__submit-btn"
-          }
-          onClick={
-            isUpdatingEmailProcess || isCheckSignInProcess
-              ? undefined
-              : handleClick
-          }
-        >
-          {isUpdatingEmailProcess || isCheckSignInProcess
-            ? "Processing"
-            : "Xác nhận"}
-        </button>
+
         {isPopupShowing && (
           <PopupModal
             isAccountPage={isAccountPage}

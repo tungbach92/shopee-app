@@ -3917,6 +3917,7 @@ header {
   text-align: center;
   background-color: var(--primary-color);
   color: var(--while-color);
+  display: block;
 }
 
 .email-profile__submit-btn--disabled {
