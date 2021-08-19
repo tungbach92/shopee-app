@@ -9,6 +9,7 @@ export default function PopupModal(props) {
     isAccountPage,
     isAnyUserInfoUpdateFail,
     isUpdateEmailSuccess,
+    isUpdatePasswordSuccess,
     isCartPageLoaded,
     isVariationChoose,
     selectedItems,
@@ -50,6 +51,8 @@ export default function PopupModal(props) {
           <span className="cart-product__popup-label">
             {isAccountPage && isUpdateEmailSuccess
               ? "Cập nhật địa chỉ email thành công"
+              : isAccountPage && isUpdatePasswordSuccess
+              ? "Cập nhật mật khẩu thành công"
               : isAccountPage && !isAnyUserInfoUpdateFail
               ? "Cập nhật thông tin người dùng thành công"
               : isCartPageLoaded && selectedItems?.length === 0

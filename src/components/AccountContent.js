@@ -5,6 +5,7 @@ import { Link, Switch, Route, Redirect } from "react-router-dom";
 import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
+import PasswordSmallContent from "./PasswordSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
@@ -254,23 +255,28 @@ const AccountContent = ({ isAccountPage }) => {
               <div className="user-profile__my-info">Hồ sơ</div>
               <div className="user-profile__my-bank">Ngân hàng</div>
               <div className="user-profile__my-adress">Địa chỉ</div>
-              <div className="user-profile__change-password">Đổi mật khẩu</div>
+              <Link
+                to="/user/account/password"
+                className="user-profile__change-password"
+              >
+                Đổi mật khẩu
+              </Link>
               <Link to="/user/order" className="user-profile__order">
                 Đơn Mua
               </Link>
             </div>
           </div>
           <div className="grid__col-10x">
-            <div className="user-profile__title-container">
-              <div className="user-profile__title">
-                <div className="user-profile__label">Hồ Sơ Của Tôi</div>
-                <div className="user-profile__label-detail">
-                  Quản lý thông tin hồ sơ để bảo mật tài khoản
-                </div>
-              </div>
-            </div>
             <Switch>
               <Route exact path="/user/account/profile/">
+                <div className="user-profile__title-container">
+                  <div className="user-profile__title">
+                    <div className="user-profile__label">Hồ Sơ Của Tôi</div>
+                    <div className="user-profile__label-detail">
+                      Quản lý thông tin hồ sơ để bảo mật tài khoản
+                    </div>
+                  </div>
+                </div>
                 <div className="user-profile__content">
                   <form
                     className="user-profile__info-input"
@@ -464,6 +470,13 @@ const AccountContent = ({ isAccountPage }) => {
                   email={email}
                   setEmail={setEmail}
                 ></EmailSmallContent>
+              </Route>
+              <Route path="/user/account/password">
+                <PasswordSmallContent
+                  isAccountPage={isAccountPage}
+                  email={email}
+                  setEmail={setEmail}
+                ></PasswordSmallContent>
               </Route>
             </Switch>
           </div>

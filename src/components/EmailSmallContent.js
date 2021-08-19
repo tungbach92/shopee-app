@@ -84,6 +84,14 @@ const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
   };
   return (
     <>
+      <div className="user-profile__title-container">
+        <div className="user-profile__title">
+          <div className="user-profile__label">Hồ Sơ Của Tôi</div>
+          <div className="user-profile__label-detail">
+            Quản lý thông tin hồ sơ để bảo mật tài khoản
+          </div>
+        </div>
+      </div>
       <div className="email-profile__content">
         {email && (
           <div className="email-profile__email-container">
