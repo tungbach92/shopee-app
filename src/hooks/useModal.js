@@ -6,6 +6,11 @@ const useModal = () => {
   const [isShipUnits, setIsShipUnits] = useState(false);
   const [isCardInfoShowing, setIsCardInfoShowing] = useState(false);
   const [isAddCartPopup, setIsAddCartPopup] = useState(false);
+  const [isPasswordResetShowing, setIsPasswordResetShowing] = useState(false);
+
+  const togglePasswordReset = useCallback((value) => {
+    setIsPasswordResetShowing(value);
+  }, []);
 
   const toggleShipUnits = useCallback((value) => {
     setIsShipUnits(value);
@@ -38,6 +43,8 @@ const useModal = () => {
     toggleCardInfo,
     isAddCartPopup,
     toggleIsAddCardPopup,
+    isPasswordResetShowing,
+    togglePasswordReset,
   };
 };
 export default useModal;

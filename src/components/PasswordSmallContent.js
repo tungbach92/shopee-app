@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
+import PasswordResetModal from "./PasswordResetModal";
 
 function PasswordSmallContent({ isAccountPage, setEmail, email }) {
   const { user } = useContext(ProductContext);
@@ -14,7 +15,12 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
   const [isUpdatingPasswordProcess, setIsUpdatingPasswordProcess] =
     useState(false);
   const [isUpdatePasswordSuccess, setIsUpdatePasswordSuccess] = useState(false);
-  const { isPopupShowing, togglePopup } = useModal();
+  const {
+    isPopupShowing,
+    togglePopup,
+    isPasswordResetShowing,
+    togglePasswordReset,
+  } = useModal();
 
   useEffect(() => {
     if (user) {
@@ -22,6 +28,10 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
       setEmail(email);
     }
   }, [setEmail, user]);
+
+  const handleForgotPasswordClick = () => {
+    togglePasswordReset(!isPasswordResetShowing);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -57,18 +67,6 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
         setIsUpdatingPasswordProcess(false);
         setIsUpdatePasswordSuccess(false);
         console.log(err);
-      });
-  };
-
-  const sendPasswordResetEmail = () => {
-    auth
-      .sendPasswordResetEmail(email)
-      .then(() => {
-        // Password reset email sent!
-        // ..
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -131,11 +129,17 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
           <div className="user-profile__password-error">{errors.password}</div>
 
           <div
-            onClick={sendPasswordResetEmail}
+            onClick={handleForgotPasswordClick}
             className="user-profile__forgot-password"
           >
             Quên mật khẩu?
           </div>
+          <PasswordResetModal
+            setEmail={setEmail}
+            email={email}
+            isPasswordResetShowing={isPasswordResetShowing}
+            togglePasswordReset={togglePasswordReset}
+          ></PasswordResetModal>
           <label className="user-profile__newpassword-label">
             Mật Khẩu Mới:
           </label>
