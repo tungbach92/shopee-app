@@ -13,7 +13,6 @@ import visaImg from "../img/visa.png";
 import masterImg from "../img/master.png";
 import jcbImg from "../img/jcb.png";
 import expressImg from "../img/express.png";
-import ProvincesCitiesVN from "pc-vn";
 import ErrorModal from "./ErrorModal";
 import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
@@ -21,6 +20,7 @@ import { useStripe } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import useProvinceDistrict from "../hooks/useProvinceDistrict";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
@@ -82,12 +82,6 @@ export default function CheckoutProduct() {
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
-  const [isProvince, setIsProvince] = useState(false);
-  const [isDistrict, setIsDistrict] = useState(false);
-  const [province, setProvince] = useState();
-  const [district, setDistrict] = useState();
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
   const [isProvinceSelected, setIsProvinceSelected] = useState();
   const [isDistrictSelected, setIsDistrictSelected] = useState();
   const [card4digits, setCard4digits] = useState("");
@@ -97,6 +91,19 @@ export default function CheckoutProduct() {
   const [customerID, setCustomerID] = useState();
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
+
+  const {
+    isProvince,
+    isDistrict,
+    provinces,
+    districts,
+    province,
+    district,
+    toggleDistrict,
+    toggleProvince,
+    handleDistrictChoose,
+    handleProvinceChoose,
+  } = useProvinceDistrict();
 
   const {
     isPopupShowing,
@@ -154,40 +161,7 @@ export default function CheckoutProduct() {
     }
   }, [checkoutItems.length, setCheckoutItemsFromFirebase, user]);
 
-  const handleProvinceChoose = (e) => {
-    const value = e.target.innerText;
-    const province = provinces.find((province) => province.name === value);
-    setProvince(province);
-    setIsProvince(!isProvince);
-  };
-
-  const handleDistrictChoose = (e) => {
-    const value = e.target.innerText;
-    const district = districts.find((district) => district.name === value);
-    setDistrict(district);
-    setIsDistrict(!isDistrict);
-  };
-
   //Get and set province and set districts and district depend on province
-  useEffect(() => {
-    // effect
-    if (!province) {
-      const provinces = ProvincesCitiesVN.getProvinces();
-      const provincesWithShipPrice = provinces.map((item, index) => {
-        return {
-          ...item,
-          shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
-        };
-      });
-      setProvinces(provincesWithShipPrice);
-    } else {
-      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
-        province.code
-      );
-      setDistrict(undefined);
-      setDistricts(districts);
-    }
-  }, [province]);
 
   //Update isSelected after change province+district
   useEffect(() => {
@@ -199,18 +173,6 @@ export default function CheckoutProduct() {
       setIsDistrictSelected(true);
     }
   }, [province, district]);
-
-  const handleProvinceClick = () => {
-    setIsProvince(!isProvince);
-    setIsDistrict(false);
-  };
-
-  const handleDistrictClick = () => {
-    if (province) {
-      setIsDistrict(!isDistrict);
-      setIsProvince(false);
-    }
-  };
 
   const handleInformationClick = () => {
     setIsInformation(!isInformation);
@@ -561,7 +523,7 @@ export default function CheckoutProduct() {
                   Địa chỉ:
                 </label>
                 <div
-                  onClick={handleProvinceClick}
+                  onClick={toggleProvince}
                   className={
                     province
                       ? "checkout-product__location-province checkout-product__location-province--selected"
@@ -591,7 +553,7 @@ export default function CheckoutProduct() {
                 )}
 
                 <div
-                  onClick={handleDistrictClick}
+                  onClick={toggleDistrict}
                   className={
                     district
                       ? "checkout-product__location-district checkout-product__location-district--selected"

@@ -1829,7 +1829,8 @@ header {
 
 .cart-product__modal,
 .app-product__modal,
-.forgot-password__modal {
+.forgot-password__modal,
+.address-profile__modal {
   position: fixed;
   top: 0;
   right: 0;
@@ -1840,19 +1841,22 @@ header {
 
 .cart-product__modal-overlay,
 .app-product__modal-overlay,
-.forgot-password__modal-overlay {
+.forgot-password__modal-overlay,
+.address-profile__modal-overlay {
   width: 100%;
   height: 100%;
 }
 
 .cart-product__modal-overlay,
-.forgot-password__modal-overlay {
+.forgot-password__modal-overlay,
+.address-profile__modal-overlay {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
 .cart-product__modal-container,
 .app-product__modal-container,
-.forgot-password__modal-container {
+.forgot-password__modal-container,
+.address-profile__modal-container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1861,6 +1865,10 @@ header {
   padding: 3rem 3rem 0rem;
   background: var(--while-color);
 }
+.address-profile__modal-container {
+  width: 62rem;
+}
+
 .forgot-password__modal-container {
   padding: 4rem 8.4rem;
 }
@@ -1901,7 +1909,8 @@ header {
   line-height: 1.4;
 }
 
-.forgot-password__modal-content {
+.forgot-password__modal-content,
+.address-profile__modal-content {
   margin-top: 2rem;
 }
 .forgot-password__email-select {
@@ -1944,7 +1953,8 @@ header {
   color: var(--while-color);
 }
 
-.forgot-password__popup-footer {
+.forgot-password__popup-footer,
+.address-profile__popup-footer {
   margin-top: 4rem;
   display: flex;
 }
@@ -2467,7 +2477,9 @@ header {
   font-size: 1.2rem;
 }
 .checkout-product__location-province--selected,
-.checkout-product__location-district--selected {
+.checkout-product__location-district--selected,
+.address-profile__province--selected,
+.address-profile__province--selected {
   color: var(--text-color);
   font-style: normal;
   font-size: 1.4rem;
@@ -2487,7 +2499,10 @@ header {
 }
 
 .checkout-product__location-provinces,
-.checkout-product__location-districts {
+.checkout-product__location-districts,
+.address-profile__provinces,
+.address-profile__districts,
+.address-profile__wards {
   position: absolute;
   top: 100%;
   left: 0%;
@@ -2501,6 +2516,12 @@ header {
   background: var(--while-color);
   z-index: 3;
 }
+.address-profile__provinces,
+.address-profile__districts,
+.address-profile__wards {
+  width: 17.9rem;
+}
+
 /* .checkout-product__location-districts {
   top: 55%;
   left: 30.4%;
@@ -3899,6 +3920,7 @@ header {
   text-decoration: none;
   margin-top: 1.6rem;
   cursor: pointer;
+  color: inherit;
 }
 
 .user-profile__my-info:hover,
@@ -3921,6 +3943,9 @@ header {
 .user-profile__label {
   font-size: 1.6rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .user-profile__label-detail {
@@ -3930,9 +3955,11 @@ header {
 
 .user-profile__content,
 .email-profile__content,
-.user-profile__password-content {
+.user-profile__password-content,
+.address-profile__content {
   padding: 3rem 3rem;
   display: flex;
+  justify-content: space-between;
   background: var(--while-color);
   border-bottom: 2px solid rgba(0, 0, 0, 0.09);
 }
@@ -4136,6 +4163,7 @@ header {
   margin-left: 0.6rem;
   grid-column-start: 2;
   grid-column-end: 3;
+  color: #05a;
 }
 .user-profile__password-input {
   height: 3.8rem;
@@ -4247,6 +4275,171 @@ header {
 .user-profile__image-format {
   margin-top: 0.6rem;
   font-size: 1.4rem;
+}
+
+.user-profile__address-add {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+}
+
+.address-profile__container {
+  margin-left: 14.4rem;
+  display: grid;
+  row-gap: 1rem;
+  column-gap: 2rem;
+  grid-template-columns: 1fr 33rem;
+  font-size: 1.4rem;
+}
+.address-profile__name-label {
+  color: rgba(85, 85, 85, 0.8);
+}
+.address-profile__name-text {
+}
+.address-profile__phone-label {
+  color: rgba(85, 85, 85, 0.8);
+}
+.address-profile__phone-text {
+}
+.address-profile__address-label {
+  color: rgba(85, 85, 85, 0.8);
+}
+
+.address-profile__btn-container {
+  display: flex;
+  font-size: 1.4rem;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.address-profile__edit-btn {
+  cursor: pointer;
+}
+.address-profile__delete-btn {
+  cursor: pointer;
+  margin-left: 2rem;
+}
+.address-profile__btn-default {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+  display: block;
+  margin-top: 1rem;
+}
+.address-profile__header-label {
+  font-size: 1.6rem;
+}
+
+.address-profile__address-text {
+}
+.address-profile__modal-container {
+  padding: 3rem;
+}
+.address-profile__modal-content {
+  display: grid;
+  column-gap: 1rem;
+  row-gap: 1.4rem;
+  grid-template-columns: 18rem 18rem 18rem;
+}
+.address-profile__name {
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  height: 3.8rem;
+}
+
+.address-profile__phone {
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  height: 3.8rem;
+}
+.address-profile__province {
+  position: relative;
+  padding: 1.2rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  height: 3.8rem;
+  font: 400 1.33333rem Arial;
+  color: #585858;
+  cursor: pointer;
+}
+
+.address-profile__district {
+  position: relative;
+  padding: 1.2rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  height: 3.8rem;
+  font: 400 1.33333rem Arial;
+  color: #585858;
+  cursor: pointer;
+}
+.address-profile__ward {
+  position: relative;
+  padding: 1.2rem 0;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  height: 3.8rem;
+  font: 400 1.33333rem Arial;
+  color: #585858;
+  cursor: pointer;
+}
+
+.address-profile__province--selected,
+.address-profile__district--selected,
+.address-profile__ward--selected {
+  color: var(--text-color);
+  font-style: normal;
+  font-size: 1.4rem;
+  padding-left: 0.6rem;
+}
+
+.address-profile__address-detail {
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+  height: 4.9rem;
+}
+
+.address-profile__popup-footer {
+  justify-content: flex-end;
+}
+.address-profile__popup-back {
+  text-align: center;
+  justify-self: flex-end;
+  padding: 1rem 2rem;
+}
+
+.address-profile__popup-back:hover {
+  background-color: #bebcbc;
+}
+
+.address-profile__popup-apply {
+  text-align: center;
+  justify-self: flex-end;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: var(--while-color);
 }
 
 .footer {

@@ -7,6 +7,11 @@ const useModal = () => {
   const [isCardInfoShowing, setIsCardInfoShowing] = useState(false);
   const [isAddCartPopup, setIsAddCartPopup] = useState(false);
   const [isPasswordResetShowing, setIsPasswordResetShowing] = useState(false);
+  const [isAddressAddShowing, setIsAddressAddShowing] = useState(false);
+
+  const toggleAddressAdd = useCallback((value) => {
+    setIsAddressAddShowing(value);
+  }, []);
 
   const togglePasswordReset = useCallback((value) => {
     setIsPasswordResetShowing(value);
@@ -45,6 +50,8 @@ const useModal = () => {
     toggleIsAddCardPopup,
     isPasswordResetShowing,
     togglePasswordReset,
+    isAddressAddShowing,
+    toggleAddressAdd,
   };
 };
 export default useModal;

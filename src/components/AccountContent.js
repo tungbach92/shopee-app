@@ -6,6 +6,7 @@ import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
 import PasswordSmallContent from "./PasswordSmallContent";
+import AddressSmallContent from "./AddressSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
@@ -252,9 +253,19 @@ const AccountContent = ({ isAccountPage }) => {
             </div>
             <div className="user-profile__category">
               <div className="user-profile__my-user">Tài Khoản Của Tôi</div>
-              <div className="user-profile__my-info">Hồ sơ</div>
+              <Link
+                to="/user/account/profile"
+                className="user-profile__my-info"
+              >
+                Hồ sơ
+              </Link>
               <div className="user-profile__my-bank">Ngân hàng</div>
-              <div className="user-profile__my-adress">Địa chỉ</div>
+              <Link
+                to="/user/account/address"
+                className="user-profile__my-adress"
+              >
+                Địa chỉ
+              </Link>
               <Link
                 to="/user/account/password"
                 className="user-profile__change-password"
@@ -477,6 +488,11 @@ const AccountContent = ({ isAccountPage }) => {
                   email={email}
                   setEmail={setEmail}
                 ></PasswordSmallContent>
+              </Route>
+              <Route path="/user/account/address">
+                <AddressSmallContent
+                  isAccountPage={isAccountPage}
+                ></AddressSmallContent>
               </Route>
             </Switch>
           </div>
