@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
 import useModal from "../hooks/useModal";
+import useProvinceDistrict from "../hooks/useProvinceDistrict";
 import AddressAddPopup from "./AddressAddPopup";
 
 const AddressSmallContent = ({ isAccountPage }) => {
@@ -9,16 +10,79 @@ const AddressSmallContent = ({ isAccountPage }) => {
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [street, setStreet] = useState("");
   const [shipInfos, setShipInfos] = useState([]);
+  const [shipInfoIndex, setShipInfoIndex] = useState();
+  const [fullAddress, setFullAddress] = useState("");
+
+  const {
+    province,
+    setProvince,
+    district,
+    setDistrict,
+    ward,
+    setWard,
+    isProvince,
+    isDistrict,
+    isWard,
+    setIsProvince,
+    setIsDistrict,
+    setIsWard,
+    provinces,
+    districts,
+    wards,
+    toggleDistrict,
+    toggleProvince,
+    toggleWard,
+    handleDistrictChoose,
+    handleProvinceChoose,
+    handleWardChoose,
+  } = useProvinceDistrict();
 
   const handleDefaultClick = (index) => {
-    shipInfos.forEach((shipInfo) => (shipInfo.isDefault = false));
-    shipInfos[index] = { ...shipInfos[index], isDefault: true };
-    setShipInfos(shipInfos);
-    updateInfoToFirebase();
+    let tempShipInfos = [...shipInfos];
+    tempShipInfos.forEach((shipInfo) => (shipInfo.isDefault = false));
+    tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
+    updateShipInfosToFirebase(tempShipInfos);
   };
-  const updateInfoToFirebase = () => {
+
+  const handleAddressAddClick = () => {
+    toggleAddressAdd(!isAddressAddShowing);
+    setName("");
+    setPhone("");
+    setStreet("");
+    setProvince(undefined);
+    setDistrict(undefined);
+    setWard(undefined);
+    setShipInfoIndex(undefined);
+  };
+
+  const handleEditClick = (index) => {
+    toggleAddressAdd(!isAddressAddShowing);
+    const name = shipInfos[index].name;
+    const phone = shipInfos[index].phone;
+    const street = shipInfos[index].street;
+    const province = shipInfos[index].province;
+    const district = shipInfos[index].district;
+    const ward = shipInfos[index].ward;
+    setName(name);
+    setPhone(phone);
+    setStreet(street);
+    setProvince(province);
+    setDistrict(district);
+    setWard(ward);
+    setShipInfoIndex(index);
+  };
+
+  const handleDeleteClick = (index) => {
+    let tempShipInfos = [...shipInfos];
+    tempShipInfos = tempShipInfos.filter(
+      (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
+    );
+    updateShipInfosToFirebase(tempShipInfos);
+  };
+
+  const updateShipInfosToFirebase = (shipInfos) => {
     try {
       db.collection("users")
         .doc(user?.uid)
@@ -26,6 +90,9 @@ const AddressSmallContent = ({ isAccountPage }) => {
         .doc("shipInfoDoc")
         .update({
           shipInfos: shipInfos,
+        })
+        .then(() => {
+          setShipInfos(shipInfos);
         });
     } catch (error) {
       console.log(error);
@@ -54,22 +121,46 @@ const AddressSmallContent = ({ isAccountPage }) => {
           <div className="user-profile__label">
             Địa Chỉ Của Tôi
             <button
-              onClick={toggleAddressAdd}
+              onClick={handleAddressAddClick}
               className="btn user-profile__address-add"
             >
               Thêm địa chỉ mới
             </button>
             <AddressAddPopup
-              isAddressAddShowing={isAddressAddShowing}
-              toggleAddressAdd={toggleAddressAdd}
               name={name}
               setName={setName}
+              street={street}
+              setStreet={setStreet}
+              district={district}
+              setDistrict={setDistrict}
+              province={province}
+              setProvince={setProvince}
+              ward={ward}
+              setWard={setWard}
               phone={phone}
               setPhone={setPhone}
-              address={address}
-              setAddress={setAddress}
+              isProvince={isProvince}
+              isDistrict={isDistrict}
+              isWard={isWard}
+              setIsProvince={setIsProvince}
+              setIsDistrict={setIsDistrict}
+              setIsWard={setIsWard}
+              provinces={provinces}
+              districts={districts}
+              wards={wards}
+              toggleDistrict={toggleDistrict}
+              toggleProvince={toggleProvince}
+              toggleWard={toggleWard}
+              handleDistrictChoose={handleDistrictChoose}
+              handleProvinceChoose={handleProvinceChoose}
+              handleWardChoose={handleWardChoose}
+              fullAddress={fullAddress}
+              setFullAddress={setFullAddress}
+              isAddressAddShowing={isAddressAddShowing}
+              toggleAddressAdd={toggleAddressAdd}
               shipInfos={shipInfos}
               setShipInfos={setShipInfos}
+              shipInfoIndex={shipInfoIndex}
             ></AddressAddPopup>
           </div>
         </div>
@@ -78,7 +169,12 @@ const AddressSmallContent = ({ isAccountPage }) => {
         <div key={index} className="address-profile__content">
           <div className="address-profile__container">
             <label className="address-profile__name-label">Họ Và Tên</label>
-            <span className="address-profile__name-text">{shipInfo.name}</span>
+            <span className="address-profile__name-text">
+              {shipInfo.name}
+              {shipInfo.isDefault && (
+                <span className="address-profile__default-badge">Mặc định</span>
+              )}
+            </span>
             <label className="address-profile__phone-label">
               Số Điện Thoại
             </label>
@@ -87,17 +183,33 @@ const AddressSmallContent = ({ isAccountPage }) => {
             </span>
             <label className="address-profile__address-label">Địa Chỉ</label>
             <span className="address-profile__address-text">
-              {shipInfo.address}
+              {shipInfo.fullAddress}
             </span>
           </div>
           <div className="address-profile__btn-container">
             <div>
-              <span className="address-profile__edit-btn">Sửa</span>
-              <span className="address-profile__delete-btn">Xóa</span>
+              <span
+                onClick={() => handleEditClick(index)}
+                className="address-profile__edit-btn"
+              >
+                Sửa
+              </span>
+              {!shipInfo.isDefault && (
+                <span
+                  onClick={() => handleDeleteClick(index)}
+                  className="address-profile__delete-btn"
+                >
+                  Xóa
+                </span>
+              )}
             </div>
             <button
               onClick={() => handleDefaultClick(index)}
-              className="btn address-profile__btn-default"
+              className={
+                shipInfo.isDefault
+                  ? "btn address-profile__btn-default address-profile__btn-default--disabled"
+                  : "btn address-profile__btn-default"
+              }
             >
               Thiết lập mặc định
             </button>

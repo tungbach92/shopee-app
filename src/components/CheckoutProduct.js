@@ -609,10 +609,7 @@ export default function CheckoutProduct() {
           {checkoutItems.map((item, index) => (
             <div key={index} className="checkout-product-item-wrapper">
               <li className="checkout-product__item">
-                <Link
-                  to={`/product/${item.metaTitle}`}
-                  className="checkout-product__name-wrapper"
-                >
+                <div className="checkout-product__name-wrapper">
                   <img
                     src={require(`../img/${item.imageUrl}`).default}
                     alt="product__item-img"
@@ -629,7 +626,7 @@ export default function CheckoutProduct() {
                       {item.variation}
                     </span>
                   </span>
-                </Link>
+                </div>
                 <span className="checkout-product__item-price">
                   <CurrencyFormat
                     decimalScale={2}

@@ -4297,6 +4297,15 @@ header {
 }
 .address-profile__name-text {
 }
+.address-profile__default-badge {
+  margin-left: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #00bfa5;
+  color: var(--while-color);
+  border-radius: 0.3rem;
+  text-transform: capitalize;
+  font-size: 1.2rem;
+}
 .address-profile__phone-label {
   color: rgba(85, 85, 85, 0.8);
 }
@@ -4326,7 +4335,15 @@ header {
   color: var(--while-color);
   display: block;
   margin-top: 1rem;
+  text-transform: capitalize;
 }
+.address-profile__btn-default--disabled {
+  background: #fff !important;
+  color: #ccc;
+  cursor: not-allowed;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
+
 .address-profile__header-label {
   font-size: 1.6rem;
 }

@@ -2,75 +2,137 @@ import React, { useContext, useState } from "react";
 import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
-import useProvinceDistrict from "../hooks/useProvinceDistrict";
 
 const AddressAddPopup = ({
   isAddressAddShowing,
   toggleAddressAdd,
-  name,
-  setName,
-  address,
-  setAddress,
   phone,
   setPhone,
+  name,
+  setName,
+  street,
+  setStreet,
+  ward,
+  province,
+  district,
+  isProvince,
+  isDistrict,
+  isWard,
+  setIsProvince,
+  setIsDistrict,
+  setIsWard,
+  provinces,
+  districts,
+  wards,
+  toggleDistrict,
+  toggleProvince,
+  toggleWard,
+  handleDistrictChoose,
+  handleProvinceChoose,
+  handleWardChoose,
+  fullAddress,
+  setFullAddress,
   shipInfos,
   setShipInfos,
+  shipInfoIndex,
 }) => {
   const { user } = useContext(ProductContext);
-  const [detailAddress, setDetailAddress] = useState("");
-  const {
-    isProvince,
-    isDistrict,
-    isWard,
-    provinces,
-    districts,
-    wards,
-    province,
-    district,
-    ward,
-    toggleDistrict,
-    toggleProvince,
-    toggleWard,
-    handleDistrictChoose,
-    handleProvinceChoose,
-    handleWardChoose,
-  } = useProvinceDistrict();
 
   const handleBack = () => {
     toggleAddressAdd(!isAddressAddShowing);
+    setIsProvince(false);
+    setIsDistrict(false);
+    setIsWard(false);
   };
 
   const handleApply = () => {
-    saveInfoToFirebase();
-    toggleAddressAdd(!isAddressAddShowing);
+    if (typeof shipInfoIndex !== "undefined") {
+      updateShipInfo();
+    } else {
+      addNewShipInfo();
+    }
   };
 
-  const saveInfoToFirebase = () => {
+  const updateShipInfo = () => {
     try {
+      let tempShipInfos = [...shipInfos];
       const created = Date.now();
-      const address = `${detailAddress}, ${ward.name}, ${district.full_name}`;
-      setAddress(address);
-      const shipInfo = {
-        name: name,
-        phone: phone,
-        address: address,
-        isDefault: false,
-        created: created,
-      };
-      let updatedShipInfos = [];
-      updatedShipInfos = shipInfos ? [...shipInfos, shipInfo] : [shipInfo];
-      setShipInfos(updatedShipInfos);
+      const fullAddress = `${street}, ${ward.full_name}`;
+
+      tempShipInfos = tempShipInfos.map((shipInfo) => {
+        if (tempShipInfos.indexOf(shipInfo) === shipInfoIndex) {
+          return {
+            ...shipInfo,
+            name: name,
+            phone: phone,
+            fullAddress: fullAddress,
+            created: created,
+            street: street,
+            ward: ward,
+            district: district,
+            province: province,
+          };
+        } else return shipInfo;
+      });
 
       db.collection("users")
         .doc(user?.uid)
         .collection("shipInfos")
         .doc("shipInfoDoc")
         .set({
-          shipInfos: updatedShipInfos,
+          shipInfos: tempShipInfos,
+        })
+        .then(() => {
+          setShipInfos(tempShipInfos);
+          setFullAddress(fullAddress);
+          toggleAddressAdd(!isAddressAddShowing);
         });
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const addNewShipInfo = () => {
+    try {
+      let tempShipInfos = shipInfos ? [...shipInfos] : [];
+      const created = Date.now();
+      const fullAddress = `${street}, ${ward.full_name}`;
+
+      const shipInfo = {
+        name: name,
+        phone: phone,
+        fullAddress: fullAddress,
+        isDefault: false,
+        created: created,
+        street: street,
+        ward: ward,
+        district: district,
+        province: province,
+      };
+
+      tempShipInfos = [...tempShipInfos, shipInfo];
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("shipInfos")
+        .doc("shipInfoDoc")
+        .set({
+          shipInfos: tempShipInfos,
+        })
+        .then(() => {
+          setShipInfos(tempShipInfos);
+          setFullAddress(fullAddress);
+          toggleAddressAdd(!isAddressAddShowing);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePhoneChange = (e) => {
+    e.target.value = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+    setPhone(e.target.value);
   };
 
   return isAddressAddShowing
@@ -92,7 +154,7 @@ const AddressAddPopup = ({
               <input
                 type="text"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={handlePhoneChange}
                 className="address-profile__phone"
                 placeholder="Số điện thoại"
               />
@@ -167,8 +229,8 @@ const AddressAddPopup = ({
               </div>
               <input
                 type="text"
-                value={detailAddress}
-                onChange={(e) => setDetailAddress(e.target.value)}
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
                 className="address-profile__address-detail"
                 placeholder="Địa chỉ cụ thể"
               />
