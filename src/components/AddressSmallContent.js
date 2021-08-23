@@ -4,6 +4,7 @@ import { db } from "../firebase";
 import useModal from "../hooks/useModal";
 import useProvinceDistrict from "../hooks/useProvinceDistrict";
 import AddressAddPopup from "./AddressAddPopup";
+import PopupModal from "./PopupModal";
 
 const AddressSmallContent = ({ isAccountPage }) => {
   const { user } = useContext(ProductContext);
@@ -15,6 +16,7 @@ const AddressSmallContent = ({ isAccountPage }) => {
   const [shipInfoIndex, setShipInfoIndex] = useState();
   const [fullAddress, setFullAddress] = useState("");
 
+  const { isPopupShowing, togglePopup } = useModal();
   const {
     province,
     setProvince,
@@ -75,6 +77,11 @@ const AddressSmallContent = ({ isAccountPage }) => {
   };
 
   const handleDeleteClick = (index) => {
+    setShipInfoIndex(index);
+    togglePopup(!isPopupShowing);
+  };
+
+  const handleDeleteTrue = (index) => {
     let tempShipInfos = [...shipInfos];
     tempShipInfos = tempShipInfos.filter(
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
@@ -194,14 +201,13 @@ const AddressSmallContent = ({ isAccountPage }) => {
               >
                 Sửa
               </span>
-              {!shipInfo.isDefault && (
-                <span
-                  onClick={() => handleDeleteClick(index)}
-                  className="address-profile__delete-btn"
-                >
-                  Xóa
-                </span>
-              )}
+
+              <span
+                onClick={() => handleDeleteClick(index)}
+                className="address-profile__delete-btn"
+              >
+                Xóa
+              </span>
             </div>
             <button
               onClick={() => handleDefaultClick(index)}
@@ -216,6 +222,15 @@ const AddressSmallContent = ({ isAccountPage }) => {
           </div>
         </div>
       ))}
+      {isPopupShowing && (
+        <PopupModal
+          isPopupShowing={isPopupShowing}
+          togglePopup={togglePopup}
+          isAccountPage={isAccountPage}
+          shipInfoIndex={shipInfoIndex}
+          handleDeleteTrue={handleDeleteTrue}
+        ></PopupModal>
+      )}
     </>
   );
 };

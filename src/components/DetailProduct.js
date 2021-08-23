@@ -68,7 +68,7 @@ export default function DetailProduct() {
   useEffect(() => {
     if (items.length > 0) {
       const id = location.state?.id;
-      if (typeof id !== undefined) {
+      if (typeof id !== "undefined") {
         let item = items.find((item) => item.id === id);
         item = {
           ...item,

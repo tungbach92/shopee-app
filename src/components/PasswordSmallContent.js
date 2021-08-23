@@ -91,8 +91,8 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
     }
 
     if (
-      typeof newPassword !== undefined &&
-      typeof confirmPassword !== undefined
+      typeof newPassword !== "undefined" &&
+      typeof confirmPassword !== "undefined"
     ) {
       if (newPassword !== confirmPassword) {
         isValid = false;

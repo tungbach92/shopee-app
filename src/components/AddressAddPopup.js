@@ -37,19 +37,66 @@ const AddressAddPopup = ({
   shipInfoIndex,
 }) => {
   const { user } = useContext(ProductContext);
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    let isValid = true;
+    let errors = {};
+    // contain atleast 3 space
+
+    if (!name) {
+      isValid = false;
+      errors["name"] = "Please enter a name!";
+    } else if (!/(\w*[\s]){2,}/.test(name)) {
+      // contain atleast 2 space
+      isValid = false;
+      errors["name"] = "Name is not valid!";
+    }
+
+    if (!phone) {
+      isValid = false;
+      errors["phone"] = "Please enter a phone number!";
+    }
+
+    if (!province) {
+      isValid = false;
+      errors["province"] = "Please choose a province!";
+    }
+
+    if (!district) {
+      isValid = false;
+      errors["district"] = "Please choose a district";
+    }
+
+    if (!ward) {
+      isValid = false;
+      errors["ward"] = "Please choose a ward";
+    }
+
+    if (!street) {
+      isValid = false;
+      errors["street"] = "Please enter street detail";
+    }
+
+    setErrors(errors);
+    return isValid;
+  };
 
   const handleBack = () => {
     toggleAddressAdd(!isAddressAddShowing);
     setIsProvince(false);
     setIsDistrict(false);
     setIsWard(false);
+    setErrors({});
   };
 
   const handleApply = () => {
-    if (typeof shipInfoIndex !== "undefined") {
-      updateShipInfo();
-    } else {
-      addNewShipInfo();
+    if (validate()) {
+      if (typeof shipInfoIndex !== "undefined") {
+        updateShipInfo();
+      } else {
+        addNewShipInfo();
+      }
     }
   };
 
@@ -158,6 +205,8 @@ const AddressAddPopup = ({
                 className="address-profile__phone"
                 placeholder="Số điện thoại"
               />
+              <div className="address-profile__name-error">{errors.name}</div>
+              <div className="address-profile__phone-error">{errors.phone}</div>
               <div
                 onClick={toggleProvince}
                 className={
@@ -227,6 +276,13 @@ const AddressAddPopup = ({
                   </div>
                 )}
               </div>
+              <div className="address-profile__province-error">
+                {errors.province}
+              </div>
+              <div className="address-profile__district-error">
+                {errors.district}
+              </div>
+              <div className="address-profile__ward-error">{errors.ward}</div>
               <input
                 type="text"
                 value={street}
@@ -235,6 +291,7 @@ const AddressAddPopup = ({
                 placeholder="Địa chỉ cụ thể"
               />
             </div>
+            <div className="address-profile__street-error">{errors.street}</div>
             <div className="address-profile__popup-footer">
               <button
                 onClick={handleBack}

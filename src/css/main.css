@@ -2222,7 +2222,17 @@ header {
   margin: 8rem 0rem 2rem;
   display: flex;
 }
-
+.cart-product__popup-cancle {
+  padding: 1.4rem 6rem;
+  margin-right: 3rem;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  flex: 1;
+}
+.cart-product__popup-cancle:hover {
+  background-color: #bebcbc;
+}
 .cart-product__popup-apply,
 .forgot-password__popup-apply {
   padding: 1.4rem 6rem;
@@ -4378,14 +4388,30 @@ header {
   grid-row-end: 2;
   height: 3.8rem;
 }
+.address-profile__name-error {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+.address-profile__phone-error {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
 .address-profile__province {
   position: relative;
   padding: 1.2rem 0;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
   grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
   height: 3.8rem;
   font: 400 1.33333rem Arial;
   color: #585858;
@@ -4398,8 +4424,8 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
   height: 3.8rem;
   font: 400 1.33333rem Arial;
   color: #585858;
@@ -4411,12 +4437,37 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 3;
   grid-column-end: 4;
-  grid-row-start: 2;
-  grid-row-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
   height: 3.8rem;
   font: 400 1.33333rem Arial;
   color: #585858;
   cursor: pointer;
+}
+
+.address-profile__province-error {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 4;
+  grid-row-end: 5;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+.address-profile__district-error {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 4;
+  grid-row-end: 5;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+.address-profile__ward-error {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 4;
+  grid-row-end: 5;
+  color: var(--primary-color);
+  font-size: 1.2rem;
 }
 
 .address-profile__province--selected,
@@ -4433,22 +4484,31 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
   grid-column-end: 4;
-  grid-row-start: 3;
-  grid-row-end: 4;
+  grid-row-start: 5;
+  grid-row-end: 6;
   height: 4.9rem;
 }
 
+.address-profile__street-error {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 6;
+  grid-row-end: 7;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
 .address-profile__popup-footer {
   justify-content: flex-end;
 }
 .address-profile__popup-back {
+  margin-right: 0.6rem;
   text-align: center;
   justify-self: flex-end;
   padding: 1rem 2rem;
 }
 
 .address-profile__popup-back:hover {
-  background-color: #bebcbc;
+  background-color: rgb(146, 146, 146);
 }
 
 .address-profile__popup-apply {
@@ -4458,7 +4518,9 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
-
+.address-profile__popup-apply:hover{
+  opacity: 0.7;
+}
 .footer {
   background-color: #fbfbfb;
 }

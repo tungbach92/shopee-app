@@ -10,6 +10,8 @@ export default function PopupModal(props) {
     isAnyUserInfoUpdateFail,
     isUpdateEmailSuccess,
     isUpdatePasswordSuccess,
+    handleDeleteTrue,
+    shipInfoIndex,
     isCartPageLoaded,
     isVariationChoose,
     selectedItems,
@@ -23,7 +25,11 @@ export default function PopupModal(props) {
     succeeded,
   } = props;
 
-  const handleClick = (e) => {
+  const handleBackClick = (e) => {
+    togglePopup(!isPopupShowing);
+  };
+
+  const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
     if (!isCartPageLoaded && !isAccountPage) {
       if (isInformation || isInfoEmpty) {
@@ -38,8 +44,11 @@ export default function PopupModal(props) {
         history.replace("/user/order");
       }
     }
-    if (isAccountPage) {
+
+    if (isAccountPage && typeof shipInfoIndex === "undefined") {
       history.replace("/user");
+    } else if (isAccountPage && typeof shipInfoIndex !== "undefined") {
+      handleDeleteTrue(shipInfoIndex);
     }
   };
 
@@ -53,7 +62,11 @@ export default function PopupModal(props) {
               ? "Cập nhật địa chỉ email thành công"
               : isAccountPage && isUpdatePasswordSuccess
               ? "Cập nhật mật khẩu thành công"
-              : isAccountPage && !isAnyUserInfoUpdateFail
+              : isAccountPage && typeof shipInfoIndex !== "undefined"
+              ? "Bạn chắc chắn muốn xóa địa chỉ này?"
+              : isAccountPage &&
+                !isAnyUserInfoUpdateFail &&
+                typeof isAnyUserInfoUpdateFail !== "undefined"
               ? "Cập nhật thông tin người dùng thành công"
               : isCartPageLoaded && selectedItems?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
@@ -73,8 +86,17 @@ export default function PopupModal(props) {
           </span>
         </div>
         <div className="cart-product__popup-footer">
+          {isAccountPage && typeof shipInfoIndex !== "undefined" && (
+            <button
+              className="btn cart-product__popup-cancle"
+              onClick={handleBackClick}
+            >
+              Back
+            </button>
+          )}
+
           <button
-            onClick={handleClick}
+            onClick={handleApplyClick}
             className="btn cart-product__popup-apply"
           >
             OK
