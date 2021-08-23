@@ -47,10 +47,10 @@ const AddressAddPopup = ({
     if (!name) {
       isValid = false;
       errors["name"] = "Please enter a name!";
-    } else if (!/(\w*[\s]){2,}/.test(name)) {
-      // contain atleast 2 space
+    } else if (!/(\D*[\s]){2,}/.test(name)) {
+      // contain atleast 2 space, only char
       isValid = false;
-      errors["name"] = "Name is not valid!";
+      errors["name"] = "Please enter full name!";
     }
 
     if (!phone) {
@@ -65,17 +65,17 @@ const AddressAddPopup = ({
 
     if (!district) {
       isValid = false;
-      errors["district"] = "Please choose a district";
+      errors["district"] = "Please choose a district!";
     }
 
     if (!ward) {
       isValid = false;
-      errors["ward"] = "Please choose a ward";
+      errors["ward"] = "Please choose a ward!";
     }
 
     if (!street) {
       isValid = false;
-      errors["street"] = "Please enter street detail";
+      errors["street"] = "Please enter street detail!";
     }
 
     setErrors(errors);
@@ -290,8 +290,11 @@ const AddressAddPopup = ({
                 className="address-profile__address-detail"
                 placeholder="Địa chỉ cụ thể"
               />
+              <div className="address-profile__street-error">
+                {errors.street}
+              </div>
             </div>
-            <div className="address-profile__street-error">{errors.street}</div>
+
             <div className="address-profile__popup-footer">
               <button
                 onClick={handleBack}
