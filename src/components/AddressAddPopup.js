@@ -32,11 +32,9 @@ const AddressAddPopup = ({
   handleWardChoose,
   fullAddress,
   setFullAddress,
-  shipInfos,
-  setShipInfos,
   shipInfoIndex,
 }) => {
-  const { user } = useContext(ProductContext);
+  const { shipInfos, updateShipInfoToFirebase } = useContext(ProductContext);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -92,6 +90,7 @@ const AddressAddPopup = ({
 
   const handleApply = () => {
     if (validate()) {
+      toggleAddressAdd(!isAddressAddShowing);
       if (typeof shipInfoIndex !== "undefined") {
         updateShipInfo();
       } else {
@@ -122,18 +121,8 @@ const AddressAddPopup = ({
         } else return shipInfo;
       });
 
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .set({
-          shipInfos: tempShipInfos,
-        })
-        .then(() => {
-          setShipInfos(tempShipInfos);
-          setFullAddress(fullAddress);
-          toggleAddressAdd(!isAddressAddShowing);
-        });
+      setFullAddress(fullAddress);
+      updateShipInfoToFirebase(tempShipInfos);
     } catch (error) {
       console.log(error);
     }
@@ -158,20 +147,10 @@ const AddressAddPopup = ({
       };
 
       tempShipInfos = [...tempShipInfos, shipInfo];
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .set({
-          shipInfos: tempShipInfos,
-        })
-        .then(() => {
-          setShipInfos(tempShipInfos);
-          setFullAddress(fullAddress);
-          toggleAddressAdd(!isAddressAddShowing);
-        });
-    } catch (error) {
-      console.log(error);
+      setFullAddress(fullAddress);
+      updateShipInfoToFirebase(tempShipInfos);
+    } catch (err) {
+      console.log(err);
     }
   };
 

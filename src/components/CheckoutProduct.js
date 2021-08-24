@@ -44,6 +44,9 @@ export default function CheckoutProduct() {
     getSaved,
     getItemsPriceFinal,
     user,
+    shipInfos,
+    setShipInfos,
+    updateShipInfoToFirebase,
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
     saveCheckoutItemsToFirebase,
@@ -78,6 +81,7 @@ export default function CheckoutProduct() {
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isInformation, setIsInformation] = useState(false);
+  const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
@@ -174,8 +178,8 @@ export default function CheckoutProduct() {
     }
   }, [province, district]);
 
-  const handleInformationClick = () => {
-    setIsInformation(!isInformation);
+  const handleChangeShipInfoClick = () => {
+    setIsShipInfoChoosing(!isShipInfoChoosing);
   };
 
   const handleShowCardInfo = (e) => {
@@ -241,40 +245,6 @@ export default function CheckoutProduct() {
     togglePopup(!isPopupShowing);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (province && district) {
-      const name = inputEl.current[0].value;
-      const phone = inputEl.current[1].value;
-      const address = inputEl.current[2].value;
-      const districtFullName = district.full_name;
-      setCustomerInfo({ name, phone, address, districtFullName });
-
-      const shipPrice = province.shipPrice;
-      setShipPriceProvince(shipPrice);
-      // setShipUnit({});
-      setIsInformation(!isInformation);
-    }
-    if (!province) {
-      setIsProvinceSelected(false);
-    }
-    if (!district) {
-      setIsDistrictSelected(false);
-    }
-  };
-
-  //Fill input after click edit info (isInformation)
-  useEffect(() => {
-    const setInputCustomerInfo = () => {
-      if (isInformation === true) {
-        inputEl.current[0].value = customerInfo.name;
-        inputEl.current[1].value = customerInfo.phone;
-        inputEl.current[2].value = customerInfo.address;
-      }
-    };
-    setInputCustomerInfo();
-  }, [customerInfo, isInformation]);
-
   //Update after edit shipchecked + edit info
   useEffect(() => {
     //set checked, set shipUnit
@@ -327,6 +297,25 @@ export default function CheckoutProduct() {
     e.target.value = e.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
+  };
+  const handleShipInfoDefaultChange = (e) => {
+    const index = e.target.value;
+    let tempShipInfos = [...shipInfos];
+    tempShipInfos = tempShipInfos.map((shipInfo) =>
+      tempShipInfos.indexOf(shipInfo) === Number(index)
+        ? (shipInfo = { ...shipInfo, isDefault: true })
+        : (shipInfo = { ...shipInfo, isDefault: false })
+    );
+    setShipInfos(tempShipInfos);
+  };
+
+  const handleShipInfoCancel = () => {
+    setIsShipInfoChoosing(!isShipInfoChoosing);
+  };
+
+  const handleShipInfoApply = () => {
+    setIsShipInfoChoosing(!isShipInfoChoosing);
+    updateShipInfoToFirebase(shipInfos);
   };
 
   const handleShipUnitModal = (e) => {
@@ -462,140 +451,114 @@ export default function CheckoutProduct() {
       <div className="grid checkout-product">
         <div className="checkout-product__address-line"></div>
         <div className="checkout-product__address-wrapper">
-          <svg
-            height="16"
-            viewBox="0 0 12 16"
-            width="12"
-            className="checkout-product__address-icon"
-          >
-            <path
-              d="M6 3.2c1.506 0 2.727 1.195 2.727 2.667 0 1.473-1.22 2.666-2.727 2.666S3.273 7.34 3.273 5.867C3.273 4.395 4.493 3.2 6 3.2zM0 6c0-3.315 2.686-6 6-6s6 2.685 6 6c0 2.498-1.964 5.742-6 9.933C1.613 11.743 0 8.498 0 6z"
-              fillRule="evenodd"
-            ></path>
-          </svg>
-          <span className="checkout-product__address-label">
-            Thông tin người mua
-          </span>
-          <div className="checkout-product__address-content">
-            {!isInformation && (
-              <>
-                <span className="checkout-product__info">
-                  {customerInfo.name} {customerInfo.phone}{" "}
-                  {customerInfo.address} {customerInfo.districtFullName}
-                </span>
-                <span
-                  onClick={handleInformationClick}
-                  className="checkout-product__address-action"
-                >
-                  {isInfoEmpty ? "Thêm" : "Sửa"}
-                </span>
-              </>
-            )}
-            {isInformation && (
-              <form
-                className="checkout-product__info-input"
-                onSubmit={handleSubmit}
+          <div className="checkout-product__address-header">
+            <div className="checkout-product__header-wrapper">
+              <svg
+                height="16"
+                viewBox="0 0 12 16"
+                width="12"
+                className="checkout-product__address-icon"
               >
-                <label className="checkout-product__name-label">
-                  Họ và tên:
-                </label>
-                <input
-                  ref={(el) => (inputEl.current[0] = el)}
-                  type="text"
-                  className="checkout-product__name-input"
-                  placeholder="Họ và tên..."
-                  required
-                />
-
-                <label className="checkout-product__phone-label">
-                  Số điện thoại:
-                </label>
-                <input
-                  ref={(el) => (inputEl.current[1] = el)}
-                  type="text"
-                  className="checkout-product__phone-input"
-                  placeholder="Số điện thoại..."
-                  onChange={handleChange}
-                  required
-                />
-
-                <label className="checkout-product__location-label">
-                  Địa chỉ:
-                </label>
-                <div
-                  onClick={toggleProvince}
-                  className={
-                    province
-                      ? "checkout-product__location-province checkout-product__location-province--selected"
-                      : "checkout-product__location-province"
-                  }
-                >
-                  {province ? province.name : `Thành phố`}
-                  <div className="checkout-product__province-arrow"></div>
-                  {isProvince && (
-                    <div className="checkout-product__location-provinces">
-                      {provinces.map((item, index) => (
-                        <div
-                          key={index}
-                          onClick={handleProvinceChoose}
-                          className="checkout-product__provinces-item"
-                        >
-                          {item.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {isProvinceSelected === false && (
-                  <div className="checkout-product__province-required">
-                    Chưa chọn Thành phố!
-                  </div>
-                )}
-
-                <div
-                  onClick={toggleDistrict}
-                  className={
-                    district
-                      ? "checkout-product__location-district checkout-product__location-district--selected"
-                      : "checkout-product__location-district"
-                  }
-                >
-                  {district ? district.name : `Quận/Huyện`}
-                  <div className="checkout-product__district-arrow"></div>
-                  {isDistrict && (
-                    <div className="checkout-product__location-districts">
-                      {districts.map((item, index) => (
-                        <div
-                          key={index}
-                          onClick={handleDistrictChoose}
-                          className="checkout-product__districts-item"
-                        >
-                          {item.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {isDistrictSelected === false && (
-                  <div className="checkout-product__district-required">
-                    Chưa chọn Quận/Huyện!
-                  </div>
-                )}
-
-                <input
-                  ref={(el) => (inputEl.current[2] = el)}
-                  type="text"
-                  className="checkout-product__location-input"
-                  placeholder="Số nhà, Ngõ, Ngách, Tên đường,..."
-                  required
-                />
-                <button
-                  className="btn checkout-product__input-btn"
-                  type="submit"
-                >
-                  Lưu
+                <path
+                  d="M6 3.2c1.506 0 2.727 1.195 2.727 2.667 0 1.473-1.22 2.666-2.727 2.666S3.273 7.34 3.273 5.867C3.273 4.395 4.493 3.2 6 3.2zM0 6c0-3.315 2.686-6 6-6s6 2.685 6 6c0 2.498-1.964 5.742-6 9.933C1.613 11.743 0 8.498 0 6z"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
+              <span className="checkout-product__address-label">
+                Địa chỉ nhận hàng
+              </span>
+            </div>
+            {isShipInfoChoosing && (
+              <div className="checkout-product__shipInfoBtn-wrapper">
+                <button className="btn checkout-product__shipInfo-add">
+                  Thêm địa chỉ mới
                 </button>
-              </form>
+                <Link
+                  to="/user/account/address"
+                  className="btn checkout-product__shipInfo-edit"
+                >
+                  Thiết lập địa chỉ
+                </Link>
+              </div>
+            )}
+          </div>
+          <div className="checkout-product__address-container">
+            {!isShipInfoChoosing
+              ? shipInfos?.map(
+                  (item, index) =>
+                    item.isDefault && (
+                      <div
+                        key={index}
+                        className="checkout-product__address-content"
+                      >
+                        <span className="checkout-product__user-name">
+                          {item.name} {item.phone}
+                        </span>
+                        <span className="checkout-product__user-address">
+                          {item.fullAddress}
+                        </span>
+                        <span className="checkout-product__default">
+                          Mặc định
+                        </span>
+                        <span
+                          onClick={handleChangeShipInfoClick}
+                          className="checkout-product__address-action"
+                        >
+                          Thay đổi
+                        </span>
+                      </div>
+                    )
+                )
+              : shipInfos?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="checkout-product__address-content"
+                  >
+                    <input
+                      type="radio"
+                      id={index}
+                      name="shipInfo"
+                      value={index}
+                      checked={item.isDefault === true}
+                      onChange={handleShipInfoDefaultChange}
+                      className="checkout-product__radio-btn"
+                    />
+                    <span className="checkout-product__user-name">
+                      {item.name} {item.phone}
+                    </span>
+                    <span className="checkout-product__user-address">
+                      {item.fullAddress}
+                    </span>
+                    {item.isDefault && (
+                      <span className="checkout-product__default">
+                        Mặc định
+                      </span>
+                    )}
+                  </div>
+                ))}
+            {isShipInfoChoosing && (
+              <div className="checkout-product__btn-wrapper">
+                <button
+                  onClick={handleShipInfoApply}
+                  className="btn checkout-product__address-apply"
+                >
+                  Hoàn thành
+                </button>
+                <button
+                  onClick={handleShipInfoCancel}
+                  className="btn checkout-product__address-cancel"
+                >
+                  Trở lại
+                </button>
+              </div>
+            )}
+            {shipInfos?.length === 0 && (
+              <span
+                onClick={undefined}
+                className="checkout-product__address-action"
+              >
+                Thêm
+              </span>
             )}
           </div>
         </div>

@@ -7,12 +7,12 @@ import AddressAddPopup from "./AddressAddPopup";
 import PopupModal from "./PopupModal";
 
 const AddressSmallContent = ({ isAccountPage }) => {
-  const { user } = useContext(ProductContext);
+  const { user, shipInfos, setShipInfos, updateShipInfoToFirebase } =
+    useContext(ProductContext);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
-  const [shipInfos, setShipInfos] = useState([]);
   const [shipInfoIndex, setShipInfoIndex] = useState();
   const [fullAddress, setFullAddress] = useState("");
 
@@ -45,7 +45,8 @@ const AddressSmallContent = ({ isAccountPage }) => {
     let tempShipInfos = [...shipInfos];
     tempShipInfos.forEach((shipInfo) => (shipInfo.isDefault = false));
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
-    updateShipInfosToFirebase(tempShipInfos);
+    setShipInfos(tempShipInfos);
+    updateShipInfoToFirebase(tempShipInfos);
   };
 
   const handleAddressAddClick = () => {
@@ -86,40 +87,9 @@ const AddressSmallContent = ({ isAccountPage }) => {
     tempShipInfos = tempShipInfos.filter(
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
     );
-    updateShipInfosToFirebase(tempShipInfos);
+    setShipInfos(tempShipInfos);
+    updateShipInfoToFirebase(tempShipInfos);
   };
-
-  const updateShipInfosToFirebase = (shipInfos) => {
-    try {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .update({
-          shipInfos: shipInfos,
-        })
-        .then(() => {
-          setShipInfos(shipInfos);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .onSnapshot((doc) => {
-          if (doc.exists) {
-            const shipInfos = doc.data().shipInfos;
-            setShipInfos(shipInfos);
-          }
-        });
-    }
-  }, [user]);
 
   return (
     <>
@@ -165,63 +135,65 @@ const AddressSmallContent = ({ isAccountPage }) => {
               setFullAddress={setFullAddress}
               isAddressAddShowing={isAddressAddShowing}
               toggleAddressAdd={toggleAddressAdd}
-              shipInfos={shipInfos}
-              setShipInfos={setShipInfos}
               shipInfoIndex={shipInfoIndex}
             ></AddressAddPopup>
           </div>
         </div>
       </div>
-      {shipInfos?.map((shipInfo, index) => (
-        <div key={index} className="address-profile__content">
-          <div className="address-profile__container">
-            <label className="address-profile__name-label">Họ Và Tên</label>
-            <span className="address-profile__name-text">
-              {shipInfo.name}
-              {shipInfo.isDefault && (
-                <span className="address-profile__default-badge">Mặc định</span>
-              )}
-            </span>
-            <label className="address-profile__phone-label">
-              Số Điện Thoại
-            </label>
-            <span className="address-profile__phone-text">
-              {shipInfo.phone}
-            </span>
-            <label className="address-profile__address-label">Địa Chỉ</label>
-            <span className="address-profile__address-text">
-              {shipInfo.fullAddress}
-            </span>
-          </div>
-          <div className="address-profile__btn-container">
-            <div>
-              <span
-                onClick={() => handleEditClick(index)}
-                className="address-profile__edit-btn"
-              >
-                Sửa
+      <div className="address-profile__address-container">
+        {shipInfos?.map((shipInfo, index) => (
+          <div key={index} className="address-profile__address-content">
+            <div className="address-profile__user-container">
+              <label className="address-profile__name-label">Họ Và Tên</label>
+              <span className="address-profile__name-text">
+                {shipInfo.name}
+                {shipInfo.isDefault && (
+                  <span className="address-profile__default-badge">
+                    Mặc định
+                  </span>
+                )}
               </span>
-
-              <span
-                onClick={() => handleDeleteClick(index)}
-                className="address-profile__delete-btn"
-              >
-                Xóa
+              <label className="address-profile__phone-label">
+                Số Điện Thoại
+              </label>
+              <span className="address-profile__phone-text">
+                {shipInfo.phone}
+              </span>
+              <label className="address-profile__address-label">Địa Chỉ</label>
+              <span className="address-profile__address-text">
+                {shipInfo.fullAddress}
               </span>
             </div>
-            <button
-              onClick={() => handleDefaultClick(index)}
-              className={
-                shipInfo.isDefault
-                  ? "btn address-profile__btn-default address-profile__btn-default--disabled"
-                  : "btn address-profile__btn-default"
-              }
-            >
-              Thiết lập mặc định
-            </button>
+            <div className="address-profile__btn-container">
+              <div>
+                <span
+                  onClick={() => handleEditClick(index)}
+                  className="address-profile__edit-btn"
+                >
+                  Sửa
+                </span>
+
+                <span
+                  onClick={() => handleDeleteClick(index)}
+                  className="address-profile__delete-btn"
+                >
+                  Xóa
+                </span>
+              </div>
+              <button
+                onClick={() => handleDefaultClick(index)}
+                className={
+                  shipInfo.isDefault
+                    ? "btn address-profile__btn-default address-profile__btn-default--disabled"
+                    : "btn address-profile__btn-default"
+                }
+              >
+                Thiết lập mặc định
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       {isPopupShowing && (
         <PopupModal
           isPopupShowing={isPopupShowing}

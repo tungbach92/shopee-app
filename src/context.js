@@ -44,6 +44,7 @@ export default class ProductProvider extends Component {
     orderItems: [],
     user: null,
     userAvatar: null,
+    shipInfos: [],
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
@@ -51,8 +52,51 @@ export default class ProductProvider extends Component {
     this.setUser(() => {
       this.setOrderItems();
       this.setUserAvatar();
+      this.getShipInfos();
     });
   }
+
+  setShipInfos = (shipInfos) => {
+    this.setState({ shipInfos });
+  };
+
+  updateShipInfoToFirebase = (shipInfos) => {
+    const user = this.state.user;
+    if (user) {
+      try {
+        db.collection("users")
+          .doc(user?.uid)
+          .collection("shipInfos")
+          .doc("shipInfoDoc")
+          .update({
+            shipInfos: shipInfos,
+          })
+          .then(() => {
+            console.log("update shipInfo successfully!");
+            this.setState({ shipInfos });
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  getShipInfos = () => {
+    const user = this.state.user;
+    if (user) {
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("shipInfos")
+        .doc("shipInfoDoc")
+        .onSnapshot((doc) => {
+          if (doc.exists) {
+            const shipInfos = doc.data().shipInfos;
+            this.setState({ shipInfos });
+          }
+        });
+    }
+  };
+
   setUserAvatar = () => {
     const user = this.state.user;
     if (user) {
@@ -930,6 +974,8 @@ export default class ProductProvider extends Component {
           searchInputOnChange: this.searchInputOnChange,
           setSearchInput: this.setSearchInput,
           setUserAvatar: this.setUserAvatar,
+          setShipInfos: this.setShipInfos,
+          updateShipInfoToFirebase: this.updateShipInfoToFirebase,
         }}
       >
         {this.props.children}
