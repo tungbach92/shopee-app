@@ -4371,6 +4371,28 @@ header {
   padding-left: 0.6rem;
 }
 
+.address-profile__provinces,
+.address-profile__districts,
+.address-profile__wards {
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  width: 22rem;
+  padding: 1.2rem 0.6rem;
+  max-height: 36vh;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  font-size: 1.4rem;
+  font-style: normal;
+  background: var(--while-color);
+  z-index: 3;
+}
+.address-profile__provinces,
+.address-profile__districts,
+.address-profile__wards {
+  width: 17.9rem;
+}
+
 .address-profile__address-detail {
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.14);

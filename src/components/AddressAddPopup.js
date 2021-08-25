@@ -48,7 +48,7 @@ const AddressAddPopup = ({
     } else if (!/(\D*[\s]){2,}/.test(name)) {
       // contain atleast 2 space, only char
       isValid = false;
-      errors["name"] = "Please enter full name!";
+      errors["name"] = "Please enter a full and valid name!";
     }
 
     if (!phone) {

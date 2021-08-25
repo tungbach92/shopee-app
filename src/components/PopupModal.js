@@ -19,8 +19,6 @@ export default function PopupModal(props) {
     shipUnit,
     isPopupShowing,
     togglePopup,
-    isInformation,
-    isInfoEmpty,
     paymentMethod,
     succeeded,
   } = props;
@@ -32,9 +30,7 @@ export default function PopupModal(props) {
   const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
     if (!isCartPageLoaded && !isAccountPage) {
-      if (isInformation || isInfoEmpty) {
-        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-      } else if (!Object.keys(shipUnit).length) {
+      if (!Object.keys(shipUnit).length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
       } else if (isCardInfoMustFilled) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
@@ -72,8 +68,6 @@ export default function PopupModal(props) {
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
-              : isInformation === true || isInfoEmpty === true
-              ? "Vui lòng điền thông tin người mua và ấn Lưu."
               : !Object.keys(shipUnit).length
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0

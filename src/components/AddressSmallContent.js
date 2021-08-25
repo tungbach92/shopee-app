@@ -7,17 +7,20 @@ import AddressAddPopup from "./AddressAddPopup";
 import PopupModal from "./PopupModal";
 
 const AddressSmallContent = ({ isAccountPage }) => {
-  const { user, shipInfos, setShipInfos, updateShipInfoToFirebase } =
+  const { shipInfos, setShipInfos, updateShipInfoToFirebase } =
     useContext(ProductContext);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [street, setStreet] = useState("");
   const [shipInfoIndex, setShipInfoIndex] = useState();
-  const [fullAddress, setFullAddress] = useState("");
-
   const { isPopupShowing, togglePopup } = useModal();
   const {
+    name,
+    setName,
+    phone,
+    setPhone,
+    street,
+    setStreet,
+    fullAddress,
+    setFullAddress,
     province,
     setProvince,
     district,
@@ -108,6 +111,8 @@ const AddressSmallContent = ({ isAccountPage }) => {
               setName={setName}
               street={street}
               setStreet={setStreet}
+              fullAddress={fullAddress}
+              setFullAddress={setFullAddress}
               district={district}
               setDistrict={setDistrict}
               province={province}

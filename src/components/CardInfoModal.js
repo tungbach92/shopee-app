@@ -1,13 +1,19 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../axios";
+import { ProductContext } from "../context";
+import { db } from "../firebase";
 export default function CardInfoModal(props) {
   const stripe = useStripe();
   const elements = useElements();
-  const inputEl = useRef([]);
+  const { user } = useContext(ProductContext);
   const {
+    cardName,
+    setCardName,
+    cardAddress,
+    setCardAddress,
     isCardInfoShowing,
     toggleCardInfo,
     setCard4digits,
@@ -15,6 +21,10 @@ export default function CardInfoModal(props) {
     setPaymentMethodID,
     setCustomerID,
   } = props;
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [nameIsValid, setNameIsValid] = useState(false);
   const [numberIsValid, setNumberIsValid] = useState(false);
   const [errorNumberMsg, setErrorNumberMsg] = useState(null);
@@ -40,10 +50,16 @@ export default function CardInfoModal(props) {
     }
     const cardEl = elements.getElement(CardElement);
 
+    //Create a setupIntent, use paymentIntent to continue payment flow
     const response = await axios({
-      method: "GET",
+      method: "POST",
       url: "/create-setup-intent",
+      data: {
+        name: name,
+        email: user.email,
+      },
     });
+
     setCustomerID(response.data.customerID);
 
     const setUpIntentResult = await stripe.confirmCardSetup(
@@ -51,6 +67,11 @@ export default function CardInfoModal(props) {
       {
         payment_method: {
           card: cardEl,
+          billing_details: {
+            name: cardName,
+            email: user.email,
+            phone: phone,
+          },
         },
       }
     );
@@ -82,26 +103,22 @@ export default function CardInfoModal(props) {
     }
   };
   const handleInputChange = (e) => {
-    switch (e.target.name) {
-      case "name":
-        let nameValidation = validCardCheck.cardholderName(e.target.value);
-        if (e.target.value) {
-          if (!nameValidation.isValid) {
-            setNameIsValid(false);
-            setErrorNameMsg(
-              "The value must be alphabet characters or the following characters: apostrophe('), minus(-) and dot(.)."
-            );
-          } else {
-            setNameIsValid(true);
-            setErrorNameMsg("");
-          }
-        } else {
-          setNameIsValid(false);
-          setErrorNameMsg("Please enter credit card holder's name.");
-        }
-        break;
-      default:
-        break;
+    const name = e.target.value;
+    setCardName(name);
+    let nameValidation = validCardCheck.cardholderName(name);
+    if (name) {
+      if (!nameValidation.isValid) {
+        setNameIsValid(false);
+        setErrorNameMsg(
+          "The value must be alphabet characters or the following characters: apostrophe('), minus(-) and dot(.)."
+        );
+      } else {
+        setNameIsValid(true);
+        setErrorNameMsg("");
+      }
+    } else {
+      setNameIsValid(false);
+      setErrorNameMsg("Please enter credit card holder's name.");
     }
   };
   // useEffect(() => {
@@ -118,28 +135,27 @@ export default function CardInfoModal(props) {
   //     getSetUpIntentSecret();
   //   }
   // }, [setCustomerID, setSetUpIntentSecret, setUpIntentSecret]);
-  // set saved customer card info
-  useEffect(() => {
-    // effect
-    const setInputCardInfo = () => {
-      if (isCardInfoShowing === true) {
-        // inputEl.current[0].value =
-        //   cardInfo.name === undefined ? "" : cardInfo.name;
-        // inputEl.current[1].value =
-        //   cardInfo.number === undefined ? "" : cardInfo.number;
-        // inputEl.current[2].value =
-        //   cardInfo.expire === undefined ? "" : cardInfo.expire;
-        // inputEl.current[3].value =
-        //   cardInfo.cvv === undefined ? "" : cardInfo.cvv;
-        // inputEl.current[4].value =
-        //   cardInfo.address === undefined ? "" : cardInfo.address;
-        // inputEl.current[5].value =
-        //   cardInfo.postalCode === undefined ? "" : cardInfo.postalCode;
-      }
-    };
-    setInputCardInfo();
-  }, [isCardInfoShowing]);
 
+  useEffect(() => {
+    if (user) {
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("infos")
+        .doc("infoItems")
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const phone = doc.data().phone;
+            const address = doc.data().address;
+            const name = doc.data().name;
+            setName(name);
+            setPhone(phone ? phone : "");
+            setAddress(address ? address : "");
+          }
+        })
+        .catch((err) => alert(err));
+    }
+  }, [user]);
   // Set submit button disabled
   useEffect(() => {
     setDisabled(nameIsValid && numberIsValid ? false : true);
@@ -183,7 +199,7 @@ export default function CardInfoModal(props) {
               onKeyDown={handleKeyDown}
               onChange={handleInputChange}
               onBlur={handleInputChange}
-              ref={(el) => (inputEl.current[0] = el)}
+              value={cardName}
               type="text"
               name="name"
               className="cart-product__card-name"
@@ -208,29 +224,13 @@ export default function CardInfoModal(props) {
             </label>
             <input
               onKeyDown={handleKeyDown}
-              ref={(el) => (inputEl.current[4] = el)}
+              value={cardAddress}
+              onChange={(e) => setCardAddress(e.target.value)}
               type="text"
               name="address"
               className="cart-product__address-text"
               placeholder="Address"
             />
-            {/* <input
-              onKeyDown={handleKeyDown}
-              onChange={handleInputChange}
-              onBlur={handleInputChange}
-              ref={(el) => (inputEl.current[5] = el)}
-              type="text"
-              name="postalcode"
-              className="cart-product__address-postalcode"
-              placeholder="Postal Code"
-              maxLength="5"
-              required
-            />
-            {errorPostalCodeMsg && (
-              <label className="cart-product__postalcode-error">
-                {errorPostalCodeMsg}
-              </label>
-            )} */}
           </div>
           <div className="cart-product__modal-footer">
             <button

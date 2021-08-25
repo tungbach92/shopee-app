@@ -21,10 +21,10 @@ import { db } from "../firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import useProvinceDistrict from "../hooks/useProvinceDistrict";
+import AddressAddPopup from "./AddressAddPopup";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
-  const inputEl = useRef([]);
   const inputMessageEl = useRef([]);
   //
   const {
@@ -52,12 +52,6 @@ export default function CheckoutProduct() {
     saveCheckoutItemsToFirebase,
   } = useContext(ProductContext);
 
-  const [customerInfo, setCustomerInfo] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    districtFullName: "",
-  });
   const shipUnitList = useMemo(() => {
     return [
       {
@@ -76,18 +70,28 @@ export default function CheckoutProduct() {
       },
     ];
   }, [shipPriceProvince]);
-  const [message, setMessage] = useState("");
-  const [cardInfo, setCardInfo] = useState({});
+
+  useEffect(() => {
+    let shipPrice = [];
+    shipInfos.forEach((item) => {
+      if (item.isDefault) {
+        shipPrice = item.province.shipPrice;
+      }
+    });
+
+    setShipPriceProvince(shipPrice);
+  }, [setShipPriceProvince, shipInfos]);
+
+  const [cardName, setCardName] = useState("");
+  const [cardAddress, setCardAddress] = useState("");
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [isInformation, setIsInformation] = useState(false);
   const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
+  const [message, setMessage] = useState("");
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
-  const [isProvinceSelected, setIsProvinceSelected] = useState();
-  const [isDistrictSelected, setIsDistrictSelected] = useState();
   const [card4digits, setCard4digits] = useState("");
   const [cardBrand, setCardBrand] = useState("");
   const [paymentMethodID, setPaymentMethodID] = useState();
@@ -97,16 +101,35 @@ export default function CheckoutProduct() {
   const [succeeded, setSucceeded] = useState(false);
 
   const {
+    name,
+    setName,
+    phone,
+    setPhone,
+    street,
+    setStreet,
+    fullAddress,
+    setFullAddress,
+    province,
+    setProvince,
+    district,
+    setDistrict,
+    ward,
+    setWard,
     isProvince,
     isDistrict,
+    isWard,
+    setIsProvince,
+    setIsDistrict,
+    setIsWard,
     provinces,
     districts,
-    province,
-    district,
+    wards,
     toggleDistrict,
     toggleProvince,
+    toggleWard,
     handleDistrictChoose,
     handleProvinceChoose,
+    handleWardChoose,
   } = useProvinceDistrict();
 
   const {
@@ -118,18 +141,9 @@ export default function CheckoutProduct() {
     toggleShipUnits,
     isCardInfoShowing,
     toggleCardInfo,
+    isAddressAddShowing,
+    toggleAddressAdd,
   } = useModal();
-
-  //
-  let isInfoEmpty = false;
-  if (
-    customerInfo.name === "" ||
-    customerInfo.phone === "" ||
-    customerInfo.address === "" ||
-    customerInfo.districtFullName === ""
-  ) {
-    isInfoEmpty = true;
-  }
 
   //
   let isCardInfoMustFilled = false;
@@ -166,17 +180,6 @@ export default function CheckoutProduct() {
   }, [checkoutItems.length, setCheckoutItemsFromFirebase, user]);
 
   //Get and set province and set districts and district depend on province
-
-  //Update isSelected after change province+district
-  useEffect(() => {
-    if (province) {
-      setIsProvinceSelected(true);
-    }
-
-    if (district) {
-      setIsDistrictSelected(true);
-    }
-  }, [province, district]);
 
   const handleChangeShipInfoClick = () => {
     setIsShipInfoChoosing(!isShipInfoChoosing);
@@ -298,6 +301,17 @@ export default function CheckoutProduct() {
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
   };
+
+  const handleShipInfoAddClick = () => {
+    toggleAddressAdd(!isAddressAddShowing);
+    setName("");
+    setPhone("");
+    setStreet("");
+    setProvince(undefined);
+    setDistrict(undefined);
+    setWard(undefined);
+  };
+
   const handleShipInfoDefaultChange = (e) => {
     const index = e.target.value;
     let tempShipInfos = [...shipInfos];
@@ -328,8 +342,6 @@ export default function CheckoutProduct() {
 
   const handleOrder = () => {
     if (
-      isInformation === false &&
-      isInfoEmpty === false &&
       isCardInfoShowing === false &&
       Object.keys(shipUnit).length > 0 &&
       isCardInfoMustFilled === false
@@ -470,9 +482,45 @@ export default function CheckoutProduct() {
             </div>
             {isShipInfoChoosing && (
               <div className="checkout-product__shipInfoBtn-wrapper">
-                <button className="btn checkout-product__shipInfo-add">
+                <button
+                  onClick={handleShipInfoAddClick}
+                  className="btn checkout-product__shipInfo-add"
+                >
                   Thêm địa chỉ mới
                 </button>
+                <AddressAddPopup
+                  name={name}
+                  setName={setName}
+                  street={street}
+                  setStreet={setStreet}
+                  district={district}
+                  setDistrict={setDistrict}
+                  province={province}
+                  setProvince={setProvince}
+                  ward={ward}
+                  setWard={setWard}
+                  phone={phone}
+                  setPhone={setPhone}
+                  isProvince={isProvince}
+                  isDistrict={isDistrict}
+                  isWard={isWard}
+                  setIsProvince={setIsProvince}
+                  setIsDistrict={setIsDistrict}
+                  setIsWard={setIsWard}
+                  provinces={provinces}
+                  districts={districts}
+                  wards={wards}
+                  toggleDistrict={toggleDistrict}
+                  toggleProvince={toggleProvince}
+                  toggleWard={toggleWard}
+                  handleDistrictChoose={handleDistrictChoose}
+                  handleProvinceChoose={handleProvinceChoose}
+                  handleWardChoose={handleWardChoose}
+                  fullAddress={fullAddress}
+                  setFullAddress={setFullAddress}
+                  isAddressAddShowing={isAddressAddShowing}
+                  toggleAddressAdd={toggleAddressAdd}
+                ></AddressAddPopup>
                 <Link
                   to="/user/account/address"
                   className="btn checkout-product__shipInfo-edit"
@@ -932,7 +980,7 @@ export default function CheckoutProduct() {
                     onClick={handleShowCardInfo}
                     className="btn checkout-product__add-item"
                   >
-                    {Object.keys(cardInfo).length <= 0 && (
+                    {card4digits && cardBrand && (
                       <svg
                         enableBackground="new 0 0 10 10"
                         viewBox="0 0 10 10"
@@ -944,10 +992,14 @@ export default function CheckoutProduct() {
                         ></path>
                       </svg>
                     )}
-                    {Object.keys(cardInfo).length > 0 ? "Sửa thẻ" : "Thêm thẻ"}
+                    {card4digits && cardBrand ? "Sửa thẻ" : "Thêm thẻ"}
                   </button>
                   {isCardInfoShowing && (
                     <CardInfoModal
+                      cardName={cardName}
+                      setCardName={setCardName}
+                      cardAddress={cardAddress}
+                      setCardAddress={setCardAddress}
                       isCardInfoShowing={isCardInfoShowing}
                       toggleCardInfo={toggleCardInfo}
                       setCard4digits={setCard4digits}
@@ -1065,8 +1117,6 @@ export default function CheckoutProduct() {
                 isPopupShowing={isPopupShowing}
                 togglePopup={togglePopup}
                 shipUnit={shipUnit}
-                isInformation={isInformation}
-                isInfoEmpty={isInfoEmpty}
                 isCardInfoMustFilled={isCardInfoMustFilled}
                 paymentMethod={paymentMethod}
                 setCheckoutProduct={setCheckoutProduct}

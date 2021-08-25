@@ -20,17 +20,26 @@ app.use(express.json());
 // API routes
 // Create setup Intent => return client secret
 
-app.get("/create-setup-intent", async (request, response) => {
+app.post("/create-setup-intent", async (request, response) => {
   // Since we are using test cards, create a new Customer here
   // You would do this in your payment flow that saves cards
-  const customer = await stripe.customers.create();
-  const intent = await stripe.setupIntents.create({
-    customer: customer.id,
-  });
-  response.status(201).send({
-    setUpIntentSecret: intent.client_secret,
-    customerID: intent.customer,
-  });
+  try {
+    const name = request.body.name;
+    const email = request.body.email;
+    const customer = await stripe.customers.create({
+      name: name,
+      email: email,
+    });
+    const intent = await stripe.setupIntents.create({
+      customer: customer.id,
+    });
+    response.status(201).send({
+      setUpIntentSecret: intent.client_secret,
+      customerID: intent.customer,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
 });
 
 // Charge by creating payment Intent

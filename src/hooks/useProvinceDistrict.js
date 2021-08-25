@@ -2,6 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import ProvincesCitiesVN from "pc-vn";
 
 const useProvinceDistrict = () => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [street, setStreet] = useState("");
+  const [fullAddress, setFullAddress] = useState("");
   const [isProvince, setIsProvince] = useState(false);
   const [isDistrict, setIsDistrict] = useState(false);
   const [isWard, setIsWard] = useState(false);
@@ -86,6 +90,14 @@ const useProvinceDistrict = () => {
   }, [district, isDistrict, isProvince, province, ward]);
 
   return {
+    name,
+    setName,
+    phone,
+    setPhone,
+    street,
+    setStreet,
+    fullAddress,
+    setFullAddress,
     isProvince,
     isDistrict,
     isWard,
