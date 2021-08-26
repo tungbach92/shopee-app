@@ -26,6 +26,10 @@ const OrderContent = () => {
               Thời gian đặt:{" "}
               {moment.unix(item.data.created).format("MMMM Do YYYY, h:mm:ss a")}
             </div>
+            <div className="grid__col order-product__shipInfo">
+              Địa chỉ nhận hàng: {item.data.shipInfo?.name}, {item.data.shipInfo?.phone},{" "}
+              {item.data.shipInfo?.fullAddress}
+            </div>
           </div>
           <div className="order-product__header">
             <div className="grid__col order-product__product">Sản Phẩm</div>

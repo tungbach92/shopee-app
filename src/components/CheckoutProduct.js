@@ -226,11 +226,23 @@ export default function CheckoutProduct() {
       });
   };
   const saveOrdersToFirebase = (id, amount, created) => {
-    db.collection("users").doc(user?.uid).collection("orders").doc(id).set({
-      basket: checkoutItems,
-      amount: amount,
-      created: created,
+    let shipInfo;
+    shipInfos.forEach((item) => {
+      if (item.isDefault) {
+        const { isDefault, province, district, street, ward, ...rest } = item;
+        shipInfo = { ...rest };
+      }
     });
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("orders")
+      .doc(id)
+      .set({
+        basket: checkoutItems,
+        amount: amount,
+        shipInfo: { ...shipInfo },
+        created: created,
+      });
   };
 
   const handleOrderSucceeded = ({ id, amount, created }) => {
@@ -344,7 +356,8 @@ export default function CheckoutProduct() {
     if (
       isCardInfoShowing === false &&
       Object.keys(shipUnit).length > 0 &&
-      isCardInfoMustFilled === false
+      isCardInfoMustFilled === false &&
+      paymentMethod.length > 0
     ) {
       setProcessing(true);
       if (isCardPayment) {
