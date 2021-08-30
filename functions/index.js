@@ -20,25 +20,68 @@ app.use(express.json());
 // API routes
 // Create setup Intent => return client secret
 
+app.post("/create-token-server-side", async (request, response) => {
+  try {
+    const tokenClientSideID = request.body.tokenClientSideID;
+    const tokenResult = await stripe.tokens.retrieve(
+      tokenClientSideID
+    );
+    response.send({
+      tokenResult: tokenResult,
+    });
+  } catch (error) {
+    response.send({
+      error: error.message,
+    });
+  }
+});
+
 app.post("/create-setup-intent", async (request, response) => {
   // Since we are using test cards, create a new Customer here
   // You would do this in your payment flow that saves cards
   try {
     const name = request.body.name;
     const email = request.body.email;
-    const customer = await stripe.customers.create({
-      name: name,
-      email: email,
-    });
+    const customerID = request.body.customerID;
+    let customer;
+    if (!customerID) {
+      customer = await stripe.customers.create({
+        name: name,
+        email: email,
+      });
+    }
     const intent = await stripe.setupIntents.create({
-      customer: customer.id,
+      customer: customerID ? customerID : customer.id,
     });
+
     response.status(201).send({
       setUpIntentSecret: intent.client_secret,
       customerID: intent.customer,
     });
   } catch (error) {
     console.log(error.message);
+    response.send({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/get-payment-method-list", async (req, res) => {
+  try {
+    const customerID = req.body.customerID;
+    // List the customer's payment methods to find one to charge
+    const paymentMethodListResult = await stripe.paymentMethods.list({
+      customer: customerID,
+      type: "card",
+    });
+    res.send({
+      paymentMethodList: paymentMethodListResult.data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.send({
+      error: error.message,
+    });
   }
 });
 
@@ -54,12 +97,6 @@ app.post("/charge-card-off-session", async (request, response) => {
     // const paymentMethodID = request.body.paymentMethodID;
     // const paymentMethod = await stripe.paymentMethods.attach(paymentMethodID, {
     //   customer: customer.id,
-    // });
-
-    // List the customer's payment methods to find one to charge
-    // const paymentMethods = await stripe.paymentMethods.list({
-    //   customer: customer.id,
-    //   type: "card",
     // });
 
     const paymentIntent = await stripe.paymentIntents.create({

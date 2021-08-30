@@ -7,6 +7,7 @@ import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
 import PasswordSmallContent from "./PasswordSmallContent";
 import AddressSmallContent from "./AddressSmallContent";
+import PaymentSmallContent from "./PaymentSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
@@ -259,7 +260,12 @@ const AccountContent = ({ isAccountPage }) => {
               >
                 Hồ sơ
               </Link>
-              <div className="user-profile__my-bank">Ngân hàng</div>
+              <Link
+                to="/user/account/payment"
+                className="user-profile__my-bank"
+              >
+                Ngân hàng
+              </Link>
               <Link
                 to="/user/account/address"
                 className="user-profile__my-adress"
@@ -493,6 +499,11 @@ const AccountContent = ({ isAccountPage }) => {
                 <AddressSmallContent
                   isAccountPage={isAccountPage}
                 ></AddressSmallContent>
+              </Route>
+              <Route path="/user/account/payment">
+                <PaymentSmallContent
+                  isAccountPage={isAccountPage}
+                ></PaymentSmallContent>
               </Route>
             </Switch>
           </div>

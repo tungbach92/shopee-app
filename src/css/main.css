@@ -3836,7 +3836,8 @@ header {
 }
 
 .user-profile__title-container,
-.address-profile__address-container {
+.address-profile__address-container,
+.payment-profile__payment-container {
   padding: 0 3rem;
   background: var(--while-color);
 }

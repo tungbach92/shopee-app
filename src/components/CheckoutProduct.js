@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -99,6 +106,7 @@ export default function CheckoutProduct() {
   const [customerID, setCustomerID] = useState();
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
+  const [paymentMethodList, setPaymentMethodList] = useState([]);
 
   const {
     name,
@@ -369,6 +377,7 @@ export default function CheckoutProduct() {
             voucher
           )}`,
           data: { paymentMethodID, customerID, email: user.email }, // sub currency usd-> cent *100
+          // paymentMethodID was choose and set from radio
         }).then((result) => {
           if (
             result.data.error &&
@@ -470,6 +479,36 @@ export default function CheckoutProduct() {
       return jcbImg;
     }
   };
+
+  //get and set customerID from cloud firestore
+  useEffect(() => {
+    db.collection("users")
+      .doc(user?.uid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const customerID = doc.data().customerID;
+          if (customerID) {
+            setCustomerID(customerID);
+          }
+        }
+      });
+  }, [user?.uid]);
+
+  const getAndSetPaymentMethodList = useCallback(async () => {
+    const paymentMethodListResponse = await axios({
+      method: "POST",
+      url: "/get-payment-method-list",
+      data: { customerID: customerID },
+    });
+    setPaymentMethodList(paymentMethodListResponse.data.paymentMethodList);
+    console.log(paymentMethodListResponse.data.paymentMethodList);
+  }, [customerID]);
+
+  //get and set customer paymentMethod list of user from stripe
+  useEffect(() => {
+    getAndSetPaymentMethodList();
+  }, [getAndSetPaymentMethodList]);
 
   return (
     <div className="container">
@@ -993,19 +1032,17 @@ export default function CheckoutProduct() {
                     onClick={handleShowCardInfo}
                     className="btn checkout-product__add-item"
                   >
-                    {card4digits && cardBrand && (
-                      <svg
-                        enableBackground="new 0 0 10 10"
-                        viewBox="0 0 10 10"
-                        className="checkout-product__add-icon"
-                      >
-                        <path
-                          stroke="none"
-                          d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"
-                        ></path>
-                      </svg>
-                    )}
-                    {card4digits && cardBrand ? "Sửa thẻ" : "Thêm thẻ"}
+                    <svg
+                      enableBackground="new 0 0 10 10"
+                      viewBox="0 0 10 10"
+                      className="checkout-product__add-icon"
+                    >
+                      <path
+                        stroke="none"
+                        d="m10 4.5h-4.5v-4.5h-1v4.5h-4.5v1h4.5v4.5h1v-4.5h4.5z"
+                      ></path>
+                    </svg>
+                    Thêm thẻ
                   </button>
                   {isCardInfoShowing && (
                     <CardInfoModal
@@ -1020,7 +1057,11 @@ export default function CheckoutProduct() {
                       setPaymentMethodID={setPaymentMethodID}
                       setUpIntentSecret={setUpIntentSecret}
                       setSetUpIntentSecret={setSetUpIntentSecret}
+                      customerID={customerID}
                       setCustomerID={setCustomerID}
+                      paymentMethodList={paymentMethodList}
+                      setPaymentMethodList={setPaymentMethodList}
+                      getAndSetPaymentMethodList={getAndSetPaymentMethodList}
                     ></CardInfoModal>
                   )}
                 </div>

@@ -19,7 +19,11 @@ export default function CardInfoModal(props) {
     setCard4digits,
     setCardBrand,
     setPaymentMethodID,
+    customerID,
     setCustomerID,
+    paymentMethodList,
+    setPaymentMethodList,
+    getAndSetPaymentMethodList,
   } = props;
 
   const [name, setName] = useState("");
@@ -49,52 +53,85 @@ export default function CardInfoModal(props) {
       return;
     }
     const cardEl = elements.getElement(CardElement);
+    const tokenClientSide = await stripe.createToken(cardEl)
 
-    //Create a setupIntent, use paymentIntent to continue payment flow
-    const response = await axios({
+    //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
+    const tokenServerSideRes = await axios({
       method: "POST",
-      url: "/create-setup-intent",
-      data: {
-        name: name,
-        email: user.email,
-      },
+      url: "/create-token-server-side",
+      data: { tokenClientSideID: tokenClientSide.token.id },
     });
-
-    setCustomerID(response.data.customerID);
-
-    const setUpIntentResult = await stripe.confirmCardSetup(
-      response.data.setUpIntentSecret,
-      {
-        payment_method: {
-          card: cardEl,
-          billing_details: {
-            name: cardName,
-            email: user.email,
-            phone: phone,
-          },
-        },
-      }
+    const tokenServerSide = await tokenServerSideRes.data.tokenResult;
+    const isCardDuplicate = paymentMethodList.some(
+      (item) =>
+        item.card.fingerprint === tokenServerSide.card.fingerprint &&
+        item.card.exp_month === tokenServerSide.card.exp_month &&
+        item.card.exp_year === tokenServerSide.card.exp_year
     );
-    if (
-      setUpIntentResult.setupIntent &&
-      setUpIntentResult.setupIntent.status === "succeeded"
-    ) {
-      const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
-      console.log("create payment method success", paymentMethodID);
-      setPaymentMethodID(paymentMethodID);
+    if (!isCardDuplicate) {
+      //Create a setupIntent(plus creat customer), use paymentIntent to continue payment flow
+      const response = await axios({
+        method: "POST",
+        url: "/create-setup-intent",
+        data: {
+          name: name,
+          email: user.email,
+          customerID: customerID,
+        },
+      });
 
-      const token = await stripe.createToken(cardEl);
-      console.log(token);
-      setCard4digits(token.token.card.last4);
-      setCardBrand(token.token.card.brand);
+      // set and add new customerID to firebase if it's the first time doing purchase
+      if (!customerID) {
+        db.collection("users").doc(user?.uid).set({
+          customerID: response.data.customerID,
+        });
+        setCustomerID(response.data.customerID);
+      }
 
-      toggleCardInfo(!isCardInfoShowing);
-      window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
-      alert("Save card information success!");
+      //When the SetupIntent succeeds
+      // The resulting PaymentMethod ID (in result.setupIntent.payment_method) will be saved to the provided Customer.
+      const setUpIntentResult = await stripe.confirmCardSetup(
+        response.data.setUpIntentSecret,
+        {
+          payment_method: {
+            card: cardEl,
+            billing_details: {
+              name: cardName,
+              email: user.email,
+              phone: phone,
+            },
+          },
+        }
+      );
+      if (
+        setUpIntentResult.setupIntent &&
+        setUpIntentResult.setupIntent.status === "succeeded"
+      ) {
+        //set default paymentMethodID after card input
+        const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
+        console.log(setUpIntentResult);
+        console.log("create payment method success", paymentMethodID);
+        setPaymentMethodID(paymentMethodID);
+
+        getAndSetPaymentMethodList();
+
+        const token = await stripe.createToken(cardEl);
+        console.log(token);
+        setCard4digits(token.token.card.last4);
+        setCardBrand(token.token.card.brand);
+
+        setProcessing(false);
+        toggleCardInfo(!isCardInfoShowing);
+        window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
+        alert("Save card information success!");
+      } else {
+        console.log(setUpIntentResult);
+        alert(setUpIntentResult.error.message);
+        setProcessing(false);
+      }
     } else {
-      console.log(setUpIntentResult);
-      alert(setUpIntentResult.error.message);
       setProcessing(false);
+      alert("This card is already be using!");
     }
   };
   const handleKeyDown = (e) => {
