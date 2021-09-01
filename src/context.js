@@ -73,8 +73,11 @@ export default class ProductProvider extends Component {
         url: "/retrieve-customer-by-id",
         data: { customerID: customerID },
       }).then((res) => {
-        const defaultPaymentMethodID =
+        let defaultPaymentMethodID =
           res.data.customer.invoice_settings.default_payment_method;
+        defaultPaymentMethodID = defaultPaymentMethodID
+          ? defaultPaymentMethodID
+          : res.data.customer.default_source;
         this.setState({ defaultPaymentMethodID });
       });
     }
@@ -86,10 +89,16 @@ export default class ProductProvider extends Component {
       axios({
         method: "POST",
         url: "/update-customer-payment-method",
-        data: { customerID: customerID, paymentMethodID: paymentMethodID },
+        data: {
+          customerID: customerID,
+          paymentMethodID: paymentMethodID,
+        },
       }).then((res) => {
-        const defaultPaymentMethodID =
+        let defaultPaymentMethodID =
           res.data.customer.invoice_settings.default_payment_method;
+        // defaultPaymentMethodID = defaultPaymentMethodID
+        //   ? defaultPaymentMethodID
+        //   : res.data.customer.default_source;
         this.setState({ defaultPaymentMethodID });
       });
     }
