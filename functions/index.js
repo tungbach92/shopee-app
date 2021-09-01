@@ -20,12 +20,60 @@ app.use(express.json());
 // API routes
 // Create setup Intent => return client secret
 
+app.post("/update-customer-payment-method", async (req, res) => {
+  try {
+    const customerID = req.body.customerID;
+    const paymentMethodID = req.body.paymentMethodID;
+    const customerResult = await stripe.customers.update(customerID, {
+      invoice_settings: {
+        default_payment_method: paymentMethodID,
+      },
+    });
+    res.send({ customer: customerResult });
+  } catch (error) {
+    res.send({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/retrieve-customer-by-id", async (req, res) => {
+  try {
+    const customerID = req.body.customerID;
+    // retrieve customer object
+    const customerResult = await stripe.customers.retrieve(customerID);
+
+    res.send({ customer: customerResult });
+  } catch (error) {
+    res.send({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/get-payment-method-list", async (req, res) => {
+  try {
+    const customerID = req.body.customerID;
+    // List the customer's payment methods to find one to charge
+    const paymentMethodListResult = await stripe.paymentMethods.list({
+      customer: customerID,
+      type: "card",
+    });
+    res.send({
+      paymentMethodList: paymentMethodListResult.data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.send({
+      error: error.message,
+    });
+  }
+});
+
 app.post("/create-token-server-side", async (request, response) => {
   try {
     const tokenClientSideID = request.body.tokenClientSideID;
-    const tokenResult = await stripe.tokens.retrieve(
-      tokenClientSideID
-    );
+    const tokenResult = await stripe.tokens.retrieve(tokenClientSideID);
     response.send({
       tokenResult: tokenResult,
     });
@@ -61,25 +109,6 @@ app.post("/create-setup-intent", async (request, response) => {
   } catch (error) {
     console.log(error.message);
     response.send({
-      error: error.message,
-    });
-  }
-});
-
-app.post("/get-payment-method-list", async (req, res) => {
-  try {
-    const customerID = req.body.customerID;
-    // List the customer's payment methods to find one to charge
-    const paymentMethodListResult = await stripe.paymentMethods.list({
-      customer: customerID,
-      type: "card",
-    });
-    res.send({
-      paymentMethodList: paymentMethodListResult.data,
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.send({
       error: error.message,
     });
   }

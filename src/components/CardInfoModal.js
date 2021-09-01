@@ -20,10 +20,10 @@ export default function CardInfoModal(props) {
     setCardBrand,
     setPaymentMethodID,
     customerID,
-    setCustomerID,
     paymentMethodList,
     setPaymentMethodList,
     getAndSetPaymentMethodList,
+    updateCustomerIdToFirebase,
   } = props;
 
   const [name, setName] = useState("");
@@ -53,7 +53,7 @@ export default function CardInfoModal(props) {
       return;
     }
     const cardEl = elements.getElement(CardElement);
-    const tokenClientSide = await stripe.createToken(cardEl)
+    const tokenClientSide = await stripe.createToken(cardEl);
 
     //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
     const tokenServerSideRes = await axios({
@@ -61,7 +61,7 @@ export default function CardInfoModal(props) {
       url: "/create-token-server-side",
       data: { tokenClientSideID: tokenClientSide.token.id },
     });
-    const tokenServerSide = await tokenServerSideRes.data.tokenResult;
+    const tokenServerSide = tokenServerSideRes.data.tokenResult;
     const isCardDuplicate = paymentMethodList.some(
       (item) =>
         item.card.fingerprint === tokenServerSide.card.fingerprint &&
@@ -82,10 +82,7 @@ export default function CardInfoModal(props) {
 
       // set and add new customerID to firebase if it's the first time doing purchase
       if (!customerID) {
-        db.collection("users").doc(user?.uid).set({
-          customerID: response.data.customerID,
-        });
-        setCustomerID(response.data.customerID);
+        updateCustomerIdToFirebase(response.data.customerID);
       }
 
       //When the SetupIntent succeeds
@@ -113,7 +110,7 @@ export default function CardInfoModal(props) {
         console.log("create payment method success", paymentMethodID);
         setPaymentMethodID(paymentMethodID);
 
-        getAndSetPaymentMethodList();
+        // getAndSetPaymentMethodList();
 
         const token = await stripe.createToken(cardEl);
         console.log(token);

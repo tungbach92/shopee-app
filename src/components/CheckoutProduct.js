@@ -57,6 +57,7 @@ export default function CheckoutProduct() {
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
     saveCheckoutItemsToFirebase,
+    customerID,
   } = useContext(ProductContext);
 
   const shipUnitList = useMemo(() => {
@@ -103,7 +104,6 @@ export default function CheckoutProduct() {
   const [cardBrand, setCardBrand] = useState("");
   const [paymentMethodID, setPaymentMethodID] = useState();
   const [setUpIntentSecret, setSetUpIntentSecret] = useState();
-  const [customerID, setCustomerID] = useState();
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
   const [paymentMethodList, setPaymentMethodList] = useState([]);
@@ -479,37 +479,7 @@ export default function CheckoutProduct() {
       return jcbImg;
     }
   };
-
-  //get and set customerID from cloud firestore
-  useEffect(() => {
-    db.collection("users")
-      .doc(user?.uid)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const customerID = doc.data().customerID;
-          if (customerID) {
-            setCustomerID(customerID);
-          }
-        }
-      });
-  }, [user?.uid]);
-
-  const getAndSetPaymentMethodList = useCallback(async () => {
-    const paymentMethodListResponse = await axios({
-      method: "POST",
-      url: "/get-payment-method-list",
-      data: { customerID: customerID },
-    });
-    setPaymentMethodList(paymentMethodListResponse.data.paymentMethodList);
-    console.log(paymentMethodListResponse.data.paymentMethodList);
-  }, [customerID]);
-
-  //get and set customer paymentMethod list of user from stripe
-  useEffect(() => {
-    getAndSetPaymentMethodList();
-  }, [getAndSetPaymentMethodList]);
-
+  
   return (
     <div className="container">
       <div className="grid checkout-product">
@@ -1058,10 +1028,9 @@ export default function CheckoutProduct() {
                       setUpIntentSecret={setUpIntentSecret}
                       setSetUpIntentSecret={setSetUpIntentSecret}
                       customerID={customerID}
-                      setCustomerID={setCustomerID}
                       paymentMethodList={paymentMethodList}
                       setPaymentMethodList={setPaymentMethodList}
-                      getAndSetPaymentMethodList={getAndSetPaymentMethodList}
+                      // getAndSetPaymentMethodList={getAndSetPaymentMethodList}
                     ></CardInfoModal>
                   )}
                 </div>

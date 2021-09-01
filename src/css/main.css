@@ -3841,6 +3841,7 @@ header {
   padding: 0 3rem;
   background: var(--while-color);
 }
+
 .user-profile__title {
   padding: 2.6rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
@@ -4185,11 +4186,16 @@ header {
   font-size: 1.4rem;
 }
 
-.user-profile__address-add {
+.user-profile__address-add,
+.user-profile__card-add {
   text-align: center;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
   color: var(--while-color);
+}
+
+.user-profile__card-add:hover {
+  opacity: 0.7;
 }
 
 .address-profile__user-container {
@@ -4441,6 +4447,53 @@ header {
 .address-profile__popup-apply:hover {
   opacity: 0.7;
 }
+
+.payment-profile__payment-content {
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.4rem;
+}
+
+.payment-profile__card-logo {
+  margin-right: 2rem;
+}
+.payment-profile__card-name {
+  margin-right: 2rem;
+}
+.payment-profile__card-default {
+}
+.payment-profile__card-spacer {
+  flex: 1;
+}
+.payment-profile__card-number {
+  margin-right: 24rem;
+}
+.payment-profile__btn-container {
+  display: flex;
+  align-items: center;
+}
+.payment-profile__card-delete {
+  margin-right: 2rem;
+  cursor: pointer;
+}
+
+.payment-profile__card-delete:hover {
+  color: var(--primary-color);
+}
+
+.payment-profile__default-btn {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: var(--primary-color);
+  color: var(--while-color);
+}
+
+.payment-profile__default-btn:hover {
+  opacity: 0.7;
+}
+
 .footer {
   background-color: #fbfbfb;
 }

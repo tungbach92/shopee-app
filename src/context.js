@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { auth, db, storage } from "./firebase";
 import _ from "lodash";
+import axios from "./axios";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -45,6 +46,9 @@ export default class ProductProvider extends Component {
     user: null,
     userAvatar: null,
     shipInfos: [],
+    paymentMethodList: [],
+    defaultPaymentMethodID: "",
+    customerID: "",
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
@@ -53,8 +57,103 @@ export default class ProductProvider extends Component {
       this.setOrderItems();
       this.setUserAvatar();
       this.getShipInfos();
+      this.getCustomerIdFromFirebase();
     });
   }
+
+  setDefaultPaymentMethodID = (defaultPaymentMethodID) => {
+    this.setState({ defaultPaymentMethodID });
+  };
+
+  getDefaultPaymentMethodID = () => {
+    const customerID = this.state.customerID;
+    if (customerID) {
+      axios({
+        method: "POST",
+        url: "/retrieve-customer-by-id",
+        data: { customerID: customerID },
+      }).then((res) => {
+        const defaultPaymentMethodID =
+          res.data.customer.invoice_settings.default_payment_method;
+        this.setState({ defaultPaymentMethodID });
+      });
+    }
+  };
+
+  updateDefaultPaymentMethodIDToFirebase = (paymentMethodID) => {
+    const customerID = this.state.customerID;
+    if (customerID) {
+      axios({
+        method: "POST",
+        url: "/update-customer-payment-method",
+        data: { customerID: customerID, paymentMethodID: paymentMethodID },
+      }).then((res) => {
+        const defaultPaymentMethodID =
+          res.data.customer.invoice_settings.default_payment_method;
+        this.setState({ defaultPaymentMethodID });
+      });
+    }
+  };
+
+  setPaymentMethodList = (paymentMethodList) => {
+    this.setState({ paymentMethodList });
+  };
+
+  getPaymentMethodList = async () => {
+    const customerID = this.state.customerID;
+    if (customerID) {
+      const paymentMethodListResponse = await axios({
+        method: "POST",
+        url: "/get-payment-method-list",
+        data: { customerID: customerID },
+      });
+      this.setState({
+        paymentMethodList: paymentMethodListResponse.data.paymentMethodList,
+      });
+    }
+  };
+
+  setCustomerID = (customerID) => {
+    this.setState({ customerID });
+  };
+
+  updateCustomerIdToFirebase = (customerID) => {
+    const user = this.state.user;
+    if (user) {
+      db.collection("users")
+        .doc(user?.uid)
+        .set({
+          customerID: customerID,
+        })
+        .then(() => {
+          this.setState({ customerID });
+        });
+    }
+  };
+
+  getCustomerIdFromFirebase = () => {
+    const user = this.state.user;
+    if (user) {
+      db.collection("users")
+        .doc(user?.uid)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const customerID = doc.data().customerID;
+            if (customerID) {
+              this.setState({ customerID }, () => {
+                this.getPaymentMethodList();
+                this.getDefaultPaymentMethodID();
+              });
+            }
+          }
+        });
+    }
+  };
+
+  setPaymentMethodList = (paymentMethodList) => {
+    this.setState({ paymentMethodList });
+  };
 
   setShipInfos = (shipInfos) => {
     this.setState({ shipInfos });
@@ -976,6 +1075,11 @@ export default class ProductProvider extends Component {
           setUserAvatar: this.setUserAvatar,
           setShipInfos: this.setShipInfos,
           updateShipInfoToFirebase: this.updateShipInfoToFirebase,
+          updateCustomerIdToFirebase: this.updateCustomerIdToFirebase,
+          setPaymentMethodList: this.setPaymentMethodList,
+          getPaymentMethodList: this.getPaymentMethodList,
+          updateDefaultPaymentMethodIDToFirebase:
+            this.updateDefaultPaymentMethodIDToFirebase,
         }}
       >
         {this.props.children}
