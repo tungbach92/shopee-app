@@ -1,15 +1,34 @@
 import React, { useContext, useState } from "react";
 import { ProductContext } from "../context";
-import axios from "../axios";
-
-const PaymentSmallContent = () => {
+import useModal from "../hooks/useModal";
+import PopupModal from "./PopupModal";
+const PaymentSmallContent = ({ isAccountPage }) => {
   const {
     paymentMethodList,
+    setPaymentMethodList,
     customerID,
+    getPaymentMethodList,
     defaultPaymentMethodID,
     updateDefaultPaymentMethodIDToFirebase,
+    getCardImgByBrand,
+    detachPaymentMethod,
   } = useContext(ProductContext);
+  const [paymentMethodID, setPaymentMethodID] = useState();
+  const { isPopupShowing, togglePopup } = useModal();
+  const handlePaymentDeleteClick = (id) => {
+    setPaymentMethodID(id);
+    togglePopup(!isPopupShowing);
+  };
+
+  const handlePaymentDeleteTrue = (id) => {
+    detachPaymentMethod(id);
+    getPaymentMethodList();
+  };
+
   const handleDefaultClick = (paymentMethodID) => {
+    if (paymentMethodID === defaultPaymentMethodID) {
+      return;
+    }
     updateDefaultPaymentMethodIDToFirebase(paymentMethodID);
   };
   return (
@@ -23,28 +42,58 @@ const PaymentSmallContent = () => {
         </div>
       </div>
       <div className="payment-profile__payment-container">
-        {paymentMethodList.map((item, index) => (
-          <div key={index} className="payment-profile__payment-content">
-            <div className="payment-profile__card-logo">{item.card.brand}</div>
-            <div className="payment-profile__card-name">{item.card.brand}</div>
-            {item.id === defaultPaymentMethodID && (
-              <div className="payment-profile__card-default">default</div>
-            )}
-            <div className="payment-profile__card-spacer"></div>
-            <div className="payment-profile__card-number">
-              **** **** **** {item.card.last4}
+        {paymentMethodList.length > 0 ? (
+          paymentMethodList.map((item, index) => (
+            <div key={index} className="payment-profile__payment-content">
+              <img
+                src={getCardImgByBrand(item.card.brand)}
+                alt="card-brand"
+                className="payment-profile__card-logo"
+              />
+              <div className="payment-profile__card-name">
+                {item.card.brand}
+              </div>
+              {item.id === defaultPaymentMethodID && (
+                <div className="payment-profile__card-default">Mặc định</div>
+              )}
+              <div className="payment-profile__card-spacer"></div>
+              <div className="payment-profile__card-number">
+                **** **** **** {item.card.last4}
+              </div>
+              <div className="payment-profile__btn-container">
+                <div
+                  onClick={() => handlePaymentDeleteClick(item.id)}
+                  className="payment-profile__card-delete"
+                >
+                  Xóa
+                </div>
+                {isPopupShowing && (
+                  <PopupModal
+                    isAccountPage={isAccountPage}
+                    isPopupShowing={isPopupShowing}
+                    togglePopup={togglePopup}
+                    paymentMethodID={paymentMethodID}
+                    handlePaymentDeleteTrue={handlePaymentDeleteTrue}
+                  ></PopupModal>
+                )}
+                <button
+                  onClick={() => handleDefaultClick(item.id)}
+                  className={
+                    item.id === defaultPaymentMethodID
+                      ? "btn payment-profile__default-btn payment-profile__default-btn--disabled "
+                      : "btn payment-profile__default-btn"
+                  }
+                >
+                  Thiết lập mặc định
+                </button>
+              </div>
             </div>
-            <div className="payment-profile__btn-container">
-              <div className="payment-profile__card-delete">Xóa</div>
-              <button
-                onClick={() => handleDefaultClick(item.id)}
-                className="btn payment-profile__default-btn"
-              >
-                Thiết lập mặc định
-              </button>
-            </div>
+          ))
+        ) : (
+          <div className="payment-profile__payment-empty">
+            Bạn chưa liên kết thẻ
           </div>
-        ))}
+        )}
       </div>
     </>
   );

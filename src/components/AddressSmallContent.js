@@ -136,8 +136,6 @@ const AddressSmallContent = ({ isAccountPage }) => {
               handleDistrictChoose={handleDistrictChoose}
               handleProvinceChoose={handleProvinceChoose}
               handleWardChoose={handleWardChoose}
-              fullAddress={fullAddress}
-              setFullAddress={setFullAddress}
               isAddressAddShowing={isAddressAddShowing}
               toggleAddressAdd={toggleAddressAdd}
               shipInfoIndex={shipInfoIndex}

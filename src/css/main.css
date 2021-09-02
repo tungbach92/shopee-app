@@ -4456,21 +4456,39 @@ header {
   font-size: 1.4rem;
 }
 
+.payment-profile__payment-empty {
+  padding: 2rem 0;
+  text-align: center;
+}
+
 .payment-profile__card-logo {
   margin-right: 2rem;
+  padding: 1rem 0.6rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .payment-profile__card-name {
   margin-right: 2rem;
+  text-transform: uppercase;
+  font-size: 1.6rem;
 }
 .payment-profile__card-default {
+  padding: 0.2rem 0.4rem;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  background-color: #00bfa5;
+  border-radius: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--while-color);
 }
 .payment-profile__card-spacer {
   flex: 1;
 }
 .payment-profile__card-number {
-  margin-right: 24rem;
+  font-size: 1.6rem;
+  font-family: OCR A;
+  font-weight: 600;
 }
 .payment-profile__btn-container {
+  margin-left: 10rem;
   display: flex;
   align-items: center;
 }
@@ -4489,7 +4507,12 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
-
+.payment-profile__default-btn--disabled {
+  background-color: var(--while-color);
+  color: #ccc;
+  cursor: not-allowed;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+}
 .payment-profile__default-btn:hover {
   opacity: 0.7;
 }

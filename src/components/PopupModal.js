@@ -12,6 +12,8 @@ export default function PopupModal(props) {
     isUpdatePasswordSuccess,
     handleDeleteTrue,
     shipInfoIndex,
+    paymentMethodID,
+    handlePaymentDeleteTrue,
     isCartPageLoaded,
     isVariationChoose,
     selectedItems,
@@ -41,10 +43,16 @@ export default function PopupModal(props) {
       }
     }
 
-    if (isAccountPage && typeof shipInfoIndex === "undefined") {
+    if (
+      isAccountPage &&
+      typeof shipInfoIndex === "undefined" &&
+      typeof paymentMethodID === "undefined"
+    ) {
       history.replace("/user");
     } else if (isAccountPage && typeof shipInfoIndex !== "undefined") {
       handleDeleteTrue(shipInfoIndex);
+    } else if (isAccountPage && typeof paymentMethodID !== "undefined") {
+      handlePaymentDeleteTrue(paymentMethodID);
     }
   };
 
@@ -60,6 +68,8 @@ export default function PopupModal(props) {
               ? "Cập nhật mật khẩu thành công"
               : isAccountPage && typeof shipInfoIndex !== "undefined"
               ? "Bạn chắc chắn muốn xóa địa chỉ này?"
+              : isAccountPage && typeof paymentMethodID !== "undefined"
+              ? "Bạn chắc chắn muốn xóa thẻ này?"
               : isAccountPage &&
                 !isAnyUserInfoUpdateFail &&
                 typeof isAnyUserInfoUpdateFail !== "undefined"
@@ -80,14 +90,16 @@ export default function PopupModal(props) {
           </span>
         </div>
         <div className="cart-product__popup-footer">
-          {isAccountPage && typeof shipInfoIndex !== "undefined" && (
-            <button
-              className="btn cart-product__popup-cancle"
-              onClick={handleBackClick}
-            >
-              Back
-            </button>
-          )}
+          {isAccountPage &&
+            (typeof shipInfoIndex !== "undefined" ||
+              typeof paymentMethodID !== "undefined") && (
+              <button
+                className="btn cart-product__popup-cancle"
+                onClick={handleBackClick}
+              >
+                Back
+              </button>
+            )}
 
           <button
             onClick={handleApplyClick}

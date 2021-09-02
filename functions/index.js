@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
@@ -19,6 +20,22 @@ app.use(express.json());
 
 // API routes
 // Create setup Intent => return client secret
+
+app.post("/detach-payment-method", async (req, res) => {
+  try {
+    const paymentMethodID = req.body.paymentMethodID;
+    const paymentMethodResult = await stripe.paymentMethods.detach(
+      paymentMethodID
+    );
+    res.send({
+      paymentMethod: paymentMethodResult,
+    });
+  } catch (error) {
+    res.send({
+      error: error.message,
+    });
+  }
+});
 
 app.post("/update-customer-payment-method", async (req, res) => {
   try {

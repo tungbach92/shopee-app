@@ -2,6 +2,12 @@ import React, { Component } from "react";
 import { auth, db, storage } from "./firebase";
 import _ from "lodash";
 import axios from "./axios";
+import cimbImg from "./img/ic_cimb_bank@4x.png";
+import mbImg from "./img/ic_MBBank@4x.png";
+import visaImg from "./img/visa.png";
+import masterImg from "./img/master.png";
+import jcbImg from "./img/jcb.png";
+import expressImg from "./img/express.png";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -61,6 +67,21 @@ export default class ProductProvider extends Component {
     });
   }
 
+  getCardImgByBrand = (brand) => {
+    if (brand === "visa") {
+      return visaImg;
+    }
+    if (brand === "american Express") {
+      return expressImg;
+    }
+    if (brand === "mastercard") {
+      return masterImg;
+    }
+    if (brand === "jcb") {
+      return jcbImg;
+    }
+  };
+
   setDefaultPaymentMethodID = (defaultPaymentMethodID) => {
     this.setState({ defaultPaymentMethodID });
   };
@@ -108,16 +129,31 @@ export default class ProductProvider extends Component {
     this.setState({ paymentMethodList });
   };
 
-  getPaymentMethodList = async () => {
+  getPaymentMethodList = () => {
     const customerID = this.state.customerID;
     if (customerID) {
-      const paymentMethodListResponse = await axios({
+      axios({
         method: "POST",
         url: "/get-payment-method-list",
         data: { customerID: customerID },
+      }).then((res) => {
+        const paymentMethodList = res.data.paymentMethodList;
+        this.setState({ paymentMethodList });
       });
-      this.setState({
-        paymentMethodList: paymentMethodListResponse.data.paymentMethodList,
+    }
+  };
+
+  detachPaymentMethod = (paymentMethodID) => {
+    const customerID = this.state.customerID;
+    if (customerID) {
+      axios({
+        method: "POST",
+        url: "/detach-payment-method",
+        data: { paymentMethodID: paymentMethodID, customerID: customerID },
+      }).then((res) => {
+        // console.log(res.data.paymentMethod);
+        console.log("detach payment method successfully");
+        this.getPaymentMethodList();
       });
     }
   };
@@ -158,10 +194,6 @@ export default class ProductProvider extends Component {
           }
         });
     }
-  };
-
-  setPaymentMethodList = (paymentMethodList) => {
-    this.setState({ paymentMethodList });
   };
 
   setShipInfos = (shipInfos) => {
@@ -1089,6 +1121,8 @@ export default class ProductProvider extends Component {
           getPaymentMethodList: this.getPaymentMethodList,
           updateDefaultPaymentMethodIDToFirebase:
             this.updateDefaultPaymentMethodIDToFirebase,
+          getCardImgByBrand: this.getCardImgByBrand,
+          detachPaymentMethod: this.detachPaymentMethod,
         }}
       >
         {this.props.children}
