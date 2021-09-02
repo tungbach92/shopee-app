@@ -275,7 +275,7 @@ export default function CardInfoModal(props) {
               Trở lại
             </button>
             <button
-              disabled={processing || successed}
+              disabled={processing || successed} //fix
               type="submit"
               className="btn cart-product__modal-apply"
             >

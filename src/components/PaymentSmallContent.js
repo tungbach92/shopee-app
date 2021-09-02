@@ -22,7 +22,6 @@ const PaymentSmallContent = ({ isAccountPage }) => {
 
   const handlePaymentDeleteTrue = (id) => {
     detachPaymentMethod(id);
-    getPaymentMethodList();
   };
 
   const handleDefaultClick = (paymentMethodID) => {
