@@ -2702,14 +2702,17 @@ header {
 }
 
 .checkout-product__notify-label {
+  align-self: flex-start;
   padding-left: 2.6rem;
   font-size: 1.8rem;
   font-weight: 540;
 }
-.checkout-product__notify-item {
+.checkout-product__card-list {
   margin-left: 14rem;
-  display: flex;
-  align-items: center;
+}
+
+.checkout-product__card-item {
+  margin-bottom: 1.6rem;
 }
 
 .checkout-product__immediatepay-notify {
@@ -2721,7 +2724,6 @@ header {
   padding: 1rem;
   border: 1px solid rgba(0, 0, 0, 0.09);
   display: inline-flex;
-  margin-left: 1rem;
   color: #05a;
 }
 
@@ -2735,16 +2737,20 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
 .checkout-product__card-type {
-  margin-left: 1rem;
-  font-size: 1.4rem;
-  text-transform: capitalize;
+  margin-left: 1.6rem;
+  font-size: 1.6rem;
+  text-transform: uppercase;
 }
 .checkout-product__card-numb {
-  margin-left: 1rem;
+  margin-left: 1.6rem;
   font-size: 1.6rem;
   font-family: OCR A;
   font-weight: 600;
   cursor: pointer;
+}
+
+.checkout-product__radio-card{
+  color: var(--primary-color);
 }
 
 .checkout-product__add-icon {

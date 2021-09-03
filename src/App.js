@@ -40,7 +40,13 @@ function App() {
           {user ? <Order /> : <Login />}
         </Route>
         <Route path={["/user", "/user/account"]} component={Account}>
-          {user ? <Account /> : <Login />}
+          {user ? (
+            <Elements stripe={stripePromise}>
+              <Account />{" "}
+            </Elements>
+          ) : (
+            <Login />
+          )}
         </Route>
         <Route exact path="/checkout">
           {user ? (

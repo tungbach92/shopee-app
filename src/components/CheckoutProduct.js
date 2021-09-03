@@ -57,7 +57,11 @@ export default function CheckoutProduct() {
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
     saveCheckoutItemsToFirebase,
+    paymentMethodList,
+    getCardImgByBrand,
     customerID,
+    defaultPaymentMethodID,
+    updateDefaultPaymentMethodIDToFirebase,
   } = useContext(ProductContext);
 
   const shipUnitList = useMemo(() => {
@@ -90,8 +94,6 @@ export default function CheckoutProduct() {
     setShipPriceProvince(shipPrice);
   }, [setShipPriceProvince, shipInfos]);
 
-  const [cardName, setCardName] = useState("");
-  const [cardAddress, setCardAddress] = useState("");
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
@@ -102,11 +104,9 @@ export default function CheckoutProduct() {
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
   const [card4digits, setCard4digits] = useState("");
   const [cardBrand, setCardBrand] = useState("");
-  const [paymentMethodID, setPaymentMethodID] = useState();
   const [setUpIntentSecret, setSetUpIntentSecret] = useState();
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
-  const [paymentMethodList, setPaymentMethodList] = useState([]);
 
   const {
     name,
@@ -316,6 +316,10 @@ export default function CheckoutProduct() {
     setIsPaymentMethod(!isPaymentMethod);
   };
 
+  const handlePaymentDefaultChange = (paymentMethodID) => {
+    updateDefaultPaymentMethodIDToFirebase(paymentMethodID);
+  };
+
   const handleChange = (e) => {
     e.target.value = e.target.value
       .replace(/[^0-9.]/g, "")
@@ -376,7 +380,11 @@ export default function CheckoutProduct() {
             shipUnit,
             voucher
           )}`,
-          data: { paymentMethodID, customerID, email: user.email }, // sub currency usd-> cent *100
+          data: {
+            paymentMethodID: defaultPaymentMethodID,
+            customerID,
+            email: user.email,
+          }, // sub currency usd-> cent *100
           // paymentMethodID was choose and set from radio
         }).then((result) => {
           if (
@@ -403,7 +411,7 @@ export default function CheckoutProduct() {
                   // hideEl(".requires-auth");
                   // showEl(".requires-pm");
                   alert(
-                    `${result.data.card.brand} ****${result.data.card.last4} authentication failed. Please provide an new card or try again.`
+                    `${result.data.card.brand} **** ${result.data.card.last4} authentication failed. Please provide an new card or try again.`
                   );
                   setSucceeded(false);
                   setProcessing(false);
@@ -465,21 +473,6 @@ export default function CheckoutProduct() {
     setVoucher({});
   };
 
-  const getCardImgByType = (type) => {
-    if (type === "Visa") {
-      return visaImg;
-    }
-    if (type === "American Express") {
-      return expressImg;
-    }
-    if (type === "Mastercard") {
-      return masterImg;
-    }
-    if (type === "Jcb") {
-      return jcbImg;
-    }
-  };
-  
   return (
     <div className="container">
       <div className="grid checkout-product">
@@ -978,26 +971,35 @@ export default function CheckoutProduct() {
                 {isImmediatePayment ? "Thanh toán khi nhận hàng" : ""}
               </span>
               {isCardPayment && (
-                <div className="checkout-product__notify-item">
-                  {card4digits && cardBrand && (
-                    <>
-                      <img
-                        src={getCardImgByType(cardBrand)} //if cardInfo.number => img
-                        alt="card"
-                        className="checkout-product__card-img"
-                      ></img>
-                      <span className="checkout-product__card-type">
-                        {cardBrand}
-                      </span>
-                      <span
-                        onClick={handleShowCardInfo}
-                        className="checkout-product__card-numb"
-                      >
-                        ***
-                        {card4digits}
-                      </span>
-                    </>
-                  )}
+                <div className="checkout-product__card-list">
+                  {paymentMethodList.length > 0 &&
+                    paymentMethodList.map((item, index) => (
+                      <div key={index} className="checkout-product__card-item">
+                        <input
+                          type="radio"
+                          id={index}
+                          name="payment"
+                          value={index}
+                          checked={item.id === defaultPaymentMethodID}
+                          onChange={() => handlePaymentDefaultChange(item.id)}
+                          className="checkout-product__radio-card"
+                        />
+                        <img
+                          src={getCardImgByBrand(item.card.brand)} //if cardInfo.number => img
+                          alt="card"
+                          className="checkout-product__card-img"
+                        ></img>
+                        <span className="checkout-product__card-type">
+                          {item.card.brand}
+                        </span>
+                        <span
+                          onClick={handleShowCardInfo}
+                          className="checkout-product__card-numb"
+                        >
+                          **** {item.card.last4}
+                        </span>
+                      </div>
+                    ))}
                   <button
                     onClick={handleShowCardInfo}
                     className="btn checkout-product__add-item"
@@ -1016,21 +1018,8 @@ export default function CheckoutProduct() {
                   </button>
                   {isCardInfoShowing && (
                     <CardInfoModal
-                      cardName={cardName}
-                      setCardName={setCardName}
-                      cardAddress={cardAddress}
-                      setCardAddress={setCardAddress}
                       isCardInfoShowing={isCardInfoShowing}
                       toggleCardInfo={toggleCardInfo}
-                      setCard4digits={setCard4digits}
-                      setCardBrand={setCardBrand}
-                      setPaymentMethodID={setPaymentMethodID}
-                      setUpIntentSecret={setUpIntentSecret}
-                      setSetUpIntentSecret={setSetUpIntentSecret}
-                      customerID={customerID}
-                      paymentMethodList={paymentMethodList}
-                      setPaymentMethodList={setPaymentMethodList}
-                      // getAndSetPaymentMethodList={getAndSetPaymentMethodList}
                     ></CardInfoModal>
                   )}
                 </div>

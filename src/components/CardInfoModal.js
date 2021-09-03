@@ -5,27 +5,20 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../axios";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
-export default function CardInfoModal(props) {
+
+export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const stripe = useStripe();
   const elements = useElements();
-  const { user } = useContext(ProductContext);
   const {
-    cardName,
-    setCardName,
-    cardAddress,
-    setCardAddress,
-    isCardInfoShowing,
-    toggleCardInfo,
-    setCard4digits,
-    setCardBrand,
-    setPaymentMethodID,
+    user,
     customerID,
-    paymentMethodList,
-    setPaymentMethodList,
-    getAndSetPaymentMethodList,
     updateCustomerIdToFirebase,
-  } = props;
+    paymentMethodList,
+    getPaymentMethodList,
+  } = useContext(ProductContext);
 
+  const [cardName, setCardName] = useState("");
+  const [cardAddress, setCardAddress] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -50,6 +43,8 @@ export default function CardInfoModal(props) {
     e.preventDefault();
     setProcessing(true);
     if (!stripe || !elements) {
+      setProcessing(false);
+      console.log("There is no stripe and elements hook");
       return;
     }
     const cardEl = elements.getElement(CardElement);
@@ -105,18 +100,11 @@ export default function CardInfoModal(props) {
         setUpIntentResult.setupIntent.status === "succeeded"
       ) {
         //set default paymentMethodID after card input
-        const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
-        console.log(setUpIntentResult);
-        console.log("create payment method success", paymentMethodID);
-        setPaymentMethodID(paymentMethodID);
+        // const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
+        // console.log("create payment method success", paymentMethodID);
+        // setPaymentMethodID(paymentMethodID);
 
-        // getAndSetPaymentMethodList();
-
-        const token = await stripe.createToken(cardEl);
-        console.log(token);
-        setCard4digits(token.token.card.last4);
-        setCardBrand(token.token.card.brand);
-
+        getPaymentMethodList();
         setProcessing(false);
         toggleCardInfo(!isCardInfoShowing);
         window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });

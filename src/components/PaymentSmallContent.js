@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
+import CardInfoModal from "./CardInfoModal";
 const PaymentSmallContent = ({ isAccountPage }) => {
   const {
     paymentMethodList,
@@ -14,7 +15,13 @@ const PaymentSmallContent = ({ isAccountPage }) => {
     detachPaymentMethod,
   } = useContext(ProductContext);
   const [paymentMethodID, setPaymentMethodID] = useState();
-  const { isPopupShowing, togglePopup } = useModal();
+  const { isPopupShowing, togglePopup, isCardInfoShowing, toggleCardInfo } =
+    useModal();
+
+  const handleAddCardClick = () => {
+    toggleCardInfo(!isCardInfoShowing);
+  };
+
   const handlePaymentDeleteClick = (id) => {
     setPaymentMethodID(id);
     togglePopup(!isPopupShowing);
@@ -36,7 +43,18 @@ const PaymentSmallContent = ({ isAccountPage }) => {
         <div className="user-profile__title">
           <div className="user-profile__label">
             Thẻ Tín Dụng/Ghi Nợ
-            <button className="btn user-profile__card-add">Thêm thẻ mới</button>
+            <button
+              onClick={handleAddCardClick}
+              className="btn user-profile__card-add"
+            >
+              Thêm thẻ mới
+            </button>
+            {isCardInfoShowing && (
+              <CardInfoModal
+                isCardInfoShowing={isCardInfoShowing}
+                toggleCardInfo={toggleCardInfo}
+              ></CardInfoModal>
+            )}
           </div>
         </div>
       </div>
