@@ -22,6 +22,8 @@ export default function PopupModal(props) {
     isPopupShowing,
     togglePopup,
     paymentMethod,
+    defaultPaymentMethodID,
+    isCardPayment,
     succeeded,
   } = props;
 
@@ -82,8 +84,9 @@ export default function PopupModal(props) {
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0
               ? "Vui lòng chọn phương thức thanh toán."
-              : isCardInfoMustFilled
-              ? "Vui lòng điền đầy đủ thông tin Thẻ Tín dụng/Ghi nợ"
+              :  isCardPayment &&
+              typeof defaultPaymentMethodID === "undefined"
+              ? "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ"
               : succeeded
               ? "Đặt hàng thành công"
               : "Có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ tổng đài"}

@@ -176,6 +176,66 @@ export default class ProductProvider extends Component {
     }
   };
 
+  updateCustomerBillingAddress = (tempShipInfos) => {
+    const {
+      customerID,
+      paymentMethodList,
+      defaultPaymentMethodID,
+      shipInfos,
+      user,
+    } = this.state;
+    if (customerID && paymentMethodList && defaultPaymentMethodID) {
+      let defaultshipInfo, cardName, userName;
+
+      shipInfos.forEach((item) => {
+        if (item.isDefault) {
+          defaultshipInfo = { ...item };
+        }
+      });
+      
+      paymentMethodList.forEach((item) => {
+        if (item.id === defaultPaymentMethodID) {
+          cardName = item.billing_details.name;
+        }
+      });
+
+      if (user) {
+        db.collection("users")
+          .doc(user?.uid)
+          .collection("infos")
+          .doc("infoItems")
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              userName = doc.data().name;
+            }
+          });
+      }
+
+      axios({
+        method: "POST",
+        url: "/update-customer-billing-address",
+        data: {
+          customerID: customerID,
+          userName: cardName ? cardName : userName,
+          shipName: defaultshipInfo.name,
+          phone: defaultshipInfo.phone,
+          province: defaultshipInfo.province.name,
+          district: defaultshipInfo.district.name,
+          ward: defaultshipInfo.ward.name,
+          street: defaultshipInfo.street,
+        },
+      })
+        .then((res) => {
+          console.log(res.data.customer);
+          console.log("update billing success");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  };
+
   getCustomerIdFromFirebase = () => {
     const user = this.state.user;
     if (user) {
@@ -1123,6 +1183,7 @@ export default class ProductProvider extends Component {
             this.updateDefaultPaymentMethodIDToFirebase,
           getCardImgByBrand: this.getCardImgByBrand,
           detachPaymentMethod: this.detachPaymentMethod,
+          updateCustomerBillingAddress: this.updateCustomerBillingAddress,
         }}
       >
         {this.props.children}

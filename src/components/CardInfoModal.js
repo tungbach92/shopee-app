@@ -15,6 +15,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
     updateCustomerIdToFirebase,
     paymentMethodList,
     getPaymentMethodList,
+    shipInfos,
   } = useContext(ProductContext);
 
   const [cardName, setCardName] = useState("");
@@ -69,7 +70,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         method: "POST",
         url: "/create-setup-intent",
         data: {
-          name: name,
+          name: cardName,
           email: user.email,
           customerID: customerID,
         },
@@ -82,12 +83,26 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
 
       //When the SetupIntent succeeds
       // The resulting PaymentMethod ID (in result.setupIntent.payment_method) will be saved to the provided Customer.
+      let defaultshipInfo;
+      shipInfos.forEach((item) => {
+        if (item.isDefault) {
+          defaultshipInfo = { ...item };
+        }
+      });
       const setUpIntentResult = await stripe.confirmCardSetup(
         response.data.setUpIntentSecret,
         {
           payment_method: {
             card: cardEl,
             billing_details: {
+              address: {
+                state: defaultshipInfo.province.name,
+                city: defaultshipInfo.district.name,
+                line1: defaultshipInfo.ward.name,
+                line2: defaultshipInfo.street,
+                country: "VN",
+                postal_code: 10000,
+              },
               name: cardName,
               email: user.email,
               phone: phone,

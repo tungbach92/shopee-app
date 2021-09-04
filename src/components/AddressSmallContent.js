@@ -7,8 +7,12 @@ import AddressAddPopup from "./AddressAddPopup";
 import PopupModal from "./PopupModal";
 
 const AddressSmallContent = ({ isAccountPage }) => {
-  const { shipInfos, setShipInfos, updateShipInfoToFirebase } =
-    useContext(ProductContext);
+  const {
+    shipInfos,
+    setShipInfos,
+    updateShipInfoToFirebase,
+    updateCustomerBillingAddress,
+  } = useContext(ProductContext);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState();
   const { isPopupShowing, togglePopup } = useModal();
@@ -50,6 +54,7 @@ const AddressSmallContent = ({ isAccountPage }) => {
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
     setShipInfos(tempShipInfos);
     updateShipInfoToFirebase(tempShipInfos);
+    updateCustomerBillingAddress(tempShipInfos);
   };
 
   const handleAddressAddClick = () => {

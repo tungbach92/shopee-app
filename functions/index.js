@@ -21,39 +21,6 @@ app.use(express.json());
 // API routes
 // Create setup Intent => return client secret
 
-app.post("/detach-payment-method", async (req, res) => {
-  try {
-    const paymentMethodID = req.body.paymentMethodID;
-    const paymentMethodResult = await stripe.paymentMethods.detach(
-      paymentMethodID
-    );
-    res.send({
-      paymentMethod: paymentMethodResult,
-    });
-  } catch (error) {
-    res.send({
-      error: error.message,
-    });
-  }
-});
-
-app.post("/update-customer-payment-method", async (req, res) => {
-  try {
-    const customerID = req.body.customerID;
-    const paymentMethodID = req.body.paymentMethodID;
-    const customerResult = await stripe.customers.update(customerID, {
-      invoice_settings: {
-        default_payment_method: paymentMethodID,
-      },
-    });
-    res.send({ customer: customerResult });
-  } catch (error) {
-    res.send({
-      error: error.message,
-    });
-  }
-});
-
 app.post("/retrieve-customer-by-id", async (req, res) => {
   try {
     const customerID = req.body.customerID;
@@ -107,12 +74,29 @@ app.post("/create-setup-intent", async (request, response) => {
   try {
     const name = request.body.name;
     const email = request.body.email;
+    const phone = request.body.phone;
+    const fullAddress = request.body.fullAddress;
     const customerID = request.body.customerID;
+    const province = request.body.province;
+    const district = request.body.district;
+    const street = request.body.street;
     let customer;
     if (!customerID) {
       customer = await stripe.customers.create({
         name: name,
         email: email,
+        address: {
+          state: province,
+          city: district,
+          line1: street,
+          postal_code: 10000,
+          country: "VN",
+        },
+        shipping: {
+          address: fullAddress,
+          name: name,
+          phone: phone,
+        },
       });
     }
     const intent = await stripe.setupIntents.create({
@@ -131,14 +115,88 @@ app.post("/create-setup-intent", async (request, response) => {
   }
 });
 
+app.post("/detach-payment-method", async (req, res) => {
+  try {
+    const paymentMethodID = req.body.paymentMethodID;
+    const paymentMethodResult = await stripe.paymentMethods.detach(
+      paymentMethodID
+    );
+    res.send({
+      paymentMethod: paymentMethodResult,
+    });
+  } catch (error) {
+    res.send({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/update-customer-payment-method", async (req, res) => {
+  try {
+    const customerID = req.body.customerID;
+    const paymentMethodID = req.body.paymentMethodID;
+    const customerResult = await stripe.customers.update(customerID, {
+      invoice_settings: {
+        default_payment_method: paymentMethodID,
+      },
+    });
+    res.send({ customer: customerResult });
+  } catch (error) {
+    res.send({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/update-customer-billing-address", async (request, response) => {
+  try {
+    const {
+      customerID,
+      userName,
+      shipName,
+      phone,
+      province,
+      district,
+      street,
+      ward,
+    } = request.body;
+    const customerResult = await stripe.customers.update(customerID, {
+      name: userName,
+      address: {
+        state: province,
+        city: district,
+        line1: ward,
+        line2: street,
+        postal_code: 10000,
+        country: "VN",
+      },
+      shipping: {
+        address: {
+          state: province,
+          city: district,
+          line1: ward,
+          line2: street,
+          postal_code: 10000,
+          country: "VN",
+        },
+        name: shipName,
+        phone: phone,
+      },
+    });
+    response.send({ customer: customerResult });
+  } catch (error) {
+    response.send({
+      error: error.message,
+    });
+  }
+});
+
 // Charge by creating payment Intent
 app.post("/charge-card-off-session", async (request, response) => {
   let total;
   try {
     total = request.query.total;
-    const paymentMethodID = request.body.paymentMethodID;
-    const customerID = request.body.customerID;
-    const email = request.body.email;
+    const { paymentMethodID, customerID, email, shipping } = request.body;
     // no need cause paymentmethod will auto attach to provide customer above
     // const paymentMethodID = request.body.paymentMethodID;
     // const paymentMethod = await stripe.paymentMethods.attach(paymentMethodID, {
@@ -150,6 +208,7 @@ app.post("/charge-card-off-session", async (request, response) => {
       currency: "vnd",
       // using first payment method in list
       // payment_method: paymentMethods.data[0].id,
+      shipping: shipping,
       payment_method: paymentMethodID,
       customer: customerID,
       receipt_email: email,

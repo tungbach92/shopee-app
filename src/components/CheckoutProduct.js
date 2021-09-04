@@ -62,6 +62,7 @@ export default function CheckoutProduct() {
     customerID,
     defaultPaymentMethodID,
     updateDefaultPaymentMethodIDToFirebase,
+    updateCustomerBillingAddress,
   } = useContext(ProductContext);
 
   const shipUnitList = useMemo(() => {
@@ -152,12 +153,6 @@ export default function CheckoutProduct() {
     isAddressAddShowing,
     toggleAddressAdd,
   } = useModal();
-
-  //
-  let isCardInfoMustFilled = false;
-  if (!card4digits && !cardBrand && isCardPayment === true) {
-    isCardInfoMustFilled = true;
-  }
 
   // useEffect(() => {
   //   //generate the special stripe secret which allow us to charge customer
@@ -354,6 +349,7 @@ export default function CheckoutProduct() {
   const handleShipInfoApply = () => {
     setIsShipInfoChoosing(!isShipInfoChoosing);
     updateShipInfoToFirebase(shipInfos);
+    updateCustomerBillingAddress(shipInfos);
   };
 
   const handleShipUnitModal = (e) => {
@@ -368,11 +364,16 @@ export default function CheckoutProduct() {
     if (
       isCardInfoShowing === false &&
       Object.keys(shipUnit).length > 0 &&
-      isCardInfoMustFilled === false &&
       paymentMethod.length > 0
     ) {
       setProcessing(true);
-      if (isCardPayment) {
+      if (isCardPayment && defaultPaymentMethodID) {
+        let defaultshipInfo;
+        shipInfos.forEach((item) => {
+          if (item.isDefault) {
+            defaultshipInfo = { ...item };
+          }
+        });
         axios({
           method: "POST",
           url: `/charge-card-off-session?total=${getItemsPriceFinal(
@@ -384,6 +385,18 @@ export default function CheckoutProduct() {
             paymentMethodID: defaultPaymentMethodID,
             customerID,
             email: user.email,
+            shipping: {
+              name: defaultshipInfo.name,
+              phone: defaultshipInfo.phone,
+              address: {
+                state: defaultshipInfo.province.name,
+                city: defaultshipInfo.district.name,
+                line1: defaultshipInfo.ward.name,
+                line2: defaultshipInfo.street,
+                country: "VN",
+                postal_code: 10000,
+              },
+            },
           }, // sub currency usd-> cent *100
           // paymentMethodID was choose and set from radio
         }).then((result) => {
@@ -449,6 +462,11 @@ export default function CheckoutProduct() {
             handleOrderSucceeded(result.data.paymentIntent);
           }
         });
+      } else if (
+        isCardPayment &&
+        typeof defaultPaymentMethodID === "undefined"
+      ) {
+        togglePopup(!isPopupShowing);
       } else {
         const paymentIntent = {
           id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
@@ -1129,8 +1147,9 @@ export default function CheckoutProduct() {
                 isPopupShowing={isPopupShowing}
                 togglePopup={togglePopup}
                 shipUnit={shipUnit}
-                isCardInfoMustFilled={isCardInfoMustFilled}
                 paymentMethod={paymentMethod}
+                isCardPayment={isCardPayment}
+                defaultPaymentMethodID={defaultPaymentMethodID}
                 setCheckoutProduct={setCheckoutProduct}
                 setCartProduct={setCartProduct}
                 succeeded={succeeded}
