@@ -171,6 +171,8 @@ app.post("/update-customer-billing-address", async (request, response) => {
         country: "VN",
       },
       shipping: {
+        name: shipName,
+        phone: phone,
         address: {
           state: province,
           city: district,
@@ -179,8 +181,6 @@ app.post("/update-customer-billing-address", async (request, response) => {
           postal_code: 10000,
           country: "VN",
         },
-        name: shipName,
-        phone: phone,
       },
     });
     response.send({ customer: customerResult });

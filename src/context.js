@@ -192,12 +192,12 @@ export default class ProductProvider extends Component {
           defaultshipInfo = { ...item };
         }
       });
-      
-      paymentMethodList.forEach((item) => {
-        if (item.id === defaultPaymentMethodID) {
-          cardName = item.billing_details.name;
-        }
-      });
+
+      // paymentMethodList.forEach((item) => {
+      //   if (item.id === defaultPaymentMethodID) {
+      //     cardName = item.billing_details.name;
+      //   }
+      // });
 
       if (user) {
         db.collection("users")
@@ -217,7 +217,7 @@ export default class ProductProvider extends Component {
         url: "/update-customer-billing-address",
         data: {
           customerID: customerID,
-          userName: cardName ? cardName : userName,
+          userName: userName,
           shipName: defaultshipInfo.name,
           phone: defaultshipInfo.phone,
           province: defaultshipInfo.province.name,

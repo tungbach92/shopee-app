@@ -385,7 +385,7 @@ export default function CheckoutProduct() {
             paymentMethodID: defaultPaymentMethodID,
             customerID,
             email: user.email,
-            shipping: {
+            shipping: { // shipping detail when confirm paymentIntent-> charge card
               name: defaultshipInfo.name,
               phone: defaultshipInfo.phone,
               address: {
