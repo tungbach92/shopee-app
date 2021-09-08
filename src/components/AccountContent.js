@@ -8,6 +8,7 @@ import EmailSmallContent from "./EmailSmallContent";
 import PasswordSmallContent from "./PasswordSmallContent";
 import AddressSmallContent from "./AddressSmallContent";
 import PaymentSmallContent from "./PaymentSmallContent";
+import OrderSmallContent from "./OrderSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
@@ -250,7 +251,7 @@ const AccountContent = ({ isAccountPage }) => {
               </div>
               <div className="user-profile__name">sfsb3fax26</div>
 
-              <div className="user-profile__name-btn">Sửa Hồ Sơ</div>
+              <Link to="/user/account/profile" className="user-profile__name-btn">Sửa Hồ Sơ</Link>
             </div>
             <div className="user-profile__category">
               <div className="user-profile__my-user">Tài Khoản Của Tôi</div>
@@ -278,7 +279,7 @@ const AccountContent = ({ isAccountPage }) => {
               >
                 Đổi mật khẩu
               </Link>
-              <Link to="/user/order" className="user-profile__order">
+              <Link to="/user/purchase" className="user-profile__order">
                 Đơn Mua
               </Link>
             </div>
@@ -504,6 +505,11 @@ const AccountContent = ({ isAccountPage }) => {
                 <PaymentSmallContent
                   isAccountPage={isAccountPage}
                 ></PaymentSmallContent>
+              </Route>
+              <Route path="/user/purchase/">
+                <OrderSmallContent
+                  isAccountPage={isAccountPage}
+                ></OrderSmallContent>
               </Route>
             </Switch>
           </div>

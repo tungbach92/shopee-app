@@ -3,28 +3,13 @@ import { ProductContext } from "../context";
 import classNames from "classnames";
 import { useContext } from "react";
 
-export default function PaginationItemNumber(props) {
+export default function PaginationItemNumber() {
   const context = useContext(ProductContext);
   let {
-    pageTotal,
-    similarPageTotal,
     pageIndex,
-    similarPageIndex,
-    handleClick,
-    calcPageTotals,
-    sortedSearchItems,
-    setPageTotal,
-  } = context;
-  if (props.similarDisPlay) {
-    pageTotal = similarPageTotal;
-    pageIndex = similarPageIndex;
-  }
-  useEffect(() => {
-    if (props.isSearchPage) {
-      const pageTotal = calcPageTotals(sortedSearchItems);
-      setPageTotal(pageTotal);
-    }
-  }, [calcPageTotals, props.isSearchPage, setPageTotal, sortedSearchItems]);
+    setPageIndex,
+    pageTotal,
+   } = context;
 
   let jsxArray = [];
   for (let index = 3; index <= pageTotal; index++) {
@@ -33,9 +18,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
-          data-value={index}
-          onClick={handleClick}
+          onClick={() => setPageIndex(index)}
           className={classNames("pagination-number", {
             "pagination-number--active": pageIndex === index,
           })}
@@ -54,9 +37,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
-          data-value={index}
-          onClick={handleClick}
+          onClick={() => setPageIndex(index)}
           className={classNames("pagination-number", {
             "pagination-number--active": pageIndex === index,
           })}
@@ -71,9 +52,7 @@ export default function PaginationItemNumber(props) {
       jsxArray.push(
         <li
           key={index}
-          data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
-          data-value={index}
-          onClick={handleClick}
+          onClick={() => setPageIndex(index)}
           className={classNames("pagination-number", {
             "pagination-number--active": pageIndex === index,
           })}
@@ -87,11 +66,7 @@ export default function PaginationItemNumber(props) {
   return (
     <>
       <li
-        data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
-        data-value="1"
-        onClick={(event) => {
-          handleClick(event);
-        }}
+        onClick={() => setPageIndex(1)}
         className={classNames("pagination-number", {
           "pagination-number--active": pageIndex === 1,
         })}
@@ -99,11 +74,7 @@ export default function PaginationItemNumber(props) {
         <div className="pagination-item__link">1</div>
       </li>
       <li
-        data-name={props.similarDisPlay ? "similarPageIndex" : "pageIndex"}
-        data-value="2"
-        onClick={(event) => {
-          handleClick(event);
-        }}
+        onClick={() => setPageIndex(2)}
         className={classNames("pagination-number", {
           "pagination-number--active": pageIndex === 2,
         })}

@@ -22,8 +22,8 @@ export default class ProductFilter extends Component {
       filter,
       filterPrice,
       handleClick,
-      calcPageTotals,
       sortedSearchItems,
+      setPageIndex,
     } = this.context;
     const { isSearchPage } = this.props;
     let labelValue = "";
@@ -35,7 +35,6 @@ export default class ProductFilter extends Component {
     let totalItems = 0;
     if (isSearchPage) {
       totalItems = sortedSearchItems.length;
-      pageTotal = calcPageTotals(sortedSearchItems);
     } else {
       totalItems = sortedItems.length;
     }
@@ -151,7 +150,9 @@ export default class ProductFilter extends Component {
           </div>
           <div
             data-name="pageIndexLeftIcon"
-            onClick={handleClick}
+            onClick={
+              pageIndex <= 1 ? undefined : () => setPageIndex(pageIndex - 1)
+            }
             className={classNames("app__filter-page-item", "app__pre-page", {
               "app__pre-page--disabled": pageIndex <= 1,
             })}
@@ -160,7 +161,11 @@ export default class ProductFilter extends Component {
           </div>
           <div
             data-name="pageIndexRightIcon"
-            onClick={handleClick}
+            onClick={
+              pageIndex >= pageTotal
+                ? undefined
+                : () => setPageIndex(pageIndex + 1)
+            }
             className={classNames("app__filter-page-item", "app__next-page", {
               "app__next-page--disabled": pageIndex >= pageTotal,
             })}

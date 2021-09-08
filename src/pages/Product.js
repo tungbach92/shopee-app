@@ -32,7 +32,7 @@ export default function Product() {
           ></HeaderSearch>
         }
       ></Header>
-      <ProductContainer></ProductContainer>
+      <ProductContainer isProductPage={isProductPage}></ProductContainer>
     </>
   );
 }

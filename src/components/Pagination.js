@@ -3,46 +3,37 @@ import { ProductContext } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
 
-const Pagination = ({ isSearchPage, similarDisPlay }) => {
+const Pagination = ({
+  isProductPage,
+  isSearchPage,
+  similarDisPlay,
+  isOrderPage,
+  filterOrderItems,
+}) => {
   let {
     sortedItems,
     pageIndex,
+    setPageIndex,
     pageTotal,
-    similarPageIndex,
-    similarPageTotal,
     pageSize,
-    similarPageSize,
-    handleClick,
-    calcPageTotals,
-    searchItems,
-    setPageTotal,
     sortedSearchItems,
+    similarItems,
   } = useContext(ProductContext);
-  if (similarDisPlay) {
-    pageIndex = similarPageIndex;
-    pageTotal = similarPageTotal;
-    pageSize = similarPageSize;
-  }
-  useEffect(() => {
-    if (isSearchPage) {
-      const pageTotal = calcPageTotals(sortedSearchItems);
-      setPageTotal(pageTotal);
-    }
-  }, [calcPageTotals, isSearchPage, setPageTotal, sortedSearchItems]);
 
   if (
-    sortedItems.length <= pageSize ||
-    (isSearchPage && searchItems.length <= pageSize)
+    (isProductPage && sortedItems.length <= pageSize) ||
+    (isSearchPage && sortedSearchItems.length <= pageSize) ||
+    (isOrderPage && filterOrderItems.length <= pageSize) ||
+    (similarDisPlay && similarItems.length <= pageSize)
   ) {
     return null;
   } else
     return (
       <ul className="pagination pagination--mtb3">
         <li
-          data-name={
-            similarDisPlay ? "similarPageIndexLeftIcon" : "pageIndexLeftIcon"
+          onClick={
+            pageIndex <= 1 ? undefined : () => setPageIndex(pageIndex - 1)
           }
-          onClick={handleClick}
           className={classNames("pagination-item", " pagination-item__left", {
             "pagination-item--disabled": pageIndex <= 1,
           })}
@@ -51,15 +42,13 @@ const Pagination = ({ isSearchPage, similarDisPlay }) => {
             <i className="pagination-item__icon bi bi-chevron-left"></i>
           </div>
         </li>
-        <PaginationItemNumber
-          isSearchPage={isSearchPage}
-          similarDisPlay={similarDisPlay}
-        ></PaginationItemNumber>
+        <PaginationItemNumber></PaginationItemNumber>
         <li
-          data-name={
-            similarDisPlay ? "similarPageIndexRightIcon" : "pageIndexRightIcon"
+          onClick={
+            pageIndex >= pageTotal
+              ? undefined
+              : () => setPageIndex(pageIndex + 1)
           }
-          onClick={handleClick}
           className={classNames("pagination-item", " pagination-item__right", {
             "pagination-item--disabled": pageIndex >= pageTotal,
           })}

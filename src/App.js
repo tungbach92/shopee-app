@@ -12,7 +12,6 @@ import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Order from "./pages/Order";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useContext, useEffect } from "react";
@@ -36,9 +35,6 @@ function App() {
           {user ? <Cart /> : <Login />}
         </Route>
         <Route exact path="/product/:metaTitle" component={Detail}></Route>
-        <Route exact path="/user/order">
-          {user ? <Order /> : <Login />}
-        </Route>
         <Route path={["/user", "/user/account"]} component={Account}>
           {user ? (
             <Elements stripe={stripePromise}>

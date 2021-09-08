@@ -4,7 +4,11 @@ import ProductItem from "./ProductItem";
 import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 
-export default function ProductList({ similarDisPlay, isSearchPage }) {
+export default function ProductList({
+  isProductPage,
+  similarDisPlay,
+  isSearchPage,
+}) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
@@ -30,8 +34,6 @@ export default function ProductList({ similarDisPlay, isSearchPage }) {
     cartItems,
     pageIndex,
     pageSize,
-    similarPageIndex,
-    similarPageSize,
     handleClick,
     setDefaultState,
     getDataFireBase,
@@ -39,6 +41,8 @@ export default function ProductList({ similarDisPlay, isSearchPage }) {
     sortedSearchItems,
     searchItems,
     setSortedSearchItems,
+    pageTotalCalc,
+    setPageSize,
   } = context;
   useEffect(() => {
     if (items.length <= 0) {
@@ -61,12 +65,15 @@ export default function ProductList({ similarDisPlay, isSearchPage }) {
 
   //set default remain state by above state
   useEffect(() => {
-    if (type === "allProduct") {
+    if (isProductPage) {
       // set default only when not searching
       const categoryItems = items.filter((item) => item.type !== type);
       const sortedItems = [...categoryItems];
+
+      // not necessary cause default value is declare
       const pageIndex = 1;
-      const pageTotal = calcPageTotals(sortedItems);
+      const pageSize = 10;
+      const pageTotal = pageTotalCalc(sortedItems, pageSize);
       //get and set checkoutItems state
       const checkoutItems = getCheckoutItemsFromStorage();
       setCategoryProduct(categoryItems);
@@ -74,34 +81,47 @@ export default function ProductList({ similarDisPlay, isSearchPage }) {
       setPageIndex(pageIndex);
       setPageTotal(pageTotal);
       setCheckoutProduct(checkoutItems);
+    } else if (isSearchPage) {
+      const searchPageIndex = 1;
+      const searchPageSize = 10;
+      const searchPageTotal = pageTotalCalc(sortedSearchItems, searchPageSize);
+      setPageIndex(searchPageIndex);
+      setPageSize(searchPageSize);
+      setPageTotal(searchPageTotal);
+    } else if (similarDisPlay) {
+      const similarPageIndex = 1;
+      const similarPageSize = 6;
+      const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
+      setPageIndex(similarPageIndex);
+      setPageSize(similarPageSize);
+      setPageTotal(similarPageTotal);
     }
   }, [
-    calcPageTotals,
     getCheckoutItemsFromStorage,
+    isProductPage,
+    isSearchPage,
     items,
+    pageTotalCalc,
     setCategoryProduct,
     setCheckoutProduct,
     setPageIndex,
+    setPageSize,
     setPageTotal,
     setSortedProducts,
+    similarDisPlay,
+    similarItems,
+    sortedSearchItems,
     type,
   ]);
-  // useEffect(() => {
-  //   if (!props.similarDisPlay) {
-  //     const cartItems = getCartItemsFromStorage();
-  //     setCartProduct(cartItems);
-  //   }
-  // }, [getCartItemsFromStorage, props.similarDisPlay, setCartProduct]);
-
-  if (similarDisPlay) {
-    sortedItems = [...similarItems];
-    pageIndex = similarPageIndex;
-    pageSize = similarPageSize;
-  }
 
   let renderItem = [];
   if (isSearchPage) {
     renderItem = sortedSearchItems.slice(
+      (pageIndex - 1) * pageSize,
+      pageIndex * pageSize
+    );
+  } else if (similarDisPlay) {
+    renderItem = similarItems.slice(
       (pageIndex - 1) * pageSize,
       pageIndex * pageSize
     );

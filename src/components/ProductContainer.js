@@ -4,7 +4,7 @@ import ProductFilter from "./ProductFilter";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
 
-export default function ProductContainer({ isSearchPage }) {
+export default function ProductContainer({ isSearchPage, isProductPage }) {
   return (
     <div className="grid">
       <div className="grid__row grid__row--padtb3">
@@ -12,9 +12,15 @@ export default function ProductContainer({ isSearchPage }) {
         <div className={isSearchPage ? "grid__col-12x" : "grid__col-10x"}>
           <ProductFilter isSearchPage={isSearchPage}></ProductFilter>
           <div className="grid__row grid__row-product">
-            <ProductList isSearchPage={isSearchPage}></ProductList>
+            <ProductList
+              isProductPage={isProductPage}
+              isSearchPage={isSearchPage}
+            ></ProductList>
           </div>
-          <Pagination isSearchPage={isSearchPage}></Pagination>
+          <Pagination
+            isProductPage={isProductPage}
+            isSearchPage={isSearchPage}
+          ></Pagination>
         </div>
       </div>
     </div>

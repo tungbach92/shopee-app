@@ -29,9 +29,6 @@ export default class ProductProvider extends Component {
     pageIndex: 1,
     pageSize: 10,
     pageTotal: 0,
-    similarPageIndex: 1,
-    similarPageTotal: 0,
-    similarPageSize: 6,
     cartNumb: 0,
     cartItems: [],
     checkoutItems: [],
@@ -66,6 +63,18 @@ export default class ProductProvider extends Component {
       this.getCustomerIdFromFirebase();
     });
   }
+
+  setPageSize = (pageSize) => {
+    this.setState({ pageSize });
+  };
+
+  setOrderPageIndex = (orderPageIndex) => {
+    this.setState({ orderPageIndex });
+  };
+
+  setOrderPageTotal = (orderPageTotal) => {
+    this.setState({ orderPageTotal });
+  };
 
   getCardImgByBrand = (brand) => {
     if (brand === "visa") {
@@ -572,20 +581,12 @@ export default class ProductProvider extends Component {
     return items;
   };
 
-  calcPageTotals = (items) => {
+  pageTotalCalc = (items, pageSize) => {
     const pageTotal =
-      Math.ceil(items.length / this.state.pageSize) < 1
+      Math.ceil(items.length / pageSize) < 1
         ? 1
-        : Math.ceil(items.length / this.state.pageSize);
+        : Math.ceil(items.length / pageSize);
     return pageTotal;
-  };
-
-  calcSimilarPageTotals = (items) => {
-    const similarPageTotal =
-      Math.ceil(items.length / this.state.similarPageSize) < 1
-        ? 1
-        : Math.ceil(items.length / this.state.similarPageSize);
-    return similarPageTotal;
   };
 
   calcCartNumb = (items) => {
@@ -597,7 +598,7 @@ export default class ProductProvider extends Component {
   };
 
   filterProductBySearch = (text) => {
-    text = text.trim();
+    text = text.trim().toLowerCase();
     if (text.length > 0) {
       const { items } = this.state;
       const searchItems = [...items].filter((item) =>
@@ -607,8 +608,6 @@ export default class ProductProvider extends Component {
         searchItems,
         filter: "",
         filterPrice: "default",
-        pageIndex: 1,
-        pageTotal: this.calcPageTotals(searchItems),
       });
     }
   };
@@ -639,50 +638,6 @@ export default class ProductProvider extends Component {
         this.filterSearchProduct();
       });
       event.currentTarget.parentElement.style.display = "none";
-    }
-
-    if (name === "pageIndex") {
-      this.setState({
-        [name]: parseInt(value),
-      });
-    }
-
-    if (name === "similarPageIndex") {
-      this.setState({
-        similarPageIndex: parseInt(value),
-      });
-    }
-
-    if (name === "pageIndexLeftIcon") {
-      const pageIndex =
-        this.state.pageIndex - 1 <= 0 ? 1 : this.state.pageIndex - 1;
-
-      this.setState({ pageIndex });
-    }
-    if (name === "pageIndexRightIcon") {
-      const pageIndex =
-        this.state.pageIndex + 1 >= this.state.pageTotal
-          ? this.state.pageTotal
-          : this.state.pageIndex + 1;
-
-      this.setState({ pageIndex });
-    }
-
-    if (name === "similarPageIndexLeftIcon") {
-      const similarPageIndex =
-        this.state.similarPageIndex - 1 <= 0
-          ? 1
-          : this.state.similarPageIndex - 1;
-
-      this.setState({ similarPageIndex });
-    }
-    if (name === "similarPageIndexRightIcon") {
-      const similarPageIndex =
-        this.state.similarPageIndex + 1 >= this.state.similarPageTotal
-          ? this.state.similarPageTotal
-          : this.state.similarPageIndex + 1;
-
-      this.setState({ similarPageIndex });
     }
 
     if (name === "addToCartBtn") {
@@ -872,8 +827,6 @@ export default class ProductProvider extends Component {
     this.setState({
       categoryItems: tempItems,
       sortedItems: tempItems,
-      pageIndex: 1,
-      pageTotal: this.calcPageTotals(tempItems),
     });
   };
 
@@ -887,8 +840,6 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       similarItems: tempItems,
-      similarPageIndex: 1,
-      similarPageTotal: this.calcSimilarPageTotals(tempItems),
     });
   };
 
@@ -939,8 +890,6 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       sortedItems: tempItems,
-      pageIndex: 1,
-      pageTotal: this.calcPageTotals(tempItems),
     });
   };
 
@@ -991,8 +940,6 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       sortedSearchItems: tempItems,
-      pageIndex: 1,
-      pageTotal: this.calcPageTotals(tempItems),
     });
   };
 
@@ -1184,6 +1131,10 @@ export default class ProductProvider extends Component {
           getCardImgByBrand: this.getCardImgByBrand,
           detachPaymentMethod: this.detachPaymentMethod,
           updateCustomerBillingAddress: this.updateCustomerBillingAddress,
+          setOrderPageTotal: this.setOrderPageTotal,
+          setOrderPageIndex: this.setOrderPageIndex,
+          pageTotalCalc: this.pageTotalCalc,
+          setPageSize: this.setPageSize,
         }}
       >
         {this.props.children}
