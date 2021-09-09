@@ -53,20 +53,36 @@ export default function ProductList({
     // }
   }, [getDataFireBase, items, orderItems, user]);
 
-  //set default remain state by above state
+  // set default value for product page
+  useEffect(() => {
+    const type = "allProduct";
+    const filterPrice = "default";
+    setType(type);
+    setFilter("");
+    setFilterPrice(filterPrice);
+
+    //set SortItems by default value
+    const categoryItems = items.filter((item) => item.type !== type);
+    const sortedItems = [...categoryItems];
+
+    //get and set checkoutItems state
+    const checkoutItems = getCheckoutItemsFromStorage();
+    setCategoryProduct(categoryItems);
+    setSortedProducts(sortedItems);
+    setCheckoutProduct(checkoutItems);
+  }, [
+    getCheckoutItemsFromStorage,
+    items,
+    setCategoryProduct,
+    setCheckoutProduct,
+    setFilter,
+    setFilterPrice,
+    setSortedProducts,
+    setType,
+  ]);
+
   useEffect(() => {
     if (isProductPage) {
-      // set default value for product page
-      const type = "allProduct";
-      const filterPrice = "default";
-      setType(type);
-      setFilter("");
-      setFilterPrice(filterPrice);
-
-      //set SortItems by default value
-      const categoryItems = items.filter((item) => item.type !== type);
-      const sortedItems = [...categoryItems];
-
       //pagination value, recalculate pageTotal
       const pageIndex = 1;
       const pageSize = 10;
@@ -74,12 +90,6 @@ export default function ProductList({
       setPageIndex(pageIndex);
       setPageSize(pageSize);
       setPageTotal(pageTotal);
-
-      //get and set checkoutItems state
-      const checkoutItems = getCheckoutItemsFromStorage();
-      setCategoryProduct(categoryItems);
-      setSortedProducts(sortedItems);
-      setCheckoutProduct(checkoutItems);
     } else if (isSearchPage) {
       const searchPageIndex = 1;
       const searchPageSize = 10;
@@ -96,22 +106,15 @@ export default function ProductList({
       setPageTotal(similarPageTotal);
     }
   }, [
-    getCheckoutItemsFromStorage,
     isProductPage,
     isSearchPage,
-    items,
     pageTotalCalc,
-    setCategoryProduct,
-    setCheckoutProduct,
-    setFilter,
-    setFilterPrice,
     setPageIndex,
     setPageSize,
     setPageTotal,
-    setSortedProducts,
-    setType,
     similarDisPlay,
     similarItems,
+    sortedItems,
     sortedSearchItems,
   ]);
 

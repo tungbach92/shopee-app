@@ -41,7 +41,7 @@ export default function PopupModal(props) {
       } else if (paymentMethod.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else if (succeeded) {
-        history.replace("/user/order");
+        history.replace("/user/purchase");
       }
     }
 
