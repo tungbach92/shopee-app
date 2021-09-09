@@ -64,6 +64,18 @@ export default class ProductProvider extends Component {
     });
   }
 
+  setType = (type) => {
+    this.setState({ type });
+  };
+
+  setFilterPrice = (filterPrice) => {
+    this.setState({ filterPrice });
+  };
+
+  setFilter = (filter) => {
+    this.setState({ filter });
+  };
+
   setPageSize = (pageSize) => {
     this.setState({ pageSize });
   };
@@ -482,15 +494,6 @@ export default class ProductProvider extends Component {
       defaultChecked = [false, ...defaultChecked, false];
     }
     this.setChecked(defaultChecked);
-  };
-
-  setDefaultState = () => {
-    //reset sortItem, dom button, pageIndex, pageTotal, searchInput to default
-    this.setState({
-      type: "allProduct",
-      filter: "",
-      filterPrice: "default",
-    });
   };
 
   getData = async () => {
@@ -1078,7 +1081,6 @@ export default class ProductProvider extends Component {
           ...this.state,
           setUser: this.setUser,
           setDefaultChecked: this.setDefaultChecked,
-          setDefaultState: this.setDefaultState,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,
@@ -1100,7 +1102,6 @@ export default class ProductProvider extends Component {
           setPageTotal: this.setPageTotal,
           setCartProduct: this.setCartProduct,
           calcCartNumb: this.calcCartNumb,
-          calcPageTotals: this.calcPageTotals,
           getCartItemsFromStorage: this.getCartItemsFromStorage,
           setCartNumb: this.setCartNumb,
           getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
@@ -1135,6 +1136,9 @@ export default class ProductProvider extends Component {
           setOrderPageIndex: this.setOrderPageIndex,
           pageTotalCalc: this.pageTotalCalc,
           setPageSize: this.setPageSize,
+          setFilter: this.setFilter,
+          setFilterPrice: this.setFilterPrice,
+          setType: this.setType,
         }}
       >
         {this.props.children}

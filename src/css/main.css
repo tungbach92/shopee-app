@@ -954,6 +954,7 @@ header {
 .app__pre-page,
 .app__next-page {
   width: 3.6rem;
+  line-height: 3.4rem;
   text-align: center;
   border: none;
   background-color: var(--while-color);
@@ -1250,16 +1251,26 @@ header {
   color: #888;
 }
 
-.user-order__title-container {
+.user-order__filter-container {
   display: flex;
-  justify-content: space-around;
-  padding: 2rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1rem;
   font-size: 1.6rem;
   background-color: var(--while-color);
 }
 
-.user-order__title-item {
+.user-order__filter-item {
+  line-height: 4rem;
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.user-order__filter-item:hover {
+  background-color:#ededed
+}
+
+.user-order__filter-item--selected {
+  border-bottom: 1px solid var(--primary-color);
 }
 
 .user-order__order-item {
@@ -1269,7 +1280,7 @@ header {
 .user-order__search-container {
   display: flex;
   align-items: center;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1rem;
   padding: 1rem;
   background: #eaeaea;
 }
@@ -1286,6 +1297,14 @@ header {
   border: none;
   outline: none;
   background: #eaeaea;
+  font-size: 1.4rem;
+}
+
+.user-order__mini-page {
+  padding: 0.6rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
   font-size: 1.4rem;
 }
 

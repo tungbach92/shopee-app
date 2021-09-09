@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import CurrencyFormat from "react-currency-format";
 import moment from "moment";
 import Pagination from "./Pagination";
+import MiniPageControl from "./MiniPageControl";
 
 const OrderSmallContent = () => {
   const {
     orderItems,
-    calcOrderPageTotals,
     setPageIndex,
     setPageSize,
     setPageTotal,
@@ -17,24 +17,86 @@ const OrderSmallContent = () => {
     pageSize,
     pageTotalCalc,
   } = useContext(ProductContext);
-  const [filterOrderItems, setFilterOrderItems] = useState([]);
+  const [searchOrderItems, setSearchOrderItems] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [filterSearchOrderItems, setFilterSearchOrderItems] = useState([]);
   const [isOrderPage, setIsOrderPage] = useState(false);
 
-  const currentOrderItems = filterOrderItems.slice(
+  const currentOrderItems = [...filterSearchOrderItems].slice(
     (pageIndex - 1) * pageSize,
     pageIndex * pageSize
   );
 
+  const handleSearchInput = (e) => {
+    const text = e.target.value;
+    handleSearchOrderItems(text);
+  };
+
+  const handleSearchOrderItems = (text) => {
+    text = text.trim().toLowerCase();
+    let searchOrderItems = [...orderItems];
+    if (text.length > 0) {
+      searchOrderItems = [...orderItems].filter(
+        (orderItem) =>
+          orderItem.data.basket.some((item) =>
+            item.name.toLowerCase().includes(text)
+          ) || orderItem.id.toLowerCase().includes(text)
+      );
+    }
+    setSearchOrderItems(searchOrderItems);
+  };
+
+  const handleFilterClick = (e) => {
+    const filter = e.currentTarget.dataset.name;
+    setFilter(filter);
+    // handleFilterSearchOrderItems(filter);
+  };
+
+  const handleFilterSearchOrderItems = useCallback(
+    (filter) => {
+      let filterSearchOrderItems = [];
+      switch (filter) {
+        case "cash":
+          filterSearchOrderItems = [...searchOrderItems].filter((item) =>
+            item.id.includes(filter)
+          );
+          break;
+        case "card":
+          filterSearchOrderItems = [...searchOrderItems].filter(
+            (item) => !item.id.includes("cash")
+          );
+          break;
+        case "all":
+          filterSearchOrderItems = [...searchOrderItems];
+          break;
+        case "cancle":
+          // order cancled filter
+          break;
+        default:
+          break;
+      }
+      setFilterSearchOrderItems(filterSearchOrderItems);
+    },
+    [searchOrderItems]
+  );
+
+  useEffect(() => {
+    setSearchOrderItems(orderItems);
+  }, [orderItems]);
+
+  useEffect(() => {
+    handleFilterSearchOrderItems(filter);
+  }, [filter, handleFilterSearchOrderItems]);
+
   useEffect(() => {
     const orderPageIndex = 1;
     const orderPageSize = 2;
+    const orderPageTotal = pageTotalCalc(filterSearchOrderItems, orderPageSize);
     setPageIndex(orderPageIndex);
     setPageSize(orderPageSize);
-
-    const orderPageTotal = pageTotalCalc(filterOrderItems, orderPageSize);
     setPageTotal(orderPageTotal);
   }, [
-    filterOrderItems,
+    filterSearchOrderItems,
     pageTotalCalc,
     setPageIndex,
     setPageSize,
@@ -46,40 +108,44 @@ const OrderSmallContent = () => {
   }, []);
 
   useEffect(() => {
-    setFilterOrderItems(orderItems);
-  }, [orderItems]);
-
-  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const handleSearchInput = (e) => {
-    const text = e.target.value;
-    handleFilterOrderItems(text);
-  };
-
-  const handleFilterOrderItems = (text) => {
-    text = text.trim().toLowerCase();
-    let filterOrderItems = [...orderItems];
-    if (text.length > 0) {
-      filterOrderItems = [...orderItems].filter((orderItem) =>
-        orderItem.data.basket.some((item) =>
-          item.name.toLowerCase().includes(text)
-        )
-      );
-    }
-    setFilterOrderItems(filterOrderItems);
-  };
-
   return (
     <>
-      <div className="user-order__title-container">
-        <div className="user-order__title-item">Tất cả</div>
-        <div className="user-order__title-item">Chờ xác nhận</div>
-        <div className="user-order__title-item">Chờ lấy hàng</div>
-        <div className="user-order__title-item">Đang giao</div>
-        <div className="user-order__title-item">Đã giao</div>
-        <div className="user-order__title-item">Hủy</div>
+      <div className="user-order__filter-container">
+        <div
+          data-name="all"
+          className={
+            filter === "all"
+              ? "user-order__filter-item user-order__filter-item--selected"
+              : "user-order__filter-item"
+          }
+          onClick={handleFilterClick}
+        >
+          Tất cả
+        </div>
+        <div
+          data-name="cash"
+          className={
+            filter === "cash"
+              ? "user-order__filter-item user-order__filter-item--selected"
+              : "user-order__filter-item"
+          }
+          onClick={handleFilterClick}
+        >
+          Tiền mặt
+        </div>
+        <div
+          data-name="card"
+          className={
+            filter === "card"
+              ? "user-order__filter-item user-order__filter-item--selected"
+              : "user-order__filter-item"
+          }
+          onClick={handleFilterClick}
+        >
+          Thẻ tín dụng
+        </div>
       </div>
       <div className="user-order__search-container">
         <svg className="user-order__search-icon" viewBox="0 0 19 19">
@@ -105,10 +171,15 @@ const OrderSmallContent = () => {
           type="text"
           className="user-order__search"
           onChange={handleSearchInput}
-          placeholder="Tìm kiếm theo Tên Shop, ID đơn hàng hoặc Tên Sản phẩm"
+          placeholder="Tìm kiếm theo ID đơn hàng hoặc Tên Sản phẩm"
         ></input>
       </div>
       <div className="user-order__order-container">
+        <div className="user-order__mini-page">
+          <MiniPageControl
+            totalItems={filterSearchOrderItems.length}
+          ></MiniPageControl>
+        </div>
         {currentOrderItems.map((item, index) => (
           <div key={index} className="user-order__order-item">
             <div className="order-product__moment">
@@ -198,7 +269,7 @@ const OrderSmallContent = () => {
       </div>
       <Pagination
         isOrderPage={isOrderPage}
-        filterOrderItems={filterOrderItems}
+        filterSearchOrderItems={filterSearchOrderItems}
       ></Pagination>
     </>
   );

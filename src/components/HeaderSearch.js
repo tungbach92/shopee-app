@@ -6,10 +6,8 @@ import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { ProductContext } from "../context";
 
-const HeaderSearch = React.memo(function (props) {
+const HeaderSearch = ({ isCartPageLoaded, isCheckoutPage, isSearchPage }) => {
   console.log("header search render");
-  const { isCartPageLoaded, isCheckoutPage, isSearchPage } = props;
-  const context = useContext(ProductContext);
   const {
     orderItems,
     filterProductBySearch,
@@ -18,7 +16,7 @@ const HeaderSearch = React.memo(function (props) {
     searchInputOnChange,
     searchInput,
     setSearchInput,
-  } = context;
+  } = useContext(ProductContext);
   const inputEl = useRef("");
   const history = useHistory();
   const [recommendSearch, setRecommendSearch] = useState([]);
@@ -181,5 +179,5 @@ const HeaderSearch = React.memo(function (props) {
       ) : null}
     </div>
   );
-});
+};
 export default HeaderSearch;

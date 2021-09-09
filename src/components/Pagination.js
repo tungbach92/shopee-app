@@ -8,7 +8,7 @@ const Pagination = ({
   isSearchPage,
   similarDisPlay,
   isOrderPage,
-  filterOrderItems,
+  filterSearchOrderItems,
 }) => {
   let {
     sortedItems,
@@ -23,7 +23,7 @@ const Pagination = ({
   if (
     (isProductPage && sortedItems.length <= pageSize) ||
     (isSearchPage && sortedSearchItems.length <= pageSize) ||
-    (isOrderPage && filterOrderItems.length <= pageSize) ||
+    (isOrderPage && filterSearchOrderItems.length <= pageSize) ||
     (similarDisPlay && similarItems.length <= pageSize)
   ) {
     return null;

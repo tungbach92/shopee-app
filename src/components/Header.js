@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Header({
+const Header = ({
   isEmailPage,
   isAccountPage,
   isSearchPage,
@@ -11,13 +11,18 @@ export default function Header({
   isLoginPage,
   isRegisterPage,
   headerSimpleContent,
-}) {
+}) => {
+  console.log("header render");
   return (
     <header
       className={
         isLoginPage || isRegisterPage
           ? "header header--login"
-          : isProductPage || isOrderPage || isSearchPage || isAccountPage || isEmailPage
+          : isProductPage ||
+            isOrderPage ||
+            isSearchPage ||
+            isAccountPage ||
+            isEmailPage
           ? "header"
           : "header header--support"
       }
@@ -29,4 +34,5 @@ export default function Header({
       </div>
     </header>
   );
-}
+};
+export default Header;

@@ -16,19 +16,12 @@ export default function ProductList({
     items,
     orderItems,
     getData,
-    type,
-    bestSelling,
     setCategoryProduct,
     setSortedProducts,
     setPageIndex,
     setPageTotal,
-    searchInput,
-    getCartItemsFromStorage,
-    calcPageTotals,
-    setCartNumb,
     getCheckoutItemsFromStorage,
     setCheckoutProduct,
-    calcCartNumb,
     sortedItems,
     similarItems,
     cartItems,
@@ -37,12 +30,14 @@ export default function ProductList({
     handleClick,
     setDefaultState,
     getDataFireBase,
-    setSearchInput,
     sortedSearchItems,
     searchItems,
     setSortedSearchItems,
     pageTotalCalc,
     setPageSize,
+    setFilter,
+    setFilterPrice,
+    setType,
   } = context;
   useEffect(() => {
     if (items.length <= 0) {
@@ -58,28 +53,32 @@ export default function ProductList({
     // }
   }, [getDataFireBase, items, orderItems, user]);
 
-  //set default some states
-  useEffect(() => {
-    setDefaultState();
-  }, [setDefaultState]);
-
   //set default remain state by above state
   useEffect(() => {
     if (isProductPage) {
-      // set default only when not searching
+      // set default value for product page
+      const type = "allProduct";
+      const filterPrice = "default";
+      setType(type);
+      setFilter("");
+      setFilterPrice(filterPrice);
+
+      //set SortItems by default value
       const categoryItems = items.filter((item) => item.type !== type);
       const sortedItems = [...categoryItems];
 
-      // not necessary cause default value is declare
+      //pagination value, recalculate pageTotal
       const pageIndex = 1;
       const pageSize = 10;
       const pageTotal = pageTotalCalc(sortedItems, pageSize);
+      setPageIndex(pageIndex);
+      setPageSize(pageSize);
+      setPageTotal(pageTotal);
+
       //get and set checkoutItems state
       const checkoutItems = getCheckoutItemsFromStorage();
       setCategoryProduct(categoryItems);
       setSortedProducts(sortedItems);
-      setPageIndex(pageIndex);
-      setPageTotal(pageTotal);
       setCheckoutProduct(checkoutItems);
     } else if (isSearchPage) {
       const searchPageIndex = 1;
@@ -104,14 +103,16 @@ export default function ProductList({
     pageTotalCalc,
     setCategoryProduct,
     setCheckoutProduct,
+    setFilter,
+    setFilterPrice,
     setPageIndex,
     setPageSize,
     setPageTotal,
     setSortedProducts,
+    setType,
     similarDisPlay,
     similarItems,
     sortedSearchItems,
-    type,
   ]);
 
   let renderItem = [];
