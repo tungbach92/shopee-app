@@ -50,11 +50,13 @@ const AddressSmallContent = ({ isAccountPage }) => {
 
   const handleDefaultClick = (index) => {
     let tempShipInfos = [...shipInfos];
-    tempShipInfos.forEach((shipInfo) => (shipInfo.isDefault = false));
+    tempShipInfos = tempShipInfos.map(
+      (shipInfo) => (shipInfo = { ...shipInfo, isDefault: false })
+    );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
-    setShipInfos(tempShipInfos);
     updateShipInfoToFirebase(tempShipInfos);
     updateCustomerBillingAddress(tempShipInfos);
+    setShipInfos(tempShipInfos);
   };
 
   const handleAddressAddClick = () => {
@@ -189,7 +191,11 @@ const AddressSmallContent = ({ isAccountPage }) => {
                 </span>
               </div>
               <button
-                onClick={() => handleDefaultClick(index)}
+                onClick={
+                  shipInfo.isDefault
+                    ? undefined
+                    : () => handleDefaultClick(index)
+                }
                 className={
                   shipInfo.isDefault
                     ? "btn address-profile__btn-default address-profile__btn-default--disabled"

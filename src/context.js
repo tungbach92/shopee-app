@@ -197,22 +197,11 @@ export default class ProductProvider extends Component {
     }
   };
 
-  updateCustomerBillingAddress = (tempShipInfos) => {
-    const {
-      customerID,
-      paymentMethodList,
-      defaultPaymentMethodID,
-      shipInfos,
-      user,
-    } = this.state;
+  updateCustomerBillingAddress = async (tempShipInfos) => {
+    const { customerID, paymentMethodList, defaultPaymentMethodID, user } =
+      this.state;
     if (customerID && paymentMethodList && defaultPaymentMethodID) {
-      let defaultshipInfo, cardName, userName;
-
-      shipInfos.forEach((item) => {
-        if (item.isDefault) {
-          defaultshipInfo = { ...item };
-        }
-      });
+      let defaultshipInfo, userName;
 
       // paymentMethodList.forEach((item) => {
       //   if (item.id === defaultPaymentMethodID) {
@@ -220,17 +209,23 @@ export default class ProductProvider extends Component {
       //   }
       // });
 
-      if (user) {
-        db.collection("users")
+      tempShipInfos.forEach((item) => {
+        if (item.isDefault) {
+          defaultshipInfo = { ...item };
+        }
+      });
+
+      const getUserNameDocsAsync = () => {
+        return db
+          .collection("users")
           .doc(user?.uid)
           .collection("infos")
           .doc("infoItems")
-          .get()
-          .then((doc) => {
-            if (doc.exists) {
-              userName = doc.data().name;
-            }
-          });
+          .get();
+      };
+      const userNameDocs = await getUserNameDocsAsync();
+      if (userNameDocs) {
+        userName = userNameDocs.data().name;
       }
 
       axios({
