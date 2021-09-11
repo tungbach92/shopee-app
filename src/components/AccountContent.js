@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
 import { auth, db, storage } from "../firebase";
-import { Link, Switch, Route, Redirect } from "react-router-dom";
+import { Link, Switch, Route, Redirect, useLocation } from "react-router-dom";
 import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
@@ -23,8 +23,28 @@ const AccountContent = ({ isAccountPage }) => {
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
+  const [category, setCategory] = useState("profile");
   const inputEl = useRef();
+  const location = useLocation();
   const { isPopupShowing, togglePopup } = useModal();
+
+  useEffect(() => {
+    let category;
+    if (location.pathname.includes("profile")) {
+      category = "profile";
+      setCategory(category);
+    } else if (location.pathname.includes("payment")) {
+      category = "payment";
+    } else if (location.pathname.includes("address")) {
+      category = "address";
+    } else if (location.pathname.includes("password")) {
+      category = "password";
+    } else if (location.pathname.includes("purchase")) {
+      category = "purchase";
+    }
+    setCategory(category);
+  }, [location]);
+
   //free memory file input
   useEffect(() => {
     return () => {
@@ -251,42 +271,70 @@ const AccountContent = ({ isAccountPage }) => {
               </div>
               <div className="user-profile__name">sfsb3fax26</div>
 
-              <Link to="/user/account/profile" className="user-profile__name-btn">Sửa Hồ Sơ</Link>
-            </div>
-            <div className="user-profile__category">
-              <div className="user-profile__my-user">Tài Khoản Của Tôi</div>
               <Link
                 to="/user/account/profile"
-                className="user-profile__my-info"
+                className="user-profile__name-btn"
+              >
+                Sửa Hồ Sơ
+              </Link>
+            </div>
+            <div className="user-profile__category">
+              {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
+              <Link
+                to="/user/account/"
+                className={
+                  category === "profile"
+                    ? "user-profile__my-info user-profile__category-item--active"
+                    : "user-profile__my-info"
+                }
               >
                 Hồ sơ
               </Link>
               <Link
                 to="/user/account/payment"
-                className="user-profile__my-bank"
+                className={
+                  category === "payment"
+                    ? "user-profile__my-bank user-profile__category-item--active"
+                    : "user-profile__my-bank"
+                }
               >
                 Ngân hàng
               </Link>
               <Link
                 to="/user/account/address"
-                className="user-profile__my-adress"
+                className={
+                  category === "address"
+                    ? "user-profile__my-adress user-profile__category-item--active"
+                    : "user-profile__my-adress"
+                }
               >
                 Địa chỉ
               </Link>
               <Link
                 to="/user/account/password"
-                className="user-profile__change-password"
+                className={
+                  category === "password"
+                    ? "user-profile__change-password user-profile__category-item--active"
+                    : "user-profile__change-password"
+                }
               >
                 Đổi mật khẩu
               </Link>
-              <Link to="/user/purchase" className="user-profile__order">
+              <Link
+                to="/user/purchase"
+                className={
+                  category === "purchase"
+                    ? "user-profile__order user-profile__category-item--active"
+                    : "user-profile__order"
+                }
+              >
                 Đơn Mua
               </Link>
             </div>
           </div>
           <div className="grid__col-10x">
             <Switch>
-              <Route exact path="/user/account/profile/">
+              <Route exact path="/user/account/profile">
                 <div className="user-profile__title-container">
                   <div className="user-profile__title">
                     <div className="user-profile__label">Hồ Sơ Của Tôi</div>
@@ -475,12 +523,12 @@ const AccountContent = ({ isAccountPage }) => {
               <Redirect
                 exact
                 from="/user"
-                to="/user/account/profile/"
+                to="/user/account/profile"
               ></Redirect>
               <Redirect
                 exact
                 from="/user/account"
-                to="/user/account/profile/"
+                to="/user/account/profile"
               ></Redirect>
               <Route path="/user/account/email">
                 <EmailSmallContent
@@ -494,21 +542,25 @@ const AccountContent = ({ isAccountPage }) => {
                   isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
+                  setCategory={setCategory}
                 ></PasswordSmallContent>
               </Route>
               <Route path="/user/account/address">
                 <AddressSmallContent
                   isAccountPage={isAccountPage}
+                  setCategory={setCategory}
                 ></AddressSmallContent>
               </Route>
               <Route path="/user/account/payment">
                 <PaymentSmallContent
                   isAccountPage={isAccountPage}
+                  setCategory={setCategory}
                 ></PaymentSmallContent>
               </Route>
               <Route path="/user/purchase/">
                 <OrderSmallContent
                   isAccountPage={isAccountPage}
+                  setCategory={setCategory}
                 ></OrderSmallContent>
               </Route>
             </Switch>

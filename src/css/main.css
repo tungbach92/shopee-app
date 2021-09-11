@@ -3890,13 +3890,21 @@ header {
   margin-top: 1.6rem;
   cursor: pointer;
   color: inherit;
+  transition: transform linear 0.1s;
+  will-change: transform;
 }
-
+.user-profile__my-info{
+  margin-top: 0;
+}
 .user-profile__my-info:hover,
 .user-profile__my-bank:hover,
 .user-profile__my-adress:hover,
 .user-profile__change-password:hover,
 .user-profile__order:hover {
+  color: var(--primary-color);
+  transform: translateX(0.5rem);
+}
+.user-profile__category-item--active {
   color: var(--primary-color);
 }
 

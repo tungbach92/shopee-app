@@ -38,7 +38,7 @@ function App() {
         <Route path={["/user", "/user/account"]} component={Account}>
           {user ? (
             <Elements stripe={stripePromise}>
-              <Account />{" "}
+              <Account />
             </Elements>
           ) : (
             <Login />
