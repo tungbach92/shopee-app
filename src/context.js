@@ -22,7 +22,7 @@ export default class ProductProvider extends Component {
     sortedSearchItems: [],
     today: new Date(),
     defaultPageIndex: 1,
-    bestSelling: 20,
+    bestSelling: 10,
     type: "allProduct",
     filter: "",
     filterPrice: "default",
@@ -510,6 +510,9 @@ export default class ProductProvider extends Component {
       db.collection("products").onSnapshot((snapshot) => {
         snapshot.docs.forEach((doc) => {
           items = [...items, ...doc.data().items];
+          items = items.sort((a, b) => {
+            return new Date(a.date) - new Date(b.date); //sort by date ascending
+          });
           this.setState({ items });
         });
       });

@@ -208,7 +208,12 @@ export default function CheckoutProduct() {
               // const id = item.id;
               const updatedSoldAmount =
                 item.soldAmount + Number(checkoutItem.amount);
-              const newItem = { ...item, soldAmount: updatedSoldAmount };
+              const date = Math.floor(Date.now() / 1000);
+              const newItem = {
+                ...item,
+                soldAmount: updatedSoldAmount,
+                date: date,
+              };
               console.log(item);
               transaction.update(productsDocRef, {
                 items: firebase.firestore.FieldValue.arrayRemove(item),
@@ -385,7 +390,8 @@ export default function CheckoutProduct() {
             paymentMethodID: defaultPaymentMethodID,
             customerID,
             email: user.email,
-            shipping: { // shipping detail when confirm paymentIntent-> charge card
+            shipping: {
+              // shipping detail when confirm paymentIntent-> charge card
               name: defaultshipInfo.name,
               phone: defaultshipInfo.phone,
               address: {
