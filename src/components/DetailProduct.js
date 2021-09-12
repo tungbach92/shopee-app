@@ -10,7 +10,7 @@ import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
 
 export default function DetailProduct() {
-  const { metaTitle } = useParams();
+  const { metaTitle, id } = useParams();
   const location = useLocation();
   const scrolltoEl = useRef();
   const {
@@ -67,20 +67,17 @@ export default function DetailProduct() {
   // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0) {
-      const id = location.state?.id;
-      if (typeof id !== "undefined") {
-        let item = items.find((item) => item.id === id);
-        item = {
-          ...item,
-          amount: 1,
-          variation: "",
-          variationDisPlay: false,
-          similarDisPlay: false,
-        };
-        setItem(item);
-      }
+      let item = items.find((item) => item.id === Number(id));
+      item = {
+        ...item,
+        amount: 1,
+        variation: "",
+        variationDisPlay: false,
+        similarDisPlay: false,
+      };
+      setItem(item);
     }
-  }, [items, location.state?.id, metaTitle, orderItems]);
+  }, [id, items]);
 
   useEffect(() => {
     //Img by item
@@ -763,7 +760,7 @@ export default function DetailProduct() {
                     return (
                       <Link
                         onClick={handleScrollTop}
-                        to={`/product/${item.metaTitle}`}
+                        to={`/product/${item.metaTitle}/${item.id}`}
                         key={index}
                         className="detail-content__hot-item"
                       >

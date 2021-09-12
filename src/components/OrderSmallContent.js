@@ -209,7 +209,7 @@ const OrderSmallContent = () => {
               <div key={index} className="order-product__item">
                 <Link
                   to={{
-                    pathname: `/product/${basketItem.metaTitle}`,
+                    pathname: `/product/${basketItem.metaTitle}/${basketItem.id}`,
                     state: { id: basketItem.id },
                   }}
                   className="grid__col order-product__overview"

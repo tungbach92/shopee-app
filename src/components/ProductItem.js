@@ -51,7 +51,7 @@ const ProductItem = React.memo(function (props) {
 
         <Link
           to={{
-            pathname: `/product/${metaTitle}`,
+            pathname: `/product/${metaTitle}/${item.id}`,
             state: { id: id },
           }}
           className="app__product-link"

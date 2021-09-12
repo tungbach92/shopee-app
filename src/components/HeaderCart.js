@@ -33,7 +33,7 @@ const HeaderCart = () => {
                 <div key={index} className="header__cart-item">
                   <Link
                     to={{
-                      pathname: `/product/${item.metaTitle}`,
+                      pathname: `/product/${item.metaTitle}/${item.id}`,
                       state: { id: item.id },
                     }}
                     className="header__cart-link"

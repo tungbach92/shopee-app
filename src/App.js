@@ -4,7 +4,7 @@ import "./css/main.css";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Product from "./pages/Product";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
@@ -34,7 +34,7 @@ function App() {
         <Route exact path="/cart">
           {user ? <Cart /> : <Login />}
         </Route>
-        <Route exact path="/product/:metaTitle" component={Detail}></Route>
+        <Route exact path="/product/:metaTitle/:id" component={Detail}></Route>
         <Route path={["/user", "/user/account"]} component={Account}>
           {user ? (
             <Elements stripe={stripePromise}>

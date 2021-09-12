@@ -321,7 +321,7 @@ export default function CartProduct(props) {
               />
               <Link
                 to={{
-                  pathname: `/product/${item.metaTitle}`,
+                  pathname: `/product/${item.metaTitle}/${item.id}`,
                   state: { id: item.id },
                 }}
                 className="grid__col cart-product__overview"
