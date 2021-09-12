@@ -19,6 +19,7 @@ export default function HeaderNav() {
     setCartProduct,
     setCheckoutProduct,
     userAvatar,
+    loading,
   } = useContext(ProductContext);
   const handleLogout = () => {
     if (user) {
@@ -168,7 +169,7 @@ export default function HeaderNav() {
             </Link>
           </div>
           <a href="# " className="header__nav-login-link">
-            {userAvatar ? (
+            {userAvatar && !loading ? (
               <img
                 src={userAvatar}
                 alt="userAvater"

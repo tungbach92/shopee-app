@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 import { useParams } from "react-router-dom";
@@ -38,6 +38,7 @@ export default function ProductList({
     setFilter,
     setFilterPrice,
     setType,
+    loading,
   } = context;
   useEffect(() => {
     if (items.length <= 0) {
@@ -140,15 +141,17 @@ export default function ProductList({
   }, [searchItems, setSortedSearchItems]);
   if (renderItem.length === 0 && isSearchPage) {
     return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
-  } else
-    return renderItem.map((item, index) => (
-      <ProductItem
-        key={item.id}
-        cartItems={cartItems}
-        similarDisPlay={similarDisPlay}
-        item={item}
-        handleClick={handleClick}
-        user={user}
-      ></ProductItem>
-    ));
+  } else if (loading) {
+    return <div className="app__no-product">Loading...</div>;
+  }
+  return renderItem.map((item, index) => (
+    <ProductItem
+      key={item.id}
+      cartItems={cartItems}
+      similarDisPlay={similarDisPlay}
+      item={item}
+      handleClick={handleClick}
+      user={user}
+    ></ProductItem>
+  ));
 }

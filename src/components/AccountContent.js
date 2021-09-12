@@ -11,7 +11,7 @@ import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
-  const { user, userAvatar, setUserAvatar } = useContext(ProductContext);
+  const { user, userAvatar, setUserAvatar, loading, setLoading } = useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -196,6 +196,7 @@ const AccountContent = ({ isAccountPage }) => {
             .getDownloadURL()
             .then((downloadURL) => {
               console.log("File available at", downloadURL);
+              setLoading(true);
               user
                 .updateProfile({
                   photoURL: downloadURL,
@@ -203,6 +204,7 @@ const AccountContent = ({ isAccountPage }) => {
                 .then(() => {
                   // set userAvatar
                   setUserAvatar();
+                  setLoading(false);
                 })
                 .catch((error) => {
                   console.log(error);
@@ -237,7 +239,7 @@ const AccountContent = ({ isAccountPage }) => {
           <div className="grid__col-2x">
             <div className="user-profile__name-container">
               <div className="user-profile__image-container">
-                {userAvatar ? (
+                {userAvatar && !loading ? (
                   <img
                     className="user-profile__image-user"
                     src={userAvatar}

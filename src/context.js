@@ -52,6 +52,7 @@ export default class ProductProvider extends Component {
     paymentMethodList: [],
     defaultPaymentMethodID: "",
     customerID: "",
+    loading: false,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
@@ -63,6 +64,10 @@ export default class ProductProvider extends Component {
       this.getCustomerIdFromFirebase();
     });
   }
+
+  setLoading = (loading) => {
+    this.setState({ loading });
+  };
 
   setType = (type) => {
     this.setState({ type });
@@ -507,6 +512,7 @@ export default class ProductProvider extends Component {
   getDataFireBase = async () => {
     try {
       let items = [];
+      this.setLoading(true);
       db.collection("products").onSnapshot((snapshot) => {
         snapshot.docs.forEach((doc) => {
           items = [...items, ...doc.data().items];
@@ -514,10 +520,12 @@ export default class ProductProvider extends Component {
             return new Date(a.date) - new Date(b.date); //sort by date ascending
           });
           this.setState({ items });
+          this.setLoading(false);
         });
       });
     } catch (error) {
       alert(error);
+      this.setLoading(false);
     }
   };
 
@@ -1137,6 +1145,7 @@ export default class ProductProvider extends Component {
           setFilter: this.setFilter,
           setFilterPrice: this.setFilterPrice,
           setType: this.setType,
+          setLoading: this.setLoading,
         }}
       >
         {this.props.children}

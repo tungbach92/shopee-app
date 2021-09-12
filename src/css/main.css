@@ -1207,6 +1207,7 @@ header {
   text-align: center;
   padding: 14.5rem;
   font-size: 1.6rem;
+  color: var(--primary-color);
 }
 .container {
   background-color: #f5f5f5;
@@ -1266,7 +1267,7 @@ header {
 }
 
 .user-order__filter-item:hover {
-  background-color:#ededed
+  background-color: #ededed;
 }
 
 .user-order__filter-item--selected {
@@ -3893,7 +3894,7 @@ header {
   transition: transform linear 0.1s;
   will-change: transform;
 }
-.user-profile__my-info{
+.user-profile__my-info {
   margin-top: 0;
 }
 .user-profile__my-info:hover,
