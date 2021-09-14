@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
 import { auth, db, storage } from "../firebase";
-import { Link, Switch, Route, Redirect, useLocation } from "react-router-dom";
+import { Link, Switch, Route, Redirect, NavLink } from "react-router-dom";
 import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
@@ -23,27 +23,8 @@ const AccountContent = ({ isAccountPage }) => {
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
-  const [category, setCategory] = useState("profile");
   const inputEl = useRef();
-  const location = useLocation();
   const { isPopupShowing, togglePopup } = useModal();
-
-  useEffect(() => {
-    let category;
-    if (location.pathname.includes("profile")) {
-      category = "profile";
-      setCategory(category);
-    } else if (location.pathname.includes("payment")) {
-      category = "payment";
-    } else if (location.pathname.includes("address")) {
-      category = "address";
-    } else if (location.pathname.includes("password")) {
-      category = "password";
-    } else if (location.pathname.includes("purchase")) {
-      category = "purchase";
-    }
-    setCategory(category);
-  }, [location]);
 
   //free memory file input
   useEffect(() => {
@@ -282,56 +263,41 @@ const AccountContent = ({ isAccountPage }) => {
             </div>
             <div className="user-profile__category">
               {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
-              <Link
-                to="/user/account/"
-                className={
-                  category === "profile"
-                    ? "user-profile__my-info user-profile__category-item--active"
-                    : "user-profile__my-info"
-                }
+              <NavLink
+                to="/user/account/profile"
+                className="user-profile__my-info"
+                activeClassName="user-profile__category-item--active"
               >
                 Hồ sơ
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/user/account/payment"
-                className={
-                  category === "payment"
-                    ? "user-profile__my-bank user-profile__category-item--active"
-                    : "user-profile__my-bank"
-                }
+                className="user-profile__my-bank"                
+                activeClassName="user-profile__category-item--active"
               >
                 Ngân hàng
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/user/account/address"
-                className={
-                  category === "address"
-                    ? "user-profile__my-adress user-profile__category-item--active"
-                    : "user-profile__my-adress"
-                }
+                className="user-profile__my-adress"               
+                activeClassName="user-profile__category-item--active"
               >
                 Địa chỉ
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/user/account/password"
-                className={
-                  category === "password"
-                    ? "user-profile__change-password user-profile__category-item--active"
-                    : "user-profile__change-password"
-                }
+                className="user-profile__change-password"              
+                activeClassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/user/purchase"
-                className={
-                  category === "purchase"
-                    ? "user-profile__order user-profile__category-item--active"
-                    : "user-profile__order"
-                }
+                className="user-profile__order"
+                activeClassName="user-profile__category-item--active"
               >
                 Đơn Mua
-              </Link>
+              </NavLink>
             </div>
           </div>
           <div className="grid__col-10x">
@@ -544,25 +510,21 @@ const AccountContent = ({ isAccountPage }) => {
                   isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
-                  setCategory={setCategory}
                 ></PasswordSmallContent>
               </Route>
               <Route path="/user/account/address">
                 <AddressSmallContent
                   isAccountPage={isAccountPage}
-                  setCategory={setCategory}
                 ></AddressSmallContent>
               </Route>
               <Route path="/user/account/payment">
                 <PaymentSmallContent
                   isAccountPage={isAccountPage}
-                  setCategory={setCategory}
                 ></PaymentSmallContent>
               </Route>
               <Route path="/user/purchase/">
                 <OrderSmallContent
                   isAccountPage={isAccountPage}
-                  setCategory={setCategory}
                 ></OrderSmallContent>
               </Route>
             </Switch>

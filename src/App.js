@@ -35,7 +35,7 @@ function App() {
           {user ? <Cart /> : <Login />}
         </Route>
         <Route exact path="/product/:metaTitle/:id" component={Detail}></Route>
-        <Route path={["/user", "/user/account"]} component={Account}>
+          <Route path={["/user", "/user/account"]} component={Account}>
           {user ? (
             <Elements stripe={stripePromise}>
               <Account />
