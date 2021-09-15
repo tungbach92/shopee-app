@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { db, auth } from "../firebase";
-function LoginContent({ isLoginPage, isRegisterPage }) {
+function LoginContent({ isLoginPage, submitText }) {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,10 +63,9 @@ function LoginContent({ isLoginPage, isRegisterPage }) {
               required
             />
             <button type="submit" className="btn login-content__submit">
-              {isLoginPage && "Đăng nhập"}
-              {isRegisterPage && "Đăng ký"}
+              {submitText}
             </button>
-            {isRegisterPage && (
+            {!isLoginPage && (
               <span className="login-content__rule">
                 Bằng việc đăng kí, bạn đã đồng ý với Shopee về Điều khoản dịch
                 vụ và Chính sách bảo mật
@@ -81,7 +80,7 @@ function LoginContent({ isLoginPage, isRegisterPage }) {
                   </Link>
                 </>
               )}
-              {isRegisterPage && (
+              {!isLoginPage && (
                 <>
                   Bạn đã có tài khoản?
                   <Link to="/login" className="login-content__register">
