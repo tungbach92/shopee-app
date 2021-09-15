@@ -3,21 +3,16 @@ import Header from "../components/Header";
 import HeaderSimpleContent from "../components/HeaderSimpleContent";
 import LoginContent from "../components/LoginContent";
 const Login = () => {
-  const [isLoginPage, setIsLoginPage] = useState(false);
-
-  useEffect(() => {
-    setIsLoginPage(true);
-  }, []);
 
   return (
     <>
       <Header
-        isLoginPage={isLoginPage}
+        headerClass="header--login"
         headerSimpleContent={
-          <HeaderSimpleContent isLoginPage={isLoginPage}></HeaderSimpleContent>
+          <HeaderSimpleContent headerText="Đăng nhập"></HeaderSimpleContent>
         }
       ></Header>
-      <LoginContent isLoginPage={isLoginPage}></LoginContent>
+      <LoginContent submitText="Đăng nhập" isLoginPage={true}></LoginContent>
     </>
   );
 };

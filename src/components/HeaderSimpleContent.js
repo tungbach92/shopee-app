@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../img/shoppe-logo.png";
 import { Link } from "react-router-dom";
-const HeaderSimpleContent = ({ isLoginPage, isRegisterPage }) => {
+const HeaderSimpleContent = ({ headerText }) => {
   return (
     <div className="header__simple-wrapper">
       <div className="header__logo-wrapper">
@@ -16,8 +16,7 @@ const HeaderSimpleContent = ({ isLoginPage, isRegisterPage }) => {
           </svg>
         </Link>
         <div className="header__page-name header__page-name--login">
-          {isLoginPage && "Đăng nhập"}
-          {isRegisterPage && "Đăng ký"}
+          {headerText}
         </div>
       </div>
       <div className="header__help">Cần trợ giúp?</div>

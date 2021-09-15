@@ -3,22 +3,18 @@ import Header from "../components/Header";
 import HeaderSimpleContent from "../components/HeaderSimpleContent";
 import LoginContent from "../components/LoginContent";
 const Register = () => {
-  const [isRegisterPage, setIsRegisterPage] = useState(false);
 
-  useEffect(() => {
-    setIsRegisterPage(true);
-  }, []);
   return (
     <>
       <Header
-        isRegisterPage={isRegisterPage}
+        headerClass="header--login"
         headerSimpleContent={
           <HeaderSimpleContent
-            isRegisterPage={isRegisterPage}
+           headerText="Đăng ký"
           ></HeaderSimpleContent>
         }
       ></Header>
-      <LoginContent isRegisterPage={isRegisterPage}></LoginContent>
+      <LoginContent submitText="Đăng ký"></LoginContent>
     </>
   );
 };
