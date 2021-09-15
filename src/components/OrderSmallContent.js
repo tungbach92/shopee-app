@@ -168,6 +168,7 @@ const OrderSmallContent = () => {
           </g>
         </svg>
         <input
+          disabled={orderItems.length === 0}
           type="text"
           className="user-order__search"
           onChange={handleSearchInput}
@@ -264,7 +265,7 @@ const OrderSmallContent = () => {
           </div>
         ))}
         {orderItems.length <= 0 && (
-          <div className="grid order-empty">Chưa có đơn hàng.</div>
+          <div className="user-order__order-empty">Chưa có đơn hàng.</div>
         )}
       </div>
       <Pagination

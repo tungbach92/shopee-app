@@ -20,6 +20,12 @@ export default function HeaderNav() {
     setCheckoutProduct,
     userAvatar,
     loading,
+    setOrderItems,
+    setPaymentMethodList,
+    setDefaultPaymentMethodID,
+    setShipInfos,
+    setUserAvatar,
+    setCustomerID,
   } = useContext(ProductContext);
   const handleLogout = () => {
     if (user) {
@@ -27,6 +33,12 @@ export default function HeaderNav() {
       saveCheckoutItemsToFirebase(user, checkoutItems);
       setCartProduct([]);
       setCheckoutProduct([]);
+      setOrderItems();
+      setPaymentMethodList([]);
+      setDefaultPaymentMethodID("");
+      setShipInfos([]);
+      setUserAvatar();
+      setCustomerID("");
       auth.signOut();
       history.replace("/login");
     }

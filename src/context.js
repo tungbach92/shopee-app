@@ -320,10 +320,11 @@ export default class ProductProvider extends Component {
 
   setUserAvatar = () => {
     const user = this.state.user;
+    let userAvatar = "";
     if (user) {
-      const userAvatar = user.photoURL;
-      this.setState({ userAvatar });
+      userAvatar = user.photoURL;
     }
+    this.setState({ userAvatar });
   };
 
   searchInputOnChange = (event) => {
@@ -1146,6 +1147,8 @@ export default class ProductProvider extends Component {
           setFilterPrice: this.setFilterPrice,
           setType: this.setType,
           setLoading: this.setLoading,
+          setCustomerID: this.setCustomerID,
+          setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
         }}
       >
         {this.props.children}

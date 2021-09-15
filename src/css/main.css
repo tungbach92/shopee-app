@@ -3806,10 +3806,11 @@ header {
   margin-left: 0.6rem;
 }
 
-.order-empty {
-  padding: 10rem 0;
+.user-order__order-empty {
+  padding: 2rem 0;
   font-size: 1.6rem;
   text-align: center;
+  color: var(--primary-color);
 }
 
 .user-profile {
@@ -3914,6 +3915,13 @@ header {
 .payment-profile__payment-container {
   padding: 0 3rem;
   background: var(--while-color);
+}
+
+.address-profile__address--empty{
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--primary-color);
 }
 
 .user-profile__title {
@@ -4533,6 +4541,8 @@ header {
 .payment-profile__payment-empty {
   padding: 2rem 0;
   text-align: center;
+  font-size: 1.4rem;
+  color: var(--primary-color);
 }
 
 .payment-profile__card-logo {

@@ -207,6 +207,7 @@ const AddressSmallContent = ({ isAccountPage }) => {
             </div>
           </div>
         ))}
+        {shipInfos.length === 0 && <div className="address-profile__address--empty">Vui lòng thêm địa chỉ</div>}
       </div>
       {isPopupShowing && (
         <PopupModal
