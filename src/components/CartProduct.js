@@ -328,7 +328,7 @@ export default function CartProduct(props) {
               >
                 <img
                   src={require(`../img/${item.imageUrl}`).default}
-                  alt="cart-product"
+                  alt=""
                   className="cart-product__img"
                 />
                 <span className="cart-product__name">{item.name}</span>

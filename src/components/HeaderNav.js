@@ -184,7 +184,7 @@ export default function HeaderNav() {
             {userAvatar && !loading ? (
               <img
                 src={userAvatar}
-                alt="userAvater"
+                alt=""
                 className="header__nav-avatar"
               />
             ) : (

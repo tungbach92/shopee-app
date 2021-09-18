@@ -224,7 +224,7 @@ const AccountContent = ({ isAccountPage }) => {
                   <img
                     className="user-profile__image-user"
                     src={userAvatar}
-                    alt="userImg"
+                    alt=""
                   />
                 ) : (
                   <svg

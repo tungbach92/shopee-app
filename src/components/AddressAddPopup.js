@@ -172,14 +172,14 @@ const AddressAddPopup = ({
             <div className="address-profile__modal-content">
               <input
                 type="text"
-                value={name}
+                defaultValue={name}
                 onChange={(e) => setName(e.target.value)}
                 className="address-profile__name"
                 placeholder="Họ và tên"
               />
               <input
                 type="text"
-                value={phone}
+                defaultValue={phone}
                 onChange={handlePhoneChange}
                 className="address-profile__phone"
                 placeholder="Số điện thoại"
@@ -264,7 +264,7 @@ const AddressAddPopup = ({
               <div className="address-profile__ward-error">{errors.ward}</div>
               <input
                 type="text"
-                value={street}
+                defaultValue={street}
                 onChange={(e) => setStreet(e.target.value)}
                 className="address-profile__address-detail"
                 placeholder="Địa chỉ cụ thể"
