@@ -11,7 +11,8 @@ import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
 
 const AccountContent = ({ isAccountPage }) => {
-  const { user, userAvatar, setUserAvatar, loading, setLoading } = useContext(ProductContext);
+  const { user, userAvatar, setUserAvatar, loading, setLoading } =
+    useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -272,21 +273,21 @@ const AccountContent = ({ isAccountPage }) => {
               </NavLink>
               <NavLink
                 to="/user/account/payment"
-                className="user-profile__my-bank"                
+                className="user-profile__my-bank"
                 activeClassName="user-profile__category-item--active"
               >
                 Ngân hàng
               </NavLink>
               <NavLink
                 to="/user/account/address"
-                className="user-profile__my-adress"               
+                className="user-profile__my-adress"
                 activeClassName="user-profile__category-item--active"
               >
                 Địa chỉ
               </NavLink>
               <NavLink
                 to="/user/account/password"
-                className="user-profile__change-password"              
+                className="user-profile__change-password"
                 activeClassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
@@ -488,16 +489,9 @@ const AccountContent = ({ isAccountPage }) => {
                   </div>
                 </div>
               </Route>
-              <Redirect
-                exact
-                from="/user"
-                to="/user/account/profile"
-              ></Redirect>
-              <Redirect
-                exact
-                from="/user/account"
-                to="/user/account/profile"
-              ></Redirect>
+              <Route exact path={["/user", "/user/account"]}>
+                <Redirect to="/user/account/profile"></Redirect>
+              </Route>
               <Route path="/user/account/email">
                 <EmailSmallContent
                   isAccountPage={isAccountPage}
