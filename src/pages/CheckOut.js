@@ -9,7 +9,6 @@ export default function Checkout() {
   const context = useContext(ProductContext);
   const {
     searchInput,
-    filterProductBySearch,
     searchHistory,
     addToSearchHistory,
   } = context;
@@ -28,10 +27,6 @@ export default function Checkout() {
         headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
-            searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
-            searchHistory={searchHistory}
-            addToSearchHistory={addToSearchHistory}
             isCheckoutPage={isCheckoutPage}
           ></HeaderSearch>
         }

@@ -7,13 +7,6 @@ import { ProductContext } from "../context";
 const Search = () => {
   const [isSearchPage, setIsSearchPage] = useState(false);
 
-  const {
-    searchInput,
-    filterProductBySearch,
-    searchHistory,
-    addToSearchHistory,
-  } = useContext(ProductContext);
-
   useEffect(() => {
     setIsSearchPage(true);
   }, []);
@@ -26,10 +19,6 @@ const Search = () => {
         headerSearch={
           <HeaderSearch
             isSearchPage={isSearchPage}
-            searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
-            searchHistory={searchHistory}
-            addToSearchHistory={addToSearchHistory}
           ></HeaderSearch>
         }
       ></Header>

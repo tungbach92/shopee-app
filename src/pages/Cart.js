@@ -8,12 +8,6 @@ import PopupModal from "../components/PopupModal";
 import useModal from "../hooks/useModal";
 
 export default function Cart() {
-  const {
-    searchInput,
-    filterProductBySearch,
-    searchHistory,
-    addToSearchHistory,
-  } = useContext(ProductContext);
   const [isCartPageLoaded, setIsCartPageLoaded] = useState(false);
   // const { isPopupShowing, togglePopup } = useModal();
   useEffect(() => {
@@ -29,10 +23,6 @@ export default function Cart() {
         headerNav={<HeaderNav></HeaderNav>}
         headerSearch={
           <HeaderSearch
-            searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
-            searchHistory={searchHistory}
-            addToSearchHistory={addToSearchHistory}
             isCartPageLoaded={isCartPageLoaded}
           ></HeaderSearch>
         }

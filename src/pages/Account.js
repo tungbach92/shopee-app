@@ -9,7 +9,6 @@ export default function Account() {
   const [isAccountPage, setIsAccountPage] = useState(false);
   const {
     searchInput,
-    filterProductBySearch,
     searchHistory,
     addToSearchHistory,
   } = useContext(ProductContext);
@@ -25,7 +24,6 @@ export default function Account() {
         headerSearch={
           <HeaderSearch
             searchInput={searchInput}
-            filterProductBySearch={filterProductBySearch}
             searchHistory={searchHistory}
             addToSearchHistory={addToSearchHistory}
           ></HeaderSearch>

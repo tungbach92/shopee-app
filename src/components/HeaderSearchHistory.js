@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router";
 export default function HeaderSearchHistory(props) {
   const history = useHistory();
-  const { inputEl, filterProductBySearch, text, setSearchInput, isSearchPage } =
+  const { filterProductBySearch, text, setSearchInput, isSearchPage } =
     props;
   function handelClick() {
     filterProductBySearch(text);

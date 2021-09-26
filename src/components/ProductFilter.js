@@ -6,46 +6,19 @@ export default class ProductFilter extends Component {
   static contextType = ProductContext;
 
   handelHover = (event) => {
-    const name = event.currentTarget.dataset.name;
-    if (name === "filterPrice") {
-      event.currentTarget.children[2].removeAttribute("style");
-    }
+    event.currentTarget.children[2].removeAttribute("style");
   };
 
   render() {
     let { sortedItems, filter, filterPrice, handleClick, sortedSearchItems } =
       this.context;
     const { isSearchPage } = this.props;
-    let labelValue = "";
-    var icon1,
-      icon2 = "";
-    var isFilterPopular,
-      isFilterDate,
-      isFilterBestSell = false;
+
     let totalItems = 0;
     if (isSearchPage) {
       totalItems = sortedSearchItems.length;
     } else {
       totalItems = sortedItems.length;
-    }
-
-    //css filter price
-    if (filterPrice === "priceAsc") {
-      labelValue = "Giá: Thấp đến cao";
-      icon1 = `app__input-item-icon bi bi-check`;
-    } else if (filterPrice === "priceDesc") {
-      labelValue = "Giá: Cao đến thấp";
-      icon2 = `app__input-item-icon bi bi-check`;
-    } else {
-      labelValue = "Giá:";
-    }
-    //css filter popular, date, bestSelling
-    if (filter === "popular") {
-      isFilterPopular = true;
-    } else if (filter === "date") {
-      isFilterDate = true;
-    } else if (filter === "bestSelling") {
-      isFilterBestSell = true;
     }
 
     return (
@@ -56,9 +29,9 @@ export default class ProductFilter extends Component {
           <button
             data-name="filter"
             data-value="popular"
-            onClick={handleClick}
+            onClick={totalItems === 0 ? undefined : handleClick}
             className={classNames("btn app__filter-item app__filter-popular", {
-              "btn--active": isFilterPopular === true,
+              "btn--active": filter === "popular",
             })}
           >
             Phổ biến
@@ -66,9 +39,9 @@ export default class ProductFilter extends Component {
           <button
             data-name="filter"
             data-value="date"
-            onClick={handleClick}
+            onClick={totalItems === 0 ? undefined : handleClick}
             className={classNames("btn app__filter-item app__filter-newest", {
-              "btn--active": isFilterDate === true,
+              "btn--active": filter === "date",
             })}
           >
             Mới nhất
@@ -76,9 +49,9 @@ export default class ProductFilter extends Component {
           <button
             data-name="filter"
             data-value="bestSelling"
-            onClick={handleClick}
+            onClick={totalItems === 0 ? undefined : handleClick}
             className={classNames("btn app__filter-item app__filter-bestSell", {
-              "btn--active": isFilterBestSell === true,
+              "btn--active": filter === "bestSelling",
             })}
           >
             Bán chạy
@@ -86,14 +59,18 @@ export default class ProductFilter extends Component {
           <div
             data-name="filterPrice"
             onMouseEnter={this.handelHover}
-            className="select-input"
+            className={totalItems === 0 ? "select-input--disabled" : "select-input"}
           >
             <span
               className={classNames("app__input-lable", {
                 "app__input-lable--active": filterPrice !== "default",
               })}
             >
-              {labelValue}
+              {filterPrice === "priceAsc"
+                ? "Giá: Thấp đến cao"
+                : filterPrice === "priceDesc"
+                ? "Giá: Cao đến thấp"
+                : "Giá"}
             </span>
             <i className="app__input-icon bi bi-chevron-down"></i>
             <ul className="app__input-list">
@@ -111,7 +88,12 @@ export default class ProductFilter extends Component {
                 })}
               >
                 Giá: Thấp đến Cao
-                <i className={icon1}></i>
+                <i
+                  className={
+                    filterPrice === "priceAsc" &&
+                    "app__input-item-icon bi bi-check"
+                  }
+                ></i>
               </li>
               <li
                 data-name="filterPrice"
@@ -122,7 +104,12 @@ export default class ProductFilter extends Component {
                 })}
               >
                 Giá: Cao đến Thấp
-                <i className={icon2}></i>
+                <i
+                  className={
+                    filterPrice === "priceDesc" &&
+                    "app__input-item-icon bi bi-check"
+                  }
+                ></i>
               </li>
             </ul>
           </div>
