@@ -215,6 +215,7 @@ const AddressSmallContent = ({ isAccountPage }) => {
           togglePopup={togglePopup}
           isAccountPage={isAccountPage}
           shipInfoIndex={shipInfoIndex}
+          setShipInfoIndex={setShipInfoIndex}
           handleDeleteTrue={handleDeleteTrue}
         ></PopupModal>
       )}

@@ -1094,6 +1094,7 @@ export default class ProductProvider extends Component {
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
           changeCartItemsVariation: this.changeCartItemsVariation,
           changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
+          delCartItem: this.delCartItem,
           delCartItems: this.delCartItems,
           saveCartItemsToStorage: this.saveCartItemsToStorage,
           saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,

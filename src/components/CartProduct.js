@@ -18,6 +18,7 @@ export default function CartProduct(props) {
   const [variation, setVariation] = useState("");
   const [isVariationChoose, setIsVariationChoose] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [deleteID, setDeleteID] = useState();
   const {
     isVoucherShowing,
     toggleVoucher,
@@ -35,6 +36,7 @@ export default function CartProduct(props) {
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
     changeSimilarDisPlayCartItems,
+    delCartItem,
     delCartItems,
     checkoutItems,
     setCheckoutItemsByChecked,
@@ -140,6 +142,15 @@ export default function CartProduct(props) {
     checked[lastIndex] = false;
     const newChecked = [...checked];
     setChecked(newChecked);
+  };
+
+  const handleDelete = (id) => {
+    setDeleteID(id);
+    togglePopup(!isPopupShowing);
+  };
+
+  const handleDeleteCartTrue = (id) => {
+    delCartItem(id);
   };
 
   // set selectedItems by checked
@@ -463,9 +474,7 @@ export default function CartProduct(props) {
               </div>
               <div className="grid__col cart-product__action">
                 <span
-                  data-name="delCartBtn"
-                  data-id={item.id}
-                  onClick={handleClick}
+                  onClick={() => handleDelete(item.id)}
                   className="cart-product__action-del"
                 >
                   Xóa
@@ -819,15 +828,6 @@ export default function CartProduct(props) {
               >
                 Mua hàng
               </Link>
-              {isPopupShowing && (
-                <PopupModal
-                  isCartPageLoaded={isCartPageLoaded}
-                  isVariationChoose={isVariationChoose}
-                  isPopupShowing={isPopupShowing}
-                  togglePopup={togglePopup}
-                  selectedItems={selectedItems}
-                ></PopupModal>
-              )}
             </div>
           </div>
         </div>
@@ -848,6 +848,18 @@ export default function CartProduct(props) {
           isAddCartPopup={isAddCartPopup}
           toggleIsAddCardPopup={toggleIsAddCardPopup}
         ></AddCartModal>
+      )}
+      {isPopupShowing && (
+        <PopupModal
+          isCartPageLoaded={isCartPageLoaded}
+          isVariationChoose={isVariationChoose}
+          isPopupShowing={isPopupShowing}
+          togglePopup={togglePopup}
+          selectedItems={selectedItems}
+          deleteID={deleteID}
+          setDeleteID={setDeleteID}
+          handleDeleteCartTrue={handleDeleteCartTrue}
+        ></PopupModal>
       )}
     </div>
   );

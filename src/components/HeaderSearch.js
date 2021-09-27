@@ -6,7 +6,12 @@ import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { ProductContext } from "../context";
 
-const HeaderSearch = ({ isCartPageLoaded, isCheckoutPage, isSearchPage }) => {
+const HeaderSearch = ({
+  isProductPage,
+  isCartPageLoaded,
+  isCheckoutPage,
+  isSearchPage,
+}) => {
   console.log("header search render");
   const {
     orderItems,
@@ -135,7 +140,10 @@ const HeaderSearch = ({ isCartPageLoaded, isCheckoutPage, isSearchPage }) => {
                 ))}
               </ul>
             </div>
-            <HeaderCart></HeaderCart>
+            <HeaderCart
+              isProductPage={isProductPage}
+              isSearchPage={isSearchPage}
+            ></HeaderCart>
           </>
         ) : (
           <div

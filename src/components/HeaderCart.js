@@ -1,15 +1,33 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import noCartImg from "../img/no-cart.png";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
-const HeaderCart = () => {
-  const { cartItems, handleClick, user, setCartItemsFromFirebase } =
-    useContext(ProductContext);
+import useModal from "../hooks/useModal";
+import PopupModal from "./PopupModal";
+const HeaderCart = ({ isProductPage, isSearchPage }) => {
+  const {
+    cartItems,
+    handleClick,
+    delCartItem,
+    user,
+    setCartItemsFromFirebase,
+  } = useContext(ProductContext);
+  const [deleteID, setDeleteID] = useState();
+  const { isPopupShowing, togglePopup } = useModal();
   useEffect(() => {
     setCartItemsFromFirebase(user);
   }, [setCartItemsFromFirebase, user]);
+
+  const handleCartDelete = (id) => {
+    setDeleteID(id);
+    togglePopup(!isPopupShowing);
+  };
+  const handleDeleteCartTrue = (id) => {
+    delCartItem(id);
+  };
+
   return (
     <div className="header__cart">
       <div className="header__cart-wrapper">
@@ -78,10 +96,8 @@ const HeaderCart = () => {
                     ></i>
                   </div>
                   <span
-                    data-name="delCartBtn"
-                    onClick={handleClick}
+                    onClick={() => handleCartDelete(item.id)}
                     className="header__cart-delBtn"
-                    data-id={item.id}
                   >
                     Xóa
                   </span>
@@ -100,6 +116,17 @@ const HeaderCart = () => {
           </Link>
         </div>
       </div>
+      {isPopupShowing && (
+        <PopupModal
+          isProductPage={isProductPage}
+          isSearchPage={isSearchPage}
+          isPopupShowing={isPopupShowing}
+          togglePopup={togglePopup}
+          deleteID={deleteID}
+          setDeleteID={setDeleteID}
+          handleDeleteCartTrue={handleDeleteCartTrue}
+        ></PopupModal>
+      )}
     </div>
   );
 };

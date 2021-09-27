@@ -6,15 +6,22 @@ export default function PopupModal(props) {
   const history = useHistory();
 
   const {
+    isProductPage,
     isAccountPage,
     isAnyUserInfoUpdateFail,
     isUpdateEmailSuccess,
     isUpdatePasswordSuccess,
     handleDeleteTrue,
     shipInfoIndex,
+    setShipInfoIndex,
     paymentMethodID,
+    setPaymentMethodID,
     handlePaymentDeleteTrue,
+    isSearchPage,
     isCartPageLoaded,
+    deleteID,
+    setDeleteID,
+    handleDeleteCartTrue,
     isVariationChoose,
     selectedItems,
     isCardInfoMustFilled,
@@ -29,11 +36,27 @@ export default function PopupModal(props) {
 
   const handleBackClick = (e) => {
     togglePopup(!isPopupShowing);
+
+    // set those values to undefined if setState function true
+    if (setDeleteID) {
+      setDeleteID();
+    }
+    if (setPaymentMethodID) {
+      setPaymentMethodID();
+    }
+    if (setShipInfoIndex) {
+      setShipInfoIndex();
+    }
   };
 
   const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
-    if (!isCartPageLoaded && !isAccountPage) {
+    if (
+      !isCartPageLoaded &&
+      !isAccountPage &&
+      !isSearchPage &&
+      !isProductPage
+    ) {
       if (!Object.keys(shipUnit).length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
       } else if (isCardInfoMustFilled) {
@@ -53,8 +76,15 @@ export default function PopupModal(props) {
       history.replace("/user");
     } else if (isAccountPage && typeof shipInfoIndex !== "undefined") {
       handleDeleteTrue(shipInfoIndex);
+      setShipInfoIndex();
     } else if (isAccountPage && typeof paymentMethodID !== "undefined") {
       handlePaymentDeleteTrue(paymentMethodID);
+      setPaymentMethodID();
+    }
+
+    if ((isCartPageLoaded || isSearchPage || isProductPage) && typeof deleteID !== "undefined") {
+      handleDeleteCartTrue(deleteID);
+      setDeleteID();
     }
   };
 
@@ -76,6 +106,9 @@ export default function PopupModal(props) {
                 !isAnyUserInfoUpdateFail &&
                 typeof isAnyUserInfoUpdateFail !== "undefined"
               ? "Cập nhật thông tin người dùng thành công"
+              : (isCartPageLoaded || isSearchPage || isProductPage) &&
+                typeof deleteID !== "undefined"
+              ? "Bạn chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng ?"
               : isCartPageLoaded && selectedItems?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
@@ -84,8 +117,7 @@ export default function PopupModal(props) {
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0
               ? "Vui lòng chọn phương thức thanh toán."
-              :  isCardPayment &&
-              typeof defaultPaymentMethodID === "undefined"
+              : isCardPayment && typeof defaultPaymentMethodID === "undefined"
               ? "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ"
               : succeeded
               ? "Đặt hàng thành công"
@@ -93,9 +125,13 @@ export default function PopupModal(props) {
           </span>
         </div>
         <div className="cart-product__popup-footer">
-          {isAccountPage &&
+          {(isAccountPage ||
+            isCartPageLoaded ||
+            isSearchPage ||
+            isProductPage) &&
             (typeof shipInfoIndex !== "undefined" ||
-              typeof paymentMethodID !== "undefined") && (
+              typeof paymentMethodID !== "undefined" ||
+              typeof deleteID !== "undefined") && (
               <button
                 className="btn cart-product__popup-cancle"
                 onClick={handleBackClick}

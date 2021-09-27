@@ -90,6 +90,7 @@ const PaymentSmallContent = ({ isAccountPage }) => {
                     isPopupShowing={isPopupShowing}
                     togglePopup={togglePopup}
                     paymentMethodID={paymentMethodID}
+                    setPaymentMethodID={setPaymentMethodID}
                     handlePaymentDeleteTrue={handlePaymentDeleteTrue}
                   ></PopupModal>
                 )}

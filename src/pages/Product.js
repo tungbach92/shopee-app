@@ -17,7 +17,7 @@ export default function Product() {
       <Header
         isProductPage={isProductPage}
         headerNav={<HeaderNav></HeaderNav>}
-        headerSearch={<HeaderSearch></HeaderSearch>}
+        headerSearch={<HeaderSearch isProductPage={isProductPage}></HeaderSearch>}
       ></Header>
       <ProductContainer isProductPage={isProductPage}></ProductContainer>
     </>
