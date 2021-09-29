@@ -201,7 +201,7 @@ const AddressAddPopup = ({
                       <div
                         key={index}
                         onClick={handleProvinceChoose}
-                        className="checkout-product__provinces-item"
+                        className="address-profile__provinces-item"
                       >
                         {item.name}
                       </div>
@@ -224,7 +224,7 @@ const AddressAddPopup = ({
                       <div
                         key={index}
                         onClick={handleDistrictChoose}
-                        className="checkout-product__districts-item"
+                        className="address-profile__districts-item"
                       >
                         {item.name}
                       </div>
@@ -247,7 +247,7 @@ const AddressAddPopup = ({
                       <div
                         key={index}
                         onClick={handleWardChoose}
-                        className="checkout-product__wards-item"
+                        className="address-profile__wards-item"
                       >
                         {item.name}
                       </div>

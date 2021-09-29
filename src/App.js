@@ -14,44 +14,29 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProductContext } from "./context";
 import Search from "./pages/Search";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {
-  console.log("app render");
-  const { user, setUser } = useContext(ProductContext);
-  // useEffect(() => {
-  //   if (!user) {
-  //     setUser();
-  //   }
-  // }, [setUser, user]);
+  const { user } = useContext(ProductContext);
+
   return (
     <>
       <Switch>
         <Route exact path="/" component={Product}></Route>
-        <Route exact path="/cart">
-          {user ? <Cart /> : <Login />}
-        </Route>
+        <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/product/:metaTitle/:id" component={Detail}></Route>
         <Route path={["/user", "/user/account"]}>
-          {user ? (
-            <Elements stripe={stripePromise}>
-              <Account />
-            </Elements>
-          ) : (
-            <Login />
-          )}
+          <Elements stripe={stripePromise}>
+            <Account />
+          </Elements>
         </Route>
         <Route exact path="/checkout">
-          {user ? (
-            <Elements stripe={stripePromise}>
-              <Checkout />
-            </Elements>
-          ) : (
-            <Login />
-          )}
+          <Elements stripe={stripePromise}>
+            <Checkout />
+          </Elements>
         </Route>
         <Route exact path="/login" component={Login}></Route>
         <Route exact path="/register" component={Register}></Route>

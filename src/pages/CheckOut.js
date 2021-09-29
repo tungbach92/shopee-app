@@ -4,14 +4,13 @@ import CheckoutProduct from "../components/CheckoutProduct";
 import HeaderSearch from "../components/HeaderSearch";
 import HeaderNav from "../components/HeaderNav";
 import { ProductContext } from "../context";
+import { Redirect } from "react-router";
+
 export default function Checkout() {
   const [isCheckoutPage, setIsCheckoutPage] = useState(false);
-  const context = useContext(ProductContext);
-  const {
-    searchInput,
-    searchHistory,
-    addToSearchHistory,
-  } = context;
+  const { authorized } = useContext(ProductContext);
+
+
 
   useEffect(() => {
     // effect
@@ -20,18 +19,26 @@ export default function Checkout() {
       // cleanup
     };
   }, []);
-  return (
-    <>
-      <Header
-      headerClass="header--checkout"
-        headerNav={<HeaderNav></HeaderNav>}
-        headerSearch={
-          <HeaderSearch
-            isCheckoutPage={isCheckoutPage}
-          ></HeaderSearch>
-        }
-      ></Header>
-      <CheckoutProduct></CheckoutProduct>
-    </>
-  );
+
+  if(authorized !== null) { 
+    if (!authorized) {
+      return <Redirect to="/login"></Redirect>;
+    }
+    return (
+      <>
+        <Header
+        headerClass="header--checkout"
+          headerNav={<HeaderNav></HeaderNav>}
+          headerSearch={
+            <HeaderSearch
+              isCheckoutPage={isCheckoutPage}
+            ></HeaderSearch>
+          }
+        ></Header>
+        <CheckoutProduct></CheckoutProduct>
+      </>
+    );
+  }
+  else return null;
+ 
 }

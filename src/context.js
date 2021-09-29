@@ -53,6 +53,7 @@ export default class ProductProvider extends Component {
     defaultPaymentMethodID: "",
     customerID: "",
     loading: false,
+    authorized: null,
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
@@ -64,6 +65,10 @@ export default class ProductProvider extends Component {
       this.getCustomerIdFromFirebase();
     });
   }
+  
+  setAuthorized = (authorized) => {
+    this.setState({ authorized });
+  };
 
   setLoading = (loading) => {
     this.setState({ loading });
@@ -390,10 +395,12 @@ export default class ProductProvider extends Component {
       if (authUser) {
         //user will log in or logged in
         this.setState({ user: authUser }, cb);
+        this.setAuthorized(true);
         // cartItems = this.getCartItemsFromFirebase(authUser);
       } else {
         //user logged out
         this.setState({ user: null });
+        this.setAuthorized(false);
       }
     });
   };
@@ -657,9 +664,6 @@ export default class ProductProvider extends Component {
       });
     }
 
-    if (name === "delCartBtn") {
-      this.delCartItem(id);
-    }
     if (name === "incrCartItem") {
       this.incrCartItem(id, this.saveCartItemsToStorage);
     }
@@ -1150,6 +1154,7 @@ export default class ProductProvider extends Component {
           setLoading: this.setLoading,
           setCustomerID: this.setCustomerID,
           setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
+          setAuthorized: this.setAuthorized,
         }}
       >
         {this.props.children}

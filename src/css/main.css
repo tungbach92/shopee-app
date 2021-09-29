@@ -3918,7 +3918,7 @@ header {
   background: var(--while-color);
 }
 
-.address-profile__address--empty{
+.address-profile__address--empty {
   padding: 2rem 0;
   text-align: center;
   font-size: 1.4rem;
@@ -4357,6 +4357,7 @@ header {
   grid-template-columns: 18rem 18rem 18rem;
 }
 .address-profile__name {
+  padding-left: 0.6rem;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
@@ -4367,6 +4368,7 @@ header {
 }
 
 .address-profile__phone {
+  padding-left: 0.6rem;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 2;
@@ -4392,8 +4394,9 @@ header {
   font-size: 1.2rem;
 }
 .address-profile__province {
+  padding-left: 0.6rem;
   position: relative;
-  padding: 1.2rem 0;
+  padding: 1.2rem 0.6rem;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
   grid-column-end: 2;
@@ -4406,8 +4409,9 @@ header {
 }
 
 .address-profile__district {
+  padding-left: 0.6rem;
   position: relative;
-  padding: 1.2rem 0;
+  padding: 1.2rem 0.6rem;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 2;
   grid-column-end: 3;
@@ -4420,7 +4424,7 @@ header {
 }
 .address-profile__ward {
   position: relative;
-  padding: 1.2rem 0;
+  padding: 1.2rem 0.6rem;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 3;
   grid-column-end: 4;
@@ -4488,7 +4492,26 @@ header {
   width: 17.9rem;
 }
 
+.address-profile__provinces-item,
+.address-profile__wards-item,
+.address-profile__districts-item {
+  margin-top: 0.6rem;
+}
+
+.address-profile__provinces-item:first-child,
+.address-profile__wards-item:first-child,
+.address-profile__districts-item:first-child {
+  margin-top: 0;
+}
+
+.address-profile__provinces-item:hover,
+.address-profile__wards-item:hover,
+.address-profile__districts-item:hover {
+  color: var(--primary-color);
+}
+
 .address-profile__address-detail {
+  padding-left: 0.6rem;
   outline: none;
   border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
