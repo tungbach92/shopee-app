@@ -79,6 +79,10 @@ button[disabled] {
   outline: none;
 }
 
+.btn:active {
+  filter: brightness(70%)
+}
+
 /* Select input */
 .select-input {
   margin-left: 1.3rem;

@@ -34,7 +34,7 @@ const OrderSmallContent = () => {
 
   const handleSearchOrderItems = (text) => {
     text = text.trim().toLowerCase();
-    let searchOrderItems = [...orderItems];
+    let searchOrderItems = orderItems ? [...orderItems] : [];
     if (text.length > 0) {
       searchOrderItems = [...orderItems].filter(
         (orderItem) =>
@@ -81,7 +81,7 @@ const OrderSmallContent = () => {
   );
 
   useEffect(() => {
-    setSearchOrderItems(orderItems);
+    setSearchOrderItems(orderItems ? orderItems : []);
   }, [orderItems]);
 
   useEffect(() => {
@@ -168,7 +168,7 @@ const OrderSmallContent = () => {
           </g>
         </svg>
         <input
-          disabled={orderItems.length === 0}
+          disabled={orderItems?.length === 0}
           type="text"
           className="user-order__search"
           onChange={handleSearchInput}
@@ -264,9 +264,11 @@ const OrderSmallContent = () => {
             </div>
           </div>
         ))}
-        {orderItems.length <= 0 && (
+        {orderItems?.length <= 0 && (
           <div className="user-order__order-empty">Chưa có đơn hàng.</div>
         )}
+
+        {orderItems === null && <div className="user-order__order-loading">Loading...</div>}
       </div>
       <Pagination
         isOrderPage={isOrderPage}

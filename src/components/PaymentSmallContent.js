@@ -59,59 +59,57 @@ const PaymentSmallContent = ({ isAccountPage }) => {
         </div>
       </div>
       <div className="payment-profile__payment-container">
-        {paymentMethodList.length > 0 ? (
-          paymentMethodList.map((item, index) => (
-            <div key={index} className="payment-profile__payment-content">
-              <img
-                src={getCardImgByBrand(item.card.brand)}
-                alt="card-brand"
-                className="payment-profile__card-logo"
-              />
-              <div className="payment-profile__card-name">
-                {item.card.brand}
-              </div>
-              {item.id === defaultPaymentMethodID && (
-                <div className="payment-profile__card-default">Mặc định</div>
-              )}
-              <div className="payment-profile__card-spacer"></div>
-              <div className="payment-profile__card-number">
-                **** **** **** {item.card.last4}
-              </div>
-              <div className="payment-profile__btn-container">
-                <div
-                  onClick={() => handlePaymentDeleteClick(item.id)}
-                  className="payment-profile__card-delete"
-                >
-                  Xóa
-                </div>
-                {isPopupShowing && (
-                  <PopupModal
-                    isAccountPage={isAccountPage}
-                    isPopupShowing={isPopupShowing}
-                    togglePopup={togglePopup}
-                    paymentMethodID={paymentMethodID}
-                    setPaymentMethodID={setPaymentMethodID}
-                    handlePaymentDeleteTrue={handlePaymentDeleteTrue}
-                  ></PopupModal>
-                )}
-                <button
-                  onClick={() => handleDefaultClick(item.id)}
-                  className={
-                    item.id === defaultPaymentMethodID
-                      ? "btn payment-profile__default-btn payment-profile__default-btn--disabled "
-                      : "btn payment-profile__default-btn"
-                  }
-                >
-                  Thiết lập mặc định
-                </button>
-              </div>
+        {paymentMethodList?.map((item, index) => (
+          <div key={index} className="payment-profile__payment-content">
+            <img
+              src={getCardImgByBrand(item.card.brand)}
+              alt="card-brand"
+              className="payment-profile__card-logo"
+            />
+            <div className="payment-profile__card-name">{item.card.brand}</div>
+            {item.id === defaultPaymentMethodID && (
+              <div className="payment-profile__card-default">Mặc định</div>
+            )}
+            <div className="payment-profile__card-spacer"></div>
+            <div className="payment-profile__card-number">
+              **** **** **** {item.card.last4}
             </div>
-          ))
-        ) : (
+            <div className="payment-profile__btn-container">
+              <div
+                onClick={() => handlePaymentDeleteClick(item.id)}
+                className="payment-profile__card-delete"
+              >
+                Xóa
+              </div>
+              {isPopupShowing && (
+                <PopupModal
+                  isAccountPage={isAccountPage}
+                  isPopupShowing={isPopupShowing}
+                  togglePopup={togglePopup}
+                  paymentMethodID={paymentMethodID}
+                  setPaymentMethodID={setPaymentMethodID}
+                  handlePaymentDeleteTrue={handlePaymentDeleteTrue}
+                ></PopupModal>
+              )}
+              <button
+                onClick={() => handleDefaultClick(item.id)}
+                className={
+                  item.id === defaultPaymentMethodID
+                    ? "btn payment-profile__default-btn payment-profile__default-btn--disabled "
+                    : "btn payment-profile__default-btn"
+                }
+              >
+                Thiết lập mặc định
+              </button>
+            </div>
+          </div>
+        ))}
+        {paymentMethodList?.length === 0 && (
           <div className="payment-profile__payment-empty">
             Bạn chưa liên kết thẻ
           </div>
         )}
+        {paymentMethodList === null && <div className="payment-profile__payment-loading">Loading...</div>}
       </div>
     </>
   );

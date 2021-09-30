@@ -30,8 +30,8 @@ export default class ProductProvider extends Component {
     pageSize: 10,
     pageTotal: 0,
     cartNumb: 0,
-    cartItems: [],
-    checkoutItems: [],
+    cartItems: null,
+    checkoutItems: null,
     searchInput: "",
     searchHistory: [],
     checked: [],
@@ -45,11 +45,11 @@ export default class ProductProvider extends Component {
       { code: "CHRISTMASSALE", discount: "100000" },
     ],
     shipPriceProvince: [0, 0],
-    orderItems: [],
+    orderItems: null,
     user: null,
     userAvatar: null,
-    shipInfos: [],
-    paymentMethodList: [],
+    shipInfos: null,
+    paymentMethodList: null,
     defaultPaymentMethodID: "",
     customerID: "",
     loading: false,
@@ -65,7 +65,7 @@ export default class ProductProvider extends Component {
       this.getCustomerIdFromFirebase();
     });
   }
-  
+
   setAuthorized = (authorized) => {
     this.setState({ authorized });
   };
@@ -483,7 +483,7 @@ export default class ProductProvider extends Component {
       return rest;
     });
     if (
-      (checkoutItems.length > 0 || cartItems.length > 0) &&
+      (checkoutItems?.length > 0 || cartItems?.length > 0) &&
       _.isEqual(checkoutItems, unmodifiedCartItems)
     ) {
       defaultChecked = unmodifiedCartItems.map((item) => true);

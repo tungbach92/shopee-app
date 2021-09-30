@@ -180,13 +180,10 @@ export default function HeaderNav() {
               Đăng nhập
             </Link>
           </div>
+          {/* <div className="header__nav-loading">Loading...</div> */}
           <a href="# " className="header__nav-login-link">
             {userAvatar && !loading ? (
-              <img
-                src={userAvatar}
-                alt=""
-                className="header__nav-avatar"
-              />
+              <img src={userAvatar} alt="" className="header__nav-avatar" />
             ) : (
               <div className="header__nav-noavatar">
                 <svg

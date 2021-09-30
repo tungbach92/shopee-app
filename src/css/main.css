@@ -262,6 +262,10 @@ header {
   position: relative;
 }
 
+.header__nav-item-right--loading {
+  position: relative;
+}
+
 .header__nav-item-right--user:hover .header__user-list {
   display: block;
 }
@@ -297,6 +301,15 @@ header {
   align-items: center;
   padding: 0 0.6rem;
   position: relative;
+}
+
+.header__nav-loading {
+  display: inline-flex;
+  height: 100%;
+  align-items: center;
+  padding: 0 0.6rem;
+  position: relative;
+  color: var(--while-color);
 }
 
 .header__nav-reg::before {
@@ -365,6 +378,10 @@ header {
 .header__user-item:hover {
   color: #00bfa5;
   background-color: #ddd;
+}
+
+.header__user-item:active {
+  filter: brightness(70%);
 }
 
 .header__search {
@@ -969,6 +986,11 @@ header {
   margin-left: 2rem;
   margin-right: 0.1rem;
 }
+.app__next-page:active,
+.app__pre-page:active {
+  filter: brightness(70%);
+}
+
 
 .app__pre-page--disabled,
 .app__next-page--disabled {
@@ -1489,9 +1511,6 @@ header {
   border: 0.125rem solid rgba(0, 0, 0, 0.09);
   cursor: pointer;
 }
-.cart-product__amount-desc:hover {
-  background-color: rgba(0, 0, 0, 0.09);
-}
 
 .cart-product__amount-numb {
   width: 3.2rem;
@@ -1504,10 +1523,6 @@ header {
   border: 0.125rem solid rgba(0, 0, 0, 0.09);
   text-decoration: none;
   cursor: pointer;
-}
-
-.cart-product__amount-incr:hover {
-  background-color: rgba(0, 0, 0, 0.09);
 }
 
 .cart-product__total {
@@ -1887,6 +1902,7 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
+
 
 .cart-product__checkout-btn:hover {
   opacity: 0.9;
@@ -2308,6 +2324,7 @@ header {
   cursor: pointer;
   flex: 1;
 }
+
 .cart-product__popup-apply--disabled,
 .forgot-password__popup-apply--disabled {
   cursor: default;
@@ -2390,6 +2407,14 @@ header {
   align-items: center;
 }
 
+.cart-loading {
+  text-align: center;
+  padding: 14.5rem;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
 .cart-empty__img {
   width: 16rem;
 }
@@ -2465,6 +2490,7 @@ header {
 .checkout-product__shipInfo-edit:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
+
 .checkout-product__address-icon {
   fill: var(--primary-color);
 }
@@ -2532,6 +2558,7 @@ header {
 .checkout-product__address-cancel:hover {
   background-color: rgb(202, 202, 202);
 }
+
 .checkout-product__item-label {
   display: flex;
   margin-top: 1.4rem;
@@ -2705,6 +2732,15 @@ header {
 .checkout-product__additon-price {
   margin-left: 2.6rem;
   color: var(--primary-color);
+}
+
+.checkout-product__item-loading {
+  background: var(--while-color);
+  text-align: center;
+  padding: 6rem;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .checkout-product__first-addition {
@@ -3028,6 +3064,7 @@ header {
   font-size: 1.6rem;
   text-transform: capitalize;
 }
+
 .detail-breadcrumb {
   font-size: 1.4rem;
   display: flex;
@@ -3814,6 +3851,14 @@ header {
   color: var(--primary-color);
 }
 
+.user-order__order-loading {
+  text-align: center;
+  padding: 14.5rem;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
 .user-profile {
   background-color: #f5f5f5;
 }
@@ -3923,6 +3968,14 @@ header {
   text-align: center;
   font-size: 1.4rem;
   color: var(--primary-color);
+}
+
+.address-profile__address--loading {
+  text-align: center;
+  padding: 14.5rem;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .user-profile__title {
@@ -4334,6 +4387,7 @@ header {
   margin-top: 1rem;
   text-transform: capitalize;
 }
+
 .address-profile__btn-default--disabled {
   background: #fff !important;
   color: #ccc;
@@ -4540,7 +4594,7 @@ header {
 }
 
 .address-profile__popup-back:hover {
-  background-color: rgb(146, 146, 146);
+  background-color: rgb(218, 216, 216);
 }
 
 .address-profile__popup-apply {
@@ -4550,8 +4604,9 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
+
 .address-profile__popup-apply:hover {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .payment-profile__payment-content {
@@ -4567,6 +4622,14 @@ header {
   text-align: center;
   font-size: 1.4rem;
   color: var(--primary-color);
+}
+
+.payment-profile__payment-loading {
+  text-align: center;
+  padding: 14.5rem;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .payment-profile__card-logo {
@@ -4615,6 +4678,7 @@ header {
   background-color: var(--primary-color);
   color: var(--while-color);
 }
+
 .payment-profile__default-btn--disabled {
   background-color: var(--while-color);
   color: #ccc;
@@ -4647,6 +4711,11 @@ header {
 .pagination-item--disabled {
   color: #eee;
   cursor: default;
+}
+
+.pagination-item__left:active,
+.pagination-item__right:active {
+  filter: brightness(70%);
 }
 
 .footer__heading {

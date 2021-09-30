@@ -45,7 +45,6 @@ export default function CheckoutProduct() {
     orderItems,
     setOrderItems,
     setCartProduct,
-    getOrderItemsFromStorage,
     getItemsPriceTotal,
     getShipPrice,
     getSaved,
@@ -86,7 +85,7 @@ export default function CheckoutProduct() {
 
   useEffect(() => {
     let shipPrice = [];
-    shipInfos.forEach((item) => {
+    shipInfos?.forEach((item) => {
       if (item.isDefault) {
         shipPrice = item.province.shipPrice;
       }
@@ -177,10 +176,10 @@ export default function CheckoutProduct() {
   //   voucher,
   // ]);
   useEffect(() => {
-    if (checkoutItems.length === 0 && user) {
+    if (!checkoutItems && user) {
       setCheckoutItemsFromFirebase(user);
     }
-  }, [checkoutItems.length, setCheckoutItemsFromFirebase, user]);
+  }, [checkoutItems, setCheckoutItemsFromFirebase, user]);
 
   //Get and set province and set districts and district depend on province
 
@@ -488,10 +487,9 @@ export default function CheckoutProduct() {
 
   useEffect(() => {
     if (!orderItems) {
-      const orderItems = getOrderItemsFromStorage();
       setOrderItems(orderItems);
     }
-  }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
+  }, [orderItems, setOrderItems]);
 
   const handleVoucherDelete = () => {
     setVoucher({});
@@ -656,7 +654,7 @@ export default function CheckoutProduct() {
           <span className="checkout-product__total">Thành tiền</span>
         </div>
         <ul className="checkout-product__item-list">
-          {checkoutItems.map((item, index) => (
+          {checkoutItems?.map((item, index) => (
             <div key={index} className="checkout-product-item-wrapper">
               <li className="checkout-product__item">
                 <div className="checkout-product__name-wrapper">
@@ -717,6 +715,10 @@ export default function CheckoutProduct() {
               </div>
             </div>
           ))}
+          {checkoutItems?.length === 0 && !isPopupShowing && (
+            <ErrorModal></ErrorModal>
+          )}
+          {checkoutItems === null && <div className="checkout-product__item-loading">Loading...</div>}
         </ul>
         <div className="checkout-product__first-addition">
           <span className="checkout-product__message-wrapper">
@@ -996,7 +998,7 @@ export default function CheckoutProduct() {
               </span>
               {isCardPayment && (
                 <div className="checkout-product__card-list">
-                  {paymentMethodList.length > 0 &&
+                  {paymentMethodList?.length > 0 &&
                     paymentMethodList.map((item, index) => (
                       <div key={index} className="checkout-product__card-item">
                         <input
@@ -1164,9 +1166,6 @@ export default function CheckoutProduct() {
           </div>
         </div>
       </div>
-      {checkoutItems.length <= 0 && !isPopupShowing && (
-        <ErrorModal></ErrorModal>
-      )}
     </div>
   );
 }

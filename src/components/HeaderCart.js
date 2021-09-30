@@ -34,20 +34,20 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
         <a href="# " className="header__cart-icon-link">
           <i className="header__cart-icon bi bi-cart">
             {/* <!-- No cart: empty --> */}
-            <div className="header__cart-numb">{cartItems.length}</div>
+            <div className="header__cart-numb">{cartItems?.length}</div>
           </i>
         </a>
         {/* <!-- No cart: header__cart-list--empty --> */}
         <div
           className={classNames("header__cart-list", {
-            "header__cart-list--empty": cartItems.length === 0,
+            "header__cart-list--empty": cartItems?.length === 0,
           })}
         >
           <div className="header__cart-arrow"></div>
           <div className="header__cart-list-container">
             <div className="header__cart-title">Sản phẩm mới thêm</div>
             <div className="header__cart-list-item">
-              {cartItems.map((item, index) => (
+              {cartItems?.map((item, index) => (
                 <div key={index} className="header__cart-item">
                   <Link
                     to={{
@@ -111,7 +111,7 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
             alt="no-cart"
           />
           <div className="header__cart-empty-info">Chưa có sản phẩm</div>
-          <Link to="/cart" className="header__cart-button">
+          <Link to="/cart" className="btn header__cart-button">
             Xem giỏ hàng
           </Link>
         </div>

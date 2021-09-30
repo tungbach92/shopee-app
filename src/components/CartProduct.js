@@ -53,7 +53,7 @@ export default function CartProduct(props) {
     setCheckoutItemsFromFirebase,
   } = useContext(ProductContext);
 
-  const lastIndex = cartItems.length + 1;
+  const lastIndex = cartItems?.length + 1;
   let idArr = [];
   useEffect(() => {
     if (location.state?.from.pathname) {
@@ -73,7 +73,7 @@ export default function CartProduct(props) {
   }, [setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
 
   useEffect(() => {
-    if (cartItems.length > 0 && checkoutItems.length > 0) {
+    if (cartItems?.length > 0 && checkoutItems?.length > 0) {
       setDefaultChecked();
     }
   }, [setDefaultChecked, checkoutItems, cartItems]);
@@ -157,7 +157,7 @@ export default function CartProduct(props) {
   useEffect(() => {
     const setSelectedItemsByChecked = () => {
       //
-      const lastIndex = cartItems.length + 1;
+      const lastIndex = cartItems?.length + 1;
       let selectedItems = checked.map((checkItem, index) => {
         if (checkItem === true && index > 0 && index < lastIndex) {
           return cartItems[index - 1];
@@ -202,7 +202,7 @@ export default function CartProduct(props) {
 
   return (
     <div className="container">
-      {cartItems.length > 0 && (
+      {cartItems?.length > 0 && (
         <div className="grid cart-product">
           <div className="cart-product__notify">
             <svg
@@ -832,7 +832,7 @@ export default function CartProduct(props) {
           </div>
         </div>
       )}
-      {cartItems.length === 0 && user && (
+      {cartItems?.length === 0 && user && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">
@@ -843,6 +843,9 @@ export default function CartProduct(props) {
           </Link>
         </div>
       )}
+
+      {cartItems === null && <div className="grid cart-loading">Loading...</div>}
+
       {isAddCartPopup && (
         <AddCartModal
           isAddCartPopup={isAddCartPopup}

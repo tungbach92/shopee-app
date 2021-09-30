@@ -17,22 +17,11 @@ export default function DetailProduct() {
     getDataFireBase,
     handleClick,
     items,
-    getData,
     bestSelling,
-    orderItems,
-    setOrderItems,
-    getOrderItemsFromStorage,
     user,
   } = useContext(ProductContext);
   const history = useHistory();
-  //
 
-  // useEffect(() => {
-  //   if (orderItems.length <= 0) {
-  //     const orderItems = getOrderItemsFromStorage();
-  //     setOrderItems(orderItems);
-  //   }
-  // }, [getOrderItemsFromStorage, orderItems, setOrderItems]);
   useEffect(() => {
     handleScrollTop();
   }, []);
