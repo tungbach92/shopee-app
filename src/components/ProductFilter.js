@@ -10,15 +10,15 @@ export default class ProductFilter extends Component {
   };
 
   render() {
-    let { sortedItems, filter, filterPrice, handleClick, sortedSearchItems } =
+    let { filter, filterPrice, handleClick, categoryItems, searchItems } =
       this.context;
     const { isSearchPage } = this.props;
 
     let totalItems = 0;
     if (isSearchPage) {
-      totalItems = sortedSearchItems.length;
+      totalItems = searchItems.length;
     } else {
-      totalItems = sortedItems.length;
+      totalItems = categoryItems.length;
     }
 
     return (

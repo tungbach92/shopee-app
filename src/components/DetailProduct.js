@@ -14,25 +14,16 @@ export default function DetailProduct() {
   const location = useLocation();
   const scrolltoEl = useRef();
   const {
-    getDataFireBase,
     handleClick,
     items,
     bestSelling,
-    user,
   } = useContext(ProductContext);
-  const history = useHistory();
 
   useEffect(() => {
     handleScrollTop();
   }, []);
-  useEffect(() => {
-    // effect
-    if (items.length <= 0) {
-      getDataFireBase();
-    }
-  }, [getDataFireBase, items]);
 
-  const [item, setItem] = useState();
+  const [item, setItem] = useState(null);
   const [images, setImages] = useState([]);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   //
@@ -56,7 +47,7 @@ export default function DetailProduct() {
   // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0) {
-      let item = items.find((item) => item.id === Number(id));
+      let item = items.find(i => i.id === Number(id));
       item = {
         ...item,
         amount: 1,
@@ -119,20 +110,12 @@ export default function DetailProduct() {
   };
 
   const handleBuyNow = (e) => {
-    if (user) {
       handleClick(e, item);
-    } else {
-      history.push("/login");
-    }
   };
 
   const handleAddCart = (e) => {
-    if (user) {
       handleClick(e, item);
       toggleIsAddCardPopup(!isAddCartPopup);
-    } else {
-      history.push("/login");
-    }
   };
 
   const handleScrollTo = (e) => {
@@ -143,7 +126,7 @@ export default function DetailProduct() {
     window.scrollTo(0, 0);
   };
   if (!item) {
-    return <></>;
+    return <>Loading...</>;
   } else
     return (
       <div className="container">

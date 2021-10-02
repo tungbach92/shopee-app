@@ -11,7 +11,7 @@ const ProductItem = React.memo(function (props) {
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   const history = useHistory();
   let isInCart = false;
-  isInCart = cartItems.some((item) => item.id === Number(id));
+  isInCart = cartItems?.some((item) => item.id === Number(id));
 
   const handleAddCart = (e) => {
     if (user) {

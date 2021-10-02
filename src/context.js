@@ -58,6 +58,7 @@ export default class ProductProvider extends Component {
 
   componentDidMount() {
     console.log("provider mount");
+    this.getDataFireBase();
     this.setUser(() => {
       this.setOrderItems();
       this.setUserAvatar();
@@ -478,7 +479,7 @@ export default class ProductProvider extends Component {
   setDefaultChecked = () => {
     let { checkoutItems, cartItems } = this.state;
     let defaultChecked = [];
-    const unmodifiedCartItems = cartItems.map((item) => {
+    const unmodifiedCartItems = cartItems?.map((item) => {
       const { similarDisPlay, variationDisPlay, ...rest } = item;
       return rest;
     });
@@ -491,7 +492,7 @@ export default class ProductProvider extends Component {
     } else {
       defaultChecked = unmodifiedCartItems.map((cartItem) => {
         let result = false;
-        checkoutItems.forEach((checkoutItem) => {
+        checkoutItems?.forEach((checkoutItem) => {
           if (_.isEqual(cartItem, checkoutItem)) {
             result = true;
           }
@@ -690,7 +691,9 @@ export default class ProductProvider extends Component {
     let { items, cartItems } = this.state;
     const tempItems = [...items];
     let cartItemsModified = [];
-    let existItems = cartItems.find((cartItem) => cartItem.id === Number(id));
+    let isExistItems = cartItems.some(
+      (cartItem) => cartItem.variation === item.variation
+    );
 
     if (!item) {
       let item = tempItems.find((item) => item.id === Number(id));
@@ -702,11 +705,11 @@ export default class ProductProvider extends Component {
         similarDisPlay: false,
       };
       cartItemsModified = [...cartItems, item];
-    } else if (existItems) {
-      cartItems = cartItems.filter((cartItem) => cartItem.id !== Number(id));
-      let newItem = { ...item };
-      newItem.amount += existItems.amount;
-      cartItemsModified = [...cartItems, newItem];
+    } else if (isExistItems) {
+      let existItems = cartItems.find((cartItem) => cartItem.variation === item.variation)
+      existItems = {...existItems, amount: existItems.amount + item.amount}
+      cartItems = cartItems.filter((cartItem) => cartItem.variation !== item.variation)
+      cartItemsModified = [...cartItems, existItems];
     } else {
       cartItemsModified = [...cartItems, item];
     }

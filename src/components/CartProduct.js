@@ -19,6 +19,7 @@ export default function CartProduct(props) {
   const [isVariationChoose, setIsVariationChoose] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [deleteID, setDeleteID] = useState();
+  const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const {
     isVoucherShowing,
     toggleVoucher,
@@ -43,8 +44,6 @@ export default function CartProduct(props) {
     checked,
     setChecked,
     setDefaultChecked,
-    items,
-    getDataFireBase,
     getItemsPriceTotal,
     getItemsTotal,
     getSaved,
@@ -61,11 +60,6 @@ export default function CartProduct(props) {
     }
     history.replace();
   }, [toggleIsAddCardPopup, history, location.state?.from.pathname]);
-  useEffect(() => {
-    if (items.length <= 0) {
-      getDataFireBase();
-    }
-  }, [items, getDataFireBase]);
 
   useEffect(() => {
     setCartItemsFromFirebase(user); // called at header cart
@@ -170,7 +164,23 @@ export default function CartProduct(props) {
   }, [checked, cartItems]);
 
   const handleDeleteSelection = (event) => {
-    if (cartItems.length > 0) {
+    if (cartItems?.length > 0) {
+      idArr = checked.map((checkItem, index) => {
+        if (checkItem === true && index > 0 && index < lastIndex) {
+          return cartItems[index - 1].id;
+        } else return null;
+      });
+      idArr = idArr.filter((id) => id !== null);
+    }
+
+    if(idArr.length>0) {
+      setIsDeleteSelected(true);
+      togglePopup(!isPopupShowing);
+    }
+  };
+
+  const handleDeleteSelectionTrue = () => {
+    if (cartItems?.length > 0) {
       idArr = checked.map((checkItem, index) => {
         if (checkItem === true && index > 0 && index < lastIndex) {
           return cartItems[index - 1].id;
@@ -179,7 +189,7 @@ export default function CartProduct(props) {
       idArr = idArr.filter((id) => id !== null);
       delCartItems(idArr);
     }
-  };
+  }
 
   const handlePopup = (index, event) => {
     const { name } = event.currentTarget.dataset;
@@ -440,7 +450,7 @@ export default function CartProduct(props) {
                     data-name="decrCartItem"
                     onClick={handleClick}
                     href="# "
-                    className="cart-product__amount-desc"
+                    className="btn cart-product__amount-desc"
                   >
                     -
                   </button>
@@ -457,7 +467,7 @@ export default function CartProduct(props) {
                     data-name="incrCartItem"
                     onClick={handleClick}
                     href="# "
-                    className="cart-product__amount-incr"
+                    className="btn cart-product__amount-incr"
                   >
                     +
                   </button>
@@ -862,6 +872,9 @@ export default function CartProduct(props) {
           deleteID={deleteID}
           setDeleteID={setDeleteID}
           handleDeleteCartTrue={handleDeleteCartTrue}
+          handleDeleteSelectionTrue={handleDeleteSelectionTrue}
+          isDeleteSelected={isDeleteSelected}
+          setIsDeleteSelected={setIsDeleteSelected}
         ></PopupModal>
       )}
     </div>

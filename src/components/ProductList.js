@@ -28,8 +28,6 @@ export default function ProductList({
     pageIndex,
     pageSize,
     handleClick,
-    setDefaultState,
-    getDataFireBase,
     sortedSearchItems,
     searchItems,
     setSortedSearchItems,
@@ -40,19 +38,6 @@ export default function ProductList({
     setType,
     loading,
   } = context;
-  useEffect(() => {
-    if (items.length <= 0) {
-      getDataFireBase();
-    }
-    // if (user) {
-    //   db.collection("products").doc(user?.uid).set({
-    //     user: user.displayName,
-    //     email: user.email,
-    //     uid: user.uid,
-    //     items: items,
-    //   });
-    // }
-  }, [getDataFireBase, items, orderItems, user]);
 
   // set default value for product page
   useEffect(() => {

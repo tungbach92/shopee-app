@@ -21,6 +21,9 @@ export default function PopupModal(props) {
     isCartPageLoaded,
     deleteID,
     setDeleteID,
+    isDeleteSelected,
+    setIsDeleteSelected,
+    handleDeleteSelectionTrue,
     handleDeleteCartTrue,
     isVariationChoose,
     selectedItems,
@@ -37,7 +40,7 @@ export default function PopupModal(props) {
   const handleBackClick = (e) => {
     togglePopup(!isPopupShowing);
 
-    // set those values to undefined if setState function true
+    // set those values to defaultm undefined if setState function true
     if (setDeleteID) {
       setDeleteID();
     }
@@ -46,6 +49,9 @@ export default function PopupModal(props) {
     }
     if (setShipInfoIndex) {
       setShipInfoIndex();
+    }
+    if(setIsDeleteSelected) {
+      setIsDeleteSelected(false);
     }
   };
 
@@ -86,6 +92,11 @@ export default function PopupModal(props) {
       handleDeleteCartTrue(deleteID);
       setDeleteID();
     }
+
+    if ((isCartPageLoaded || isSearchPage || isProductPage) && isDeleteSelected) {
+      handleDeleteSelectionTrue();
+      setIsDeleteSelected(false);
+    }
   };
 
   return ReactDOM.createPortal(
@@ -107,8 +118,8 @@ export default function PopupModal(props) {
                 typeof isAnyUserInfoUpdateFail !== "undefined"
               ? "Cập nhật thông tin người dùng thành công"
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
-                typeof deleteID !== "undefined"
-              ? "Bạn chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng ?"
+                (typeof deleteID !== "undefined" || isDeleteSelected)
+              ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
               : isCartPageLoaded && selectedItems?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
@@ -131,7 +142,7 @@ export default function PopupModal(props) {
             isProductPage) &&
             (typeof shipInfoIndex !== "undefined" ||
               typeof paymentMethodID !== "undefined" ||
-              typeof deleteID !== "undefined") && (
+              typeof deleteID !== "undefined" || isDeleteSelected) && (
               <button
                 className="btn cart-product__popup-cancle"
                 onClick={handleBackClick}
