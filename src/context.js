@@ -706,9 +706,13 @@ export default class ProductProvider extends Component {
       };
       cartItemsModified = [...cartItems, item];
     } else if (isExistItems) {
-      let existItems = cartItems.find((cartItem) => cartItem.variation === item.variation)
-      existItems = {...existItems, amount: existItems.amount + item.amount}
-      cartItems = cartItems.filter((cartItem) => cartItem.variation !== item.variation)
+      let existItems = cartItems.find(
+        (cartItem) => cartItem.variation === item.variation
+      );
+      existItems = { ...existItems, amount: existItems.amount + item.amount };
+      cartItems = cartItems.filter(
+        (cartItem) => cartItem.variation !== item.variation
+      );
       cartItemsModified = [...cartItems, existItems];
     } else {
       cartItemsModified = [...cartItems, item];
@@ -722,9 +726,9 @@ export default class ProductProvider extends Component {
     );
   };
 
-  delCartItem = (id) => {
+  delCartItem = (index) => {
     let { cartItems } = this.state;
-    cartItems = cartItems.filter((item) => item.id !== Number(id));
+    cartItems = cartItems.filter((item) => cartItems.indexOf(item) !== index);
     this.setState(
       {
         cartItems,
@@ -741,15 +745,20 @@ export default class ProductProvider extends Component {
     );
   };
 
-  delCartItems = (idArr) => {
-    if (idArr.length > 0) {
+  delCartItems = (indexArr) => {
+    if (indexArr.length > 0) {
       let { cartItems } = this.state;
       // idArr.forEach((id) => {
       //   cartItems = cartItems.filter((item) => item.id !== Number(id));
       // });
-      cartItems = cartItems.filter(
-        (item, index) => idArr.indexOf(item.id) === -1
-      );
+      // cartItems = cartItems.filter(
+      //   (item, index) => idArr.indexOf(item.id) === -1 // Xóa id có index nằm trong idArray
+      // );
+      indexArr.forEach((index) => {
+        cartItems = cartItems.filter(
+          (item) => cartItems.indexOf(item) !== index
+        );
+      });
       this.setState(
         {
           cartItems,

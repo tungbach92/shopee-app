@@ -19,8 +19,8 @@ export default function PopupModal(props) {
     handlePaymentDeleteTrue,
     isSearchPage,
     isCartPageLoaded,
-    deleteID,
-    setDeleteID,
+    deleteIndex,
+    setDeleteIndex,
     isDeleteSelected,
     setIsDeleteSelected,
     handleDeleteSelectionTrue,
@@ -41,8 +41,8 @@ export default function PopupModal(props) {
     togglePopup(!isPopupShowing);
 
     // set those values to defaultm undefined if setState function true
-    if (setDeleteID) {
-      setDeleteID();
+    if (setDeleteIndex) {
+      setDeleteIndex();
     }
     if (setPaymentMethodID) {
       setPaymentMethodID();
@@ -88,9 +88,9 @@ export default function PopupModal(props) {
       setPaymentMethodID();
     }
 
-    if ((isCartPageLoaded || isSearchPage || isProductPage) && typeof deleteID !== "undefined") {
-      handleDeleteCartTrue(deleteID);
-      setDeleteID();
+    if ((isCartPageLoaded || isSearchPage || isProductPage) && typeof deleteIndex !== "undefined") {
+      handleDeleteCartTrue(deleteIndex);
+      setDeleteIndex();
     }
 
     if ((isCartPageLoaded || isSearchPage || isProductPage) && isDeleteSelected) {
@@ -118,7 +118,7 @@ export default function PopupModal(props) {
                 typeof isAnyUserInfoUpdateFail !== "undefined"
               ? "Cập nhật thông tin người dùng thành công"
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
-                (typeof deleteID !== "undefined" || isDeleteSelected)
+                (typeof deleteIndex !== "undefined" || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
               : isCartPageLoaded && selectedItems?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
@@ -142,7 +142,7 @@ export default function PopupModal(props) {
             isProductPage) &&
             (typeof shipInfoIndex !== "undefined" ||
               typeof paymentMethodID !== "undefined" ||
-              typeof deleteID !== "undefined" || isDeleteSelected) && (
+              typeof deleteIndex !== "undefined" || isDeleteSelected) && (
               <button
                 className="btn cart-product__popup-cancle"
                 onClick={handleBackClick}

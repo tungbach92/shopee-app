@@ -18,7 +18,8 @@ export default function CartProduct(props) {
   const [variation, setVariation] = useState("");
   const [isVariationChoose, setIsVariationChoose] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [deleteID, setDeleteID] = useState();
+  const [deleteIndex, setDeleteIndex] = useState();
+  const [indexArr, setIndexArr] = useState([]);
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const {
     isVoucherShowing,
@@ -127,6 +128,9 @@ export default function CartProduct(props) {
     let newChecked = cartItems.map((item) => checked);
     newChecked = [checked, ...newChecked, checked];
     setChecked(newChecked);
+
+    let indexArr = cartItems.map((item, index) => index);
+    setIndexArr(indexArr);
   };
 
   const selectOne = (index, event) => {
@@ -136,15 +140,16 @@ export default function CartProduct(props) {
     checked[lastIndex] = false;
     const newChecked = [...checked];
     setChecked(newChecked);
+    setIndexArr([...indexArr, index]);
   };
 
-  const handleDelete = (id) => {
-    setDeleteID(id);
+  const handleDelete = (index) => {
+    setDeleteIndex(index);
     togglePopup(!isPopupShowing);
   };
 
-  const handleDeleteCartTrue = (id) => {
-    delCartItem(id);
+  const handleDeleteCartTrue = (index) => {
+    delCartItem(index);
   };
 
   // set selectedItems by checked
@@ -164,32 +169,15 @@ export default function CartProduct(props) {
   }, [checked, cartItems]);
 
   const handleDeleteSelection = (event) => {
-    if (cartItems?.length > 0) {
-      idArr = checked.map((checkItem, index) => {
-        if (checkItem === true && index > 0 && index < lastIndex) {
-          return cartItems[index - 1].id;
-        } else return null;
-      });
-      idArr = idArr.filter((id) => id !== null);
-    }
-
-    if(idArr.length>0) {
+    if (indexArr.length > 0) {
       setIsDeleteSelected(true);
       togglePopup(!isPopupShowing);
     }
   };
 
   const handleDeleteSelectionTrue = () => {
-    if (cartItems?.length > 0) {
-      idArr = checked.map((checkItem, index) => {
-        if (checkItem === true && index > 0 && index < lastIndex) {
-          return cartItems[index - 1].id;
-        } else return null;
-      });
-      idArr = idArr.filter((id) => id !== null);
-      delCartItems(idArr);
-    }
-  }
+      delCartItems(indexArr);
+  };
 
   const handlePopup = (index, event) => {
     const { name } = event.currentTarget.dataset;
@@ -484,7 +472,7 @@ export default function CartProduct(props) {
               </div>
               <div className="grid__col cart-product__action">
                 <span
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(index)}
                   className="cart-product__action-del"
                 >
                   Xóa
@@ -854,7 +842,9 @@ export default function CartProduct(props) {
         </div>
       )}
 
-      {cartItems === null && <div className="grid cart-loading">Loading...</div>}
+      {cartItems === null && (
+        <div className="grid cart-loading">Loading...</div>
+      )}
 
       {isAddCartPopup && (
         <AddCartModal
@@ -869,8 +859,8 @@ export default function CartProduct(props) {
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}
           selectedItems={selectedItems}
-          deleteID={deleteID}
-          setDeleteID={setDeleteID}
+          deleteIndex={deleteIndex}
+          setDeleteIndex={setDeleteIndex}
           handleDeleteCartTrue={handleDeleteCartTrue}
           handleDeleteSelectionTrue={handleDeleteSelectionTrue}
           isDeleteSelected={isDeleteSelected}
