@@ -35,5 +35,18 @@ export default function Account() {
         <AccountContent isAccountPage={isAccountPage}></AccountContent>
       </>
     );
-  } else return null;
+  } else
+    return (
+      <Header
+        isAccountPage={isAccountPage}
+        headerNav={<HeaderNav></HeaderNav>}
+        headerSearch={
+          <HeaderSearch
+            searchInput={searchInput}
+            searchHistory={searchHistory}
+            addToSearchHistory={addToSearchHistory}
+          ></HeaderSearch>
+        }
+      ></Header>
+    );
 }

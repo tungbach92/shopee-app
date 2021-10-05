@@ -170,7 +170,7 @@ export default class ProductProvider extends Component {
         data: { customerID: customerID },
       }).then((res) => {
         const paymentMethodList = res.data.paymentMethodList;
-        this.setState({ paymentMethodList });
+        this.setPaymentMethodList(paymentMethodList);
       });
     }
   };
@@ -278,6 +278,8 @@ export default class ProductProvider extends Component {
                 this.getDefaultPaymentMethodID();
               });
             }
+          } else {
+            this.setPaymentMethodList([]);
           }
         });
     }
@@ -319,6 +321,8 @@ export default class ProductProvider extends Component {
           if (doc.exists) {
             const shipInfos = doc.data().shipInfos;
             this.setState({ shipInfos });
+          } else {
+            this.setState({ shipInfos: [] });
           }
         });
     }
@@ -706,9 +710,13 @@ export default class ProductProvider extends Component {
       };
       cartItemsModified = [...cartItems, item];
     } else if (isExistItems) {
-      let existItems = cartItems.find((cartItem) => cartItem.variation === item.variation)
-      existItems = {...existItems, amount: existItems.amount + item.amount}
-      cartItems = cartItems.filter((cartItem) => cartItem.variation !== item.variation)
+      let existItems = cartItems.find(
+        (cartItem) => cartItem.variation === item.variation
+      );
+      existItems = { ...existItems, amount: existItems.amount + item.amount };
+      cartItems = cartItems.filter(
+        (cartItem) => cartItem.variation !== item.variation
+      );
       cartItemsModified = [...cartItems, existItems];
     } else {
       cartItemsModified = [...cartItems, item];
