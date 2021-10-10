@@ -62,6 +62,7 @@ export default function CheckoutProduct() {
     defaultPaymentMethodID,
     updateDefaultPaymentMethodIDToFirebase,
     updateCustomerBillingAddress,
+    getShipInfos,
   } = useContext(ProductContext);
 
   const shipUnitList = useMemo(() => {
@@ -347,6 +348,7 @@ export default function CheckoutProduct() {
   };
 
   const handleShipInfoCancel = () => {
+    getShipInfos();
     setIsShipInfoChoosing(!isShipInfoChoosing);
   };
 

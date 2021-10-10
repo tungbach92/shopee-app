@@ -1166,6 +1166,7 @@ export default class ProductProvider extends Component {
           setCustomerID: this.setCustomerID,
           setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
           setAuthorized: this.setAuthorized,
+          getShipInfos: this.getShipInfos,
         }}
       >
         {this.props.children}
