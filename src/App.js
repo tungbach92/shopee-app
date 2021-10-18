@@ -28,7 +28,8 @@ function App() {
         <Route exact path="/" component={Product}></Route>
         <Route exact path="/cart" component={Cart}></Route>
         <Route exact path="/product/:metaTitle/:id" component={Detail}></Route>
-        <Route path={["/user", "/user/account"]}>
+        <Redirect exact from="/user" to="/user/account"></Redirect>
+        <Route path="/user/account">
           <Elements stripe={stripePromise}>
             <Account />
           </Elements>

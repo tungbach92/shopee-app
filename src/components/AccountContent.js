@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { ProductContext } from "../context";
 import { auth, db, storage } from "../firebase";
-import { Link, Switch, Route, Redirect, NavLink } from "react-router-dom";
+import {
+  Link,
+  Switch,
+  Route,
+  Redirect,
+  NavLink,
+  useRouteMatch,
+} from "react-router-dom";
 import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
@@ -13,6 +20,8 @@ import OrderSmallContent from "./OrderSmallContent";
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
     useContext(ProductContext);
+  const match = useRouteMatch();
+  console.log(match);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -256,7 +265,7 @@ const AccountContent = ({ isAccountPage }) => {
               <div className="user-profile__name">sfsb3fax26</div>
 
               <Link
-                to="/user/account/profile"
+                to={`${match.url}/profile`}
                 className="user-profile__name-btn"
               >
                 Sửa Hồ Sơ
@@ -265,35 +274,35 @@ const AccountContent = ({ isAccountPage }) => {
             <div className="user-profile__category">
               {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
               <NavLink
-                to="/user/account/profile"
+                to={`${match.url}/profile`}
                 className="user-profile__my-info"
                 activeClassName="user-profile__category-item--active"
               >
                 Hồ sơ
               </NavLink>
               <NavLink
-                to="/user/account/payment"
+                to={`${match.url}/payment`}
                 className="user-profile__my-bank"
                 activeClassName="user-profile__category-item--active"
               >
                 Ngân hàng
               </NavLink>
               <NavLink
-                to="/user/account/address"
+                to={`${match.url}/address`}
                 className="user-profile__my-adress"
                 activeClassName="user-profile__category-item--active"
               >
                 Địa chỉ
               </NavLink>
               <NavLink
-                to="/user/account/password"
+                to={`${match.url}/password`}
                 className="user-profile__change-password"
                 activeClassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
               </NavLink>
               <NavLink
-                to="/user/purchase"
+                to={`${match.url}/purchase`}
                 className="user-profile__order"
                 activeClassName="user-profile__category-item--active"
               >
@@ -303,7 +312,7 @@ const AccountContent = ({ isAccountPage }) => {
           </div>
           <div className="grid__col-10x">
             <Switch>
-              <Route exact path="/user/account/profile">
+              <Route exact path={`${match.url}/profile`}>
                 <div className="user-profile__title-container">
                   <div className="user-profile__title">
                     <div className="user-profile__label">Hồ Sơ Của Tôi</div>
@@ -337,7 +346,7 @@ const AccountContent = ({ isAccountPage }) => {
                     <div className="user-profile__email-input">
                       {email}
                       <Link
-                        to="/user/account/email"
+                        to={`${match.url}/email`}
                         className="user-profile__email-btn"
                       >
                         Thay đổi
@@ -489,34 +498,32 @@ const AccountContent = ({ isAccountPage }) => {
                   </div>
                 </div>
               </Route>
-              <Route exact path={["/user", "/user/account"]}>
-                <Redirect to="/user/account/profile"></Redirect>
-              </Route>
-              <Route path="/user/account/email">
+              <Redirect exact from={`${match.url}`} to={`${match.url}/profile`} />
+              <Route path={`${match.url}/email`}>
                 <EmailSmallContent
                   isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
                 ></EmailSmallContent>
               </Route>
-              <Route path="/user/account/password">
+              <Route path={`${match.url}/password`}>
                 <PasswordSmallContent
                   isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
                 ></PasswordSmallContent>
               </Route>
-              <Route path="/user/account/address">
+              <Route path={`${match.url}/address`}>
                 <AddressSmallContent
                   isAccountPage={isAccountPage}
                 ></AddressSmallContent>
               </Route>
-              <Route path="/user/account/payment">
+              <Route exact path={`${match.url}/payment`}>
                 <PaymentSmallContent
                   isAccountPage={isAccountPage}
                 ></PaymentSmallContent>
               </Route>
-              <Route path="/user/purchase/">
+              <Route path={`${match.url}/purchase`}>
                 <OrderSmallContent
                   isAccountPage={isAccountPage}
                 ></OrderSmallContent>

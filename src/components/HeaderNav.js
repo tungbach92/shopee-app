@@ -220,7 +220,7 @@ export default function HeaderNav() {
             <Link to="/user/account" className="header__user-item">
               Tài khoản của tôi
             </Link>
-            <Link to="/user/purchase" className="header__user-item">
+            <Link to="/user/account/purchase" className="header__user-item">
               Đơn mua
             </Link>
             <div onClick={handleLogout} className="header__user-item">
