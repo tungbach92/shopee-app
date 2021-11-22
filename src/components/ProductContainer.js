@@ -1,28 +1,41 @@
 import React from "react";
-import ProductCategory from "./ProductCategory";
-import ProductFilter from "./ProductFilter";
-import ProductList from "./ProductList";
-import Pagination from "./Pagination";
+import PropTypes from "prop-types";
 
-export default function ProductContainer({ isSearchPage, isProductPage }) {
+export default function ProductContainer({
+  isSearchPage,
+  productCategory,
+  productFilter,
+  productList,
+  pagination,
+}) {
   return (
-    <div className="grid">
-      <div className="grid__row grid__row--padtb3">
-        {isSearchPage ? null : <ProductCategory></ProductCategory>}
-        <div className={isSearchPage ? "grid__col-12x" : "grid__col-10x"}>
-          <ProductFilter isSearchPage={isSearchPage}></ProductFilter>
-          <div className="grid__row grid__row-product">
-            <ProductList
-              isProductPage={isProductPage}
-              isSearchPage={isSearchPage}
-            ></ProductList>
+    <>
+      <div className="grid">
+        <div className="grid__row grid__row--padtb3">
+          {isSearchPage ? null : productCategory}
+          <div className={isSearchPage ? "grid__col-12x" : "grid__col-10x"}>
+            {productFilter}
+            <div className="grid__row grid__row-product">{productList}</div>
+            {pagination}
           </div>
-          <Pagination
-            isProductPage={isProductPage}
-            isSearchPage={isSearchPage}
-          ></Pagination>
         </div>
       </div>
-    </div>
+    </>
   );
 }
+
+ProductContainer.propTypes = {
+  isSearchPage: PropTypes.bool,
+  productCategory: PropTypes.func,
+  productFilter: PropTypes.func,
+  productList: PropTypes.func,
+  pagination: PropTypes.func,
+};
+
+ProductContainer.defaultProps = {
+  isSearchPage: false,
+  productCategory: null,
+  productFilter: null,
+  productList: null,
+  pagination: null,
+};

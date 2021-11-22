@@ -1,28 +1,22 @@
-import React, { useContext, useState, useEffect } from "react";
-import Header from "../components/Header";
-import HeaderSearch from "../components/HeaderSearch";
-import HeaderNav from "../components/HeaderNav";
+import React from "react";
 import ProductContainer from "../components/ProductContainer";
-import { ProductContext } from "../context";
+import ProductFilter from "../components/ProductFilter";
+import ProductList from "../components/ProductList";
+import Pagination from "../components/Pagination";
+import Header from "../components/Header"
 const Search = () => {
-  const [isSearchPage, setIsSearchPage] = useState(false);
-
-  useEffect(() => {
-    setIsSearchPage(true);
-  }, []);
 
   return (
     <>
       <Header
-        isSearchPage={isSearchPage}
-        headerNav={<HeaderNav></HeaderNav>}
-        headerSearch={
-          <HeaderSearch
-            isSearchPage={isSearchPage}
-          ></HeaderSearch>
-        }
+        isSearchPage={true}
       ></Header>
-      <ProductContainer isSearchPage={isSearchPage}></ProductContainer>
+      <ProductContainer
+        isSearchPage={true}
+        productFilter={<ProductFilter isSearchPage={true}></ProductFilter>}
+        productList={<ProductList isSearchPage={true} ></ProductList>}
+        pagination={<Pagination isSearchPage={true}></Pagination>}
+      ></ProductContainer>
     </>
   );
 };

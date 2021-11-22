@@ -570,33 +570,8 @@ export default function CheckoutProduct() {
             )}
           </div>
           <div className="checkout-product__address-container">
-            {!isShipInfoChoosing
-              ? shipInfos?.map(
-                  (item, index) =>
-                    item.isDefault && (
-                      <div
-                        key={index}
-                        className="checkout-product__address-content"
-                      >
-                        <span className="checkout-product__user-name">
-                          {item.name} {item.phone}
-                        </span>
-                        <span className="checkout-product__user-address">
-                          {item.fullAddress}
-                        </span>
-                        <span className="checkout-product__default">
-                          Mặc định
-                        </span>
-                        <span
-                          onClick={handleChangeShipInfoClick}
-                          className="checkout-product__address-action"
-                        >
-                          Thay đổi
-                        </span>
-                      </div>
-                    )
-                )
-              : shipInfos?.map((item, index) => (
+            {isShipInfoChoosing
+              ? shipInfos?.map((item, index) => (
                   <div
                     key={index}
                     className="checkout-product__address-content"
@@ -622,7 +597,32 @@ export default function CheckoutProduct() {
                       </span>
                     )}
                   </div>
-                ))}
+                ))
+              : shipInfos?.map(
+                  (item, index) =>
+                    item.isDefault && (
+                      <div
+                        key={index}
+                        className="checkout-product__address-content"
+                      >
+                        <span className="checkout-product__user-name">
+                          {item.name} {item.phone}
+                        </span>
+                        <span className="checkout-product__user-address">
+                          {item.fullAddress}
+                        </span>
+                        <span className="checkout-product__default">
+                          Mặc định
+                        </span>
+                        <span
+                          onClick={handleChangeShipInfoClick}
+                          className="checkout-product__address-action"
+                        >
+                          Thay đổi
+                        </span>
+                      </div>
+                    )
+                )}
             {isShipInfoChoosing && (
               <div className="checkout-product__btn-wrapper">
                 <button
@@ -640,12 +640,14 @@ export default function CheckoutProduct() {
               </div>
             )}
             {shipInfos?.length === 0 && (
-              <span
-                onClick={undefined}
-                className="checkout-product__address-action"
-              >
-                Thêm
-              </span>
+              <>
+                <Link
+                  to="/user/account/address"
+                  className="checkout-product__address-action"
+                >
+                  Thêm
+                </Link>
+              </>
             )}
           </div>
         </div>
@@ -720,7 +722,9 @@ export default function CheckoutProduct() {
           {checkoutItems?.length === 0 && !isPopupShowing && (
             <ErrorModal></ErrorModal>
           )}
-          {checkoutItems === null && <div className="checkout-product__item-loading">Loading...</div>}
+          {checkoutItems === null && (
+            <div className="checkout-product__item-loading">Loading...</div>
+          )}
         </ul>
         <div className="checkout-product__first-addition">
           <span className="checkout-product__message-wrapper">
@@ -1157,6 +1161,7 @@ export default function CheckoutProduct() {
                 isPopupShowing={isPopupShowing}
                 togglePopup={togglePopup}
                 shipUnit={shipUnit}
+                shipInfos={shipInfos}
                 paymentMethod={paymentMethod}
                 isCardPayment={isCardPayment}
                 defaultPaymentMethodID={defaultPaymentMethodID}

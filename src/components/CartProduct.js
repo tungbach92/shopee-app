@@ -10,8 +10,11 @@ import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 import PopupModal from "../components/PopupModal";
 import CurrencyFormat from "react-currency-format";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function CartProduct(props) {
+  const cartItemsRedux = useSelector((state) => state.cart.cartItems); //state is store
+  const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
   const { isCartPageLoaded } = props;
@@ -141,6 +144,11 @@ export default function CartProduct(props) {
   const handleDelete = (id) => {
     setDeleteID(id);
     togglePopup(!isPopupShowing);
+
+    dispatch({
+      type: "DELETE_CART",
+      id: id,
+    });
   };
 
   const handleDeleteCartTrue = (id) => {
@@ -173,7 +181,7 @@ export default function CartProduct(props) {
       idArr = idArr.filter((id) => id !== null);
     }
 
-    if(idArr.length>0) {
+    if (idArr.length > 0) {
       setIsDeleteSelected(true);
       togglePopup(!isPopupShowing);
     }
@@ -189,7 +197,7 @@ export default function CartProduct(props) {
       idArr = idArr.filter((id) => id !== null);
       delCartItems(idArr);
     }
-  }
+  };
 
   const handlePopup = (index, event) => {
     const { name } = event.currentTarget.dataset;
@@ -854,7 +862,9 @@ export default function CartProduct(props) {
         </div>
       )}
 
-      {cartItems === null && <div className="grid cart-loading">Loading...</div>}
+      {cartItems === null && (
+        <div className="grid cart-loading">Loading...</div>
+      )}
 
       {isAddCartPopup && (
         <AddCartModal

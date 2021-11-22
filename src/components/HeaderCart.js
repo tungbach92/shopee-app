@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
+import PropTypes from "prop-types";
+
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
   const {
     cartItems,
@@ -129,6 +131,16 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
       )}
     </div>
   );
+};
+
+HeaderCart.propTypes = {
+  isSearchPage: PropTypes.bool,
+  isProductPage: PropTypes.bool,
+};
+
+HeaderCart.defaultProps = {
+  isSearchPage: false,
+  isProductPage: false,
 };
 
 export default HeaderCart;

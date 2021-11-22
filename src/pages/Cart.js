@@ -1,22 +1,11 @@
-import React, { useContext, useState, useEffect } from "react";
-import Header from "../components/Header";
+import React, { useContext } from "react";
 import CartProduct from "../components/CartProduct";
-import HeaderSearch from "../components/HeaderSearch";
-import HeaderNav from "../components/HeaderNav";
 import { ProductContext } from "../context";
 import { Redirect } from "react-router";
+import Header from "../components/Header";
 
 export default function Cart() {
-  const [isCartPageLoaded, setIsCartPageLoaded] = useState(false);
   const { authorized } = useContext(ProductContext);
-
-  useEffect(() => {
-    // effect
-    setIsCartPageLoaded(true);
-    return () => {
-      // cleanup
-    };
-  }, []);
 
   if (authorized !== null) {
     if (!authorized) {
@@ -24,13 +13,8 @@ export default function Cart() {
     } else
       return (
         <>
-          <Header
-            headerNav={<HeaderNav></HeaderNav>}
-            headerSearch={
-              <HeaderSearch isCartPageLoaded={isCartPageLoaded}></HeaderSearch>
-            }
-          ></Header>
-          <CartProduct isCartPageLoaded={isCartPageLoaded}></CartProduct>
+          <Header isCartPageLoaded={true}></Header>
+          <CartProduct isCartPageLoaded={true}></CartProduct>
         </>
       );
   } else return null;

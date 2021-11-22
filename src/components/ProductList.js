@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
-import { useParams } from "react-router-dom";
-import { db } from "../firebase";
+import PropTypes from "prop-types";
 
 export default function ProductList({
   isProductPage,
@@ -14,8 +13,6 @@ export default function ProductList({
   let {
     user,
     items,
-    orderItems,
-    getData,
     setCategoryProduct,
     setSortedProducts,
     setPageIndex,
@@ -140,3 +137,15 @@ export default function ProductList({
     ></ProductItem>
   ));
 }
+
+ProductList.propTypes = {
+  isSearchPage: PropTypes.bool,
+  isProductPage: PropTypes.bool,
+  similarDisPlay: PropTypes.bool,
+};
+
+ProductList.defaultProps = {
+  isSearchPage: false,
+  isProductPage: false,
+  similarDisPlay: false,
+};

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
+import PropTypes from "prop-types";
 
 const Pagination = ({
   isProductPage,
@@ -59,6 +60,22 @@ const Pagination = ({
         </li>
       </ul>
     );
+};
+
+Pagination.propTypes = {
+  isProductPage: PropTypes.bool,
+  isSearchPage: PropTypes.bool,
+  similarDisPlay: PropTypes.bool,
+  isOrderPage: PropTypes.bool,
+  filterSearchOrderItems: PropTypes.arrayOf(PropTypes.object),
+};
+
+Pagination.defaultProps = {
+  isProductPage: false,
+  isSearchPage: false,
+  similarDisPlay: false,
+  isOrderPage: false,
+  filterSearchOrderItems: [],
 };
 
 export default Pagination;

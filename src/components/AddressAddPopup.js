@@ -138,7 +138,7 @@ const AddressAddPopup = ({
         name: name,
         phone: phone,
         fullAddress: fullAddress,
-        isDefault: false,
+        isDefault: tempShipInfos.length === 0 ? true : false, // set defaul true when only have 1 shipinfo
         created: created,
         street: street,
         ward: ward,

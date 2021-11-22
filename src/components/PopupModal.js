@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function PopupModal(props) {
   const history = useHistory();
@@ -14,6 +15,7 @@ export default function PopupModal(props) {
     handleDeleteTrue,
     shipInfoIndex,
     setShipInfoIndex,
+    shipInfos,
     paymentMethodID,
     setPaymentMethodID,
     handlePaymentDeleteTrue,
@@ -50,7 +52,7 @@ export default function PopupModal(props) {
     if (setShipInfoIndex) {
       setShipInfoIndex();
     }
-    if(setIsDeleteSelected) {
+    if (setIsDeleteSelected) {
       setIsDeleteSelected(false);
     }
   };
@@ -63,7 +65,9 @@ export default function PopupModal(props) {
       !isSearchPage &&
       !isProductPage
     ) {
-      if (!Object.keys(shipUnit).length) {
+      if (shipInfos.length <= 0) {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      } else if (!Object.keys(shipUnit).length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
       } else if (isCardInfoMustFilled) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
@@ -88,12 +92,18 @@ export default function PopupModal(props) {
       setPaymentMethodID();
     }
 
-    if ((isCartPageLoaded || isSearchPage || isProductPage) && typeof deleteID !== "undefined") {
+    if (
+      (isCartPageLoaded || isSearchPage || isProductPage) &&
+      typeof deleteID !== "undefined"
+    ) {
       handleDeleteCartTrue(deleteID);
       setDeleteID();
     }
 
-    if ((isCartPageLoaded || isSearchPage || isProductPage) && isDeleteSelected) {
+    if (
+      (isCartPageLoaded || isSearchPage || isProductPage) &&
+      isDeleteSelected
+    ) {
       handleDeleteSelectionTrue();
       setIsDeleteSelected(false);
     }
@@ -124,11 +134,13 @@ export default function PopupModal(props) {
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
+              : shipInfos.length <= 0
+              ? "Bạn vẫn chưa nhập địa chỉ nhận hàng."
               : !Object.keys(shipUnit).length
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0
               ? "Vui lòng chọn phương thức thanh toán."
-              : isCardPayment && typeof defaultPaymentMethodID === "undefined"
+              : isCardPayment
               ? "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ"
               : succeeded
               ? "Đặt hàng thành công"
@@ -142,7 +154,8 @@ export default function PopupModal(props) {
             isProductPage) &&
             (typeof shipInfoIndex !== "undefined" ||
               typeof paymentMethodID !== "undefined" ||
-              typeof deleteID !== "undefined" || isDeleteSelected) && (
+              typeof deleteID !== "undefined" ||
+              isDeleteSelected) && (
               <button
                 className="btn cart-product__popup-cancle"
                 onClick={handleBackClick}
@@ -163,3 +176,67 @@ export default function PopupModal(props) {
     document.body
   );
 }
+
+PopupModal.propTypes = {
+  isProductPage: PropTypes.bool,
+  isAccountPage: PropTypes.bool,
+  isAnyUserInfoUpdateFail: PropTypes.bool,
+  isUpdateEmailSuccess: PropTypes.bool,
+  isUpdatePasswordSuccess: PropTypes.bool,
+  handleDeleteTrue: PropTypes.func,
+  shipInfoIndex: PropTypes.number,
+  setShipInfoIndex: PropTypes.func,
+  paymentMethodID: PropTypes.number,
+  setPaymentMethodID: PropTypes.func,
+  handlePaymentDeleteTrue: PropTypes.func,
+  isSearchPage: PropTypes.bool,
+  isCartPageLoaded: PropTypes.bool,
+  deleteID: PropTypes.number,
+  setDeleteID: PropTypes.func,
+  isDeleteSelected: PropTypes.bool,
+  setIsDeleteSelected: PropTypes.func,
+  handleDeleteSelectionTrue: PropTypes.func,
+  handleDeleteCartTrue: PropTypes.func,
+  isVariationChoose: PropTypes.bool,
+  selectedItems: PropTypes.arrayOf(PropTypes.object),
+  isCardInfoMustFilled: PropTypes.bool,
+  shipUnit: PropTypes.arrayOf(PropTypes.object),
+  isPopupShowing: PropTypes.bool,
+  togglePopup: PropTypes.func,
+  paymentMethod: PropTypes.arrayOf(PropTypes.object),
+  defaultPaymentMethodID: PropTypes.number,
+  isCardPayment: PropTypes.bool,
+  succeeded: PropTypes.bool,
+};
+
+PopupModal.defaultProps = {
+  isProductPage: false,
+  isAccountPage: false,
+  isAnyUserInfoUpdateFail: true,
+  isUpdateEmailSuccess: false,
+  isUpdatePasswordSuccess: false,
+  handleDeleteTrue: () => {},
+  shipInfoIndex: null,
+  setShipInfoIndex: () => {},
+  paymentMethodID: null,
+  setPaymentMethodID: () => {},
+  handlePaymentDeleteTrue: () => {},
+  isSearchPage: false,
+  isCartPageLoaded: false,
+  deleteID: null,
+  setDeleteID: () => {},
+  isDeleteSelected: false,
+  setIsDeleteSelected: () => {},
+  handleDeleteSelectionTrue: () => {},
+  handleDeleteCartTrue: () => {},
+  isVariationChoose: false,
+  selectedItems: [],
+  isCardInfoMustFilled: true,
+  shipUnit: [],
+  isPopupShowing: false,
+  togglePopup: () => {},
+  paymentMethod: [],
+  defaultPaymentMethodID: null,
+  isCardPayment: false,
+  succeeded: false,
+};

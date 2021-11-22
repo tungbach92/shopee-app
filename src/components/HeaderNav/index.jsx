@@ -1,12 +1,13 @@
 import React, { useContext, useEffect } from "react";
-import qrCodeNavImg from "../img/qr-code-home.png";
-import appShopeeImg from "../img/app-shopee.png";
-import ggShopeeImg from "../img/gg-shopee.png";
-import appGalShopeeImg from "../img/app-gal-shopee.png";
-import shirtImg from "../img/ao.png";
+import PropTypes from "prop-types";
+import qrCodeNavImg from "../../img/qr-code-home.png";
+import appShopeeImg from "../../img/app-shopee.png";
+import ggShopeeImg from "../../img/gg-shopee.png";
+import appGalShopeeImg from "../../img/app-gal-shopee.png";
+import shirtImg from "../../img/ao.png";
 import { Link, useHistory } from "react-router-dom";
-import { ProductContext } from "../context";
-import { auth } from "../firebase";
+import { ProductContext } from "../../context";
+import { auth } from "../../firebase";
 
 export default function HeaderNav() {
   const history = useHistory();
@@ -232,3 +233,5 @@ export default function HeaderNav() {
     </nav>
   );
 }
+
+HeaderNav.propTypes = {};

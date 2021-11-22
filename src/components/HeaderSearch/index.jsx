@@ -1,16 +1,18 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
-import shopeeLogo from "../img/shoppe-logo.png";
-import HeaderCart from "./HeaderCart";
-import HeaderSearchHistory from "./HeaderSearchHistory";
+import PropTypes from "prop-types";
+import shopeeLogo from "../../img/shoppe-logo.png";
+import HeaderCart from "../HeaderCart";
+import HeaderSearchHistory from "../HeaderSearchHistory";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
-import { ProductContext } from "../context";
+import { ProductContext } from "../../context";
 
 const HeaderSearch = ({
   isProductPage,
   isCartPageLoaded,
   isCheckoutPage,
   isSearchPage,
+  style,
 }) => {
   console.log("header search render");
   const {
@@ -75,11 +77,9 @@ const HeaderSearch = ({
     }
   }, [isSearchPage, searchInput]);
 
-  return (
+  return ( // header__search header__search--cart
     <div
-      className={classNames("header__search", {
-        "header__search--cart": isCartPageLoaded || isCheckoutPage,
-      })}
+      className={style}
     >
       <div className="header__logo-wrapper">
         <a
@@ -188,4 +188,20 @@ const HeaderSearch = ({
     </div>
   );
 };
+
+HeaderSearch.propTypes = {
+  isProductPage: PropTypes.bool,
+  isCartPageLoaded: PropTypes.bool,
+  isCheckoutPage: PropTypes.bool,
+  isSearchPage: PropTypes.bool,
+  style: PropTypes.string,
+};
+HeaderSearch.defaultProps = {
+  isProductPage: false,
+  isCartPageLoaded: false,
+  isCheckoutPage: false,
+  isSearchPage: false,
+  style: 'header__search',
+};
+
 export default HeaderSearch;

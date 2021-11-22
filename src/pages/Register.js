@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "../components/Header";
-import HeaderSimpleContent from "../components/HeaderSimpleContent";
 import LoginContent from "../components/LoginContent";
 const Register = () => {
 
   return (
     <>
       <Header
-        headerClass="header--login"
-        headerSimpleContent={
-          <HeaderSimpleContent
-           headerText="Đăng ký"
-          ></HeaderSimpleContent>
-        }
+        isRegisterPage ={true}
+        headerText="Đăng ký"
       ></Header>
       <LoginContent submitText="Đăng ký"></LoginContent>
     </>

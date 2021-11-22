@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useHistory, useLocation } from "react-router";
+import React from "react";
 import Header from "../components/Header";
-import HeaderSimpleContent from "../components/HeaderSimpleContent";
 import LoginContent from "../components/LoginContent";
-import { ProductContext } from "../context";
 const Login = () => {
 
   return (
     <>
       <Header
-        headerClass="header--login"
-        headerSimpleContent={
-          <HeaderSimpleContent headerText="Đăng nhập"></HeaderSimpleContent>
-        }
+        headerText="Đăng nhập"
+        isLoginPage={true}
       ></Header>
       <LoginContent submitText="Đăng nhập" isLoginPage={true}></LoginContent>
     </>

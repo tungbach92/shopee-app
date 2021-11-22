@@ -1,9 +1,10 @@
 import React from "react";
 import { useHistory } from "react-router";
+import PropTypes from "prop-types";
+
 export default function HeaderSearchHistory(props) {
   const history = useHistory();
-  const { filterProductBySearch, text, setSearchInput, isSearchPage } =
-    props;
+  const { filterProductBySearch, text, setSearchInput, isSearchPage } = props;
   function handelClick() {
     filterProductBySearch(text);
     setSearchInput(text);
@@ -19,3 +20,17 @@ export default function HeaderSearchHistory(props) {
     </li>
   );
 }
+
+HeaderSearchHistory.propTypes = {
+  filterProductBySearch: PropTypes.func,
+  text: PropTypes.string,
+  setSearchInput: PropTypes.func,
+  isSearchPage: PropTypes.bool,
+};
+
+HeaderSearchHistory.defaultProps = {
+  filterProductBySearch: () => {},
+  text: "",
+  setSearchInput: () => {},
+  isSearchPage: false,
+};

@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
+import PropTypes from "prop-types";
+
 const MiniPageControl = ({ totalItems }) => {
   const { pageIndex, pageSize, pageTotal, setPageIndex } =
     useContext(ProductContext);
@@ -36,6 +38,13 @@ const MiniPageControl = ({ totalItems }) => {
       </div>
     </>
   );
+};
+MiniPageControl.propTypes = {
+  totalItems: PropTypes.number,
+};
+
+MiniPageControl.defaultProps = {
+  totalItems: 0,
 };
 
 export default MiniPageControl;
