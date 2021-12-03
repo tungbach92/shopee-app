@@ -3,7 +3,7 @@ import "./css/base.css";
 import "./css/main.css";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
-import Product from "./pages/Product";
+import Product from "./features/Product";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
@@ -16,12 +16,11 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { useContext, useEffect, useState } from "react";
 import { ProductContext } from "./context";
-import Search from "./pages/Search";
+import Search from "./features/Search";
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {
-  const { user } = useContext(ProductContext);
-
+  
   return (
     <>
       <Switch>
