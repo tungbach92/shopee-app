@@ -677,8 +677,10 @@ export default class ProductProvider extends Component {
       event.target.value = event.target.value
         .replace(/[^0-9.]/g, "")
         .replace(/(\..*)\./g, "$1");
-      const value = event.target.value;
-      this.changeAmountCartItem(id, value, this.saveCartItemsToStorage);
+      const value = Number(event.target.value);
+      if (value > 0) {
+        this.changeAmountCartItem(id, value, this.saveCartItemsToStorage);
+      }
     }
     if (name === "decrCartItem") {
       this.decrCartItem(id, this.saveCartItemsToStorage);
