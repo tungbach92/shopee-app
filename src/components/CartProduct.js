@@ -467,8 +467,8 @@ export default function CartProduct(props) {
                     data-name="inputAmount"
                     type="text"
                     className="cart-product__amount-numb"
-                    defaultValue={item.amount}
-                    onBlur={handleClick}
+                    value={item.amount}
+                    onChange={handleClick}
                   />
                   <button
                     data-id={item.id}
