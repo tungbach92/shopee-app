@@ -140,7 +140,7 @@ const AccountContent = ({ isAccountPage }) => {
       db.collection("users")
         .doc(user?.uid)
         .collection("infos")
-        .doc("infoItems")
+        .doc("infoItems") // TO DO: need to create document infoItems before update infoItems
         .update({
           name: name,
           gender: gender,

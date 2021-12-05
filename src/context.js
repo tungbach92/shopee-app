@@ -295,8 +295,8 @@ export default class ProductProvider extends Component {
       try {
         db.collection("users")
           .doc(user?.uid)
-          .collection("shipInfos")
-          .doc("shipInfoDoc")
+          .collection("shipInfos") 
+          .doc("shipInfoDoc") // TO DO: need to create document shipInfoDoc before update shipInfoDoc
           .update({
             shipInfos: shipInfos,
           })

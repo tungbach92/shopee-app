@@ -119,16 +119,16 @@ export default function PopupModal(props) {
               ? "Cập nhật địa chỉ email thành công"
               : isAccountPage && isUpdatePasswordSuccess
               ? "Cập nhật mật khẩu thành công"
-              : isAccountPage && typeof shipInfoIndex !== "undefined"
-              ? "Bạn chắc chắn muốn xóa địa chỉ này?"
-              : isAccountPage && typeof paymentMethodID !== "undefined"
-              ? "Bạn chắc chắn muốn xóa thẻ này?"
               : isAccountPage &&
                 !isAnyUserInfoUpdateFail &&
                 typeof isAnyUserInfoUpdateFail !== "undefined"
               ? "Cập nhật thông tin người dùng thành công"
+              : isAccountPage && shipInfoIndex !== null
+              ? "Bạn chắc chắn muốn xóa địa chỉ này?"
+              : isAccountPage && paymentMethodID !== null
+              ? "Bạn chắc chắn muốn xóa thẻ này?"
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
-                (typeof deleteID !== "undefined" || isDeleteSelected)
+                (deleteID !== null || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
               : isCartPageLoaded && selectedItems?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
@@ -152,9 +152,9 @@ export default function PopupModal(props) {
             isCartPageLoaded ||
             isSearchPage ||
             isProductPage) &&
-            (typeof shipInfoIndex !== "undefined" ||
-              typeof paymentMethodID !== "undefined" ||
-              typeof deleteID !== "undefined" ||
+            (shipInfoIndex !== null ||
+              paymentMethodID !== null ||
+              deleteID !== null ||
               isDeleteSelected) && (
               <button
                 className="btn cart-product__popup-cancle"
