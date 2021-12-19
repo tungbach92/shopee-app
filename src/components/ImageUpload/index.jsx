@@ -1,0 +1,133 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { useRef, useEffect } from "react";
+
+const ImageUpload = (props) => {
+  const inputEl = useRef();
+  const {
+    name,
+    previewImage,
+    onImageInputChange,
+    onImageBtnBlur,
+
+    type,
+    userAvatar,
+    uploadProceesing,
+    disabled,
+  } = props;
+
+  //free memory file input
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
+
+  const handleImageInputChange = (e) => {
+    if (onImageInputChange && e.target.files && e.target.files[0]) {
+      const fileImage = e.target.files[0];
+      onImageInputChange(fileImage);
+    }
+  };
+  return (
+    <div className="user-profile__image-input">
+      <div
+        onClick={() => {
+          inputEl.current.click();
+        }}
+        className="user-profile__input-image"
+      >
+        {userAvatar && !previewImage ? (
+          <div
+            className="user-profile__user-image"
+            style={{ backgroundImage: `url(${userAvatar})` }}
+          ></div>
+        ) : userAvatar || previewImage ? (
+          <div
+            className="user-profile__preview-image"
+            onClick={() => {
+              inputEl.current.click();
+            }}
+            style={{ backgroundImage: `url(${previewImage})` }}
+          ></div>
+        ) : (
+          <svg
+            enableBackground="new 0 0 15 15"
+            viewBox="0 0 15 15"
+            x="0"
+            y="0"
+            className="user-profile__input-svg"
+          >
+            <g>
+              <circle
+                cx="7.5"
+                cy="4.5"
+                fill="none"
+                r="3.8"
+                strokeMiterlimit="10"
+              ></circle>
+              <path
+                d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                fill="none"
+                strokeLinecap="round"
+                strokeMiterlimit="10"
+              ></path>
+            </g>
+          </svg>
+        )}
+      </div>
+      <button
+        name={name}
+        onClick={() => {
+          inputEl.current.click();
+        }}
+        onBlur={onImageBtnBlur}
+        className={
+          uploadProceesing
+            ? "btn user-profile__image-btn user-profile__image-btn--disabled "
+            : "btn user-profile__image-btn"
+        }
+      >
+        Chọn ảnh
+      </button>
+      <input
+        type={type}
+        ref={inputEl}
+        onChange={handleImageInputChange}
+        className="user-profile__image-file"
+        accept=".jpg,.jpeg,.png"
+        disabled={disabled}
+      />
+      <div className="user-profile__image-size">
+        Dụng lượng file tối đa 1 MB
+      </div>
+      <div className="user-profile__image-format">Định dạng:.JPEG, .PNG</div>
+    </div>
+  );
+};
+
+ImageUpload.propTypes = {
+  previewImage: PropTypes.string,
+  onImageInputChange: PropTypes.func,
+  onImageBtnBlur: PropTypes.func,
+
+  type: PropTypes.string,
+  userAvatar: PropTypes.string,
+  uploadProceesing: PropTypes.bool,
+  disabled: PropTypes.bool,
+};
+
+ImageUpload.defaultProps = {
+  previewImage: "",
+  onImageInputChange: null,
+  onImageBtnBlur: null,
+
+  type: "file",
+  userAvatar: "",
+  uploadProceesing: false,
+  disabled: false,
+};
+
+export default ImageUpload;

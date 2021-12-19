@@ -7,7 +7,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
-import Account from "./pages/Account";
+import Account from "./features/Account";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";

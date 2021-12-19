@@ -16,6 +16,7 @@ import PasswordSmallContent from "./PasswordSmallContent";
 import AddressSmallContent from "./AddressSmallContent";
 import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
+import AccountForm from "../features/Account/components/AccountForm";
 
 const AccountContent = ({ isAccountPage }) => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
@@ -33,17 +34,16 @@ const AccountContent = ({ isAccountPage }) => {
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
-  const inputEl = useRef();
   const { isPopupShowing, togglePopup } = useModal();
 
-  //free memory file input
-  useEffect(() => {
-    return () => {
-      if (previewImage) {
-        URL.revokeObjectURL(previewImage);
-      }
-    };
-  }, [previewImage]);
+  // //free memory file input
+  // useEffect(() => {
+  //   return () => {
+  //     if (previewImage) {
+  //       URL.revokeObjectURL(previewImage);
+  //     }
+  //   };
+  // }, [previewImage]);
 
   // set user info from db
   useEffect(() => {
@@ -116,8 +116,8 @@ const AccountContent = ({ isAccountPage }) => {
     }
   };
 
-  const handleInfoSubmit = (e) => {
-    e.preventDefault();
+  const handleInfoSubmit = () => {
+    // e.preventDefault();
     togglePopup(!isPopupShowing);
     if (uploadProceesing) {
       return;
@@ -322,183 +322,28 @@ const AccountContent = ({ isAccountPage }) => {
                   </div>
                 </div>
                 <div className="user-profile__content">
-                  <form
-                    className="user-profile__info-input"
-                    onSubmit={handleInfoSubmit}
-                  >
-                    <label className="user-profile__user-label">
-                      Tên Đăng Nhập
-                    </label>
-                    <input
-                      type="text"
-                      value={userName}
-                      className="user-profile__user-input"
-                      onChange={(e) => setUsetName(e.target.value)}
-                    />
-                    <label className="user-profile__name-label">Tên</label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="user-profile__name-input"
-                    />
-                    <label className="user-profile__email-label">Email</label>
-                    <div className="user-profile__email-input">
-                      {email}
-                      <Link
-                        to={`${match.url}/email`}
-                        className="user-profile__email-btn"
-                      >
-                        Thay đổi
-                      </Link>
-                    </div>
-
-                    <label className="user-profile__phone-label">
-                      Số Điện Thoại
-                    </label>
-                    <input
-                      type="text"
-                      value={phone}
-                      onChange={handlePhoneChange}
-                      className="user-profile__phone-input"
-                    />
-                    <label className="user-profile__gender-label">
-                      Giới Tính
-                    </label>
-                    <div className="user-profile__radio-container">
-                      <input
-                        type="radio"
-                        id="man"
-                        name="gender"
-                        value="man"
-                        checked={gender === "man"}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="user-profile__man-radio"
-                      />
-                      <label className="user-profile__man-label">Nam</label>
-                      <input
-                        type="radio"
-                        id="woman"
-                        name="gender"
-                        value="woman"
-                        checked={gender === "woman"}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="user-profile__woman-radio"
-                      />
-                      <label className="user-profile__woman-label">Nữ</label>
-                      <input
-                        type="radio"
-                        id="other"
-                        name="gender"
-                        value="other"
-                        checked={gender === "other"}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="user-profile__other-radio"
-                      />
-                      <label className="user-profile__man-label">Khác</label>
-                    </div>
-                    <label className="user-profile__birthday-label">
-                      Ngày Sinh
-                    </label>
-                    <input
-                      type="date"
-                      value={birthday}
-                      onChange={(e) => setBirthday(e.target.value)}
-                      className="user-profile__birthday-input"
-                    />
-                    <button
-                      className={
-                        uploadProceesing
-                          ? "btn user-profile__info-submit user-profile__info-submit--disabled"
-                          : "btn user-profile__info-submit"
-                      }
-                    >
-                      Lưu
-                    </button>
-                    {isPopupShowing && (
-                      <PopupModal
-                        isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                        isAccountPage={isAccountPage}
-                        isPopupShowing={isPopupShowing}
-                        togglePopup={togglePopup}
-                      ></PopupModal>
-                    )}
-                  </form>
-                  <div className="user-profile__image-input">
-                    <div
-                      onClick={() => {
-                        inputEl.current.click();
-                      }}
-                      className="user-profile__input-image"
-                    >
-                      {userAvatar && !previewImage ? (
-                        <div
-                          className="user-profile__user-image"
-                          style={{ backgroundImage: `url(${userAvatar})` }}
-                        ></div>
-                      ) : userAvatar || previewImage ? (
-                        <div
-                          className="user-profile__preview-image"
-                          onClick={() => {
-                            inputEl.current.click();
-                          }}
-                          style={{ backgroundImage: `url(${previewImage})` }}
-                        ></div>
-                      ) : (
-                        <svg
-                          enableBackground="new 0 0 15 15"
-                          viewBox="0 0 15 15"
-                          x="0"
-                          y="0"
-                          className="user-profile__input-svg"
-                        >
-                          <g>
-                            <circle
-                              cx="7.5"
-                              cy="4.5"
-                              fill="none"
-                              r="3.8"
-                              strokeMiterlimit="10"
-                            ></circle>
-                            <path
-                              d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeMiterlimit="10"
-                            ></path>
-                          </g>
-                        </svg>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => {
-                        inputEl.current.click();
-                      }}
-                      className={
-                        uploadProceesing
-                          ? "btn user-profile__image-btn user-profile__image-btn--disabled "
-                          : "btn user-profile__image-btn"
-                      }
-                    >
-                      Chọn ảnh
-                    </button>
-                    <input
-                      type="file"
-                      ref={inputEl}
-                      onChange={handleImageInputChange}
-                      className="user-profile__image-file"
-                      accept=".jpg,.jpeg,.png"
-                    />
-                    <div className="user-profile__image-size">
-                      Dụng lượng file tối đa 1 MB
-                    </div>
-                    <div className="user-profile__image-format">
-                      Định dạng:.JPEG, .PNG
-                    </div>
-                  </div>
+                  <AccountForm
+                    userName={userName}
+                    name={name}
+                    email={email}
+                    phone={phone}
+                    gender={gender}
+                    birthday={birthday}
+                    userAvatar={userAvatar}
+                    previewImage={previewImage}
+                    setPreviewImage={setPreviewImage}
+                    setFileImage={setFileImage}
+                    uploadProceesing={uploadProceesing}
+                    setUploadSuccess={setUploadSuccess}
+                    handleInfoSubmit={handleInfoSubmit}
+                  ></AccountForm>
                 </div>
               </Route>
-              <Redirect exact from={`${match.url}`} to={`${match.url}/profile`} />
+              <Redirect
+                exact
+                from={`${match.url}`}
+                to={`${match.url}/profile`}
+              />
               <Route path={`${match.url}/email`}>
                 <EmailSmallContent
                   isAccountPage={isAccountPage}

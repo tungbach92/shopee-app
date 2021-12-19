@@ -4165,6 +4165,14 @@ header {
   max-width: 14rem;
 }
 
+.user-profile__info-form{
+  flex: 1;
+}
+
+.user-profile_info-container{
+  display: flex;
+}
+
 .user-profile__info-input {
   flex: 2;
   display: grid;
