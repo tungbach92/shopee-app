@@ -19,7 +19,7 @@ const InputField = (props) => {
   return (
     <>
       {label && (
-        <label for={label} className={labelClassName}>
+        <label htmlFor={name} className={labelClassName}>
           {label}
         </label>
       )}

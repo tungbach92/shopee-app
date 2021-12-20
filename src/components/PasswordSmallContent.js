@@ -6,7 +6,7 @@ import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import PasswordResetModal from "./PasswordResetModal";
 
-function PasswordSmallContent({ isAccountPage, setEmail, email }) {
+function PasswordSmallContent({ setEmail, email }) {
   const { user } = useContext(ProductContext);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -175,7 +175,7 @@ function PasswordSmallContent({ isAccountPage, setEmail, email }) {
         </form>
         {isPopupShowing && (
           <PopupModal
-            isAccountPage={isAccountPage}
+            isAccountPage={true}
             isUpdatePasswordSuccess={isUpdatePasswordSuccess}
             isPopupShowing={isPopupShowing}
             togglePopup={togglePopup}

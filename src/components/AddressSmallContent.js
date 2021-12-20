@@ -6,7 +6,7 @@ import useProvinceDistrict from "../hooks/useProvinceDistrict";
 import AddressAddPopup from "./AddressAddPopup";
 import PopupModal from "./PopupModal";
 
-const AddressSmallContent = ({ isAccountPage }) => {
+const AddressSmallContent = () => {
   const {
     shipInfos,
     setShipInfos,
@@ -218,7 +218,7 @@ const AddressSmallContent = ({ isAccountPage }) => {
         <PopupModal
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}
-          isAccountPage={isAccountPage}
+          isAccountPage={true}
           shipInfoIndex={shipInfoIndex}
           setShipInfoIndex={setShipInfoIndex}
           handleDeleteTrue={handleDeleteTrue}

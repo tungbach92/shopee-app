@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
-const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
+const EmailSmallContent = ({ setEmail, email }) => {
   const { user } = useContext(ProductContext);
   const [verifyPassword, setVerifyPassword] = useState();
   const [isWrongPassword, setIsWrongPassword] = useState(false);
@@ -166,7 +166,7 @@ const EmailSmallContent = ({ isAccountPage, setEmail, email }) => {
 
         {isPopupShowing && (
           <PopupModal
-            isAccountPage={isAccountPage}
+            isAccountPage={true}
             isUpdateEmailSuccess={isUpdateEmailSuccess}
             isPopupShowing={isPopupShowing}
             togglePopup={togglePopup}

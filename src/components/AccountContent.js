@@ -9,8 +9,6 @@ import {
   NavLink,
   useRouteMatch,
 } from "react-router-dom";
-import PopupModal from "./PopupModal";
-import useModal from "../hooks/useModal";
 import EmailSmallContent from "./EmailSmallContent";
 import PasswordSmallContent from "./PasswordSmallContent";
 import AddressSmallContent from "./AddressSmallContent";
@@ -18,7 +16,7 @@ import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
 import AccountForm from "../features/Account/components/AccountForm";
 
-const AccountContent = ({ isAccountPage }) => {
+const AccountContent = () => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
     useContext(ProductContext);
   const match = useRouteMatch();
@@ -34,16 +32,6 @@ const AccountContent = ({ isAccountPage }) => {
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
-  const { isPopupShowing, togglePopup } = useModal();
-
-  // //free memory file input
-  // useEffect(() => {
-  //   return () => {
-  //     if (previewImage) {
-  //       URL.revokeObjectURL(previewImage);
-  //     }
-  //   };
-  // }, [previewImage]);
 
   // set user info from db
   useEffect(() => {
@@ -74,51 +62,15 @@ const AccountContent = ({ isAccountPage }) => {
     }
   }, [user]); // rerender if upload success
 
-  const limit = (val, max) => {
-    if (val.length === 1 && val[0] > max[0]) {
-      val = "0" + val;
-    }
-
-    if (val.length === 2) {
-      if (Number(val) === 0) {
-        val = "01";
-
-        //this can happen when user paste number
-      } else if (val > max) {
-        val = max;
-      }
-    }
-
-    return val;
-  };
-
-  const birthdayCheck = (val) => {
-    const month = limit(val.substring(0, 2), "12");
-    const date = limit(val.substring(2, 4), "31");
-
-    return month + (date.length ? "/" + date : "");
-  };
-
-  const handleImageInputChange = (e) => {
-    if (uploadProceesing) {
-      return;
-    }
-    if (e.target.files && e.target.files[0]) {
-      const fileImage = e.target.files[0];
-      setFileImage(fileImage);
-      if (fileImage.size > 1048576) {
-        alert("File is larger than 1048576. Please try again.");
-      } else {
-        const previewImage = URL.createObjectURL(fileImage);
-        setPreviewImage(previewImage);
-        setUploadSuccess(false); // for uploading step
-      }
-    }
-  };
-
-  const handleInfoSubmit = () => {
+  const handleInfoSubmit = ({
+    user: userName,
+    name,
+    phone,
+    gender,
+    birthday,
+  }) => {
     // e.preventDefault();
-    togglePopup(!isPopupShowing);
+    console.log("submit");
     if (uploadProceesing) {
       return;
     }
@@ -210,7 +162,7 @@ const AccountContent = ({ isAccountPage }) => {
             });
           setUploadProcessing(false);
           setUploadSuccess(true);
-          console.log("Upload is success");
+          console.log("Upload image successfully");
         }
       );
     }
@@ -336,6 +288,8 @@ const AccountContent = ({ isAccountPage }) => {
                     uploadProceesing={uploadProceesing}
                     setUploadSuccess={setUploadSuccess}
                     handleInfoSubmit={handleInfoSubmit}
+                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                    url={match.url}
                   ></AccountForm>
                 </div>
               </Route>
@@ -346,32 +300,24 @@ const AccountContent = ({ isAccountPage }) => {
               />
               <Route path={`${match.url}/email`}>
                 <EmailSmallContent
-                  isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
                 ></EmailSmallContent>
               </Route>
               <Route path={`${match.url}/password`}>
                 <PasswordSmallContent
-                  isAccountPage={isAccountPage}
                   email={email}
                   setEmail={setEmail}
                 ></PasswordSmallContent>
               </Route>
               <Route path={`${match.url}/address`}>
-                <AddressSmallContent
-                  isAccountPage={isAccountPage}
-                ></AddressSmallContent>
+                <AddressSmallContent></AddressSmallContent>
               </Route>
               <Route exact path={`${match.url}/payment`}>
-                <PaymentSmallContent
-                  isAccountPage={isAccountPage}
-                ></PaymentSmallContent>
+                <PaymentSmallContent></PaymentSmallContent>
               </Route>
               <Route path={`${match.url}/purchase`}>
-                <OrderSmallContent
-                  isAccountPage={isAccountPage}
-                ></OrderSmallContent>
+                <OrderSmallContent></OrderSmallContent>
               </Route>
             </Switch>
           </div>

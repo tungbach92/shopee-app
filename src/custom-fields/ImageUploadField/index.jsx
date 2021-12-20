@@ -25,16 +25,16 @@ const ImageUploadField = (props) => {
     if (fileImage.size > 1048576) {
       alert("File is larger than 1048576. Please try again.");
     } else {
-      const fileImageUrl = URL.createObjectURL(fileImage);
-      form.setFieldValue(name, fileImageUrl);
-      setPreviewImage(fileImageUrl);
+      const previewImage = URL.createObjectURL(fileImage);
+      form.setFieldValue(name, previewImage);
+      setPreviewImage(previewImage);
       setUploadSuccess(false);
     }
   };
 
   return (
     <>
-      {label && <div className="user-profile__image-label">{label}</div>}
+      {label && <label htmlFor={name} className="user-profile__image-label">{label}</label>}
       <ImageUpload
         name={name}
         previewImage={value}

@@ -79,11 +79,10 @@ const ImageUpload = (props) => {
         )}
       </div>
       <button
-        name={name}
+        type="button" // formik treat as submit button ??
         onClick={() => {
           inputEl.current.click();
         }}
-        onBlur={onImageBtnBlur}
         className={
           uploadProceesing
             ? "btn user-profile__image-btn user-profile__image-btn--disabled "
@@ -93,8 +92,10 @@ const ImageUpload = (props) => {
         Chọn ảnh
       </button>
       <input
+        name={name}
         type={type}
         ref={inputEl}
+        onBlur={onImageBtnBlur}
         onChange={handleImageInputChange}
         className="user-profile__image-file"
         accept=".jpg,.jpeg,.png"

@@ -3,7 +3,7 @@ import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
-const PaymentSmallContent = ({ isAccountPage }) => {
+const PaymentSmallContent = () => {
   const {
     paymentMethodList,
     setPaymentMethodList,
@@ -83,7 +83,7 @@ const PaymentSmallContent = ({ isAccountPage }) => {
               </div>
               {isPopupShowing && (
                 <PopupModal
-                  isAccountPage={isAccountPage}
+                  isAccountPage={true}
                   isPopupShowing={isPopupShowing}
                   togglePopup={togglePopup}
                   paymentMethodID={paymentMethodID}

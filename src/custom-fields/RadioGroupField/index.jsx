@@ -30,7 +30,7 @@ const RadioGroupField = (props) => {
         disabled={disabled}
       />
       {label && (
-        <label for={value} className={labelClassName}>
+        <label htmlFor={name} className={labelClassName}>
           {label}
         </label>
       )}

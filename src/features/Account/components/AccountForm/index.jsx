@@ -5,7 +5,7 @@ import PopupModal from "../../../../components/PopupModal";
 import useModal from "../../../../hooks/useModal";
 import InputField from "../../../../custom-fields/InputField";
 import RadioGroupField from "../../../../custom-fields/RadioGroupField";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ImageUploadField from "../../../../custom-fields/ImageUploadField";
 
 const AccountForm = (props) => {
@@ -23,22 +23,26 @@ const AccountForm = (props) => {
     uploadProceesing,
     setUploadSuccess,
     handleInfoSubmit,
+    url,
+    isAnyUserInfoUpdateFail,
   } = props;
   const { isPopupShowing, togglePopup } = useModal();
-  const match = useRouteMatch();
+  const handleSubmit = (values) => {
+    // togglePopup(!isPopupShowing);
+    handleInfoSubmit(values)
+  }
   return (
     <Formik
       enableReinitialize
       initialValues={{
         user: userName,
         name,
-        email,
         phone,
         gender,
         birthday,
-        previewImage: null,
+        previewImage,
       }}
-      onSubmit={handleInfoSubmit}
+      onSubmit={(values) => handleSubmit(values)}
     >
       {(formikProps) => {
         const { values, errors, touched } = formikProps;
@@ -68,30 +72,10 @@ const AccountForm = (props) => {
                   labelClassName="user-profile__user-label"
                   inputClassName="user-profile__name-input"
                 ></FastField>
-                {/* <label className="user-profile__name-label">Tên</label>
-            <input
-              type="text"
-              value={name}
-              // onChange={(e) => setName(e.target.value)}
-              className="user-profile__name-input"
-            /> */}
-                {/* <FastField
-              name="email"
-              component={InputField}
-              type="text"
-              label="Email"
-              placeholder="..."
-              disabled={false}
-              labelClassName="user-profile__email-label"
-              inputClassName="user-profile__email-input"
-            ></FastField> */}
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
                   {email}
-                  <Link
-                    to={`${match.url}/email`}
-                    className="user-profile__email-btn"
-                  >
+                  <Link to={`${url}/email`} className="user-profile__email-btn">
                     Thay đổi
                   </Link>
                 </div>
@@ -104,14 +88,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__phone-label"
                   inputClassName="user-profile__phone-input"
-                ></FastField>
-                {/* <label className="user-profile__phone-label">Số Điện Thoại</label>
-            <input
-              type="text"
-              // value={phone}
-              // onChange={handlePhoneChange}
-              className="user-profile__phone-input"
-            /> */}
+                ></FastField>       
                 <label className="user-profile__gender-label">Giới Tính</label>
                 <div className="user-profile__radio-container">
                   <FastField
@@ -158,13 +135,6 @@ const AccountForm = (props) => {
                   labelClassName="user-profile__birthday-label"
                   inputClassName="user-profile__birthday-input"
                 ></FastField>
-                {/* <label className="user-profile__birthday-label">Ngày Sinh</label>
-            <input
-              type="date"
-              // value={birthday}
-              // onChange={(e) => setBirthday(e.target.value)}
-              className="user-profile__birthday-input"
-            /> */}
                 <button
                   type="submit"
                   className={
@@ -191,14 +161,14 @@ const AccountForm = (props) => {
               ></FastField>
             </div>
 
-            {/* {isPopupShowing && (
-            <PopupModal
-              isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-              isAccountPage={isAccountPage}
-              isPopupShowing={isPopupShowing}
-              togglePopup={togglePopup}
-            ></PopupModal>
-          )} */}
+            {isPopupShowing && (
+              <PopupModal
+                isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                isAccountPage={true}
+                isPopupShowing={isPopupShowing}
+                togglePopup={togglePopup}
+              ></PopupModal>
+            )}
           </Form>
         );
       }}
