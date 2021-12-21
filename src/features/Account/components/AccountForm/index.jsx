@@ -28,9 +28,9 @@ const AccountForm = (props) => {
   } = props;
   const { isPopupShowing, togglePopup } = useModal();
   const handleSubmit = (values) => {
-    // togglePopup(!isPopupShowing);
-    handleInfoSubmit(values)
-  }
+    togglePopup(!isPopupShowing);
+    handleInfoSubmit(values);
+  };
   return (
     <Formik
       enableReinitialize
@@ -88,7 +88,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__phone-label"
                   inputClassName="user-profile__phone-input"
-                ></FastField>       
+                ></FastField>
                 <label className="user-profile__gender-label">Giới Tính</label>
                 <div className="user-profile__radio-container">
                   <FastField
@@ -176,6 +176,40 @@ const AccountForm = (props) => {
   );
 };
 
-AccountForm.propTypes = {};
+AccountForm.propTypes = {
+  userName: PropTypes.string,
+  name: PropTypes.string,
+  email: PropTypes.string,
+  phone: PropTypes.string,
+  gender: PropTypes.string,
+  birthday: PropTypes.string,
+  userAvatar: PropTypes.string,
+  previewImage: PropTypes.string,
+  setPreviewImage: PropTypes.func,
+  setFileImage: PropTypes.func,
+  uploadProceesing: PropTypes.bool,
+  setUploadSuccess: PropTypes.func,
+  handleInfoSubmit: PropTypes.func,
+  url: PropTypes.string,
+  isAnyUserInfoUpdateFail: PropTypes.bool,
+};
+
+AccountForm.defaultProps = {
+  userName: null,
+  name: null,
+  email: null,
+  phone: null,
+  gender: null,
+  birthday: null,
+  userAvatar: null,
+  previewImage: null,
+  setPreviewImage: null,
+  setFileImage: null,
+  uploadProceesing: false,
+  setUploadSuccess: null,
+  handleInfoSubmit: null,
+  url: null,
+  isAnyUserInfoUpdateFail: true,
+};
 
 export default AccountForm;

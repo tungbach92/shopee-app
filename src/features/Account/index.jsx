@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import HeaderSearch from "../../components/HeaderSearch";
 import HeaderNav from "../../components/HeaderNav";
 import { ProductContext } from "../../context";
-import AccountContent from "../../components/AccountContent";
+import AccountContent from "./components/AccountContent";
 import { Redirect } from "react-router";
 
 export default function Account() {
@@ -28,7 +28,7 @@ export default function Account() {
             ></HeaderSearch>
           }
         ></Header>
-        <AccountContent isAccountPage={true}></AccountContent>
+        <AccountContent></AccountContent>
       </>
     );
   } else
