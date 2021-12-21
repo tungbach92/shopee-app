@@ -140,6 +140,7 @@ const AccountContent = () => {
             .then((downloadURL) => {
               console.log("File available at", downloadURL);
               setLoading(true);
+              //set user avatar
               user
                 .updateProfile({
                   photoURL: downloadURL,

@@ -7,6 +7,7 @@ import InputField from "../../../../custom-fields/InputField";
 import RadioGroupField from "../../../../custom-fields/RadioGroupField";
 import { Link } from "react-router-dom";
 import ImageUploadField from "../../../../custom-fields/ImageUploadField";
+import * as yup from "yup";
 
 const AccountForm = (props) => {
   const {
@@ -27,6 +28,14 @@ const AccountForm = (props) => {
     isAnyUserInfoUpdateFail,
   } = props;
   const { isPopupShowing, togglePopup } = useModal();
+  const validationSchema = yup.object().shape({
+    user: yup.string().required("Vui lòng nhập tên user"),
+    name: yup.string().required("Vui lòng nhập họ tên"),
+    phone: yup.string().required("SĐT không để trống!"),
+    gender: yup.string().required("Vui lòng chọn giới tính"),
+    birthday: yup.string().required("Vui lòng chọn ngày sinh"),
+    previewImage: yup.string().nullable(),
+  });
   const handleSubmit = (values) => {
     togglePopup(!isPopupShowing);
     handleInfoSubmit(values);
@@ -42,6 +51,7 @@ const AccountForm = (props) => {
         birthday,
         previewImage,
       }}
+      validationSchema={validationSchema}
       onSubmit={(values) => handleSubmit(values)}
     >
       {(formikProps) => {

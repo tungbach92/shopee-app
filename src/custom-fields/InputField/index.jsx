@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { ErrorMessage } from "formik";
+import { FormFeedback, Input } from "reactstrap";
 const InputField = (props) => {
   const {
     field,
@@ -14,6 +15,8 @@ const InputField = (props) => {
     inputClassName,
   } = props;
   const { name } = field;
+  const { errors, touched } = form;
+  const showError = errors[name] && touched;
   // console.log(field);
   // const {name, value, onChange, onBlur} = field;
   return (
@@ -23,14 +26,18 @@ const InputField = (props) => {
           {label}
         </label>
       )}
-      <input
+      <Input
         id={name}
         {...field}
         type={type}
         placeholder={placeholder}
         disabled={disabled}
+        // className={showError ? inputClassName + " is-invalid" : inputClassName}
         className={inputClassName}
+        invalid={showError}
       />
+      <ErrorMessage name={name} component={FormFeedback}></ErrorMessage>
+      {/* Error msg Formik, FormFeedBack reactstrap */}
     </>
   );
 };
