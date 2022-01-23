@@ -176,7 +176,7 @@ const AccountContent = () => {
     setPhone(e.target.value);
   };
   return (
-    <div className="container">
+    <div className="main">
       <div className="grid user-profile">
         <div className="grid__row grid__row--padtb3">
           <div className="grid__col-2x">

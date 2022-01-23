@@ -498,7 +498,7 @@ export default function CheckoutProduct() {
   };
 
   return (
-    <div className="container">
+    <div className="main">
       <div className="grid checkout-product">
         <div className="checkout-product__address-line"></div>
         <div className="checkout-product__address-wrapper">

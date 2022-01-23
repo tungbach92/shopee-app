@@ -219,7 +219,7 @@ export default function CartProduct(props) {
   };
 
   return (
-    <div className="container">
+    <div className="main">
       {cartItems?.length > 0 && (
         <div className="grid cart-product">
           <div className="cart-product__notify">

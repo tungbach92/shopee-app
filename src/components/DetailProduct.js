@@ -129,7 +129,7 @@ export default function DetailProduct() {
     return <>Loading...</>;
   } else
     return (
-      <div className="container">
+      <div className="main">
         <div className="grid detail-breadcrumb">
           <Link to="/" className="detail-breadcrumb__home">
             Shopee

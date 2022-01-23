@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { ErrorMessage } from "formik";
-import { FormFeedback, Input } from "reactstrap";
+import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 const InputField = (props) => {
   const {
     field,
@@ -16,15 +16,15 @@ const InputField = (props) => {
   } = props;
   const { name } = field;
   const { errors, touched } = form;
-  const showError = errors[name] && touched;
+  const showError = errors[name] && touched[name];
   // console.log(field);
   // const {name, value, onChange, onBlur} = field;
   return (
     <>
       {label && (
-        <label htmlFor={name} className={labelClassName}>
+        <Label for={name} className={labelClassName}>
           {label}
-        </label>
+        </Label>
       )}
       <Input
         id={name}

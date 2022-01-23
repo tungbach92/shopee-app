@@ -40,7 +40,7 @@ function LoginContent({ isLoginPage, submitText }) {
     console.log("register");
   };
   return (
-    <div className="container container--login">
+    <div className="main main--login">
       <div className="grid grid--login">
         <div className="login-content__img">
           <form
