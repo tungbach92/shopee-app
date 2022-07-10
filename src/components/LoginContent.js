@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { db, auth } from "../firebase";
 function LoginContent({ isLoginPage, submitText }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
@@ -11,7 +11,7 @@ function LoginContent({ isLoginPage, submitText }) {
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         console.log(userCredential);
-        history.push("/");
+        navigate("/");
       })
       .catch((error) => alert(error));
     console.log("log in");
@@ -32,7 +32,7 @@ function LoginContent({ isLoginPage, submitText }) {
               displayName: randomName,
             })
             .then(() => {
-              history.push("/");
+              navigate("/");
             });
         }
       })

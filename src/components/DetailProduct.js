@@ -1,8 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import img from "../img/bag.png";
 import protectImg from "../img/protect.png";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";

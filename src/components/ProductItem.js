@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import CurrencyFormat from "react-currency-format";
@@ -9,7 +9,7 @@ const ProductItem = React.memo(function (props) {
   const { item, similarDisPlay, cartItems, handleClick, user } = props;
   const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
-  const history = useHistory();
+  const navigate = useNavigate();
   let isInCart = false;
   isInCart = cartItems?.some((item) => item.id === Number(id));
 
@@ -18,7 +18,7 @@ const ProductItem = React.memo(function (props) {
       handleClick(e);
       toggleIsAddCardPopup(!isAddCartPopup);
     } else {
-      history.push("/login");
+      navigate("/login");
     }
   };
   return (

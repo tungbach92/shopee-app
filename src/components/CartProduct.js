@@ -5,7 +5,7 @@ import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
 import { ProductContext } from "../context";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 import PopupModal from "../components/PopupModal";
@@ -15,8 +15,8 @@ import { useSelector, useDispatch } from "react-redux";
 export default function CartProduct(props) {
   const cartItemsRedux = useSelector((state) => state.cart.cartItems); //state is store
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
-  const history = useHistory();
   const { isCartPageLoaded } = props;
   const [variation, setVariation] = useState("");
   const [isVariationChoose, setIsVariationChoose] = useState(false);
@@ -58,11 +58,12 @@ export default function CartProduct(props) {
   const lastIndex = cartItems?.length + 1;
   let idArr = [];
   useEffect(() => {
+    console.log(location.state?.from.pathname);
     if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
     }
-    history.replace();
-  }, [toggleIsAddCardPopup, history, location.state?.from.pathname]);
+    navigate("/product/:metaTitle/:id", { replace: true });
+  }, [toggleIsAddCardPopup, navigate, location.state?.from.pathname]);
 
   useEffect(() => {
     setCartItemsFromFirebase(user); // called at header cart

@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default function PopupModal(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const {
     isProductPage,
@@ -74,7 +74,7 @@ export default function PopupModal(props) {
       } else if (paymentMethod.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else if (succeeded) {
-        history.replace("/user/purchase");
+        navigate("/user/purchase");
       }
     }
 
@@ -83,7 +83,7 @@ export default function PopupModal(props) {
       typeof shipInfoIndex === "undefined" &&
       typeof paymentMethodID === "undefined"
     ) {
-      history.replace("/user");
+      navigate("/user");
     } else if (isAccountPage && typeof shipInfoIndex !== "undefined") {
       handleDeleteTrue(shipInfoIndex);
       setShipInfoIndex();

@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Header from "../components/Header/Header";
 import { ProductContext } from "../context";
 import AccountContent from "../components/AccountContent";
-import { Redirect } from "react-router";
+import { Route, Navigate } from "react-router";
 
 export default function Account() {
   const { authorized, searchInput, searchHistory, addToSearchHistory } =
@@ -11,7 +11,7 @@ export default function Account() {
 
   if (authorized !== null) {
     if (!authorized) {
-      return <Redirect to="/login"></Redirect>;
+      return <Navigate to="/login"></Navigate>;
     }
     return (
       <>

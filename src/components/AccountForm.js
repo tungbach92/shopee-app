@@ -5,7 +5,7 @@ import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import InputField from "../custom-fields/InputField/InputField";
 import RadioGroupField from "../custom-fields/RadioGroupField/RadioGroupField";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 import ImageUploadField from "../custom-fields/ImageUploadField/ImageUploadField";
 import * as yup from "yup";
 
@@ -24,7 +24,6 @@ const AccountForm = (props) => {
     uploadProceesing,
     setUploadSuccess,
     handleInfoSubmit,
-    url,
     isAnyUserInfoUpdateFail,
   } = props;
   const { isPopupShowing, togglePopup } = useModal();
@@ -85,7 +84,7 @@ const AccountForm = (props) => {
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
                   {email}
-                  <Link to={`${url}/email`} className="user-profile__email-btn">
+                  <Link to="email" className="user-profile__email-btn">
                     Thay đổi
                   </Link>
                 </div>
@@ -200,7 +199,6 @@ AccountForm.propTypes = {
   uploadProceesing: PropTypes.bool,
   setUploadSuccess: PropTypes.func,
   handleInfoSubmit: PropTypes.func,
-  url: PropTypes.string,
   isAnyUserInfoUpdateFail: PropTypes.bool,
 };
 
@@ -218,7 +216,6 @@ AccountForm.defaultProps = {
   uploadProceesing: false,
   setUploadSuccess: null,
   handleInfoSubmit: null,
-  url: null,
   isAnyUserInfoUpdateFail: true,
 };
 

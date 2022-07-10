@@ -3,11 +3,11 @@ import { ProductContext } from "../context";
 import { auth, db, storage } from "../firebase";
 import {
   Link,
-  Switch,
   Route,
-  Redirect,
+  Navigate,
   NavLink,
-  useRouteMatch,
+  Routes,
+  useMatch,
 } from "react-router-dom";
 import EmailSmallContent from "./EmailSmallContent";
 import PasswordSmallContent from "./PasswordSmallContent";
@@ -19,8 +19,6 @@ import AccountForm from "./AccountForm";
 const AccountContent = () => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
     useContext(ProductContext);
-  const match = useRouteMatch();
-  console.log(match);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -217,7 +215,7 @@ const AccountContent = () => {
               <div className="user-profile__name">sfsb3fax26</div>
 
               <Link
-                to={`${match.url}/profile`}
+                to="profile"
                 className="user-profile__name-btn"
               >
                 Sửa Hồ Sơ
@@ -226,35 +224,35 @@ const AccountContent = () => {
             <div className="user-profile__category">
               {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
               <NavLink
-                to={`${match.url}/profile`}
+                to="profile"
                 className="user-profile__my-info"
                 activeClassName="user-profile__category-item--active"
               >
                 Hồ sơ
               </NavLink>
               <NavLink
-                to={`${match.url}/payment`}
+                to="payment"
                 className="user-profile__my-bank"
                 activeClassName="user-profile__category-item--active"
               >
                 Ngân hàng
               </NavLink>
               <NavLink
-                to={`${match.url}/address`}
+                to="address"
                 className="user-profile__my-adress"
                 activeClassName="user-profile__category-item--active"
               >
                 Địa chỉ
               </NavLink>
               <NavLink
-                to={`${match.url}/password`}
+                to="password"
                 className="user-profile__change-password"
                 activeClassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
               </NavLink>
               <NavLink
-                to={`${match.url}/purchase`}
+                to="purchase"
                 className="user-profile__order"
                 activeClassName="user-profile__category-item--active"
               >
@@ -263,63 +261,76 @@ const AccountContent = () => {
             </div>
           </div>
           <div className="grid__col-10x">
-            <Switch>
-              <Route exact path={`${match.url}/profile`}>
-                <div className="user-profile__title-container">
-                  <div className="user-profile__title">
-                    <div className="user-profile__label">Hồ Sơ Của Tôi</div>
-                    <div className="user-profile__label-detail">
-                      Quản lý thông tin hồ sơ để bảo mật tài khoản
+            <Routes>
+              <Route
+                path="profile"
+                element={
+                  <>
+                    <div className="user-profile__title-container">
+                      <div className="user-profile__title">
+                        <div className="user-profile__label">Hồ Sơ Của Tôi</div>
+                        <div className="user-profile__label-detail">
+                          Quản lý thông tin hồ sơ để bảo mật tài khoản
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="user-profile__content">
-                  <AccountForm
-                    userName={userName}
-                    name={name}
-                    email={email}
-                    phone={phone}
-                    gender={gender}
-                    birthday={birthday}
-                    userAvatar={userAvatar}
-                    previewImage={previewImage}
-                    setPreviewImage={setPreviewImage}
-                    setFileImage={setFileImage}
-                    uploadProceesing={uploadProceesing}
-                    setUploadSuccess={setUploadSuccess}
-                    handleInfoSubmit={handleInfoSubmit}
-                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                    url={match.url}
-                  ></AccountForm>
-                </div>
-              </Route>
-              <Redirect
-                exact
-                from={`${match.url}`}
-                to={`${match.url}/profile`}
+                    <div className="user-profile__content">
+                      <AccountForm
+                        userName={userName}
+                        name={name}
+                        email={email}
+                        phone={phone}
+                        gender={gender}
+                        birthday={birthday}
+                        userAvatar={userAvatar}
+                        previewImage={previewImage}
+                        setPreviewImage={setPreviewImage}
+                        setFileImage={setFileImage}
+                        uploadProceesing={uploadProceesing}
+                        setUploadSuccess={setUploadSuccess}
+                        handleInfoSubmit={handleInfoSubmit}
+                        isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                      ></AccountForm>
+                    </div>
+                  </>
+                }
+              ></Route>
+              <Route
+                path="/"
+                element={<Navigate to="profile" />}
               />
-              <Route path={`${match.url}/email`}>
-                <EmailSmallContent
-                  email={email}
-                  setEmail={setEmail}
-                ></EmailSmallContent>
-              </Route>
-              <Route path={`${match.url}/password`}>
-                <PasswordSmallContent
-                  email={email}
-                  setEmail={setEmail}
-                ></PasswordSmallContent>
-              </Route>
-              <Route path={`${match.url}/address`}>
-                <AddressSmallContent></AddressSmallContent>
-              </Route>
-              <Route exact path={`${match.url}/payment`}>
-                <PaymentSmallContent></PaymentSmallContent>
-              </Route>
-              <Route path={`${match.url}/purchase`}>
-                <OrderSmallContent></OrderSmallContent>
-              </Route>
-            </Switch>
+              <Route
+                path="email"
+                element={
+                  <EmailSmallContent
+                    email={email}
+                    setEmail={setEmail}
+                  ></EmailSmallContent>
+                }
+              ></Route>
+              <Route
+                path="password"
+                element={
+                  <PasswordSmallContent
+                    email={email}
+                    setEmail={setEmail}
+                  ></PasswordSmallContent>
+                }
+              ></Route>
+              <Route
+                path="address"
+                element={<AddressSmallContent></AddressSmallContent>}
+              ></Route>
+              <Route
+                exact
+                path="payment"
+                element={<PaymentSmallContent></PaymentSmallContent>}
+              ></Route>
+              <Route
+                path="purchase"
+                element={<OrderSmallContent></OrderSmallContent>}
+              ></Route>
+            </Routes>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import CartProduct from "../components/CartProduct";
 import { ProductContext } from "../context";
-import { Redirect } from "react-router";
+import { Route, Navigate } from "react-router";
 import Header from "../components/Header/Header";
 
 export default function Cart() {
@@ -9,7 +9,7 @@ export default function Cart() {
 
   if (authorized !== null) {
     if (!authorized) {
-      return <Redirect to="/login"></Redirect>;
+      return <Navigate to="/login"></Navigate>;
     } else
       return (
         <>

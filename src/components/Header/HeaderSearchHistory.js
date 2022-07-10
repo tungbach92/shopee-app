@@ -1,15 +1,15 @@
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default function HeaderSearchHistory(props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { filterProductBySearch, text, setSearchInput, isSearchPage } = props;
   function handelClick() {
     filterProductBySearch(text);
     setSearchInput(text);
     if (!isSearchPage) {
-      history.push("/search");
+      navigate("/search");
     }
   }
   return (

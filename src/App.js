@@ -3,7 +3,7 @@ import "./css/base.css";
 import "./css/main.css";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
@@ -25,30 +25,41 @@ function App() {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route exact path="/" component={Product}></Route>
-          <Route exact path="/cart" component={Cart}></Route>
+        <Routes>
+          <Route exact path="/" element={<Product />}></Route>
+          <Route exact path="/cart" element={<Cart />}></Route>
           <Route
             exact
             path="/product/:metaTitle/:id"
-            component={Detail}
+            element={<Detail />}
           ></Route>
-          <Redirect exact from="/user" to="/user/account"></Redirect>
-          <Route path="/user/account">
-            <Elements stripe={stripePromise}>
-              <Account />
-            </Elements>
-          </Route>
-          <Route exact path="/checkout">
-            <Elements stripe={stripePromise}>
-              <Checkout />
-            </Elements>
-          </Route>
-          <Route exact path="/login" component={Login}></Route>
-          <Route exact path="/register" component={Register}></Route>
-          <Route exact path="/search" component={Search}></Route>
-          <Route component={Error} />
-        </Switch>
+          <Route
+            exact
+            path="/user"
+            element={<Navigate to="/user/account/"></Navigate>}
+          ></Route>
+          <Route
+            path="/user/account/*"
+            element={
+              <Elements stripe={stripePromise}>
+                <Account />
+              </Elements>
+            }
+          ></Route>
+          <Route
+            exact
+            path="/checkout"
+            element={
+              <Elements stripe={stripePromise}>
+                <Checkout />
+              </Elements>
+            }
+          ></Route>
+          <Route exact path="/login" element={<Login />}></Route>
+          <Route exact path="/register" element={<Register />}></Route>
+          <Route exact path="/search" element={<Search />}></Route>
+          <Route path="*" element={<Error />} />
+        </Routes>
       </Suspense>
       <Footer></Footer>
     </>

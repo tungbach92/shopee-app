@@ -9,7 +9,7 @@ import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import HeaderSearchHistory from "./HeaderSearchHistory";
 import classNames from "classnames";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
 import { auth } from "../../firebase";
 
@@ -23,7 +23,7 @@ const Header = ({
   headerText,
 }) => {
   const inputEl = useRef("");
-  const history = useHistory();
+  const navigate = useNavigate();
   const [recommendSearch, setRecommendSearch] = useState([]);
   function getUnique(items) {
     let uniqueItems = new Set(items);
@@ -67,7 +67,7 @@ const Header = ({
       setUserAvatar();
       setCustomerID("");
       auth.signOut();
-      history.replace("/login");
+      navigate("/login");
     }
   };
 
@@ -75,8 +75,7 @@ const Header = ({
     // let text = inputEl.current.value;
     filterProductBySearch(searchInput);
     addToSearchHistory(searchInput);
-    history.push("/search");
-    console.log(history);
+    navigate("/search");
   };
 
   const inputOnKeyUp = (event) => {
@@ -84,8 +83,7 @@ const Header = ({
       event.currentTarget.blur();
       filterProductBySearch(searchInput);
       addToSearchHistory(searchInput);
-      history.push("/search");
-      console.log(history);
+      navigate("/search");
     }
   };
 
