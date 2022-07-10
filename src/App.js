@@ -7,7 +7,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
-import Account from "./features/Account";
+import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -15,10 +15,10 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense, useContext, useEffect, useState } from "react";
 import { ProductContext } from "./context";
-import Search from "./features/Search";
+import Search from "./pages/Search";
 
 //Lazy load product page
-const Product = React.lazy(() => import("./features/Product"));
+const Product = React.lazy(() => import("./pages/Product"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {

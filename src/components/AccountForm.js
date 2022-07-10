@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FastField, Field, Form, Formik } from "formik";
-import PopupModal from "../../../../components/PopupModal";
-import useModal from "../../../../hooks/useModal";
-import InputField from "../../../../custom-fields/InputField";
-import RadioGroupField from "../../../../custom-fields/RadioGroupField";
+import PopupModal from "./PopupModal";
+import useModal from "../hooks/useModal";
+import InputField from "../custom-fields/InputField/InputField";
+import RadioGroupField from "../custom-fields/RadioGroupField/RadioGroupField";
 import { Link } from "react-router-dom";
-import ImageUploadField from "../../../../custom-fields/ImageUploadField";
+import ImageUploadField from "../custom-fields/ImageUploadField/ImageUploadField";
 import * as yup from "yup";
 
 const AccountForm = (props) => {

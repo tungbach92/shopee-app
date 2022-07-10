@@ -6,8 +6,8 @@ import ggShopeeImg from "../../img/gg-shopee.png";
 import appGalShopeeImg from "../../img/app-gal-shopee.png";
 import shirtImg from "../../img/ao.png";
 import shopeeLogo from "../../img/shoppe-logo.png";
-import HeaderCart from "../HeaderCart";
-import HeaderSearchHistory from "../HeaderSearchHistory";
+import HeaderCart from "./HeaderCart";
+import HeaderSearchHistory from "./HeaderSearchHistory";
 import classNames from "classnames";
 import { Link, useHistory } from "react-router-dom";
 import { ProductContext } from "../../context";
@@ -117,11 +117,15 @@ const Header = ({
   // }, [isSearchPage, searchInput]);
   return (
     <header
-      className={classNames("header", {
-        "header--login": isLoginPage || isRegisterPage,
-      }, {
-        "header--checkout": isCheckoutPage,
-      })}
+      className={classNames(
+        "header",
+        {
+          "header--login": isLoginPage || isRegisterPage,
+        },
+        {
+          "header--checkout": isCheckoutPage,
+        }
+      )}
     >
       <div className="grid grid--fullheight">
         {/* HeaderNav */}

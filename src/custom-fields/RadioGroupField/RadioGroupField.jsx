@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { ErrorMessage } from "formik";
 const RadioGroupField = (props) => {
   const {
     field,
@@ -14,15 +14,12 @@ const RadioGroupField = (props) => {
     inputClassName,
   } = props;
 
-  const { name, value, checked,...rest } = field; // checked set by Formik
+  const { name } = field; // checked set by Formik
   console.log(field);
   return (
     <>
       <input
-        value={id}
-        name={name}
-        checked={checked}
-        {...rest}
+        {...field}
 
         id={id}
         type={type}
@@ -34,6 +31,7 @@ const RadioGroupField = (props) => {
           {label}
         </label>
       )}
+      <ErrorMessage name={name}/>
     </>
   );
 };

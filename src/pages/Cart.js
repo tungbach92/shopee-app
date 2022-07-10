@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import CartProduct from "../components/CartProduct";
 import { ProductContext } from "../context";
 import { Redirect } from "react-router";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 
 export default function Cart() {
   const { authorized } = useContext(ProductContext);

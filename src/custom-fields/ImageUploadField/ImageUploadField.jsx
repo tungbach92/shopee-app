@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import ImageUpload from "../../components/ImageUpload";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
 const ImageUploadField = (props) => {
   const {

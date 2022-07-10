@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import noCartImg from "../img/no-cart.png";
-import { ProductContext } from "../context";
+import noCartImg from "../../img/no-cart.png";
+import { ProductContext } from "../../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
-import useModal from "../hooks/useModal";
-import PopupModal from "./PopupModal";
+import useModal from "../../hooks/useModal";
+import PopupModal from "../PopupModal";
 import PropTypes from "prop-types";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
@@ -60,7 +60,7 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                   >
                     <img
                       className="header__cart-img"
-                      src={require(`../img/${item.imageUrl}`).default}
+                      src={require(`../../img/${item.imageUrl}`).default}
                       alt="item-ao"
                     />
                     <div className="header__cart-name">{item.name}</div>

@@ -1,9 +1,9 @@
 import React from "react";
-import ProductCategory from "../../components/ProductCategory";
-import ProductFilter from "../../components/ProductFilter";
-import ProductList from "../../components/ProductList";
-import Pagination from "../../components/Pagination";
-import Header from "../../components/Header";
+import ProductCategory from "../components/ProductCategory";
+import ProductFilter from "../components/ProductFilter";
+import ProductList from "../components/ProductList";
+import Pagination from "../components/Pagination";
+import Header from "../components/Header/Header";
 
 export default function Product() {
   return (

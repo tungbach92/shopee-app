@@ -14,7 +14,7 @@ import PasswordSmallContent from "./PasswordSmallContent";
 import AddressSmallContent from "./AddressSmallContent";
 import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
-import AccountForm from "../features/Account/components/AccountForm";
+import AccountForm from "./AccountForm";
 
 const AccountContent = () => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
@@ -140,7 +140,6 @@ const AccountContent = () => {
             .then((downloadURL) => {
               console.log("File available at", downloadURL);
               setLoading(true);
-              //set user avatar
               user
                 .updateProfile({
                   photoURL: downloadURL,

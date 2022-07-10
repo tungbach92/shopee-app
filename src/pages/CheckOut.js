@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import CheckoutProduct from "../components/CheckoutProduct";
 import { ProductContext } from "../context";
 import { Redirect } from "react-router";
