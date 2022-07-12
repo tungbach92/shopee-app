@@ -84,7 +84,7 @@ const AccountForm = (props) => {
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
                   {email}
-                  <Link to="email" className="user-profile__email-btn">
+                  <Link to='/user/account/email' className="user-profile__email-btn">
                     Thay đổi
                   </Link>
                 </div>

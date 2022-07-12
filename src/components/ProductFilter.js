@@ -90,8 +90,8 @@ const ProductFilter = ({ isSearchPage }) => {
               Giá: Thấp đến Cao
               <i
                 className={
-                  filterPrice === "priceAsc" &&
-                  "app__input-item-icon bi bi-check"
+                  filterPrice === "priceAsc" ?
+                  "app__input-item-icon bi bi-check" : undefined
                 }
               ></i>
             </li>
@@ -106,8 +106,8 @@ const ProductFilter = ({ isSearchPage }) => {
               Giá: Cao đến Thấp
               <i
                 className={
-                  filterPrice === "priceDesc" &&
-                  "app__input-item-icon bi bi-check"
+                  filterPrice === "priceDesc" ?
+                  "app__input-item-icon bi bi-check" : undefined
                 }
               ></i>
             </li>

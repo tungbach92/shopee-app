@@ -24,7 +24,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<div className="app__no-product">Loading...</div>}>
         <Routes>
           <Route exact path="/" element={<Product />}></Route>
           <Route exact path="/cart" element={<Cart />}></Route>

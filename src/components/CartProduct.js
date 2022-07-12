@@ -62,7 +62,7 @@ export default function CartProduct(props) {
     if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
     }
-    navigate("/product/:metaTitle/:id", { replace: true });
+    navigate("", { replace: true });
   }, [toggleIsAddCardPopup, navigate, location.state?.from.pathname]);
 
   useEffect(() => {

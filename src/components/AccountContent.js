@@ -15,6 +15,7 @@ import AddressSmallContent from "./AddressSmallContent";
 import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
 import AccountForm from "./AccountForm";
+import AccountProfile from "./AccountProfile";
 
 const AccountContent = () => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
@@ -214,10 +215,7 @@ const AccountContent = () => {
               </div>
               <div className="user-profile__name">sfsb3fax26</div>
 
-              <Link
-                to="profile"
-                className="user-profile__name-btn"
-              >
+              <Link to="profile" className="user-profile__name-btn">
                 Sửa Hồ Sơ
               </Link>
             </div>
@@ -265,39 +263,44 @@ const AccountContent = () => {
               <Route
                 path="profile"
                 element={
-                  <>
-                    <div className="user-profile__title-container">
-                      <div className="user-profile__title">
-                        <div className="user-profile__label">Hồ Sơ Của Tôi</div>
-                        <div className="user-profile__label-detail">
-                          Quản lý thông tin hồ sơ để bảo mật tài khoản
-                        </div>
-                      </div>
-                    </div>
-                    <div className="user-profile__content">
-                      <AccountForm
-                        userName={userName}
-                        name={name}
-                        email={email}
-                        phone={phone}
-                        gender={gender}
-                        birthday={birthday}
-                        userAvatar={userAvatar}
-                        previewImage={previewImage}
-                        setPreviewImage={setPreviewImage}
-                        setFileImage={setFileImage}
-                        uploadProceesing={uploadProceesing}
-                        setUploadSuccess={setUploadSuccess}
-                        handleInfoSubmit={handleInfoSubmit}
-                        isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                      ></AccountForm>
-                    </div>
-                  </>
+                  <AccountProfile
+                    userName={userName}
+                    name={name}
+                    email={email}
+                    phone={phone}
+                    gender={gender}
+                    birthday={birthday}
+                    userAvatar={userAvatar}
+                    previewImage={previewImage}
+                    setPreviewImage={setPreviewImage}
+                    setFileImage={setFileImage}
+                    uploadProceesing={uploadProceesing}
+                    setUploadSuccess={setUploadSuccess}
+                    handleInfoSubmit={handleInfoSubmit}
+                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                  ></AccountProfile>
                 }
               ></Route>
               <Route
-                path="/"
-                element={<Navigate to="profile" />}
+                index
+                element={
+                  <AccountProfile
+                    userName={userName}
+                    name={name}
+                    email={email}
+                    phone={phone}
+                    gender={gender}
+                    birthday={birthday}
+                    userAvatar={userAvatar}
+                    previewImage={previewImage}
+                    setPreviewImage={setPreviewImage}
+                    setFileImage={setFileImage}
+                    uploadProceesing={uploadProceesing}
+                    setUploadSuccess={setUploadSuccess}
+                    handleInfoSubmit={handleInfoSubmit}
+                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+                  ></AccountProfile>
+                }
               />
               <Route
                 path="email"
