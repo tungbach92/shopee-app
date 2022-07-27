@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import { auth, db, storage } from "./firebase";
-import _ from "lodash";
+import { auth, db } from "./firebase";
 import axios from "./axios";
-import cimbImg from "./img/ic_cimb_bank@4x.png";
-import mbImg from "./img/ic_MBBank@4x.png";
 import visaImg from "./img/visa.png";
 import masterImg from "./img/master.png";
 import jcbImg from "./img/jcb.png";
@@ -30,8 +27,8 @@ export default class ProductProvider extends Component {
     pageSize: 10,
     pageTotal: 0,
     cartNumb: 0,
-    cartItems: null,
-    checkoutItems: null,
+    cartItems: [],
+    checkoutItems: [],
     searchInput: "",
     searchHistory: [],
     checked: [],
@@ -295,7 +292,7 @@ export default class ProductProvider extends Component {
       try {
         db.collection("users")
           .doc(user?.uid)
-          .collection("shipInfos") 
+          .collection("shipInfos")
           .doc("shipInfoDoc") // TO DO: need to create document shipInfoDoc before update shipInfoDoc
           .update({
             shipInfos: shipInfos,
@@ -481,32 +478,32 @@ export default class ProductProvider extends Component {
   };
 
   setDefaultChecked = () => {
-    let { checkoutItems, cartItems } = this.state;
-    let defaultChecked = [];
-    const unmodifiedCartItems = cartItems?.map((item) => {
-      const { similarDisPlay, variationDisPlay, ...rest } = item;
-      return rest;
-    });
-    if (
-      (checkoutItems?.length > 0 || cartItems?.length > 0) &&
-      _.isEqual(checkoutItems, unmodifiedCartItems)
-    ) {
-      defaultChecked = unmodifiedCartItems.map((item) => true);
-      defaultChecked = [true, ...defaultChecked, true];
-    } else {
-      defaultChecked = unmodifiedCartItems.map((cartItem) => {
-        let result = false;
-        checkoutItems?.forEach((checkoutItem) => {
-          if (_.isEqual(cartItem, checkoutItem)) {
-            result = true;
-          }
-        });
-        return result;
-      });
-      // defaultChecked = cartItems.map((item) => false);
-      defaultChecked = [false, ...defaultChecked, false];
-    }
-    this.setChecked(defaultChecked);
+    // let { checkoutItems, cartItems } = this.state;
+    // let defaultChecked = [];
+    // const unmodifiedCartItems = cartItems?.map((item) => {
+    //   const { similarDisPlay, variationDisPlay, ...rest } = item;
+    //   return rest;
+    // });
+    // if (
+    //   (checkoutItems?.length > 0 || cartItems?.length > 0) &&
+    //   _.isEqual(checkoutItems, unmodifiedCartItems)
+    // ) {
+    //   defaultChecked = unmodifiedCartItems.map((item) => true);
+    //   defaultChecked = [true, ...defaultChecked, true];
+    // } else {
+    //   defaultChecked = unmodifiedCartItems.map((cartItem) => {
+    //     let result = false;
+    //     checkoutItems?.forEach((checkoutItem) => {
+    //       if (_.isEqual(cartItem, checkoutItem)) {
+    //         result = true;
+    //       }
+    //     });
+    //     return result;
+    //   });
+    //   // defaultChecked = cartItems.map((item) => false);
+    //   defaultChecked = [false, ...defaultChecked, false];
+    // }
+    // this.setChecked(defaultChecked);
   };
 
   getData = async () => {
@@ -639,6 +636,7 @@ export default class ProductProvider extends Component {
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     const id = event.currentTarget.dataset.id;
+    const variation = event.currentTarget.dataset.variation;
 
     if (name === "type") {
       this.setState(
@@ -663,14 +661,14 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "addToCartBtn") {
-      this.addToCartItems(id, item, () => {
+      this.addToCartItems(id)(item)(() => {
         this.setDefaultChecked(); // provider render
         this.saveCartItemsToStorage();
       });
     }
 
     if (name === "incrCartItem") {
-      this.incrCartItem(id, this.saveCartItemsToStorage);
+      this.incrCartItem(id, variation, this.saveCartItemsToStorage);
     }
 
     if (name === "inputAmount") {
@@ -679,11 +677,16 @@ export default class ProductProvider extends Component {
         .replace(/(\..*)\./g, "$1");
       const value = Number(event.target.value);
       if (value > 0) {
-        this.changeAmountCartItem(id, value, this.saveCartItemsToStorage);
+        this.changeAmountCartItem(
+          id,
+          variation,
+          value,
+          this.saveCartItemsToStorage
+        );
       }
     }
     if (name === "decrCartItem") {
-      this.decrCartItem(id, this.saveCartItemsToStorage);
+      this.decrCartItem(id, variation, this.saveCartItemsToStorage);
     }
   };
 
@@ -693,16 +696,12 @@ export default class ProductProvider extends Component {
     this.setState({ searchHistory });
   };
 
-  addToCartItems = (id, item, callback) => {
+  addToCartItems = (id) => (item) => (callback) => {
     let { items, cartItems } = this.state;
-    const tempItems = [...items];
-    let cartItemsModified = [];
-    let isExistItems = cartItems.some(
-      (cartItem) => cartItem.variation === item.variation
-    );
+    let cartItemsUpdated = [];
 
     if (!item) {
-      let item = tempItems.find((item) => item.id === Number(id));
+      let item = items.find((item) => item.id === Number(id));
       item = {
         ...item,
         amount: 1,
@@ -710,34 +709,43 @@ export default class ProductProvider extends Component {
         variationDisPlay: false,
         similarDisPlay: false,
       };
-      cartItemsModified = [...cartItems, item];
-    } else if (isExistItems) {
-      let existItems = cartItems.find(
-        (cartItem) => cartItem.variation === item.variation
-      );
-      existItems = { ...existItems, amount: existItems.amount + item.amount };
-      cartItems = cartItems.filter(
-        (cartItem) => cartItem.variation !== item.variation
-      );
-      cartItemsModified = [...cartItems, existItems];
+      cartItemsUpdated = [...cartItems, item];
     } else {
-      cartItemsModified = [...cartItems, item];
+      let isExistId = cartItems.some((cartItem) => cartItem.id === item.id);
+      let isExistVariation = cartItems.some(
+        (cartItem) =>
+          cartItem.variation === item.variation && cartItem.id === item.id
+      );
+      if (isExistId && isExistVariation) {
+        cartItemsUpdated = cartItems.map((cartItem) =>
+          cartItem.id === item.id && cartItem.variation === item.variation
+            ? { ...cartItem, amount: cartItem.amount + item.amount }
+            : cartItem
+        );
+      } else cartItemsUpdated = [...cartItems, item];
     }
+
     this.setState(
       {
-        cartItems: cartItemsModified,
-        cartNumb: this.calcCartNumb(cartItemsModified),
+        cartItems: cartItemsUpdated,
+        cartNumb: this.calcCartNumb(cartItemsUpdated),
       },
       callback
     );
   };
 
-  delCartItem = (id) => {
+  delCartItem = (id, variation) => {
     let { cartItems } = this.state;
-    cartItems = cartItems.filter((item) => item.id !== Number(id));
+    // cartItems = cartItems.filter((item) => item.id !== Number(id));
+    const cartItemsUpdated = cartItems.map((cartItem) =>
+      cartItem.id === Number(id) && cartItem.variation === variation
+        ? null
+        : cartItem
+    );
+    const cartItemsFinal = cartItemsUpdated.filter((item) => item !== null);
     this.setState(
       {
-        cartItems,
+        cartItems: cartItemsFinal,
         cartNumb: this.calcCartNumb(cartItems),
       },
       () => {
@@ -751,18 +759,27 @@ export default class ProductProvider extends Component {
     );
   };
 
-  delCartItems = (idArr) => {
+  delCartItems = (idArr, variationArr) => {
+    let cartItemsUpdated, cartItemsFinal;
     if (idArr.length > 0) {
       let { cartItems } = this.state;
-      // idArr.forEach((id) => {
-      //   cartItems = cartItems.filter((item) => item.id !== Number(id));
-      // });
-      cartItems = cartItems.filter(
-        (item, index) => idArr.indexOf(item.id) === -1
+      variationArr.forEach((variation) =>
+        idArr.forEach((id) => {
+          // cartItems = cartItems.filter((item) => item.id !== Number(id));
+          cartItemsUpdated = cartItems.map((cartItem) =>
+            cartItem.id === Number(id) && cartItem.variation === variation
+              ? null
+              : cartItem
+          );
+          cartItemsFinal = cartItemsUpdated.filter((item) => item !== null);
+        })
       );
+      // cartItems = cartItems.filter(
+      //   (item, index) => idArr.indexOf(item.id) === -1
+      // );
       this.setState(
         {
-          cartItems,
+          cartItems: cartItemsFinal,
           cartNumb: this.calcCartNumb(cartItems),
         },
         () => {
@@ -777,49 +794,61 @@ export default class ProductProvider extends Component {
     }
   };
 
-  changeAmountCartItem = (id, amount, callback) => {
+  changeAmountCartItem = (id, variation, amount, callback) => {
     const { cartItems } = this.state;
-    let item = cartItems.find((item) => item.id === Number(id));
+    let item = cartItems.find(
+      (item) => item.id === Number(id) && item.variation === variation
+    );
     item.amount = amount;
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb }, callback);
+    this.setState({ cartNumb, cartItems }, callback);
   };
 
-  incrCartItem = (id, callback) => {
+  incrCartItem = (id, variation, callback) => {
     const { cartItems } = this.state;
-    let item = cartItems.find((item) => item.id === Number(id));
-    item.amount++;
+    const indexOfItem = cartItems.findIndex(
+      (item) => item.id === Number(id) && item.variation === variation
+    );
+    cartItems[indexOfItem] = {
+      ...cartItems[indexOfItem],
+      amount: cartItems[indexOfItem].amount++,
+    };
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb }, callback);
+    this.setState({ cartNumb, cartItems }, callback);
   };
 
-  decrCartItem = (id, callback) => {
+  decrCartItem = (id, variation, callback) => {
     const { cartItems } = this.state;
-    let item = cartItems.find((item) => item.id === Number(id));
+    let item = cartItems.find(
+      (item) => item.id === Number(id) && item.variation === variation
+    );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb }, callback);
+    this.setState({ cartNumb, cartItems }, callback);
   };
 
   setCheckoutItemsByChecked = () => {
     //
-    const { checked, cartItems } = this.state;
-    const lastIndex = cartItems.length + 1;
-    let checkoutItems = checked.map((checkItem, index) => {
-      if (checkItem === true && index > 0 && index < lastIndex) {
-        // return cartItems[index-1] without uneccessary field
-        const { similarDisPlay, variationDisPlay, ...rest } =
-          cartItems[index - 1];
-        return rest;
-      } else return null;
-    });
-    checkoutItems = checkoutItems.filter((item) => item !== null);
-    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
+    // const { checked, cartItems } = this.state;
+    // const lastIndex = cartItems.length + 1;
+    // let checkoutItems = checked.map((checkItem, index) => {
+    //   if (checkItem === true && index > 0 && index < lastIndex) {
+    //     // return cartItems[index-1] without uneccessary field
+    //     const { similarDisPlay, variationDisPlay, ...rest } =
+    //       cartItems[index - 1];
+    //     return rest;
+    //   } else return null;
+    // });
+    // checkoutItems = checkoutItems.filter((item) => item !== null);
+    // this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
 
   saveCheckoutItemsToStorage = () => {
     const { checkoutItems } = this.state;
-    localStorage.setItem("checkoutProduct", JSON.stringify(checkoutItems));
+    localStorage.setItem(
+      "checkoutProduct",
+      JSON.stringify(checkoutItems === null ? [] : checkoutItems)
+    );
   };
 
   getCheckoutItemsFromStorage = () => {
@@ -986,7 +1015,7 @@ export default class ProductProvider extends Component {
 
   changeCartItemsVariation = (variation, index) => {
     let { cartItems } = this.state;
-    cartItems[index] = { ...cartItems[index], variation: variation };
+    cartItems[index] = { ...cartItems[index], variation };
     this.setState({ cartItems }, this.saveCartItemsToStorage);
   };
 
@@ -1116,7 +1145,6 @@ export default class ProductProvider extends Component {
           saveCartItemsToStorage: this.saveCartItemsToStorage,
           saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
           setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
-          setChecked: this.setChecked,
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
           setShipPriceProvince: this.setShipPriceProvince,

@@ -1677,6 +1677,11 @@ header {
   border: 1px solid var(--primary-color);
 }
 
+.cart-product__notify-variation--deactive {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .cart-product__variation-tick {
   position: absolute;
   overflow: hidden;

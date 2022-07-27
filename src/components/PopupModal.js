@@ -28,13 +28,12 @@ export default function PopupModal(props) {
     handleDeleteSelectionTrue,
     handleDeleteCartTrue,
     isVariationChoose,
-    selectedItems,
+    checked,
     isCardInfoMustFilled,
     shipUnit,
     isPopupShowing,
     togglePopup,
     paymentMethod,
-    defaultPaymentMethodID,
     isCardPayment,
     succeeded,
   } = props;
@@ -96,7 +95,7 @@ export default function PopupModal(props) {
       (isCartPageLoaded || isSearchPage || isProductPage) &&
       typeof deleteID !== "undefined"
     ) {
-      handleDeleteCartTrue(deleteID);
+      handleDeleteCartTrue();
       setDeleteID();
     }
 
@@ -130,7 +129,7 @@ export default function PopupModal(props) {
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
                 (deleteID !== null || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
-              : isCartPageLoaded && selectedItems?.length === 0
+              : isCartPageLoaded && checked?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
@@ -198,7 +197,7 @@ PopupModal.propTypes = {
   handleDeleteSelectionTrue: PropTypes.func,
   handleDeleteCartTrue: PropTypes.func,
   isVariationChoose: PropTypes.bool,
-  selectedItems: PropTypes.arrayOf(PropTypes.object),
+  checked: PropTypes.arrayOf(PropTypes.object),
   isCardInfoMustFilled: PropTypes.bool,
   shipUnit: PropTypes.arrayOf(PropTypes.object),
   isPopupShowing: PropTypes.bool,
@@ -230,7 +229,7 @@ PopupModal.defaultProps = {
   handleDeleteSelectionTrue: () => {},
   handleDeleteCartTrue: () => {},
   isVariationChoose: false,
-  selectedItems: [],
+  checked: [],
   isCardInfoMustFilled: true,
   shipUnit: [],
   isPopupShowing: false,
