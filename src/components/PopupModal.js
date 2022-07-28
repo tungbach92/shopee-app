@@ -129,7 +129,7 @@ export default function PopupModal(props) {
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
                 (deleteID !== null || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
-              : isCartPageLoaded && checked?.length === 0
+              : isCartPageLoaded && checked.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."

@@ -63,6 +63,7 @@ export default function CheckoutProduct() {
     updateDefaultPaymentMethodIDToFirebase,
     updateCustomerBillingAddress,
     getShipInfos,
+    loading,
   } = useContext(ProductContext);
 
   const shipUnitList = useMemo(() => {
@@ -177,10 +178,8 @@ export default function CheckoutProduct() {
   //   voucher,
   // ]);
   useEffect(() => {
-    if (!checkoutItems && user) {
-      setCheckoutItemsFromFirebase(user);
-    }
-  }, [checkoutItems, setCheckoutItemsFromFirebase, user]);
+    setCheckoutItemsFromFirebase();
+  }, [setCheckoutItemsFromFirebase]);
 
   //Get and set province and set districts and district depend on province
 
@@ -257,8 +256,8 @@ export default function CheckoutProduct() {
     saveOrdersToFirebase(id, amount, created);
     setCartProduct([]);
     setCheckoutProduct([]);
-    saveCartItemsToFirebase(user, []);
-    saveCheckoutItemsToFirebase(user, []);
+    saveCartItemsToFirebase([]);
+    saveCheckoutItemsToFirebase([]);
     setShipPriceProvince([0, 0]);
     if (isCardPayment) {
       updateSoldAmount();
@@ -719,12 +718,10 @@ export default function CheckoutProduct() {
               </div>
             </div>
           ))}
-          {checkoutItems?.length === 0 && !isPopupShowing && (
-            <ErrorModal></ErrorModal>
-          )}
-          {checkoutItems === null && (
+          {loading && (
             <div className="checkout-product__item-loading">Loading...</div>
           )}
+          {checkoutItems?.length === 0 && !loading && <ErrorModal></ErrorModal>}
         </ul>
         <div className="checkout-product__first-addition">
           <span className="checkout-product__message-wrapper">

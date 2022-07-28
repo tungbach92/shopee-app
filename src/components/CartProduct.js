@@ -50,7 +50,6 @@ export default function CartProduct(props) {
     setCheckoutItemsFromFirebase,
   } = useContext(ProductContext);
 
-
   useEffect(() => {
     console.log(location.state?.from.pathname);
     if (location.state?.from.pathname) {
@@ -60,8 +59,10 @@ export default function CartProduct(props) {
   }, [toggleIsAddCardPopup, navigate, location.state?.from.pathname]);
 
   useEffect(() => {
-    setCartItemsFromFirebase(user); // called at header cart
-    setCheckoutItemsFromFirebase(user);
+    if (user) {
+      setCartItemsFromFirebase(); // called at header cart
+      setCheckoutItemsFromFirebase();
+    }
   }, [setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
 
   useEffect(() => {
@@ -84,21 +85,27 @@ export default function CartProduct(props) {
   };
 
   const changeCheckedItemVariation = (id, oldVariation) => {
-    let indexOfItem = checked.findIndex(
-      (checkedItem) =>
-        checkedItem.id === Number(id) && checkedItem.variation === oldVariation
-    );
-    checked[indexOfItem] = { ...checked[indexOfItem], variation };
-    setChecked(checked);
+    if (checked?.length > 0) {
+      let indexOfItem = checked.findIndex(
+        (checkedItem) =>
+          checkedItem.id === Number(id) &&
+          checkedItem.variation === oldVariation
+      );
+      checked[indexOfItem].variation = variation;
+      const newChecked = [...checked];
+      setChecked(newChecked);
+    }
   };
 
   const changeCheckedItemAmount = (id, variation, amount) => {
-    let indexOfItem = checked.findIndex(
-      (checkedItem) =>
-        checkedItem.id === Number(id) && checkedItem.variation === variation
-    );
-    checked[indexOfItem] = { ...checked[indexOfItem], amount };
-    setChecked(checked);
+    if (checked?.length > 0) {
+      let indexOfItem = checked.findIndex(
+        (checkedItem) =>
+          checkedItem.id === Number(id) && checkedItem.variation === variation
+      );
+      checked[indexOfItem].amount = amount;
+      setChecked(checked);
+    }
   };
 
   const handleVariationApply = (index, id, oldVariation) => {
@@ -107,11 +114,11 @@ export default function CartProduct(props) {
     changeVariationDisPlayCartItems(index);
   };
   const handleCheckout = (event) => {
-    if (checked.length === 0 || isVariationChoose === false) {
+    if (checked?.length === 0 || isVariationChoose === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     } else {
-      setCheckoutItemsByChecked();
+      setCheckoutItemsByChecked(checked);
     }
   };
 
@@ -123,51 +130,33 @@ export default function CartProduct(props) {
 
   const handleDeleteCartTrue = () => {
     delCartItem(deleteID, deleteVariation);
+    const isCheckedItem = checked.some(
+      (checkedItem) =>
+        checkedItem.id === Number(deleteID) &&
+        checkedItem.variation === deleteVariation
+    );
+    if (isCheckedItem) {
+      const newChecked = [...checked].filter(
+        (checkedItem) =>
+          checkedItem.id !== Number(deleteID) ||
+          checkedItem.variation !== deleteVariation
+      );
+      setChecked(newChecked);
+    }
   };
 
   // set selectedItems by checked
 
-  const handleDeleteSelection = (event) => {
-    // if (cartItems?.length > 0) {
-    //   idArr = checked.map((checkItem, index) => {
-    //     if (checkItem === true && index > 0 && index < lastIndex) {
-    //       return cartItems[index - 1].id;
-    //     } else return null;
-    //   });
-    //   idArr = idArr.filter((id) => id !== null);
-
-    //   variationArr = checked.map((checkItem, index) => {
-    //     if (checkItem === true && index > 0 && index < lastIndex) {
-    //       return cartItems[index - 1].variation;
-    //     } else return null;
-    //   });
-    //   variationArr = variationArr.filter((id) => id !== null);
-    // }
-
-    // if (idArr.length > 0 && variationArr.length > 0) {
-    //   setIsDeleteSelected(true);
-    //   togglePopup(!isPopupShowing);
-    // }
+  const handleDeleteSelection = () => {
+    if (checked?.length > 0) {
+      setIsDeleteSelected(true);
+      togglePopup(!isPopupShowing);
+    }
   };
 
   const handleDeleteSelectionTrue = () => {
-    // if (cartItems?.length > 0) {
-    //   idArr = checked.map((checkItem, index) => {
-    //     if (checkItem === true && index > 0 && index < lastIndex) {
-    //       return cartItems[index - 1].id;
-    //     } else return null;
-    //   });
-    //   idArr = idArr.filter((id) => id !== null);
-
-    //   variationArr = checked.map((checkItem, index) => {
-    //     if (checkItem === true && index > 0 && index < lastIndex) {
-    //       return cartItems[index - 1].variation;
-    //     } else return null;
-    //   });
-    //   variationArr = variationArr.filter((id) => id !== null);
-
-    //   delCartItems(idArr, variationArr);
-    // }
+    delCartItems(checked);
+    setChecked([]);
   };
 
   const handlePopup = (index, event) => {
@@ -197,11 +186,7 @@ export default function CartProduct(props) {
     //   );
     //   newChecked = [...newChecked].filter((item) => item !== null);
     // } else newChecked = [...checked, { id, variation }];
-    const forComparedItem = {
-      ...item,
-      variationDisPlay: false,
-      similarDisPlay: false,
-    };
+    const { similarDisPlay, variationDisPlay, ...forComparedItem } = item;
     if (isCheck(item)) {
       newChecked = checked.filter(
         (checkedItem) => !_.isEqual(checkedItem, forComparedItem)
@@ -211,11 +196,7 @@ export default function CartProduct(props) {
   };
 
   const isCheck = (item) => {
-    const forComparedItem = {
-      ...item,
-      variationDisPlay: false,
-      similarDisPlay: false,
-    };
+    const { similarDisPlay, variationDisPlay, ...forComparedItem } = item;
     const result = checked.some((checkedItem) =>
       _.isEqual(checkedItem, forComparedItem)
     );
@@ -230,7 +211,14 @@ export default function CartProduct(props) {
   const handleCheckAll = () => {
     if (isCheckAll()) {
       setChecked([]);
-    } else setChecked(cartItems);
+    } else {
+      const newChecked = cartItems.map((cartItem) => {
+        const { variationDisPlay, similarDisPlay, ...newCheckedItem } =
+          cartItem;
+        return newCheckedItem;
+      });
+      setChecked(newChecked);
+    }
   };
 
   const isIDVariationExist = (id, variation) => {
@@ -301,8 +289,9 @@ export default function CartProduct(props) {
               </g>
             </svg>
             <span className="cart-product__text">
-              Nhấn vào mục Mã giảm giá ở cuối trang để hưởng miễn phí vận chuyển
-              bạn nhé!
+              {/* Nhấn vào mục Mã giảm giá ở cuối trang để hưởng miễn phí vận chuyển
+              bạn nhé! */}
+              Nhấn vào mục nhập mã ở cuối trang để nhập mã giảm giá
             </span>
           </div>
           <div className="cart-product__header">
@@ -864,7 +853,10 @@ export default function CartProduct(props) {
                 type="checkbox"
                 className="cart-product__checkout-checkbox"
               />
-              <span className="cart-product__checkout-label">
+              <span
+                className="cart-product__checkout-label"
+                onClick={handleCheckAll}
+              >
                 Chọn tất cả ({cartItems.length})
               </span>
               <span

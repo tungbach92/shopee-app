@@ -5,6 +5,7 @@ import visaImg from "./img/visa.png";
 import masterImg from "./img/master.png";
 import jcbImg from "./img/jcb.png";
 import expressImg from "./img/express.png";
+import _ from "lodash";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
 const itemsApi = "http://localhost:3000/items";
@@ -61,6 +62,7 @@ export default class ProductProvider extends Component {
       this.setUserAvatar();
       this.getShipInfos();
       this.getCustomerIdFromFirebase();
+      this.setCartItemsFromFirebase();
     });
   }
 
@@ -477,35 +479,6 @@ export default class ProductProvider extends Component {
     this.setState({ name, phone, address });
   };
 
-  setDefaultChecked = () => {
-    // let { checkoutItems, cartItems } = this.state;
-    // let defaultChecked = [];
-    // const unmodifiedCartItems = cartItems?.map((item) => {
-    //   const { similarDisPlay, variationDisPlay, ...rest } = item;
-    //   return rest;
-    // });
-    // if (
-    //   (checkoutItems?.length > 0 || cartItems?.length > 0) &&
-    //   _.isEqual(checkoutItems, unmodifiedCartItems)
-    // ) {
-    //   defaultChecked = unmodifiedCartItems.map((item) => true);
-    //   defaultChecked = [true, ...defaultChecked, true];
-    // } else {
-    //   defaultChecked = unmodifiedCartItems.map((cartItem) => {
-    //     let result = false;
-    //     checkoutItems?.forEach((checkoutItem) => {
-    //       if (_.isEqual(cartItem, checkoutItem)) {
-    //         result = true;
-    //       }
-    //     });
-    //     return result;
-    //   });
-    //   // defaultChecked = cartItems.map((item) => false);
-    //   defaultChecked = [false, ...defaultChecked, false];
-    // }
-    // this.setChecked(defaultChecked);
-  };
-
   getData = async () => {
     try {
       const response = await fetch(itemsApi);
@@ -662,13 +635,12 @@ export default class ProductProvider extends Component {
 
     if (name === "addToCartBtn") {
       this.addToCartItems(id)(item)(() => {
-        this.setDefaultChecked(); // provider render
         this.saveCartItemsToStorage();
       });
     }
 
     if (name === "incrCartItem") {
-      this.incrCartItem(id, variation, this.saveCartItemsToStorage);
+      this.incrCartItem(id, variation);
     }
 
     if (name === "inputAmount") {
@@ -677,16 +649,11 @@ export default class ProductProvider extends Component {
         .replace(/(\..*)\./g, "$1");
       const value = Number(event.target.value);
       if (value > 0) {
-        this.changeAmountCartItem(
-          id,
-          variation,
-          value,
-          this.saveCartItemsToStorage
-        );
+        this.changeAmountCartItem(id, variation, value);
       }
     }
     if (name === "decrCartItem") {
-      this.decrCartItem(id, variation, this.saveCartItemsToStorage);
+      this.decrCartItem(id, variation);
     }
   };
 
@@ -737,110 +704,92 @@ export default class ProductProvider extends Component {
   delCartItem = (id, variation) => {
     let { cartItems } = this.state;
     // cartItems = cartItems.filter((item) => item.id !== Number(id));
-    const cartItemsUpdated = cartItems.map((cartItem) =>
-      cartItem.id === Number(id) && cartItem.variation === variation
-        ? null
-        : cartItem
+    const newCartItems = [...cartItems].filter(
+      (cartItem) =>
+        cartItem.id !== Number(id) || cartItem.variation !== variation
     );
-    const cartItemsFinal = cartItemsUpdated.filter((item) => item !== null);
     this.setState(
       {
-        cartItems: cartItemsFinal,
+        cartItems: newCartItems,
         cartNumb: this.calcCartNumb(cartItems),
       },
       () => {
         this.saveCartItemsToStorage();
         if (cartItems.length === 0) {
-          this.saveCartItemsToFirebase(this.state.user, cartItems);
+          this.saveCartItemsToFirebase(cartItems);
         }
         this.saveCheckoutItemsToStorage();
-        this.setDefaultChecked();
       }
     );
   };
 
-  delCartItems = (idArr, variationArr) => {
-    let cartItemsUpdated, cartItemsFinal;
-    if (idArr.length > 0) {
-      let { cartItems } = this.state;
-      variationArr.forEach((variation) =>
-        idArr.forEach((id) => {
-          // cartItems = cartItems.filter((item) => item.id !== Number(id));
-          cartItemsUpdated = cartItems.map((cartItem) =>
-            cartItem.id === Number(id) && cartItem.variation === variation
-              ? null
-              : cartItem
-          );
-          cartItemsFinal = cartItemsUpdated.filter((item) => item !== null);
-        })
-      );
-      // cartItems = cartItems.filter(
-      //   (item, index) => idArr.indexOf(item.id) === -1
-      // );
-      this.setState(
-        {
-          cartItems: cartItemsFinal,
-          cartNumb: this.calcCartNumb(cartItems),
-        },
-        () => {
-          if (cartItems.length === 0) {
-            this.saveCartItemsToFirebase(this.state.user, cartItems);
-          }
-          this.saveCartItemsToStorage();
-          this.saveCheckoutItemsToStorage();
-          this.setDefaultChecked();
+  delCartItems = (checked) => {
+    let { cartItems } = this.state;
+    const forCompareChecked = checked.map((checkedItem) => {
+      return { ...checkedItem, variationDisPlay: false, similarDisPlay: false };
+    });
+    forCompareChecked.forEach(
+      (checkedItem) =>
+        (cartItems = [...cartItems].filter(
+          (cartItem) => !_.isEqual(cartItem, checkedItem)
+        ))
+    );
+
+    this.setState(
+      {
+        cartItems,
+        cartNumb: this.calcCartNumb(cartItems),
+      },
+      () => {
+        if (cartItems.length === 0) {
+          this.saveCartItemsToFirebase(cartItems);
         }
-      );
-    }
+        this.saveCartItemsToStorage();
+        this.saveCheckoutItemsToStorage();
+      }
+    );
   };
 
-  changeAmountCartItem = (id, variation, amount, callback) => {
+  changeAmountCartItem = (id, variation, amount) => {
     const { cartItems } = this.state;
     let item = cartItems.find(
       (item) => item.id === Number(id) && item.variation === variation
     );
     item.amount = amount;
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb, cartItems }, callback);
+    this.setCartNumb(cartNumb);
+    this.setCartProduct(cartItems);
   };
 
-  incrCartItem = (id, variation, callback) => {
+  incrCartItem = (id, variation) => {
     const { cartItems } = this.state;
     const indexOfItem = cartItems.findIndex(
       (item) => item.id === Number(id) && item.variation === variation
     );
-    cartItems[indexOfItem] = {
-      ...cartItems[indexOfItem],
-      amount: cartItems[indexOfItem].amount++,
-    };
+    cartItems[indexOfItem].amount++;
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb, cartItems }, callback);
+    this.setCartNumb(cartNumb);
+    this.setCartProduct(cartItems);
   };
 
-  decrCartItem = (id, variation, callback) => {
+  decrCartItem = (id, variation) => {
     const { cartItems } = this.state;
     let item = cartItems.find(
       (item) => item.id === Number(id) && item.variation === variation
     );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     const cartNumb = this.calcCartNumb(cartItems);
-    this.setState({ cartNumb, cartItems }, callback);
+    this.setCartNumb(cartNumb);
+    this.setCartProduct(cartItems);
   };
 
-  setCheckoutItemsByChecked = () => {
-    //
-    // const { checked, cartItems } = this.state;
-    // const lastIndex = cartItems.length + 1;
-    // let checkoutItems = checked.map((checkItem, index) => {
-    //   if (checkItem === true && index > 0 && index < lastIndex) {
-    //     // return cartItems[index-1] without uneccessary field
-    //     const { similarDisPlay, variationDisPlay, ...rest } =
-    //       cartItems[index - 1];
-    //     return rest;
-    //   } else return null;
-    // });
-    // checkoutItems = checkoutItems.filter((item) => item !== null);
-    // this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
+  setCheckoutItemsByChecked = (checked) => {
+    let checkoutItems = checked.map((checkedItem) => {
+      // return checkedItem without uneccessary field
+      const { similarDisPlay, variationDisPlay, ...rest } = checkedItem;
+      return rest;
+    });
+    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
 
   saveCheckoutItemsToStorage = () => {
@@ -1038,8 +987,9 @@ export default class ProductProvider extends Component {
     this.setState({ cartItems: newCartItems, type }, this.similarProduct);
   };
 
-  saveCartItemsToFirebase = async (user, cartItems) => {
+  saveCartItemsToFirebase = async (cartItems) => {
     try {
+      const { user } = this.state;
       const created = Date.now();
       cartItems = cartItems.map((item) => {
         const { similarDisPlay, variationDisPlay, ...rest } = item;
@@ -1058,8 +1008,9 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setCartItemsFromFirebase = (user) => {
+  setCartItemsFromFirebase = () => {
     let cartItems = [];
+    const { user } = this.state;
     if (this.getCartItemsFromStorage().length > 0) {
       cartItems = this.getCartItemsFromStorage();
       cartItems = cartItems.map((item) => ({
@@ -1067,7 +1018,7 @@ export default class ProductProvider extends Component {
         similarDisPlay: false,
         variationDisPlay: false,
       }));
-      this.setState({ cartItems });
+      this.setCartProduct(cartItems);
     } else {
       db.collection("users")
         .doc(user?.uid)
@@ -1083,14 +1034,15 @@ export default class ProductProvider extends Component {
               variationDisPlay: false,
             }));
           }
-          this.setState({ cartItems });
+          this.setCartProduct(cartItems);
         })
         .catch((err) => alert(err));
     }
   };
 
-  saveCheckoutItemsToFirebase = async (user, checkoutItems) => {
+  saveCheckoutItemsToFirebase = async (checkoutItems) => {
     try {
+      const { user } = this.state;
       const created = Date.now();
       db.collection("users")
         .doc(user?.uid)
@@ -1105,11 +1057,14 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setCheckoutItemsFromFirebase = (user) => {
+  setCheckoutItemsFromFirebase = () => {
     let checkoutItems = [];
+    const { user } = this.state;
+    this.setLoading(true);
     if (this.getCheckoutItemsFromStorage().length > 0) {
       checkoutItems = this.getCheckoutItemsFromStorage();
       this.setState({ checkoutItems });
+      this.setLoading(false);
     } else {
       db.collection("users")
         .doc(user?.uid)
@@ -1121,8 +1076,12 @@ export default class ProductProvider extends Component {
             checkoutItems = doc.data().basket;
           }
           this.setState({ checkoutItems });
+          this.setLoading(false);
         })
-        .catch((err) => alert(err));
+        .catch((err) => {
+          alert(err);
+          this.setLoading(false);
+        });
     }
   };
 
@@ -1133,7 +1092,6 @@ export default class ProductProvider extends Component {
         value={{
           ...this.state,
           setUser: this.setUser,
-          setDefaultChecked: this.setDefaultChecked,
           handleClick: this.handleClick,
           filterProductBySearch: this.filterProductBySearch,
           addToSearchHistory: this.addToSearchHistory,

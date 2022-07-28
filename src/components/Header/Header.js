@@ -56,8 +56,8 @@ const Header = ({
   } = useContext(ProductContext);
   const handleLogout = () => {
     if (user) {
-      saveCartItemsToFirebase(user, cartItems);
-      saveCheckoutItemsToFirebase(user, checkoutItems);
+      saveCartItemsToFirebase(cartItems);
+      saveCheckoutItemsToFirebase(checkoutItems);
       setCartProduct([]);
       setCheckoutProduct([]);
       setOrderItems();

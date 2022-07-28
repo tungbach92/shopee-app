@@ -9,18 +9,9 @@ import PopupModal from "../PopupModal";
 import PropTypes from "prop-types";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
-  const {
-    cartItems,
-    handleClick,
-    delCartItem,
-    user,
-    setCartItemsFromFirebase,
-  } = useContext(ProductContext);
+  const { cartItems, handleClick, delCartItem } = useContext(ProductContext);
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
-  useEffect(() => {
-    setCartItemsFromFirebase(user);
-  }, [setCartItemsFromFirebase, user]);
 
   const handleCartDelete = (id) => {
     setDeleteID(id);
