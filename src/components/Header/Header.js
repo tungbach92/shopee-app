@@ -189,12 +189,12 @@ const Header = ({
                         <img src={shirtImg} alt="" />
                       </div>
                       <div className="header__notify-info">
-                        <p>Xem bài đăng của shoppevn:</p>
-                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
+                        <div>Đặt hàng thành công!</div>
+                        <div>Sản phẩm đã được đặt(mua) thành công. Xin vui lòng kiểm tra lại thông tin ở danh mục Người dùng > Đơn mua</div>
                       </div>
                     </a>
                   </div>
-                  <div className="header__notify-news">
+                  {/* <div className="header__notify-news">
                     <a href="# " className="header__notify-link">
                       <div className="header__notify-img">
                         <img src={shirtImg} alt="" />
@@ -237,7 +237,7 @@ const Header = ({
                         <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
                       </div>
                     </a>
-                  </div>
+                  </div> */}
                   <a href="# " className="header__notify-showAll">
                     Xem tất cả
                   </a>

@@ -32,20 +32,21 @@ export default function ProductList({
     setPageSize,
     setFilter,
     setFilterPrice,
-    setType,
+    setCategory,
     loading,
   } = context;
 
   // set default value for product page
   useEffect(() => {
-    const type = "allProduct";
+    const category = "allProduct";
+    const filter = "all";
     const filterPrice = "default";
-    setType(type);
-    setFilter("");
+    setCategory(category);
+    setFilter(filter);
     setFilterPrice(filterPrice);
 
     //set SortItems by default value
-    const categoryItems = items.filter((item) => item.type !== type);
+    const categoryItems = items.filter((item) => item.category !== category);
     const sortedItems = [...categoryItems];
 
     //get and set checkoutItems state
@@ -61,7 +62,7 @@ export default function ProductList({
     setFilter,
     setFilterPrice,
     setSortedProducts,
-    setType,
+    setCategory,
   ]);
 
   useEffect(() => {

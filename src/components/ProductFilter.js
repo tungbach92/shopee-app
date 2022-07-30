@@ -26,13 +26,13 @@ const ProductFilter = ({ isSearchPage }) => {
         {/* <!-- active: btn--active --> */}
         <button
           data-name="filter"
-          data-value="popular"
+          data-value="all"
           onClick={totalItems === 0 ? undefined : handleClick}
           className={classNames("btn app__filter-item app__filter-popular", {
-            "btn--active": filter === "popular",
+            "btn--active": filter === "all",
           })}
         >
-          Phổ biến
+          Tất cả
         </button>
         <button
           data-name="filter"

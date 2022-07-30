@@ -662,7 +662,7 @@ export default function CheckoutProduct() {
               <li className="checkout-product__item">
                 <div className="checkout-product__name-wrapper">
                   <img
-                    src={require(`../img/${item.imageUrl}`).default}
+                    src={item.imageUrl}
                     alt="product__item-img"
                     className="checkout-product__item-img"
                   ></img>

@@ -51,7 +51,7 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                   >
                     <img
                       className="header__cart-img"
-                      src={require(`../../img/${item.imageUrl}`).default}
+                      src={item.imageUrl}
                       alt="item-ao"
                     />
                     <div className="header__cart-name">{item.name}</div>
@@ -65,35 +65,8 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                       ></CurrencyFormat>
                     </div>
                     <span>x</span>
+                    <div className="header__cart-amount">{item.amount}</div>
                   </Link>
-                  <div className="header__cart-amount">
-                    <i
-                      data-name="incrCartItem"
-                      onClick={handleClick}
-                      className="header__cart-incr bi bi-caret-up-fill"
-                      data-id={item.id}
-                    ></i>
-                    <input
-                      className="header__cart-amount-item"
-                      data-id={item.id}
-                      data-name="inputAmount"
-                      value={item.amount <= 0 ? 1 : item.amount}
-                      onChange={handleClick}
-                    />
-
-                    <i
-                      data-name="decrCartItem"
-                      onClick={handleClick}
-                      className="header__cart-decr bi bi-caret-down-fill"
-                      data-id={item.id}
-                    ></i>
-                  </div>
-                  <span
-                    onClick={() => handleCartDelete(item.id)}
-                    className="header__cart-delBtn"
-                  >
-                    Xóa
-                  </span>
                 </div>
               ))}
             </div>

@@ -68,7 +68,7 @@ export default function CartProduct(props) {
   useEffect(() => {
     if (checked?.length > 0) {
       const isVariationChoose = checked.every(
-        (item) => item.variation.length > 0
+        (item) => item.variation.length > 0 || item.variationList.length === 0
       );
       setIsVariationChoose(isVariationChoose);
     }
@@ -88,8 +88,7 @@ export default function CartProduct(props) {
     if (checked?.length > 0) {
       let indexOfItem = checked.findIndex(
         (checkedItem) =>
-          checkedItem.id === Number(id) &&
-          checkedItem.variation === oldVariation
+          checkedItem.id === id && checkedItem.variation === oldVariation
       );
       checked[indexOfItem].variation = variation;
       const newChecked = [...checked];
@@ -101,7 +100,7 @@ export default function CartProduct(props) {
     if (checked?.length > 0) {
       let indexOfItem = checked.findIndex(
         (checkedItem) =>
-          checkedItem.id === Number(id) && checkedItem.variation === variation
+          checkedItem.id === id && checkedItem.variation === variation
       );
       checked[indexOfItem].amount = amount;
       setChecked(checked);
@@ -182,7 +181,7 @@ export default function CartProduct(props) {
     let newChecked = [];
     // if (isCheck(id, variation)) {
     //   newChecked = checked.map((item) =>
-    //     item.id === Number(id) && item.variation === variation ? null : item
+    //     item.id === id && item.variation === variation ? null : item
     //   );
     //   newChecked = [...newChecked].filter((item) => item !== null);
     // } else newChecked = [...checked, { id, variation }];
@@ -223,7 +222,7 @@ export default function CartProduct(props) {
 
   const isIDVariationExist = (id, variation) => {
     const result = cartItems.some(
-      (item) => item.variation === variation && item.id === Number(id)
+      (item) => item.variation === variation && item.id === id
     );
     return result;
   };
@@ -372,11 +371,7 @@ export default function CartProduct(props) {
                 }}
                 className="grid__col cart-product__overview"
               >
-                <img
-                  src={require(`../img/${item.imageUrl}`).default}
-                  alt=""
-                  className="cart-product__img"
-                />
+                <img src={item.imageUrl} alt="" className="cart-product__img" />
                 <span className="cart-product__name">{item.name}</span>
               </Link>
               <div
@@ -406,6 +401,7 @@ export default function CartProduct(props) {
                   <div className="cart-product__notify-content">
                     <div className="cart-product__notify-label">Kích cỡ:</div>
                     <div className="cart-product__variation-container">
+                      {item.variationList.length === 0 && "Không có"}
                       {item.variationList?.map((listItem, i) => (
                         <div
                           onClick={
@@ -451,17 +447,19 @@ export default function CartProduct(props) {
                     >
                       Trở Lại
                     </button>
-                    <button
-                      onClick={handleVariationApply.bind(
-                        this,
-                        index,
-                        item.id,
-                        item.variation
-                      )}
-                      className="btn cart-product__notify-ok"
-                    >
-                      Xác nhận
-                    </button>
+                    {item.variationList.length > 0 && (
+                      <button
+                        onClick={handleVariationApply.bind(
+                          this,
+                          index,
+                          item.id,
+                          item.variation
+                        )}
+                        className="btn cart-product__notify-ok"
+                      >
+                        Xác nhận
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

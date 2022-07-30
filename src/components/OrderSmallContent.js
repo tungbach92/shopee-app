@@ -216,7 +216,7 @@ const OrderSmallContent = () => {
                   className="grid__col order-product__overview"
                 >
                   <img
-                    src={require(`../img/${basketItem.imageUrl}`).default}
+                    src={basketItem.imageUrl}
                     alt="cart-product"
                     className="order-product__img "
                   />
@@ -268,7 +268,9 @@ const OrderSmallContent = () => {
           <div className="user-order__order-empty">Chưa có đơn hàng.</div>
         )}
 
-        {orderItems === null && <div className="user-order__order-loading">Loading...</div>}
+        {orderItems === null && (
+          <div className="user-order__order-loading">Loading...</div>
+        )}
       </div>
       <Pagination
         isOrderPage={isOrderPage}

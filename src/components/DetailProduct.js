@@ -7,16 +7,13 @@ import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
+import CurrencyFormat from "react-currency-format";
 
 export default function DetailProduct() {
   const { metaTitle, id } = useParams();
   const location = useLocation();
   const scrolltoEl = useRef();
-  const {
-    handleClick,
-    items,
-    bestSelling,
-  } = useContext(ProductContext);
+  const { handleClick, items, bestSelling } = useContext(ProductContext);
 
   useEffect(() => {
     handleScrollTop();
@@ -46,7 +43,7 @@ export default function DetailProduct() {
   // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0) {
-      let item = items.find(i => i.id === Number(id));
+      let item = items.find((i) => i.id === id);
       item = {
         ...item,
         amount: 1,
@@ -63,16 +60,26 @@ export default function DetailProduct() {
     if (item) {
       const images = [
         {
-          original: require(`../img/${item.imageUrl}`).default,
-          thumbnail: require(`../img/${item.imageUrl}`).default,
+          original: item.imageUrl,
+          thumbnail: item.imageUrl,
         },
         {
-          original: require(`../img/${item.imageUrl}`).default,
-          thumbnail: require(`../img/${item.imageUrl}`).default,
+          original:
+            item.imageUrlList.length > 0 ? item.imageUrlList[0] : item.imageUrl,
+          thumbnail:
+            item.imageUrlList.length > 0 ? item.imageUrlList[0] : item.imageUrl,
         },
         {
-          original: require(`../img/${item.imageUrl}`).default,
-          thumbnail: require(`../img/${item.imageUrl}`).default,
+          original:
+            item.imageUrlList.length > 0 ? item.imageUrlList[1] : item.imageUrl,
+          thumbnail:
+            item.imageUrlList.length > 0 ? item.imageUrlList[1] : item.imageUrl,
+        },
+        {
+          original:
+            item.imageUrlList.length > 0 ? item.imageUrlList[2] : item.imageUrl,
+          thumbnail:
+            item.imageUrlList.length > 0 ? item.imageUrlList[2] : item.imageUrl,
         },
       ];
       setImages(images);
@@ -109,12 +116,12 @@ export default function DetailProduct() {
   };
 
   const handleBuyNow = (e) => {
-      handleClick(e, item);
+    handleClick(e, item);
   };
 
   const handleAddCart = (e) => {
-      handleClick(e, item);
-      toggleIsAddCardPopup(!isAddCartPopup);
+    handleClick(e, item);
+    toggleIsAddCardPopup(!isAddCartPopup);
   };
 
   const handleScrollTo = (e) => {
@@ -207,7 +214,15 @@ export default function DetailProduct() {
                   <span className="detail-product__sold-label">Đã bán</span>
                 </div>
               </div>
-              <div className="detail-product__price">₫{item?.price}</div>
+              <div className="detail-product__price">
+                <CurrencyFormat
+                  decimalScale={2}
+                  value={item?.price}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"₫"}
+                ></CurrencyFormat>
+              </div>
               <div className="detail-product__info-wrapper">
                 {/* <div className="detail-product__combo-label">
                 Combo Khuyến Mãi
@@ -736,7 +751,7 @@ export default function DetailProduct() {
                         className="detail-content__hot-item"
                       >
                         <img
-                          src={require(`../img/${item.imageUrl}`).default}
+                          src={item.imageUrl}
                           alt="hot-img"
                           className="detail-content__hot-img"
                         />

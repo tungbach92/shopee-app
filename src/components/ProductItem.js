@@ -11,7 +11,7 @@ const ProductItem = React.memo(function (props) {
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   const navigate = useNavigate();
   let isInCart = false;
-  isInCart = cartItems?.some((item) => item.id === Number(id));
+  isInCart = cartItems?.some((item) => item.id === id);
 
   const handleAddCart = (e) => {
     if (user) {
@@ -56,13 +56,18 @@ const ProductItem = React.memo(function (props) {
           }}
           className="app__product-link"
         >
+          {/* {item.favorite === true && (
+            <div className="app__product-top-text">Yêu thích</div>
+          )} */}
           <div className="app__product-top-text">Yêu thích</div>
           <div className="app__product-sale-off">
-            <span className="app__product-sale-off-percent">43%</span>
+            <span className="app__product-sale-off-percent">
+              {item.discount}%
+            </span>
             <span className="app__product-sale-off-label">Giảm</span>
           </div>
           <img
-            src={require(`../img/${imageUrl}`).default}
+            src={imageUrl}
             alt="app__product-img"
             className="app__product-img"
           />
@@ -70,7 +75,9 @@ const ProductItem = React.memo(function (props) {
           <div className="app__product-info">
             <div className="app__product-name">{name}</div>
             {/* app__product-discount--disabled */}
-            <div className="app__product-discount">Mua 2 giảm 5%</div>
+            <div className="app__product-discount app__product-discount--disabled">
+              Mua 2 giảm 5%
+            </div>
             <div className="app__product-price-wrapper">
               <div className="app__product-price">
                 <CurrencyFormat
@@ -151,7 +158,20 @@ const ProductItem = React.memo(function (props) {
                 <i className="app__more-rating-icon bi bi-star-fill"></i>
               </div>
               <div className="app__more-sold">
-                <span>Đã bán {soldAmount}</span>
+                <span>
+                  Đã bán{" "}
+                  {soldAmount >= 1000 ? (
+                    <CurrencyFormat
+                      decimalScale={2}
+                      value={soldAmount / 1000}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      suffix={"k"}
+                    ></CurrencyFormat>
+                  ) : (
+                    soldAmount
+                  )}
+                </span>
               </div>
             </div>
             <div className="app__product-location">{location}</div>

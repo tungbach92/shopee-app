@@ -20,9 +20,9 @@ export default class ProductProvider extends Component {
     sortedSearchItems: [],
     today: new Date(),
     defaultPageIndex: 1,
-    bestSelling: 10,
-    type: "allProduct",
-    filter: "",
+    bestSelling: 1000,
+    category: "allProduct",
+    filter: "all",
     filterPrice: "default",
     pageIndex: 1,
     pageSize: 10,
@@ -64,6 +64,7 @@ export default class ProductProvider extends Component {
       this.getCustomerIdFromFirebase();
       this.setCartItemsFromFirebase();
     });
+    console.log(this.state.items);
   }
 
   setAuthorized = (authorized) => {
@@ -74,8 +75,8 @@ export default class ProductProvider extends Component {
     this.setState({ loading });
   };
 
-  setType = (type) => {
-    this.setState({ type });
+  setCategory = (category) => {
+    this.setState({ category });
   };
 
   setFilterPrice = (filterPrice) => {
@@ -479,32 +480,17 @@ export default class ProductProvider extends Component {
     this.setState({ name, phone, address });
   };
 
-  getData = async () => {
-    try {
-      const response = await fetch(itemsApi);
-      const items = await response.json();
-      const itemsWithID = await this.addItemId(items);
-      const itemsWithMetaTitle = await this.addMetaTitleProp(itemsWithID);
-      const finalItems = await this.addVariationProp(itemsWithMetaTitle);
-      this.setState({ items: finalItems });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   getDataFireBase = async () => {
     try {
       let items = [];
       this.setLoading(true);
       db.collection("products").onSnapshot((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          items = [...items, ...doc.data().items];
-          items = items.sort((a, b) => {
-            return new Date(a.date) - new Date(b.date); //sort by date ascending
-          });
-          this.setState({ items });
-          this.setLoading(false);
-        });
+        items = snapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        this.setState({ items });
+        this.setLoading(false);
       });
     } catch (error) {
       alert(error);
@@ -522,8 +508,11 @@ export default class ProductProvider extends Component {
 
   addVariationProp = async (items) => {
     items.forEach((item) => {
-      switch (item.type) {
+      switch (item.category) {
         case "shirt":
+          item.variationList = ["M", "L", "XL"];
+          break;
+        case "pant":
           item.variationList = ["M", "L", "XL"];
           break;
         case "set":
@@ -536,10 +525,10 @@ export default class ProductProvider extends Component {
           item.variationList = ["38", "39", "40", "41"];
           break;
         case "accessories":
-          item.variationList = ["M", "L", "XL"];
+          item.variationList = [];
           break;
         default:
-          item.variationList = ["M", "L", "XL"];
+          item.variationList = [];
           break;
       }
     });
@@ -611,12 +600,12 @@ export default class ProductProvider extends Component {
     const id = event.currentTarget.dataset.id;
     const variation = event.currentTarget.dataset.variation;
 
-    if (name === "type") {
+    if (name === "category") {
       this.setState(
-        { [name]: value, filter: "", filterPrice: "default" },
-        this.categoryProduct
+        { [name]: value, filter: "all", filterPrice: "default" },
+        this.filterProductsByCategory
       );
-      // set type filter filterPrice state, and sortedItems categoryItem pageIndex after state mutate
+      // set category filter filterPrice state, and sortedItems categoryItem pageIndex after state mutate
       // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
     }
     if (name === "filter") {
@@ -668,7 +657,7 @@ export default class ProductProvider extends Component {
     let cartItemsUpdated = [];
 
     if (!item) {
-      let item = items.find((item) => item.id === Number(id));
+      let item = items.find((item) => item.id === id);
       item = {
         ...item,
         amount: 1,
@@ -703,10 +692,9 @@ export default class ProductProvider extends Component {
 
   delCartItem = (id, variation) => {
     let { cartItems } = this.state;
-    // cartItems = cartItems.filter((item) => item.id !== Number(id));
+    // cartItems = cartItems.filter((item) => item.id !== id);
     const newCartItems = [...cartItems].filter(
-      (cartItem) =>
-        cartItem.id !== Number(id) || cartItem.variation !== variation
+      (cartItem) => cartItem.id !== id || cartItem.variation !== variation
     );
     this.setState(
       {
@@ -753,7 +741,7 @@ export default class ProductProvider extends Component {
   changeAmountCartItem = (id, variation, amount) => {
     const { cartItems } = this.state;
     let item = cartItems.find(
-      (item) => item.id === Number(id) && item.variation === variation
+      (item) => item.id === id && item.variation === variation
     );
     item.amount = amount;
     const cartNumb = this.calcCartNumb(cartItems);
@@ -764,7 +752,7 @@ export default class ProductProvider extends Component {
   incrCartItem = (id, variation) => {
     const { cartItems } = this.state;
     const indexOfItem = cartItems.findIndex(
-      (item) => item.id === Number(id) && item.variation === variation
+      (item) => item.id === id && item.variation === variation
     );
     cartItems[indexOfItem].amount++;
     const cartNumb = this.calcCartNumb(cartItems);
@@ -775,7 +763,7 @@ export default class ProductProvider extends Component {
   decrCartItem = (id, variation) => {
     const { cartItems } = this.state;
     let item = cartItems.find(
-      (item) => item.id === Number(id) && item.variation === variation
+      (item) => item.id === id && item.variation === variation
     );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     const cartNumb = this.calcCartNumb(cartItems);
@@ -820,13 +808,13 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  categoryProduct = () => {
-    //get sortedItems by type using items
-    const { items, type } = this.state;
+  filterProductsByCategory = () => {
+    //get sortedItems by category using items
+    const { items, category } = this.state;
     let tempItems = [...items];
     //filter by category
-    if (type !== "allProduct") {
-      tempItems = tempItems.filter((item) => item.type === type);
+    if (category !== "allProduct") {
+      tempItems = tempItems.filter((item) => item.category === category);
     }
     //change state
     this.setState({
@@ -836,11 +824,11 @@ export default class ProductProvider extends Component {
   };
 
   similarProduct = () => {
-    const { items, type } = this.state;
+    const { items, category } = this.state;
     let tempItems = [...items];
     //filter by category
-    if (type !== "allProduct") {
-      tempItems = tempItems.filter((item) => item.type === type);
+    if (category !== "allProduct") {
+      tempItems = tempItems.filter((item) => item.category === category);
     }
     //change state
     this.setState({
@@ -853,12 +841,8 @@ export default class ProductProvider extends Component {
     let { categoryItems, filter, filterPrice } = this.state;
     let tempItems = [...categoryItems];
     //filter by filter
-    if (filter === "popular") {
-      tempItems = tempItems.filter(
-        (item) =>
-          new Date(item.date).getDate() > new Date().getDate() - 20 ||
-          item.soldAmount >= this.state.bestSelling
-      );
+    if (filter === "all") {
+      tempItems = [...categoryItems];
     }
 
     // Best Selling Filter
@@ -871,8 +855,9 @@ export default class ProductProvider extends Component {
     // Date Filter
     if (filter === "date") {
       tempItems = tempItems.filter(
-        (item) => new Date(item.date).getDate() > new Date().getDate() - 20
-        // (item) => item.date.getDate() > today.getDate() - 20
+        (item) =>
+          Math.floor(new Date(item.date).valueOf() / 1000) >
+          Math.floor(new Date().valueOf() / 1000) - 864000
       );
     }
 
@@ -983,8 +968,8 @@ export default class ProductProvider extends Component {
       ...newCartItems[index],
       similarDisPlay: !cartItems[index].similarDisPlay,
     };
-    const type = cartItems[index].type;
-    this.setState({ cartItems: newCartItems, type }, this.similarProduct);
+    const category = cartItems[index].category;
+    this.setState({ cartItems: newCartItems, category }, this.similarProduct);
   };
 
   saveCartItemsToFirebase = async (cartItems) => {
@@ -1063,7 +1048,7 @@ export default class ProductProvider extends Component {
     this.setLoading(true);
     if (this.getCheckoutItemsFromStorage().length > 0) {
       checkoutItems = this.getCheckoutItemsFromStorage();
-      this.setState({ checkoutItems });
+      this.setCheckoutProduct(checkoutItems);
       this.setLoading(false);
     } else {
       db.collection("users")
@@ -1075,7 +1060,7 @@ export default class ProductProvider extends Component {
           if (doc.exists) {
             checkoutItems = doc.data().basket;
           }
-          this.setState({ checkoutItems });
+          this.setCheckoutProduct(checkoutItems);
           this.setLoading(false);
         })
         .catch((err) => {
@@ -1106,7 +1091,6 @@ export default class ProductProvider extends Component {
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
           setShipPriceProvince: this.setShipPriceProvince,
-          getData: this.getData,
           setCategoryProduct: this.setCategoryProduct,
           setSortedProducts: this.setSortedProducts,
           setPageIndex: this.setPageIndex,
@@ -1149,7 +1133,7 @@ export default class ProductProvider extends Component {
           setPageSize: this.setPageSize,
           setFilter: this.setFilter,
           setFilterPrice: this.setFilterPrice,
-          setType: this.setType,
+          setCategory: this.setCategory,
           setLoading: this.setLoading,
           setCustomerID: this.setCustomerID,
           setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,

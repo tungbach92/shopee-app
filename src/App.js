@@ -16,6 +16,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense, useContext, useEffect, useState } from "react";
 import { ProductContext } from "./context";
 import Search from "./pages/Search";
+import Admin from "./pages/Admin";
 
 //Lazy load product page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -58,6 +59,7 @@ function App() {
           <Route exact path="/login" element={<Login />}></Route>
           <Route exact path="/register" element={<Register />}></Route>
           <Route exact path="/search" element={<Search />}></Route>
+          <Route exact path="/admin" element={<Admin />}></Route>
           <Route path="*" element={<Error />} />
         </Routes>
       </Suspense>
