@@ -224,35 +224,35 @@ const AccountContent = () => {
               <NavLink
                 to="profile"
                 className="user-profile__my-info"
-                activeClassName="user-profile__category-item--active"
+                activeclassName="user-profile__category-item--active"
               >
                 Hồ sơ
               </NavLink>
               <NavLink
                 to="payment"
                 className="user-profile__my-bank"
-                activeClassName="user-profile__category-item--active"
+                activeclassName="user-profile__category-item--active"
               >
                 Ngân hàng
               </NavLink>
               <NavLink
                 to="address"
                 className="user-profile__my-adress"
-                activeClassName="user-profile__category-item--active"
+                activecassName="user-profile__category-item--active"
               >
                 Địa chỉ
               </NavLink>
               <NavLink
                 to="password"
                 className="user-profile__change-password"
-                activeClassName="user-profile__category-item--active"
+                activeclassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
               </NavLink>
               <NavLink
                 to="purchase"
                 className="user-profile__order"
-                activeClassName="user-profile__category-item--active"
+                activeclassName="user-profile__category-item--active"
               >
                 Đơn Mua
               </NavLink>

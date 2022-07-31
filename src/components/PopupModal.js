@@ -16,6 +16,7 @@ export default function PopupModal(props) {
     shipInfoIndex,
     setShipInfoIndex,
     shipInfos,
+    defaultPaymentMethodID,
     paymentMethodID,
     setPaymentMethodID,
     handlePaymentDeleteTrue,
@@ -139,7 +140,7 @@ export default function PopupModal(props) {
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0
               ? "Vui lòng chọn phương thức thanh toán."
-              : isCardPayment
+              : isCardPayment && typeof defaultPaymentMethodID === "undefined"
               ? "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ"
               : succeeded
               ? "Đặt hàng thành công"
@@ -199,11 +200,11 @@ PopupModal.propTypes = {
   isVariationChoose: PropTypes.bool,
   checked: PropTypes.arrayOf(PropTypes.object),
   isCardInfoMustFilled: PropTypes.bool,
-  shipUnit: PropTypes.arrayOf(PropTypes.object),
+  shipUnit: PropTypes.object,
   isPopupShowing: PropTypes.bool,
   togglePopup: PropTypes.func,
-  paymentMethod: PropTypes.arrayOf(PropTypes.object),
-  defaultPaymentMethodID: PropTypes.number,
+  paymentMethod: PropTypes.string,
+  defaultPaymentMethodID: PropTypes.string,
   isCardPayment: PropTypes.bool,
   succeeded: PropTypes.bool,
 };
@@ -231,11 +232,11 @@ PopupModal.defaultProps = {
   isVariationChoose: false,
   checked: [],
   isCardInfoMustFilled: true,
-  shipUnit: [],
+  shipUnit: {},
   isPopupShowing: false,
   togglePopup: () => {},
-  paymentMethod: [],
-  defaultPaymentMethodID: null,
+  paymentMethod: "",
+  defaultPaymentMethodID: undefined,
   isCardPayment: false,
   succeeded: false,
 };

@@ -192,40 +192,34 @@ export default function CheckoutProduct() {
   };
 
   const updateSoldAmount = () => {
-    const productsDocRef = db
-      .collection("products")
-      .doc("mg8veWgZLESw0ute00ZgkTc3GEK2"); // doc id of product, need to change later
-
+    const productRef = db.collection("products");
+    // transaction need to read first and write
     db.runTransaction((transaction) => {
-      return transaction.get(productsDocRef).then((productsDoc) => {
-        if (!productsDoc.exists) {
-          throw new Error("Document does not exist!");
-        }
-        productsDoc.data().items.forEach((item) =>
-          checkoutItems.forEach((checkoutItem) => {
-            if (checkoutItem.id === item.id) {
-              // const id = item.id;
+      // make an docsId (array of doc name) first by checkoutItem.id
+      // Promise.all([transaction.get(docsId)])
+      // or forEach checkut and run multi transaction
+      let promises = checkoutItems.map((checkoutItem) => {
+        return transaction.get(productRef.doc(checkoutItem.id));
+      });
+      return Promise.all(promises).then((docs) => {
+        checkoutItems.forEach((checkoutItem) =>
+          docs.forEach((doc) => {
+            if (!doc.exists) {
+              throw new Error("Document does not exist!");
+            }
+            if (doc.id === checkoutItem.id) {
               const updatedSoldAmount =
-                item.soldAmount + Number(checkoutItem.amount);
-              const date = Math.floor(Date.now() / 1000);
-              const newItem = {
-                ...item,
+                doc.data().soldAmount + Number(checkoutItem.amount);
+              transaction.update(productRef.doc(checkoutItem.id), {
                 soldAmount: updatedSoldAmount,
-                date: date,
-              };
-              console.log(item);
-              transaction.update(productsDocRef, {
-                items: firebase.firestore.FieldValue.arrayRemove(item),
-              });
-              transaction.update(productsDocRef, {
-                items: firebase.firestore.FieldValue.arrayUnion(newItem), // append to the end of the array
               });
             }
           })
         );
+        // return data; 
       });
     })
-      .then(() => {
+      .then((data) => {
         console.log("update soldAmount");
       })
       .catch((error) => {
@@ -259,9 +253,10 @@ export default function CheckoutProduct() {
     saveCartItemsToFirebase([]);
     saveCheckoutItemsToFirebase([]);
     setShipPriceProvince([0, 0]);
-    if (isCardPayment) {
-      updateSoldAmount();
-    }
+    // if (isCardPayment && typeof defaultPaymentMethodID !== "undefined") { // update only with credit cards
+    //   updateSoldAmount();
+    // }
+    updateSoldAmount();
     setSucceeded(true);
     setProcessing(false);
     togglePopup(!isPopupShowing);

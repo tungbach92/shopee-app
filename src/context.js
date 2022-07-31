@@ -484,14 +484,19 @@ export default class ProductProvider extends Component {
     try {
       let items = [];
       this.setLoading(true);
-      db.collection("products").onSnapshot((snapshot) => {
-        items = snapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        this.setState({ items });
-        this.setLoading(false);
-      });
+      db.collection("products").onSnapshot(
+        (querySnapshot) => {
+          items = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          this.setState({ items });
+          this.setLoading(false);
+
+          // onError((err) => alert(err));
+        }
+        // (err) => alert(err)
+      );
     } catch (error) {
       alert(error);
       this.setLoading(false);
