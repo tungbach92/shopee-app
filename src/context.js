@@ -38,9 +38,9 @@ export default class ProductProvider extends Component {
     address: "",
     voucher: {},
     voucherList: [
-      { code: "FREEFORALL", discount: "100%" },
-      { code: "LUNARSALE", discount: "50%" },
-      { code: "CHRISTMASSALE", discount: "100000" },
+      { code: "FREE", discount: "100%" },
+      { code: "SALE50", discount: "50%" },
+      { code: "SALE10000", discount: "100000" },
     ],
     shipPriceProvince: [0, 0],
     orderItems: null,
@@ -893,12 +893,8 @@ export default class ProductProvider extends Component {
     let { searchItems, filter, filterPrice } = this.state;
     let tempItems = [...searchItems];
     //filter by filter
-    if (filter === "popular") {
-      tempItems = tempItems.filter(
-        (item) =>
-          new Date(item.date).getDate() > new Date().getDate() - 20 ||
-          item.soldAmount >= this.state.bestSelling
-      );
+    if (filter === "all") {
+      tempItems = [...searchItems];
     }
 
     // Best Selling Filter
@@ -911,8 +907,9 @@ export default class ProductProvider extends Component {
     // Date Filter
     if (filter === "date") {
       tempItems = tempItems.filter(
-        (item) => new Date(item.date).getDate() > new Date().getDate() - 20
-        // (item) => item.date.getDate() > today.getDate() - 20
+        (item) =>
+          Math.floor(new Date(item.date).valueOf() / 1000) >
+          Math.floor(new Date().valueOf() / 1000) - 864000
       );
     }
 

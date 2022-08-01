@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import ProductFilter from "../components/ProductFilter";
 import ProductList from "../components/ProductList";
 import Pagination from "../components/Pagination";
 import Header from "../components/Header/Header";
+import { ProductContext } from "../context";
+import { useSearchParams } from "react-router-dom";
 const Search = () => {
+  const { searchInput } = useContext(ProductContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const value = searchParams.get("keyword");
+
+  useEffect(() => {
+    setSearchParams({ keyword: searchInput });
+  }, [searchInput, setSearchParams]);
+
   return (
     <>
       <Header isSearchPage={true}></Header>

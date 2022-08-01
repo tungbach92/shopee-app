@@ -63,6 +63,7 @@ export default function ProductList({
     setFilterPrice,
     setSortedProducts,
     setCategory,
+    searchItems,
   ]);
 
   useEffect(() => {

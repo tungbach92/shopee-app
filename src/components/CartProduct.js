@@ -765,7 +765,18 @@ export default function CartProduct(props) {
               </div>
               {Object.keys(voucher).length > 0 && (
                 <span className="cart-product__voucher-discount">
-                  -{voucher.discount}
+                  -
+                  {voucher.discount.includes("%") ? (
+                    voucher.discount
+                  ) : (
+                    <CurrencyFormat
+                      decimalScale={2}
+                      value={voucher.discount}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"₫"}
+                    ></CurrencyFormat>
+                  )}
                 </span>
               )}
               {Object.keys(voucher).length > 0 && (

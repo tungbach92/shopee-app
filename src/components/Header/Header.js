@@ -75,7 +75,9 @@ const Header = ({
     // let text = inputEl.current.value;
     filterProductBySearch(searchInput);
     addToSearchHistory(searchInput);
-    navigate("/search");
+    if (!isSearchPage) {
+      navigate("/search");
+    }
   };
 
   const inputOnKeyUp = (event) => {
@@ -83,7 +85,9 @@ const Header = ({
       event.currentTarget.blur();
       filterProductBySearch(searchInput);
       addToSearchHistory(searchInput);
-      navigate("/search");
+      if (!isSearchPage) {
+        navigate("/search");
+      }
     }
   };
 
@@ -190,7 +194,10 @@ const Header = ({
                       </div>
                       <div className="header__notify-info">
                         <div>Đặt hàng thành công!</div>
-                        <div>Sản phẩm đã được đặt(mua) thành công. Xin vui lòng kiểm tra lại thông tin ở danh mục Người dùng > Đơn mua</div>
+                        <div>
+                          Sản phẩm đã được đặt(mua) thành công. Xin vui lòng
+                          kiểm tra lại thông tin ở danh mục Người dùng-Đơn mua
+                        </div>
                       </div>
                     </a>
                   </div>

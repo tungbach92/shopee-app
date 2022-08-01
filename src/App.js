@@ -58,7 +58,7 @@ function App() {
           ></Route>
           <Route exact path="/login" element={<Login />}></Route>
           <Route exact path="/register" element={<Register />}></Route>
-          <Route exact path="/search" element={<Search />}></Route>
+          <Route path="/search" element={<Search />}></Route>
           <Route exact path="/admin" element={<Admin />}></Route>
           <Route path="*" element={<Error />} />
         </Routes>
