@@ -163,14 +163,11 @@ function PasswordSmallContent({ setEmail, email }) {
             {errors.newPassword}
           </div>
           <button
+            disabled={isUpdatingPasswordProcess}
             type="submit"
-            className={
-              isUpdatingPasswordProcess
-                ? "btn user-profile__password-btn user-profile__password-btn--disabled"
-                : "btn user-profile__password-btn"
-            }
+            className="btn user-profile__password-btn"
           >
-            {isUpdatingPasswordProcess ? "Đang xử lý" : "Xác nhận"}
+            {isUpdatingPasswordProcess ? "Xử lý..." : "Xác nhận"}
           </button>
         </form>
         {isPopupShowing && (

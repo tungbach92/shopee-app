@@ -12,8 +12,9 @@ import CurrencyFormat from "react-currency-format";
 export default function DetailProduct() {
   const { metaTitle, id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const scrolltoEl = useRef();
-  const { handleClick, items, bestSelling } = useContext(ProductContext);
+  const { handleClick, items, bestSelling, user } = useContext(ProductContext);
 
   useEffect(() => {
     handleScrollTop();
@@ -116,12 +117,18 @@ export default function DetailProduct() {
   };
 
   const handleBuyNow = (e) => {
-    handleClick(e, item);
+    if (user) {
+      handleClick(e, item);
+    }
   };
 
   const handleAddCart = (e) => {
-    handleClick(e, item);
-    toggleIsAddCardPopup(!isAddCartPopup);
+    if (user) {
+      handleClick(e, item);
+      toggleIsAddCardPopup(!isAddCartPopup);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleScrollTo = (e) => {

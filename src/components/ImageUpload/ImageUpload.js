@@ -74,15 +74,12 @@ const ImageUpload = (props) => {
         )}
       </div>
       <button
+        disabled={uploadProceesing}
         type="button" // formik treat as submit button ??
         onClick={() => {
           inputEl.current.click();
         }}
-        className={
-          uploadProceesing
-            ? "btn user-profile__image-btn user-profile__image-btn--disabled "
-            : "btn user-profile__image-btn"
-        }
+        className="btn user-profile__image-btn"
       >
         Chọn ảnh
       </button>

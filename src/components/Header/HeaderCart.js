@@ -40,15 +40,9 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
           <div className="header__cart-list-container">
             <div className="header__cart-title">Sản phẩm mới thêm</div>
             <div className="header__cart-list-item">
-              {cartItems?.map((item, index) => (
-                <div key={index} className="header__cart-item">
-                  <Link
-                    to={{
-                      pathname: `/product/${item.metaTitle}/${item.id}`,
-                      state: { id: item.id },
-                    }}
-                    className="header__cart-link"
-                  >
+              {cartItems?.map((item) => (
+                <div key={item.id} className="header__cart-item">
+                  <div className="header__cart-link">
                     <img
                       className="header__cart-img"
                       src={item.imageUrl}
@@ -66,7 +60,7 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                     </div>
                     <span>x</span>
                     <div className="header__cart-amount">{item.amount}</div>
-                  </Link>
+                  </div>
                 </div>
               ))}
             </div>

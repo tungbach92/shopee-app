@@ -1,23 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db, auth } from "../firebase";
+import { ProductContext } from "../context";
 function LoginContent({ isLoginPage, submitText }) {
+  const { loading, setLoading } = useContext(ProductContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoading(true);
     auth
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         console.log(userCredential);
+        setLoading(false);
         navigate("/");
       })
-      .catch((error) => alert(error));
-    console.log("log in");
+      .catch((error) => {
+        alert(error);
+        setLoading(false);
+      });
   };
   const handleRegister = (e) => {
     e.preventDefault();
+    setLoading(true);
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
@@ -32,11 +39,15 @@ function LoginContent({ isLoginPage, submitText }) {
               displayName: randomName,
             })
             .then(() => {
+              setLoading(false);
               navigate("/");
             });
         }
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        alert(error.message);
+        setLoading(false);
+      });
     console.log("register");
   };
   return (
@@ -62,7 +73,11 @@ function LoginContent({ isLoginPage, submitText }) {
               className="login-content__password"
               required
             />
-            <button type="submit" className="btn login-content__submit">
+            <button
+              disabled={loading}
+              type="submit"
+              className="btn login-content__submit"
+            >
               {submitText}
             </button>
             {!isLoginPage && (

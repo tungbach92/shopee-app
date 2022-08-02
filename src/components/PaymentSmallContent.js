@@ -92,12 +92,9 @@ const PaymentSmallContent = () => {
                 ></PopupModal>
               )}
               <button
+                disabled={item.id === defaultPaymentMethodID}
                 onClick={() => handleDefaultClick(item.id)}
-                className={
-                  item.id === defaultPaymentMethodID
-                    ? "btn payment-profile__default-btn payment-profile__default-btn--disabled "
-                    : "btn payment-profile__default-btn"
-                }
+                className="btn payment-profile__default-btn"
               >
                 Thiết lập mặc định
               </button>
@@ -109,7 +106,9 @@ const PaymentSmallContent = () => {
             Bạn chưa liên kết thẻ
           </div>
         )}
-        {paymentMethodList === null && <div className="payment-profile__payment-loading">Loading...</div>}
+        {paymentMethodList === null && (
+          <div className="payment-profile__payment-loading">Loading...</div>
+        )}
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import PopupModal from "./PopupModal";
 import useModal from "../hooks/useModal";
 import InputField from "../custom-fields/InputField/InputField";
 import RadioGroupField from "../custom-fields/RadioGroupField/RadioGroupField";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import ImageUploadField from "../custom-fields/ImageUploadField/ImageUploadField";
 import * as yup from "yup";
 
@@ -26,7 +26,7 @@ const AccountForm = (props) => {
     handleInfoSubmit,
     isAnyUserInfoUpdateFail,
   } = props;
-  const { isPopupShowing, togglePopup } = useModal();
+
   const validationSchema = yup.object().shape({
     user: yup.string().required("Vui lòng nhập tên user"),
     name: yup.string().required("Vui lòng nhập họ tên"),
@@ -36,7 +36,6 @@ const AccountForm = (props) => {
     previewImage: yup.string().nullable(),
   });
   const handleSubmit = (values) => {
-    togglePopup(!isPopupShowing);
     handleInfoSubmit(values);
   };
   return (
@@ -84,7 +83,10 @@ const AccountForm = (props) => {
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
                   {email}
-                  <Link to='/user/account/email' className="user-profile__email-btn">
+                  <Link
+                    to="/user/account/email"
+                    className="user-profile__email-btn"
+                  >
                     Thay đổi
                   </Link>
                 </div>
@@ -145,12 +147,9 @@ const AccountForm = (props) => {
                   inputClassName="user-profile__birthday-input"
                 ></FastField>
                 <button
+                  disabled={uploadProceesing}
                   type="submit"
-                  className={
-                    uploadProceesing
-                      ? "btn user-profile__info-submit user-profile__info-submit--disabled"
-                      : "btn user-profile__info-submit"
-                  }
+                  className="btn user-profile__info-submit"
                 >
                   Lưu
                 </button>
@@ -169,15 +168,6 @@ const AccountForm = (props) => {
                 setUploadSuccess={setUploadSuccess}
               ></FastField>
             </div>
-
-            {isPopupShowing && (
-              <PopupModal
-                isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                isAccountPage={true}
-                isPopupShowing={isPopupShowing}
-                togglePopup={togglePopup}
-              ></PopupModal>
-            )}
           </Form>
         );
       }}

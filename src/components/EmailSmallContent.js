@@ -119,14 +119,11 @@ const EmailSmallContent = ({ setEmail, email }) => {
               required
             />
             <button
+              disabled={isUpdatingEmailProcess}
               type="submit"
-              className={
-                isUpdatingEmailProcess
-                  ? "btn email-profile__submit-btn email-profile__submit-btn--disabled"
-                  : "btn email-profile__submit-btn"
-              }
+              className="btn email-profile__submit-btn"
             >
-              {isUpdatingEmailProcess ? "Processing" : "Thay đổi"}
+              {isUpdatingEmailProcess ? "Xử lý..." : "Thay đổi"}
             </button>
           </form>
         ) : (
@@ -152,14 +149,11 @@ const EmailSmallContent = ({ setEmail, email }) => {
               </div>
             )}
             <button
+              disabled={isCheckSignInProcess}
               type="submit"
-              className={
-                isCheckSignInProcess
-                  ? "btn email-profile__submit-btn email-profile__submit-btn--disabled"
-                  : "btn email-profile__submit-btn"
-              }
+              className="btn email-profile__submit-btn"
             >
-              {isCheckSignInProcess ? "Processing" : "Xác nhận"}
+              {isCheckSignInProcess ? "Xử lý..." : "Xác nhận"}
             </button>
           </form>
         )}

@@ -9,6 +9,7 @@ const AccountProfile = ({
   gender,
   birthday,
   userAvatar,
+  fileImage,
   previewImage,
   setPreviewImage,
   setFileImage,
@@ -38,6 +39,7 @@ const AccountProfile = ({
           userAvatar={userAvatar}
           previewImage={previewImage}
           setPreviewImage={setPreviewImage}
+          fileImage={fileImage}
           setFileImage={setFileImage}
           uploadProceesing={uploadProceesing}
           setUploadSuccess={setUploadSuccess}

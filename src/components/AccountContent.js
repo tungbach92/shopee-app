@@ -16,6 +16,8 @@ import PaymentSmallContent from "./PaymentSmallContent";
 import OrderSmallContent from "./OrderSmallContent";
 import AccountForm from "./AccountForm";
 import AccountProfile from "./AccountProfile";
+import useModal from "../hooks/useModal";
+import PopupModal from "./PopupModal";
 
 const AccountContent = () => {
   const { user, userAvatar, setUserAvatar, loading, setLoading } =
@@ -31,6 +33,7 @@ const AccountContent = () => {
   const [uploadProceesing, setUploadProcessing] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
+  const { isPopupShowing, togglePopup } = useModal();
 
   // set user info from db
   useEffect(() => {
@@ -67,6 +70,7 @@ const AccountContent = () => {
     phone,
     gender,
     birthday,
+    previewImage,
   }) => {
     // e.preventDefault();
     console.log("submit");
@@ -104,7 +108,7 @@ const AccountContent = () => {
       return;
     }
 
-    if (fileImage) {
+    if (previewImage) {
       // dont upload if no fileImage or without choose fileImage again
       const storageRef = storage.ref(`users/${user.uid}/avatar`);
       const uploadTask = storageRef.put(fileImage);
@@ -128,13 +132,14 @@ const AccountContent = () => {
           setUploadProcessing(false);
           setIsAnyUserInfoUpdateFail(true);
           console.log(error.message);
-          return;
+          togglePopup(!isPopupShowing);
           // Handle unsuccessful uploads
         },
         () => {
           setUserAvatar();
           setUploadProcessing(false);
           setUploadSuccess(true);
+          togglePopup(!isPopupShowing);
           console.log("Upload image successfully");
         }
       );
@@ -245,6 +250,7 @@ const AccountContent = () => {
                     gender={gender}
                     birthday={birthday}
                     userAvatar={userAvatar}
+                    fileImage={fileImage}
                     previewImage={previewImage}
                     setPreviewImage={setPreviewImage}
                     setFileImage={setFileImage}
@@ -266,6 +272,7 @@ const AccountContent = () => {
                     gender={gender}
                     birthday={birthday}
                     userAvatar={userAvatar}
+                    fileImage={fileImage}
                     previewImage={previewImage}
                     setPreviewImage={setPreviewImage}
                     setFileImage={setFileImage}
@@ -311,6 +318,14 @@ const AccountContent = () => {
           </div>
         </div>
       </div>
+      {isPopupShowing && (
+        <PopupModal
+          isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+          isAccountPage={true}
+          isPopupShowing={isPopupShowing}
+          togglePopup={togglePopup}
+        ></PopupModal>
+      )}
     </div>
   );
 };

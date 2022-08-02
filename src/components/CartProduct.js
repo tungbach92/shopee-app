@@ -118,6 +118,7 @@ export default function CartProduct(props) {
       togglePopup(!isPopupShowing);
     } else {
       setCheckoutItemsByChecked(checked);
+      navigate("/checkout");
     }
   };
 
@@ -906,13 +907,12 @@ export default function CartProduct(props) {
                   </span>
                 </div>
               </div>
-              <Link
-                to="/checkout"
+              <button
                 onClick={handleCheckout}
                 className="btn cart-product__checkout-btn"
               >
                 Mua hàng
-              </Link>
+              </button>
             </div>
           </div>
         </div>

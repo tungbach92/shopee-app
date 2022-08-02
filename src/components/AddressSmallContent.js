@@ -191,16 +191,13 @@ const AddressSmallContent = () => {
                 </span>
               </div>
               <button
+                disabled={shipInfo.isDefault}
                 onClick={
                   shipInfo.isDefault
                     ? undefined
                     : () => handleDefaultClick(index)
                 }
-                className={
-                  shipInfo.isDefault
-                    ? "btn address-profile__btn-default address-profile__btn-default--disabled"
-                    : "btn address-profile__btn-default"
-                }
+                className="btn address-profile__btn-default"
               >
                 Thiết lập mặc định
               </button>
@@ -212,7 +209,9 @@ const AddressSmallContent = () => {
             Vui lòng thêm địa chỉ
           </div>
         )}
-        {shipInfos === null && <div className="address-profile__address--loading">Loading...</div>}
+        {shipInfos === null && (
+          <div className="address-profile__address--loading">Loading...</div>
+        )}
       </div>
       {isPopupShowing && (
         <PopupModal

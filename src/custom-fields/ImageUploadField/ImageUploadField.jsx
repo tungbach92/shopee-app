@@ -21,10 +21,14 @@ const ImageUploadField = (props) => {
     if (uploadProceesing) {
       return;
     }
-    setFileImage(fileImage);
-    if (fileImage.size > 1048576) {
-      alert("File is larger than 1048576. Please try again.");
+
+    const maxSize = 1048576 * 8;
+    if (fileImage.size > maxSize) {
+      alert(
+        `Không thể tải file lớn hơn ${maxSize / 1048576}MB !. Vui lòng thử lại`
+      );
     } else {
+      setFileImage(fileImage);
       const previewImage = URL.createObjectURL(fileImage);
       form.setFieldValue(name, previewImage);
       setPreviewImage(previewImage);
@@ -34,13 +38,16 @@ const ImageUploadField = (props) => {
 
   return (
     <>
-      {label && <label htmlFor={name} className="user-profile__image-label">{label}</label>}
+      {label && (
+        <label htmlFor={name} className="user-profile__image-label">
+          {label}
+        </label>
+      )}
       <ImageUpload
         name={name}
         previewImage={value}
         onImageInputChange={handleImageInputChange}
         onImageBtnBlur={onBlur}
-
         userAvatar={userAvatar}
         uploadProceesing={uploadProceesing}
         disabled={disabled}

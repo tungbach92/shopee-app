@@ -224,7 +224,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
             Thông tin thẻ của bạn được bảo mật.
           </div>
           <div className="cart-product__protect-info">
-            Chúng tôi hợp tác với CyberSource để đảm bảo thông tin thẻ của bạn
+            Chúng tôi hợp tác với Stripe để đảm bảo thông tin thẻ của bạn
             được giữ an toàn và bảo mật. Shopee sẽ không có quyền truy cập vào
             thông tin thẻ của bạn.
           </div>
@@ -257,7 +257,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
           </div>
           <div className="cart-product__card-address">
             <label className="cart-product__address-label">
-              Billing Address
+              Địa chỉ thanh toán
             </label>
             <input
               onKeyDown={handleKeyDown}
@@ -282,7 +282,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
               type="submit"
               className="btn cart-product__modal-apply"
             >
-              {processing ? "Processing" : "Submit"}
+              {processing ? "Xử lý..." : "Xác nhận"}
             </button>
           </div>
         </form>

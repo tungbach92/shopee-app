@@ -285,7 +285,7 @@ const AddressAddPopup = ({
                 onClick={handleApply}
                 className="btn address-profile__popup-apply "
               >
-                OK
+                Xác nhận
               </button>
             </div>
           </div>

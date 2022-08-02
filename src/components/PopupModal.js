@@ -65,13 +65,13 @@ export default function PopupModal(props) {
       !isSearchPage &&
       !isProductPage
     ) {
-      if (shipInfos.length <= 0) {
+      if (shipInfos?.length <= 0) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-      } else if (!Object.keys(shipUnit).length) {
+      } else if (!Object.keys(shipUnit)?.length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
       } else if (isCardInfoMustFilled) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
-      } else if (paymentMethod.length <= 0) {
+      } else if (paymentMethod?.length <= 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else if (succeeded) {
         navigate("/user/purchase");
@@ -130,13 +130,13 @@ export default function PopupModal(props) {
               : (isCartPageLoaded || isSearchPage || isProductPage) &&
                 (deleteID !== null || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
-              : isCartPageLoaded && checked.length === 0
+              : isCartPageLoaded && checked?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
               : isCartPageLoaded && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
-              : shipInfos.length <= 0
+              : shipInfos?.length <= 0
               ? "Bạn vẫn chưa nhập địa chỉ nhận hàng."
-              : !Object.keys(shipUnit).length
+              : !Object.keys(shipUnit)?.length
               ? "Vui lòng chọn đơn vị vận chuyển."
               : paymentMethod?.length <= 0
               ? "Vui lòng chọn phương thức thanh toán."

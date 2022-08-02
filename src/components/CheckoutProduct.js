@@ -216,7 +216,7 @@ export default function CheckoutProduct() {
             }
           })
         );
-        // return data; 
+        // return data;
       });
     })
       .then((data) => {

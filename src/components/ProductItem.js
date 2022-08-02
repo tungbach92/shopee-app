@@ -7,7 +7,7 @@ import CurrencyFormat from "react-currency-format";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
   const { item, similarDisPlay, cartItems, handleClick, user } = props;
-  const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
+  const { id, metaTitle, imageUrl, name, price, soldAmount, location, variation } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   const navigate = useNavigate();
   let isInCart = false;
@@ -32,9 +32,10 @@ const ProductItem = React.memo(function (props) {
     >
       <div className="app__product-item">
         <button
+          disabled={isInCart}
           data-name="addToCartBtn"
           data-id={id}
-          onClick={isInCart ? undefined : handleAddCart}
+          onClick={handleAddCart}
           className={classNames("btn app__product-cart-btn", {
             "app__product-cart-btn--disabled": isInCart,
           })}
@@ -162,7 +163,7 @@ const ProductItem = React.memo(function (props) {
                   Đã bán{" "}
                   {soldAmount >= 1000 ? (
                     <CurrencyFormat
-                      decimalScale={2}
+                      decimalScale={1}
                       value={soldAmount / 1000}
                       displayType={"text"}
                       thousandSeparator={true}
