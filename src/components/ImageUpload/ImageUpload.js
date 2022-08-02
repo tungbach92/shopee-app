@@ -39,20 +39,7 @@ const ImageUpload = (props) => {
         }}
         className="user-profile__input-image"
       >
-        {userAvatar && !previewImage ? (
-          <div
-            className="user-profile__user-image"
-            style={{ backgroundImage: `url(${userAvatar})` }}
-          ></div>
-        ) : userAvatar || previewImage ? (
-          <div
-            className="user-profile__preview-image"
-            onClick={() => {
-              inputEl.current.click();
-            }}
-            style={{ backgroundImage: `url(${previewImage})` }}
-          ></div>
-        ) : (
+        {!previewImage ? (
           <svg
             enableBackground="new 0 0 15 15"
             viewBox="0 0 15 15"
@@ -76,6 +63,14 @@ const ImageUpload = (props) => {
               ></path>
             </g>
           </svg>
+        ) : (
+          <div
+            className="user-profile__preview-image"
+            onClick={() => {
+              inputEl.current.click();
+            }}
+            style={{ backgroundImage: `url(${previewImage})` }}
+          ></div>
         )}
       </div>
       <button

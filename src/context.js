@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { auth, db } from "./firebase";
+import { auth, db, storage } from "./firebase";
 import axios from "./axios";
 import visaImg from "./img/visa.png";
 import masterImg from "./img/master.png";
@@ -332,9 +332,18 @@ export default class ProductProvider extends Component {
     const user = this.state.user;
     let userAvatar = "";
     if (user) {
-      userAvatar = user.photoURL;
+      const storageRef = storage.ref(`users/${user.uid}/avatar`);
+      storageRef
+        .getDownloadURL()
+        .then((downloadURL) => {
+          userAvatar = downloadURL;
+          this.setState({ userAvatar });
+        })
+        .catch((error) => {
+          // 404
+          this.setState({ userAvatar });
+        });
     }
-    this.setState({ userAvatar });
   };
 
   searchInputOnChange = (event) => {

@@ -132,33 +132,7 @@ const AccountContent = () => {
           // Handle unsuccessful uploads
         },
         () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          uploadTask.snapshot.ref
-            .getDownloadURL()
-            .then((downloadURL) => {
-              console.log("File available at", downloadURL);
-              setLoading(true);
-              user
-                .updateProfile({
-                  photoURL: downloadURL,
-                })
-                .then(() => {
-                  // set userAvatar
-                  setUserAvatar();
-                  setLoading(false);
-                })
-                .catch((error) => {
-                  console.log(error);
-                  setIsAnyUserInfoUpdateFail(true);
-                  return;
-                });
-            })
-            .catch((error) => {
-              console.log(error);
-              setIsAnyUserInfoUpdateFail(true);
-              return;
-            });
+          setUserAvatar();
           setUploadProcessing(false);
           setUploadSuccess(true);
           console.log("Upload image successfully");
@@ -224,35 +198,35 @@ const AccountContent = () => {
               <NavLink
                 to="profile"
                 className="user-profile__my-info"
-                activeclassName="user-profile__category-item--active"
+                activeClassName="user-profile__category-item--active"
               >
                 Hồ sơ
               </NavLink>
               <NavLink
                 to="payment"
                 className="user-profile__my-bank"
-                activeclassName="user-profile__category-item--active"
+                activeClassName="user-profile__category-item--active"
               >
                 Ngân hàng
               </NavLink>
               <NavLink
                 to="address"
                 className="user-profile__my-adress"
-                activecassName="user-profile__category-item--active"
+                activeClassName="user-profile__category-item--active"
               >
                 Địa chỉ
               </NavLink>
               <NavLink
                 to="password"
                 className="user-profile__change-password"
-                activeclassName="user-profile__category-item--active"
+                activeClassName="user-profile__category-item--active"
               >
                 Đổi mật khẩu
               </NavLink>
               <NavLink
                 to="purchase"
                 className="user-profile__order"
-                activeclassName="user-profile__category-item--active"
+                activeClassName="user-profile__category-item--active"
               >
                 Đơn Mua
               </NavLink>
