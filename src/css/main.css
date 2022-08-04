@@ -3972,7 +3972,7 @@ header {
   color: var(--primary-color);
   transform: translateX(0.5rem);
 }
-.user-profile__category-item--active {
+.active {
   color: var(--primary-color);
 }
 

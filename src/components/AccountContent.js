@@ -200,39 +200,19 @@ const AccountContent = () => {
             </div>
             <div className="user-profile__category">
               {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
-              <NavLink
-                to="profile"
-                className="user-profile__my-info"
-                activeClassName="user-profile__category-item--active"
-              >
+              <NavLink to="profile" className="user-profile__my-info">
                 Hồ sơ
               </NavLink>
-              <NavLink
-                to="payment"
-                className="user-profile__my-bank"
-                activeClassName="user-profile__category-item--active"
-              >
+              <NavLink to="payment" className="user-profile__my-bank">
                 Ngân hàng
               </NavLink>
-              <NavLink
-                to="address"
-                className="user-profile__my-adress"
-                activeClassName="user-profile__category-item--active"
-              >
+              <NavLink to="address" className="user-profile__my-adress">
                 Địa chỉ
               </NavLink>
-              <NavLink
-                to="password"
-                className="user-profile__change-password"
-                activeClassName="user-profile__category-item--active"
-              >
+              <NavLink to="password" className="user-profile__change-password">
                 Đổi mật khẩu
               </NavLink>
-              <NavLink
-                to="purchase"
-                className="user-profile__order"
-                activeClassName="user-profile__category-item--active"
-              >
+              <NavLink to="purchase" className="user-profile__order">
                 Đơn Mua
               </NavLink>
             </div>
@@ -261,28 +241,7 @@ const AccountContent = () => {
                   ></AccountProfile>
                 }
               ></Route>
-              <Route
-                index
-                element={
-                  <AccountProfile
-                    userName={userName}
-                    name={name}
-                    email={email}
-                    phone={phone}
-                    gender={gender}
-                    birthday={birthday}
-                    userAvatar={userAvatar}
-                    fileImage={fileImage}
-                    previewImage={previewImage}
-                    setPreviewImage={setPreviewImage}
-                    setFileImage={setFileImage}
-                    uploadProceesing={uploadProceesing}
-                    setUploadSuccess={setUploadSuccess}
-                    handleInfoSubmit={handleInfoSubmit}
-                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
-                  ></AccountProfile>
-                }
-              />
+              <Route index element={<Navigate to="profile" />} />
               <Route
                 path="email"
                 element={
