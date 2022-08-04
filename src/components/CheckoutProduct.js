@@ -60,7 +60,7 @@ export default function CheckoutProduct() {
     getCardImgByBrand,
     customerID,
     defaultPaymentMethodID,
-    updateDefaultPaymentMethodIDToFirebase,
+    updateDefaultPaymentMethodIDToStripe,
     updateCustomerBillingAddress,
     getShipInfos,
     loading,
@@ -248,6 +248,8 @@ export default function CheckoutProduct() {
 
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
+    updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
+    updateCustomerBillingAddress(shipInfos);
     setCartProduct([]);
     setCheckoutProduct([]);
     saveCartItemsToFirebase([]);
@@ -311,7 +313,7 @@ export default function CheckoutProduct() {
   };
 
   const handlePaymentDefaultChange = (paymentMethodID) => {
-    updateDefaultPaymentMethodIDToFirebase(paymentMethodID);
+    updateDefaultPaymentMethodIDToStripe(paymentMethodID);
   };
 
   const handleChange = (e) => {

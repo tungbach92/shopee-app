@@ -13,7 +13,9 @@ const InputField = (props) => {
     disabled,
     labelClassName,
     inputClassName,
+    invalidClassName,
   } = props;
+  console.log(props);
   const { name } = field;
   const { errors, touched } = form;
   const showError = errors[name] && touched[name];
@@ -22,21 +24,26 @@ const InputField = (props) => {
   return (
     <>
       {label && (
-        <Label for={name} className={labelClassName}>
+        <label htmlFor={name} className={labelClassName}>
           {label}
-        </Label>
+        </label>
       )}
-      <Input
+      <input
         id={name}
         {...field}
         type={type}
         placeholder={placeholder}
         disabled={disabled}
         // className={showError ? inputClassName + " is-invalid" : inputClassName}
-        className={inputClassName}
-        invalid={showError}
+        className={
+          showError
+            ? inputClassName + ` ${inputClassName}--invalid`
+            : inputClassName
+        }
+        // invalid={showError}
       />
-      <ErrorMessage name={name} component={FormFeedback}></ErrorMessage>
+      {showError && <div className={invalidClassName}>{errors[name]}</div>}
+      {/* <ErrorMessage name={name} component={FormFeedback}></ErrorMessage> */}
       {/* Error msg Formik, FormFeedBack reactstrap */}
     </>
   );

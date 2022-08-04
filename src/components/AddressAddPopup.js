@@ -267,7 +267,7 @@ const AddressAddPopup = ({
                 defaultValue={street}
                 onChange={(e) => setStreet(e.target.value)}
                 className="address-profile__address-detail"
-                placeholder="Địa chỉ cụ thể"
+                placeholder="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
               />
               <div className="address-profile__street-error">
                 {errors.street}

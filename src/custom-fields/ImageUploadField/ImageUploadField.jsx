@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
@@ -10,12 +10,22 @@ const ImageUploadField = (props) => {
     label,
     disabled,
     userAvatar,
+    previewImage,
     setPreviewImage,
     setFileImage,
     uploadProceesing,
     setUploadSuccess,
   } = props;
   const { name, value, onBlur } = field;
+
+  //free memory file input
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        URL.revokeObjectURL(previewImage);
+      }
+    };
+  }, [previewImage]);
 
   const handleImageInputChange = (fileImage) => {
     if (uploadProceesing) {
@@ -59,13 +69,14 @@ const ImageUploadField = (props) => {
 ImageUploadField.propTypes = {
   field: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
-
+  previewImage: PropTypes.string,
   type: PropTypes.string,
   label: PropTypes.string,
   disabled: PropTypes.bool,
 };
 
 ImageUploadField.defaultProps = {
+  previewImage: "",
   type: "file",
   label: "",
   disabled: false,

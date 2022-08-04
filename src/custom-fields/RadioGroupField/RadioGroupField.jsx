@@ -15,15 +15,19 @@ const RadioGroupField = (props) => {
   } = props;
 
   const { name } = field; // checked set by Formik
-  console.log(field);
+  const { errors, touched } = form;
+  const showError = errors[name] && touched[name];
   return (
     <>
       <input
         {...field}
-
         id={id}
         type={type}
-        className={inputClassName}
+        className={
+          showError
+            ? inputClassName + ` ${inputClassName}--invalid`
+            : inputClassName
+        }
         disabled={disabled}
       />
       {label && (
@@ -31,7 +35,10 @@ const RadioGroupField = (props) => {
           {label}
         </label>
       )}
-      <ErrorMessage name={name}/>
+      {/* {showError && (
+        <div className={`${inputClassName}--invalid`}>{errors[name]}</div>
+      )} */}
+      {/* <ErrorMessage name={name} /> */}
     </>
   );
 };

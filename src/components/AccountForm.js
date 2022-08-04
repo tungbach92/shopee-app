@@ -55,6 +55,7 @@ const AccountForm = (props) => {
       {(formikProps) => {
         const { values, errors, touched } = formikProps;
         console.log({ values, errors, touched });
+        console.log(formikProps);
         return (
           <Form className="user-profile__info-form">
             {/* onSubmit={handleInfoSubmit}> */}
@@ -69,6 +70,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__user-label"
                   inputClassName="user-profile__user-input"
+                  invalidClassName= "user-profile__user-invalid"
                 ></FastField>
                 <FastField
                   name="name"
@@ -77,8 +79,9 @@ const AccountForm = (props) => {
                   label="Tên"
                   placeholder=""
                   disabled={false}
-                  labelClassName="user-profile__user-label"
+                  labelClassName="user-profile__name-label"
                   inputClassName="user-profile__name-input"
+                  invalidClassName= "user-profile__name-invalid"
                 ></FastField>
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
@@ -99,6 +102,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__phone-label"
                   inputClassName="user-profile__phone-input"
+                  invalidClassName= "user-profile__phone-invalid"
                 ></FastField>
                 <label className="user-profile__gender-label">Giới Tính</label>
                 <div className="user-profile__radio-container">
@@ -136,6 +140,11 @@ const AccountForm = (props) => {
                     disabled={false}
                   ></FastField>
                 </div>
+                {errors.gender && touched.gender && (
+                  <div className="user-profile__radio-invalid">
+                    {errors.gender}
+                  </div>
+                )}
                 <FastField
                   name="birthday"
                   component={InputField}
@@ -145,6 +154,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__birthday-label"
                   inputClassName="user-profile__birthday-input"
+                  invalidClassName="user-profile__birthday-invalid"
                 ></FastField>
                 <button
                   disabled={uploadProceesing}

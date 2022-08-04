@@ -11,19 +11,9 @@ const ImageUpload = (props) => {
     onImageBtnBlur,
 
     type,
-    userAvatar,
     uploadProceesing,
     disabled,
   } = props;
-
-  //free memory file input
-  useEffect(() => {
-    return () => {
-      if (previewImage) {
-        URL.revokeObjectURL(previewImage);
-      }
-    };
-  }, [previewImage]);
 
   const handleImageInputChange = (e) => {
     if (onImageInputChange && e.target.files && e.target.files[0]) {
@@ -105,9 +95,7 @@ ImageUpload.propTypes = {
   previewImage: PropTypes.string,
   onImageInputChange: PropTypes.func,
   onImageBtnBlur: PropTypes.func,
-
   type: PropTypes.string,
-  userAvatar: PropTypes.string,
   uploadProceesing: PropTypes.bool,
   disabled: PropTypes.bool,
 };
@@ -116,9 +104,7 @@ ImageUpload.defaultProps = {
   previewImage: "",
   onImageInputChange: null,
   onImageBtnBlur: null,
-
   type: "file",
-  userAvatar: "",
   uploadProceesing: false,
   disabled: false,
 };

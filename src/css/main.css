@@ -4187,7 +4187,7 @@ header {
   flex: 2;
   display: grid;
   align-items: center;
-  grid-row-gap: 2rem;
+  grid-row-gap: 1.4rem;
   grid-column-gap: 1.4rem;
   grid-template-columns: 10rem;
 }
@@ -4257,6 +4257,34 @@ header {
 
 .user-profile__other-label {
   font-size: 1.4rem;
+}
+
+.user-profile__user-input--invalid,
+.user-profile__name-input--invalid,
+.user-profile__phone-input--invalid,
+.user-profile__birthday-input--invalid,
+.user-profile__email-input--invalid,
+.user-profile__password-input--invalid {
+  border: 1px solid var(--primary-color);
+}
+
+.user-profile__man-radio--invalid,
+.user-profile__woman-radio--invalid,
+.user-profile__other-radio--invalid {
+  color: var(--primary-color);
+}
+
+.user-profile__user-invalid,
+.user-profile__name-invalid,
+.user-profile__phone-invalid,
+.user-profile__birthday-invalid,
+.user-profile__email-invalid,
+.user-profile__password-invalid,
+.user-profile__radio-invalid {
+  grid-column-start: 2;
+  grid-column-end: 3;
+  font-size: 1.2rem;
+  color: red;
 }
 
 .user-profile__info-submit {

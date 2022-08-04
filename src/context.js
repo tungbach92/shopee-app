@@ -136,7 +136,7 @@ export default class ProductProvider extends Component {
     }
   };
 
-  updateDefaultPaymentMethodIDToFirebase = (paymentMethodID) => {
+  updateDefaultPaymentMethodIDToStripe = (paymentMethodID) => {
     const customerID = this.state.customerID;
     if (customerID) {
       axios({
@@ -158,7 +158,11 @@ export default class ProductProvider extends Component {
   };
 
   setPaymentMethodList = (paymentMethodList) => {
-    this.setState({ paymentMethodList });
+    this.setState({ paymentMethodList }, () => {
+      if (paymentMethodList.length === 1) {
+        this.setDefaultPaymentMethodID(paymentMethodList[0].id);
+      }
+    });
   };
 
   getPaymentMethodList = () => {
@@ -212,13 +216,14 @@ export default class ProductProvider extends Component {
     const { customerID, paymentMethodList, defaultPaymentMethodID, user } =
       this.state;
     if (customerID && paymentMethodList && defaultPaymentMethodID) {
-      let defaultshipInfo, userName;
+      let defaultshipInfo;
+      let cardName = "";
 
-      // paymentMethodList.forEach((item) => {
-      //   if (item.id === defaultPaymentMethodID) {
-      //     cardName = item.billing_details.name;
-      //   }
-      // });
+      paymentMethodList.forEach((item) => {
+        if (item.id === defaultPaymentMethodID) {
+          cardName = item.billing_details.name;
+        }
+      });
 
       tempShipInfos.forEach((item) => {
         if (item.isDefault) {
@@ -226,25 +231,12 @@ export default class ProductProvider extends Component {
         }
       });
 
-      const getUserNameDocsAsync = () => {
-        return db
-          .collection("users")
-          .doc(user?.uid)
-          .collection("infos")
-          .doc("infoItems")
-          .get();
-      };
-      const userNameDocs = await getUserNameDocsAsync();
-      if (userNameDocs) {
-        userName = userNameDocs.data().name;
-      }
-
       axios({
         method: "POST",
         url: "/update-customer-billing-address",
         data: {
           customerID: customerID,
-          userName: userName,
+          userName: cardName.length > 0 ? cardName : defaultshipInfo.name,
           shipName: defaultshipInfo.name,
           phone: defaultshipInfo.phone,
           province: defaultshipInfo.province.name,
@@ -286,7 +278,11 @@ export default class ProductProvider extends Component {
   };
 
   setShipInfos = (shipInfos) => {
-    this.setState({ shipInfos });
+    this.setState({ shipInfos }, () => {
+      if (shipInfos.length === 1) {
+        shipInfos[0].isDefault = true;
+      }
+    });
   };
 
   updateShipInfoToFirebase = (shipInfos) => {
@@ -296,13 +292,30 @@ export default class ProductProvider extends Component {
         db.collection("users")
           .doc(user?.uid)
           .collection("shipInfos")
-          .doc("shipInfoDoc") // TO DO: need to create document shipInfoDoc before update shipInfoDoc
-          .update({
-            shipInfos: shipInfos,
-          })
-          .then(() => {
-            console.log("update shipInfo successfully!");
-            this.setState({ shipInfos });
+          .doc("shipInfoDoc")
+          .get()
+          .then((doc) => {
+            if (!doc.exists) {
+              db.collection("users")
+                .doc(user?.uid)
+                .collection("shipInfos")
+                .doc("shipInfoDoc")
+                .set({ shipInfos: [] })
+                .then(() => {
+                  console.log("Document successfully written!");
+                });
+            }
+            db.collection("users")
+              .doc(user?.uid)
+              .collection("shipInfos")
+              .doc("shipInfoDoc") // TO DO: need to create document shipInfoDoc before update shipInfoDoc
+              .update({
+                shipInfos: shipInfos,
+              })
+              .then(() => {
+                console.log("update shipInfo successfully!");
+                this.setState({ shipInfos });
+              });
           });
       } catch (error) {
         console.log(error);
@@ -1133,8 +1146,8 @@ export default class ProductProvider extends Component {
           updateCustomerIdToFirebase: this.updateCustomerIdToFirebase,
           setPaymentMethodList: this.setPaymentMethodList,
           getPaymentMethodList: this.getPaymentMethodList,
-          updateDefaultPaymentMethodIDToFirebase:
-            this.updateDefaultPaymentMethodIDToFirebase,
+          updateDefaultPaymentMethodIDToStripe:
+            this.updateDefaultPaymentMethodIDToStripe,
           getCardImgByBrand: this.getCardImgByBrand,
           detachPaymentMethod: this.detachPaymentMethod,
           updateCustomerBillingAddress: this.updateCustomerBillingAddress,

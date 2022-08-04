@@ -10,7 +10,7 @@ const PaymentSmallContent = () => {
     customerID,
     getPaymentMethodList,
     defaultPaymentMethodID,
-    updateDefaultPaymentMethodIDToFirebase,
+    updateDefaultPaymentMethodIDToStripe,
     getCardImgByBrand,
     detachPaymentMethod,
   } = useContext(ProductContext);
@@ -35,7 +35,7 @@ const PaymentSmallContent = () => {
     if (paymentMethodID === defaultPaymentMethodID) {
       return;
     }
-    updateDefaultPaymentMethodIDToFirebase(paymentMethodID);
+    updateDefaultPaymentMethodIDToStripe(paymentMethodID);
   };
   return (
     <>
@@ -75,12 +75,15 @@ const PaymentSmallContent = () => {
               **** **** **** {item.card.last4}
             </div>
             <div className="payment-profile__btn-container">
-              <div
-                onClick={() => handlePaymentDeleteClick(item.id)}
-                className="payment-profile__card-delete"
-              >
-                Xóa
-              </div>
+              {item.id !== defaultPaymentMethodID && (
+                <div
+                  onClick={() => handlePaymentDeleteClick(item.id)}
+                  className="payment-profile__card-delete"
+                >
+                  Xóa
+                </div>
+              )}
+
               {isPopupShowing && (
                 <PopupModal
                   isAccountPage={true}

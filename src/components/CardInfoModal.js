@@ -27,7 +27,6 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const [numberIsValid, setNumberIsValid] = useState(false);
   const [errorNumberMsg, setErrorNumberMsg] = useState(null);
   const [errorNameMsg, setErrorNameMsg] = useState(null);
-  const [disabled, setDisabled] = useState(true);
   const [successed, setSuccessed] = useState(false);
   const [processing, setProcessing] = useState(false);
 
@@ -42,6 +41,9 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!nameIsValid || !numberIsValid) {
+      return;
+    }
     setProcessing(true);
     if (!stripe || !elements) {
       setProcessing(false);
@@ -123,7 +125,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         setProcessing(false);
         toggleCardInfo(!isCardInfoShowing);
         window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
-        alert("Save card information success!");
+        alert("Lưu thông tin thẻ thành công!");
       } else {
         console.log(setUpIntentResult);
         alert(setUpIntentResult.error.message);
@@ -131,7 +133,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       }
     } else {
       setProcessing(false);
-      alert("This card is already be using!");
+      alert("Thẻ này trùng với thẻ đang được sử dụng!");
     }
   };
   const handleKeyDown = (e) => {
@@ -147,7 +149,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       if (!nameValidation.isValid) {
         setNameIsValid(false);
         setErrorNameMsg(
-          "The value must be alphabet characters or the following characters: apostrophe('), minus(-) and dot(.)."
+          "Tên thẻ phải là các ký tự alphabet và có thể chứa các ký hiệu apostrophe('), minus(-) and dot(.)."
         );
       } else {
         setNameIsValid(true);
@@ -155,7 +157,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       }
     } else {
       setNameIsValid(false);
-      setErrorNameMsg("Please enter credit card holder's name.");
+      setErrorNameMsg("Vui lòng nhập tên thẻ.");
     }
   };
   // useEffect(() => {
@@ -193,10 +195,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         .catch((err) => alert(err));
     }
   }, [user]);
-  // Set submit button disabled
-  useEffect(() => {
-    setDisabled(nameIsValid && numberIsValid ? false : true);
-  }, [nameIsValid, numberIsValid]);
+
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
       <div className="cart-product__modal-overlay"></div>
@@ -224,9 +223,9 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
             Thông tin thẻ của bạn được bảo mật.
           </div>
           <div className="cart-product__protect-info">
-            Chúng tôi hợp tác với Stripe để đảm bảo thông tin thẻ của bạn
-            được giữ an toàn và bảo mật. Shopee sẽ không có quyền truy cập vào
-            thông tin thẻ của bạn.
+            Chúng tôi hợp tác với Stripe để đảm bảo thông tin thẻ của bạn được
+            giữ an toàn và bảo mật. Shopee sẽ không có quyền truy cập vào thông
+            tin thẻ của bạn.
           </div>
         </div>
         <form onSubmit={handleSubmit}>

@@ -192,7 +192,7 @@ const AccountContent = () => {
                   </svg>
                 )}
               </div>
-              <div className="user-profile__name">sfsb3fax26</div>
+              <div className="user-profile__name">{user.displayName}</div>
 
               <Link to="profile" className="user-profile__name-btn">
                 Sửa Hồ Sơ

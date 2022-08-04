@@ -74,29 +74,12 @@ app.post("/create-setup-intent", async (request, response) => {
   try {
     const name = request.body.name;
     const email = request.body.email;
-    const phone = request.body.phone;
-    const fullAddress = request.body.fullAddress;
     const customerID = request.body.customerID;
-    const province = request.body.province;
-    const district = request.body.district;
-    const street = request.body.street;
     let customer;
     if (!customerID) {
       customer = await stripe.customers.create({
         name: name,
         email: email,
-        address: {
-          state: province,
-          city: district,
-          line1: street,
-          postal_code: 10000,
-          country: "VN",
-        },
-        shipping: {
-          address: fullAddress,
-          name: name,
-          phone: phone,
-        },
       });
     }
     const intent = await stripe.setupIntents.create({

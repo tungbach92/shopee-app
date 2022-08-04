@@ -182,13 +182,14 @@ const AddressSmallContent = () => {
                 >
                   Sửa
                 </span>
-
-                <span
-                  onClick={() => handleDeleteClick(index)}
-                  className="address-profile__delete-btn"
-                >
-                  Xóa
-                </span>
+                {shipInfo.isDefault === false && (
+                  <span
+                    onClick={() => handleDeleteClick(index)}
+                    className="address-profile__delete-btn"
+                  >
+                    Xóa
+                  </span>
+                )}
               </div>
               <button
                 disabled={shipInfo.isDefault}
