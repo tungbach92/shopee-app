@@ -11,23 +11,22 @@ export default function ProductList({
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
-    user,
     items,
-    setCategoryProduct,
-    setSortedProducts,
+    setCategoryItems,
+    setCategoryItemsFiltered,
     setPageIndex,
     setPageTotal,
     getCheckoutItemsFromStorage,
-    setCheckoutProduct,
-    sortedItems,
+    setCheckoutItems,
+    categoryItemsFiltered,
     similarItems,
     cartItems,
     pageIndex,
     pageSize,
     handleClick,
-    sortedSearchItems,
+    searchItemFiltered,
     searchItems,
-    setSortedSearchItems,
+    setSearchItemFiltered,
     pageTotalCalc,
     setPageSize,
     setFilter,
@@ -36,7 +35,7 @@ export default function ProductList({
     loading,
   } = context;
 
-  // set default value for product page
+  // set default value for product page, search page
   useEffect(() => {
     const category = "allProduct";
     const filter = "all";
@@ -45,44 +44,50 @@ export default function ProductList({
     setFilter(filter);
     setFilterPrice(filterPrice);
 
-    //set SortItems by default value
+    //set categoryItemsFiltered by default value
     const categoryItems = items.filter((item) => item.category !== category);
-    const sortedItems = [...categoryItems];
+    const categoryItemsFiltered = [...categoryItems];
+    setCategoryItems(categoryItems);
+    setCategoryItemsFiltered(categoryItemsFiltered);
 
     //get and set checkoutItems state
     const checkoutItems = getCheckoutItemsFromStorage();
-    setCategoryProduct(categoryItems);
-    setSortedProducts(sortedItems);
-    setCheckoutProduct(checkoutItems);
+    setCheckoutItems(checkoutItems);
+
+    //set SearchItemFiltered by default value
+    setSearchItemFiltered(searchItems);
   }, [
     getCheckoutItemsFromStorage,
     items,
-    setCategoryProduct,
-    setCheckoutProduct,
+    setCategoryItems,
+    setCheckoutItems,
     setFilter,
     setFilterPrice,
-    setSortedProducts,
+    setCategoryItemsFiltered,
     setCategory,
     searchItems,
+    setSearchItemFiltered,
   ]);
 
+  //pagination value depend on page
   useEffect(() => {
     if (isProductPage) {
-      //pagination value, recalculate pageTotal
       const pageIndex = 1;
       const pageSize = 10;
-      const pageTotal = pageTotalCalc(sortedItems, pageSize);
+      const pageTotal = pageTotalCalc(categoryItemsFiltered, pageSize);
       setPageIndex(pageIndex);
       setPageSize(pageSize);
       setPageTotal(pageTotal);
-    } else if (isSearchPage) {
+    }
+    if (isSearchPage) {
       const searchPageIndex = 1;
       const searchPageSize = 10;
-      const searchPageTotal = pageTotalCalc(sortedSearchItems, searchPageSize);
+      const searchPageTotal = pageTotalCalc(searchItemFiltered, searchPageSize);
       setPageIndex(searchPageIndex);
       setPageSize(searchPageSize);
       setPageTotal(searchPageTotal);
-    } else if (similarDisPlay) {
+    }
+    if (similarDisPlay) {
       const similarPageIndex = 1;
       const similarPageSize = 6;
       const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
@@ -99,43 +104,45 @@ export default function ProductList({
     setPageTotal,
     similarDisPlay,
     similarItems,
-    sortedItems,
-    sortedSearchItems,
+    categoryItemsFiltered,
+    searchItemFiltered,
   ]);
 
-  let renderItem = [];
-  if (isSearchPage) {
-    renderItem = sortedSearchItems.slice(
-      (pageIndex - 1) * pageSize,
-      pageIndex * pageSize
-    );
-  } else if (similarDisPlay) {
-    renderItem = similarItems.slice(
-      (pageIndex - 1) * pageSize,
-      pageIndex * pageSize
-    );
-  } else {
-    renderItem = sortedItems.slice(
-      (pageIndex - 1) * pageSize,
-      pageIndex * pageSize
-    );
-  }
-  useEffect(() => {
-    setSortedSearchItems(searchItems);
-  }, [searchItems, setSortedSearchItems]);
-  if (renderItem.length === 0 && isSearchPage) {
+  const getRenderItems = () => {
+    let renderItem = [];
+    if (isSearchPage) {
+      renderItem = searchItemFiltered.slice(
+        (pageIndex - 1) * pageSize,
+        pageIndex * pageSize
+      );
+    }
+    if (similarDisPlay) {
+      renderItem = similarItems.slice(
+        (pageIndex - 1) * pageSize,
+        pageIndex * pageSize
+      );
+    }
+    if (isProductPage) {
+      renderItem = categoryItemsFiltered.slice(
+        (pageIndex - 1) * pageSize,
+        pageIndex * pageSize
+      );
+    }
+    return renderItem;
+  };
+
+  if (getRenderItems().length === 0 && isSearchPage) {
     return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
   } else if (loading) {
     return <div className="app__no-product">Loading...</div>;
   }
-  return renderItem.map((item, index) => (
+  return getRenderItems().map((item) => (
     <ProductItem
       key={item.id}
       cartItems={cartItems}
       similarDisPlay={similarDisPlay}
       item={item}
       handleClick={handleClick}
-      user={user}
     ></ProductItem>
   ));
 }

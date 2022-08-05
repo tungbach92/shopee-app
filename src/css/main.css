@@ -1591,7 +1591,7 @@ header {
   background-color: var(--while-color);
   border: 1px solid var(--primary-color);
   box-shadow: 0 5px 10px 0 var(--primary-color);
-  z-index: 2;
+  z-index: 1;
 }
 
 .cart-product__voucher-icon {

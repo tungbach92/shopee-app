@@ -1,13 +1,15 @@
 import classNames from "classnames";
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import CurrencyFormat from "react-currency-format";
+import { ProductContext } from "../context";
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
-  const { item, similarDisPlay, cartItems, handleClick, user } = props;
-  const { id, metaTitle, imageUrl, name, price, soldAmount, location, variation } = item;
+  const { item, similarDisPlay, cartItems, handleClick } = props;
+  const { user } = useContext(ProductContext);
+  const { id, metaTitle, imageUrl, name, price, soldAmount, location } = item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   const navigate = useNavigate();
   let isInCart = false;

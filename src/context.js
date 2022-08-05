@@ -13,11 +13,11 @@ const itemsApi = "http://localhost:3000/items";
 export default class ProductProvider extends Component {
   state = {
     items: [],
-    sortedItems: [], // items sort
+    categoryItemsFiltered: [], // items sort
     similarItems: [],
     categoryItems: [], // category
     searchItems: [], // search
-    sortedSearchItems: [],
+    searchItemFiltered: [],
     today: new Date(),
     defaultPageIndex: 1,
     bestSelling: 1000,
@@ -366,8 +366,8 @@ export default class ProductProvider extends Component {
   setSearchInput = (searchInput) => {
     this.setState({ searchInput });
   };
-  setSortedSearchItems = (sortedSearchItems) => {
-    this.setState({ sortedSearchItems });
+  setSearchItemFiltered = (searchItemFiltered) => {
+    this.setState({ searchItemFiltered });
   };
 
   setSearchItems = (searchItems) => {
@@ -462,11 +462,11 @@ export default class ProductProvider extends Component {
     this.setState({ cartNumb });
   };
 
-  setCheckoutProduct = (checkoutItems) => {
+  setCheckoutItems = (checkoutItems) => {
     this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
 
-  setCartProduct = (cartItems) => {
+  setCartItems = (cartItems) => {
     this.setState({ cartItems }, this.saveCartItemsToStorage);
   };
 
@@ -478,12 +478,12 @@ export default class ProductProvider extends Component {
     this.setState({ pageIndex });
   };
 
-  setCategoryProduct = (categoryItems) => {
+  setCategoryItems = (categoryItems) => {
     this.setState({ categoryItems });
   };
 
-  setSortedProducts = (sortedItems) => {
-    this.setState({ sortedItems });
+  setCategoryItemsFiltered = (categoryItemsFiltered) => {
+    this.setState({ categoryItemsFiltered });
   };
 
   setShipPriceProvince = (shipPriceProvince) => {
@@ -525,70 +525,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  //add id cho item
-  addItemId = async (items) => {
-    items.forEach((item, index) => {
-      item.id = index;
-    });
-    return items;
-  };
-
-  addVariationProp = async (items) => {
-    items.forEach((item) => {
-      switch (item.category) {
-        case "shirt":
-          item.variationList = ["M", "L", "XL"];
-          break;
-        case "pant":
-          item.variationList = ["M", "L", "XL"];
-          break;
-        case "set":
-          item.variationList = ["M", "L"];
-          break;
-        case "bag":
-          item.variationList = ["S", "M", "L"];
-          break;
-        case "shoe":
-          item.variationList = ["38", "39", "40", "41"];
-          break;
-        case "accessories":
-          item.variationList = [];
-          break;
-        default:
-          item.variationList = [];
-          break;
-      }
-    });
-    return items;
-  };
-
-  addVariationSimilarDisplayProp = async (items) => {
-    items.forEach((item) => {
-      item.variationDisPlay = false;
-      item.similarDisPlay = false;
-    });
-    return items;
-  };
-
-  addMetaTitleProp = async (items) => {
-    items.forEach((item) => {
-      item.metaTitle = item.name
-        .toLowerCase()
-        .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
-        .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
-        .replace(/ì|í|ị|ỉ|ĩ/g, "i")
-        .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
-        .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
-        .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
-        .replace(/đ/g, "d")
-        .replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "")
-        .replace(/\u02C6|\u0306|\u031B/g, "")
-        .replace(/[^\w ]+/g, "")
-        .replace(/ +/g, "-");
-    });
-    return items;
-  };
-
   pageTotalCalc = (items, pageSize) => {
     const pageTotal =
       Math.ceil(items.length / pageSize) < 1
@@ -605,7 +541,7 @@ export default class ProductProvider extends Component {
     return cartNumb;
   };
 
-  filterProductBySearch = (text) => {
+  filterItemsBySearch = (text) => {
     text = text.trim().toLowerCase();
     if (text.length > 0) {
       const { items } = this.state;
@@ -630,21 +566,21 @@ export default class ProductProvider extends Component {
     if (name === "category") {
       this.setState(
         { [name]: value, filter: "all", filterPrice: "default" },
-        this.filterProductsByCategory
+        this.filterItemsByCategory
       );
-      // set category filter filterPrice state, and sortedItems categoryItem pageIndex after state mutate
+      // set category filter filterPrice state, and categoryItemsFiltered categoryItem pageIndex after state mutate
       // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
     }
     if (name === "filter") {
       this.setState({ [name]: value, filterPrice: "default" }, () => {
-        this.filterCategoryProduct();
-        this.filterSearchProduct();
+        this.filterCategoryItems();
+        this.filterSearchItems();
       });
     }
     if (name === "filterPrice") {
       this.setState({ [name]: value }, () => {
-        this.filterCategoryProduct();
-        this.filterSearchProduct();
+        this.filterCategoryItems();
+        this.filterSearchItems();
       });
       event.currentTarget.parentElement.style.display = "none";
     }
@@ -773,7 +709,7 @@ export default class ProductProvider extends Component {
     item.amount = amount;
     const cartNumb = this.calcCartNumb(cartItems);
     this.setCartNumb(cartNumb);
-    this.setCartProduct(cartItems);
+    this.setCartItems(cartItems);
   };
 
   incrCartItem = (id, variation) => {
@@ -784,7 +720,7 @@ export default class ProductProvider extends Component {
     cartItems[indexOfItem].amount++;
     const cartNumb = this.calcCartNumb(cartItems);
     this.setCartNumb(cartNumb);
-    this.setCartProduct(cartItems);
+    this.setCartItems(cartItems);
   };
 
   decrCartItem = (id, variation) => {
@@ -795,7 +731,7 @@ export default class ProductProvider extends Component {
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     const cartNumb = this.calcCartNumb(cartItems);
     this.setCartNumb(cartNumb);
-    this.setCartProduct(cartItems);
+    this.setCartItems(cartItems);
   };
 
   setCheckoutItemsByChecked = (checked) => {
@@ -835,8 +771,8 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  filterProductsByCategory = () => {
-    //get sortedItems by category using items
+  filterItemsByCategory = () => {
+    //get categoryItemsFiltered by category using items
     const { items, category } = this.state;
     let tempItems = [...items];
     //filter by category
@@ -846,7 +782,7 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       categoryItems: tempItems,
-      sortedItems: tempItems,
+      categoryItemsFiltered: tempItems,
     });
   };
 
@@ -863,89 +799,56 @@ export default class ProductProvider extends Component {
     });
   };
 
-  filterCategoryProduct = () => {
-    //get sortedItems by filter using categoryItems
-    let { categoryItems, filter, filterPrice } = this.state;
-    let tempItems = [...categoryItems];
-    //filter by filter
-    if (filter === "all") {
-      tempItems = [...categoryItems];
-    }
-
-    // Best Selling Filter
-    if (filter === "bestSelling") {
-      tempItems = tempItems.filter(
-        (item) => item.soldAmount >= this.state.bestSelling
-      );
-    }
-
-    // Date Filter
-    if (filter === "date") {
-      tempItems = tempItems.filter(
-        (item) =>
-          Math.floor(new Date(item.date).valueOf() / 1000) >
-          Math.floor(new Date().valueOf() / 1000) - 864000
-      );
-    }
-
-    //price filter
-    if (filterPrice !== "default") {
-      // priceAscFilter
-      if (filterPrice === "priceAsc" && tempItems.length !== 1) {
-        tempItems = tempItems.sort(
-          (a, b) => parseFloat(a.price) - parseFloat(b.price)
-        );
-      }
-      // priceDescFilter
-      if (filterPrice === "priceDesc" && tempItems.length !== 1) {
-        tempItems = tempItems.sort(
-          (a, b) => parseFloat(b.price) - parseFloat(a.price)
-        );
-      }
-    }
-
-    //change state
-    this.setState({
-      sortedItems: tempItems,
-    });
+  filterCategoryItems = () => {
+    //get categoryItemsFiltered by filter using categoryItems
+    let { categoryItems } = this.state;
+    this.filterCommonItems(categoryItems, "categoryItemsFiltered");
   };
 
-  filterSearchProduct = () => {
-    //get sortedItems by filter using searchItems
-    let { searchItems, filter, filterPrice } = this.state;
-    let tempItems = [...searchItems];
+  filterSearchItems = () => {
+    //get categoryItemsFiltered by filter using searchItems
+    let { searchItems } = this.state;
+    this.filterCommonItems(searchItems, "searchItemFiltered");
+  };
+
+  filterCommonItems = (commonItems, name) => {
+    //get categoryItemsFiltered by filter using searchItems
+    let { filter, filterPrice } = this.state;
+    let filterCommonItems = [...commonItems];
     //filter by filter
     if (filter === "all") {
-      tempItems = [...searchItems];
+      filterCommonItems = [...commonItems];
     }
 
     // Best Selling Filter
     if (filter === "bestSelling") {
-      tempItems = tempItems.filter(
+      filterCommonItems = filterCommonItems.filter(
         (item) => item.soldAmount >= this.state.bestSelling
       );
     }
 
     // Date Filter
+    let newestDays = 10;
+    let oneDayinMs = 24 * 60 * 60 * 1000;
     if (filter === "date") {
-      tempItems = tempItems.filter(
+      filterCommonItems = filterCommonItems.filter(
         (item) =>
-          Math.floor(new Date(item.date).valueOf() / 1000) >
-          Math.floor(new Date().valueOf() / 1000) - 864000
+          Math.floor(new Date(item.date).valueOf() / oneDayinMs) >
+          Math.floor(new Date().valueOf() / oneDayinMs) - newestDays
       );
     }
 
     //price filter
     if (filterPrice !== "default") {
       // priceAscFilter
-      if (filterPrice === "priceAsc" && tempItems.length !== 1) {
-        tempItems = tempItems.sort(
+      if (filterPrice === "priceAsc" && filterCommonItems.length !== 1) {
+        filterCommonItems = filterCommonItems.sort(
           (a, b) => parseFloat(a.price) - parseFloat(b.price)
         );
       }
       // priceDescFilter
-      if (filterPrice === "priceDesc" && tempItems.length !== 1) {
-        tempItems = tempItems.sort(
+      if (filterPrice === "priceDesc" && filterCommonItems.length !== 1) {
+        filterCommonItems = filterCommonItems.sort(
           (a, b) => parseFloat(b.price) - parseFloat(a.price)
         );
       }
@@ -953,7 +856,7 @@ export default class ProductProvider extends Component {
 
     //change state
     this.setState({
-      sortedSearchItems: tempItems,
+      [name]: filterCommonItems,
     });
   };
 
@@ -1027,7 +930,7 @@ export default class ProductProvider extends Component {
         similarDisPlay: false,
         variationDisPlay: false,
       }));
-      this.setCartProduct(cartItems);
+      this.setCartItems(cartItems);
     } else {
       db.collection("users")
         .doc(user?.uid)
@@ -1043,7 +946,7 @@ export default class ProductProvider extends Component {
               variationDisPlay: false,
             }));
           }
-          this.setCartProduct(cartItems);
+          this.setCartItems(cartItems);
         })
         .catch((err) => alert(err));
     }
@@ -1072,7 +975,7 @@ export default class ProductProvider extends Component {
     this.setLoading(true);
     if (this.getCheckoutItemsFromStorage().length > 0) {
       checkoutItems = this.getCheckoutItemsFromStorage();
-      this.setCheckoutProduct(checkoutItems);
+      this.setCheckoutItems(checkoutItems);
       this.setLoading(false);
     } else {
       db.collection("users")
@@ -1084,13 +987,30 @@ export default class ProductProvider extends Component {
           if (doc.exists) {
             checkoutItems = doc.data().basket;
           }
-          this.setCheckoutProduct(checkoutItems);
+          this.setCheckoutItems(checkoutItems);
           this.setLoading(false);
         })
         .catch((err) => {
           alert(err);
           this.setLoading(false);
         });
+    }
+  };
+
+  handleLogout = () => {
+    const { user, cartItems, checkoutItems } = this.state;
+    if (user) {
+      this.saveCartItemsToFirebase(cartItems);
+      this.saveCheckoutItemsToFirebase(checkoutItems);
+      this.setCartItems([]);
+      this.setCheckoutItems([]);
+      this.setOrderItems();
+      this.setPaymentMethodList([]);
+      this.setDefaultPaymentMethodID("");
+      this.setShipInfos([]);
+      this.setUserAvatar();
+      this.setCustomerID("");
+      auth.signOut();
     }
   };
 
@@ -1102,7 +1022,7 @@ export default class ProductProvider extends Component {
           ...this.state,
           setUser: this.setUser,
           handleClick: this.handleClick,
-          filterProductBySearch: this.filterProductBySearch,
+          filterItemsBySearch: this.filterItemsBySearch,
           addToSearchHistory: this.addToSearchHistory,
           changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
           changeCartItemsVariation: this.changeCartItemsVariation,
@@ -1115,16 +1035,16 @@ export default class ProductProvider extends Component {
           setCustomerInfo: this.setCustomerInfo,
           setVoucher: this.setVoucher,
           setShipPriceProvince: this.setShipPriceProvince,
-          setCategoryProduct: this.setCategoryProduct,
-          setSortedProducts: this.setSortedProducts,
+          setCategoryItems: this.setCategoryItems,
+          setCategoryItemsFiltered: this.setCategoryItemsFiltered,
           setPageIndex: this.setPageIndex,
           setPageTotal: this.setPageTotal,
-          setCartProduct: this.setCartProduct,
+          setCartItems: this.setCartItems,
           calcCartNumb: this.calcCartNumb,
           getCartItemsFromStorage: this.getCartItemsFromStorage,
           setCartNumb: this.setCartNumb,
           getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
-          setCheckoutProduct: this.setCheckoutProduct,
+          setCheckoutItems: this.setCheckoutItems,
           setOrderItems: this.setOrderItems,
           getItemsPriceTotal: this.getItemsPriceTotal,
           getItemsTotal: this.getItemsTotal,
@@ -1137,7 +1057,7 @@ export default class ProductProvider extends Component {
           saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
           setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
           setSearchItems: this.setSearchItems,
-          setSortedSearchItems: this.setSortedSearchItems,
+          setSearchItemFiltered: this.setSearchItemFiltered,
           searchInputOnChange: this.searchInputOnChange,
           setSearchInput: this.setSearchInput,
           setUserAvatar: this.setUserAvatar,
@@ -1163,6 +1083,7 @@ export default class ProductProvider extends Component {
           setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
           setAuthorized: this.setAuthorized,
           getShipInfos: this.getShipInfos,
+          handleLogout: this.handleLogout,
         }}
       >
         {this.props.children}

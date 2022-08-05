@@ -11,7 +11,6 @@ import HeaderSearchHistory from "./HeaderSearchHistory";
 import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
-import { auth } from "../../firebase";
 
 const Header = ({
   isProductPage,
@@ -32,48 +31,21 @@ const Header = ({
 
   const {
     user,
-    cartItems,
-    checkoutItems,
-    saveCartItemsToFirebase,
-    saveCheckoutItemsToFirebase,
-    setCartProduct,
-    setCheckoutProduct,
     userAvatar,
     loading,
-    setOrderItems,
-    setPaymentMethodList,
-    setDefaultPaymentMethodID,
-    setShipInfos,
-    setUserAvatar,
-    setCustomerID,
     orderItems,
-    filterProductBySearch,
+    filterItemsBySearch,
     addToSearchHistory,
     searchHistory,
     searchInputOnChange,
     searchInput,
     setSearchInput,
+    handleLogout,
   } = useContext(ProductContext);
-  const handleLogout = () => {
-    if (user) {
-      saveCartItemsToFirebase(cartItems);
-      saveCheckoutItemsToFirebase(checkoutItems);
-      setCartProduct([]);
-      setCheckoutProduct([]);
-      setOrderItems();
-      setPaymentMethodList([]);
-      setDefaultPaymentMethodID("");
-      setShipInfos([]);
-      setUserAvatar();
-      setCustomerID("");
-      auth.signOut();
-      navigate("/login");
-    }
-  };
 
   const handleSearchIconClick = () => {
     // let text = inputEl.current.value;
-    filterProductBySearch(searchInput);
+    filterItemsBySearch(searchInput);
     addToSearchHistory(searchInput);
     if (!isSearchPage) {
       navigate("/search");
@@ -83,7 +55,7 @@ const Header = ({
   const inputOnKeyUp = (event) => {
     if (event.keyCode === 13) {
       event.currentTarget.blur();
-      filterProductBySearch(searchInput);
+      filterItemsBySearch(searchInput);
       addToSearchHistory(searchInput);
       if (!isSearchPage) {
         navigate("/search");
@@ -386,7 +358,7 @@ const Header = ({
                             inputEl={inputEl}
                             key={index}
                             text={item}
-                            filterProductBySearch={filterProductBySearch}
+                            filterItemsBySearch={filterItemsBySearch}
                             setSearchInput={setSearchInput}
                             isSearchPage={isSearchPage}
                           ></HeaderSearchHistory>
@@ -441,7 +413,7 @@ const Header = ({
                           key={index}
                           text={item}
                           inputEl={inputEl}
-                          filterProductBySearch={filterProductBySearch}
+                          filterItemsBySearch={filterItemsBySearch}
                           setSearchInput={setSearchInput}
                           isSearchPage={isSearchPage}
                         ></HeaderSearchHistory>

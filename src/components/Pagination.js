@@ -9,22 +9,22 @@ const Pagination = ({
   isSearchPage,
   similarDisPlay,
   isOrderPage,
-  filterSearchOrderItems,
+  searchOrderItemsFiltered,
 }) => {
   let {
-    sortedItems,
+    categoryItemsFiltered,
     pageIndex,
     setPageIndex,
     pageTotal,
     pageSize,
-    sortedSearchItems,
+    searchItemFiltered,
     similarItems,
   } = useContext(ProductContext);
 
   if (
-    (isProductPage && sortedItems.length <= pageSize) ||
-    (isSearchPage && sortedSearchItems.length <= pageSize) ||
-    (isOrderPage && filterSearchOrderItems.length <= pageSize) ||
+    (isProductPage && categoryItemsFiltered.length <= pageSize) ||
+    (isSearchPage && searchItemFiltered.length <= pageSize) ||
+    (isOrderPage && searchOrderItemsFiltered.length <= pageSize) ||
     (similarDisPlay && similarItems.length <= pageSize)
   ) {
     return null;
@@ -67,7 +67,7 @@ Pagination.propTypes = {
   isSearchPage: PropTypes.bool,
   similarDisPlay: PropTypes.bool,
   isOrderPage: PropTypes.bool,
-  filterSearchOrderItems: PropTypes.arrayOf(PropTypes.object),
+  searchOrderItemsFiltered: PropTypes.arrayOf(PropTypes.object),
 };
 
 Pagination.defaultProps = {
@@ -75,7 +75,7 @@ Pagination.defaultProps = {
   isSearchPage: false,
   similarDisPlay: false,
   isOrderPage: false,
-  filterSearchOrderItems: [],
+  searchOrderItemsFiltered: [],
 };
 
 export default Pagination;

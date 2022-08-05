@@ -84,7 +84,7 @@ const ImageUpload = (props) => {
         disabled={disabled}
       />
       <div className="user-profile__image-size">
-        Dụng lượng file tối đa 1 MB
+        Dụng lượng file tối đa 8 MB
       </div>
       <div className="user-profile__image-format">Định dạng:.JPEG, .PNG</div>
     </div>

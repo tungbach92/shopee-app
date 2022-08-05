@@ -41,10 +41,10 @@ export default function CheckoutProduct() {
     voucher,
     setVoucher,
     checkoutItems,
-    setCheckoutProduct,
+    setCheckoutItems,
     orderItems,
     setOrderItems,
-    setCartProduct,
+    setCartItems,
     getItemsPriceTotal,
     getShipPrice,
     getSaved,
@@ -250,8 +250,8 @@ export default function CheckoutProduct() {
     saveOrdersToFirebase(id, amount, created);
     updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
     updateCustomerBillingAddress(shipInfos);
-    setCartProduct([]);
-    setCheckoutProduct([]);
+    setCartItems([]);
+    setCheckoutItems([]);
     saveCartItemsToFirebase([]);
     saveCheckoutItemsToFirebase([]);
     setShipPriceProvince([0, 0]);
@@ -1159,8 +1159,6 @@ export default function CheckoutProduct() {
                 paymentMethod={paymentMethod}
                 isCardPayment={isCardPayment}
                 defaultPaymentMethodID={defaultPaymentMethodID}
-                setCheckoutProduct={setCheckoutProduct}
-                setCartProduct={setCartProduct}
                 succeeded={succeeded}
               ></PopupModal>
             )}

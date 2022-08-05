@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 
 export default function HeaderSearchHistory(props) {
   const navigate = useNavigate();
-  const { filterProductBySearch, text, setSearchInput, isSearchPage } = props;
+  const { filterItemsBySearch, text, setSearchInput, isSearchPage } = props;
   function handelClick() {
-    filterProductBySearch(text);
+    filterItemsBySearch(text);
     setSearchInput(text);
     if (!isSearchPage) {
       navigate("/search");
@@ -22,14 +22,14 @@ export default function HeaderSearchHistory(props) {
 }
 
 HeaderSearchHistory.propTypes = {
-  filterProductBySearch: PropTypes.func,
+  filterItemsBySearch: PropTypes.func,
   text: PropTypes.string,
   setSearchInput: PropTypes.func,
   isSearchPage: PropTypes.bool,
 };
 
 HeaderSearchHistory.defaultProps = {
-  filterProductBySearch: () => {},
+  filterItemsBySearch: () => {},
   text: "",
   setSearchInput: () => {},
   isSearchPage: false,

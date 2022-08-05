@@ -19,10 +19,10 @@ const OrderSmallContent = () => {
   } = useContext(ProductContext);
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
-  const [filterSearchOrderItems, setFilterSearchOrderItems] = useState([]);
+  const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
   const [isOrderPage, setIsOrderPage] = useState(false);
 
-  const currentOrderItems = [...filterSearchOrderItems].slice(
+  const currentOrderItems = [...searchOrderItemsFiltered].slice(
     (pageIndex - 1) * pageSize,
     pageIndex * pageSize
   );
@@ -54,20 +54,20 @@ const OrderSmallContent = () => {
 
   const handleFilterSearchOrderItems = useCallback(
     (filter) => {
-      let filterSearchOrderItems = [];
+      let searchOrderItemsFiltered = [];
       switch (filter) {
         case "cash":
-          filterSearchOrderItems = [...searchOrderItems].filter((item) =>
+          searchOrderItemsFiltered = [...searchOrderItems].filter((item) =>
             item.id.includes(filter)
           );
           break;
         case "card":
-          filterSearchOrderItems = [...searchOrderItems].filter(
+          searchOrderItemsFiltered = [...searchOrderItems].filter(
             (item) => !item.id.includes("cash")
           );
           break;
         case "all":
-          filterSearchOrderItems = [...searchOrderItems];
+          searchOrderItemsFiltered = [...searchOrderItems];
           break;
         case "cancle":
           // order cancled filter
@@ -75,7 +75,7 @@ const OrderSmallContent = () => {
         default:
           break;
       }
-      setFilterSearchOrderItems(filterSearchOrderItems);
+      setSearchOrderItemsFiltered(searchOrderItemsFiltered);
     },
     [searchOrderItems]
   );
@@ -91,12 +91,12 @@ const OrderSmallContent = () => {
   useEffect(() => {
     const orderPageIndex = 1;
     const orderPageSize = 2;
-    const orderPageTotal = pageTotalCalc(filterSearchOrderItems, orderPageSize);
+    const orderPageTotal = pageTotalCalc(searchOrderItemsFiltered, orderPageSize);
     setPageIndex(orderPageIndex);
     setPageSize(orderPageSize);
     setPageTotal(orderPageTotal);
   }, [
-    filterSearchOrderItems,
+    searchOrderItemsFiltered,
     pageTotalCalc,
     setPageIndex,
     setPageSize,
@@ -178,7 +178,7 @@ const OrderSmallContent = () => {
       <div className="user-order__order-container">
         <div className="user-order__mini-page">
           <MiniPageControl
-            totalItems={filterSearchOrderItems.length}
+            totalItems={searchOrderItemsFiltered.length}
           ></MiniPageControl>
         </div>
         {currentOrderItems.map((item, index) => (
@@ -274,7 +274,7 @@ const OrderSmallContent = () => {
       </div>
       <Pagination
         isOrderPage={isOrderPage}
-        filterSearchOrderItems={filterSearchOrderItems}
+        searchOrderItemsFiltered={searchOrderItemsFiltered}
       ></Pagination>
     </>
   );

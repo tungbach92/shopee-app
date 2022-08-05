@@ -82,7 +82,7 @@ export default function PaginationItemNumber() {
         <div className="pagination-item__link">2</div>
       </li>
       {/* Hiện ... khi quá 5 trnag đầu */}
-      {pageIndex >= 6 && (
+      {pageIndex > 5 && (
         <li className="pagination-item pagination-item--non-click">
           <div className="pagination-item__link">...</div>
         </li>
