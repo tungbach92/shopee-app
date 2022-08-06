@@ -27,8 +27,8 @@ import { useStripe } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import useProvinceDistrict from "../hooks/useProvinceDistrict";
-import AddressAddPopup from "./AddressAddPopup";
+import useAddress from "../hooks/useAddress";
+import AddressModal from "./AddressModal";
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
@@ -140,7 +140,7 @@ export default function CheckoutProduct() {
     handleDistrictChoose,
     handleProvinceChoose,
     handleWardChoose,
-  } = useProvinceDistrict();
+  } = useAddress();
 
   const {
     isPopupShowing,
@@ -523,7 +523,7 @@ export default function CheckoutProduct() {
                 >
                   Thêm địa chỉ mới
                 </button>
-                <AddressAddPopup
+                <AddressModal
                   name={name}
                   setName={setName}
                   street={street}
@@ -555,7 +555,7 @@ export default function CheckoutProduct() {
                   setFullAddress={setFullAddress}
                   isAddressAddShowing={isAddressAddShowing}
                   toggleAddressAdd={toggleAddressAdd}
-                ></AddressAddPopup>
+                ></AddressModal>
                 <Link
                   to="/user/account/address"
                   className="btn checkout-product__shipInfo-edit"

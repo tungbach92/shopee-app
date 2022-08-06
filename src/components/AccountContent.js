@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import { ProductContext } from "../context";
-import { auth, db, storage } from "../firebase";
+import { db, storage } from "../firebase";
 import {
   Link,
   Route,
   Navigate,
   NavLink,
   Routes,
-  useMatch,
 } from "react-router-dom";
-import EmailSmallContent from "./EmailSmallContent";
-import PasswordSmallContent from "./PasswordSmallContent";
-import AddressSmallContent from "./AddressSmallContent";
-import PaymentSmallContent from "./PaymentSmallContent";
-import OrderSmallContent from "./OrderSmallContent";
-import AccountForm from "./AccountForm";
+import AccountEmail from "./AccountEmail";
+import AccountPassword from "./AccountPassword";
+import AccountAddress from "./AccountAddress";
+import AccountPayment from "./AccountPayment";
+import AccountOrder from "./AccountOrder";
 import AccountProfile from "./AccountProfile";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
 const AccountContent = () => {
-  const { user, userAvatar, setUserAvatar, loading, setLoading } =
+  const { user, userAvatar, setUserAvatar, loading} =
     useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
@@ -31,7 +29,6 @@ const AccountContent = () => {
   const [fileImage, setFileImage] = useState();
   const [previewImage, setPreviewImage] = useState();
   const [uploadProceesing, setUploadProcessing] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
   const { isPopupShowing, togglePopup } = useModal();
 
@@ -138,7 +135,6 @@ const AccountContent = () => {
         () => {
           setUserAvatar();
           setUploadProcessing(false);
-          setUploadSuccess(true);
           togglePopup(!isPopupShowing);
           console.log("Upload image successfully");
         }
@@ -147,12 +143,6 @@ const AccountContent = () => {
     // alert("Cập nhật thành công");
   };
 
-  const handlePhoneChange = (e) => {
-    e.target.value = e.target.value
-      .replace(/[^0-9.]/g, "")
-      .replace(/(\..*)\./g, "$1");
-    setPhone(e.target.value);
-  };
   return (
     <div className="main">
       <div className="grid user-profile">
@@ -235,7 +225,6 @@ const AccountContent = () => {
                     setPreviewImage={setPreviewImage}
                     setFileImage={setFileImage}
                     uploadProceesing={uploadProceesing}
-                    setUploadSuccess={setUploadSuccess}
                     handleInfoSubmit={handleInfoSubmit}
                     isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
                   ></AccountProfile>
@@ -245,33 +234,33 @@ const AccountContent = () => {
               <Route
                 path="email"
                 element={
-                  <EmailSmallContent
+                  <AccountEmail
                     email={email}
                     setEmail={setEmail}
-                  ></EmailSmallContent>
+                  ></AccountEmail>
                 }
               ></Route>
               <Route
                 path="password"
                 element={
-                  <PasswordSmallContent
+                  <AccountPassword
                     email={email}
                     setEmail={setEmail}
-                  ></PasswordSmallContent>
+                  ></AccountPassword>
                 }
               ></Route>
               <Route
                 path="address"
-                element={<AddressSmallContent></AddressSmallContent>}
+                element={<AccountAddress></AccountAddress>}
               ></Route>
               <Route
                 exact
                 path="payment"
-                element={<PaymentSmallContent></PaymentSmallContent>}
+                element={<AccountPayment></AccountPayment>}
               ></Route>
               <Route
                 path="purchase"
-                element={<OrderSmallContent></OrderSmallContent>}
+                element={<AccountOrder></AccountOrder>}
               ></Route>
             </Routes>
           </div>

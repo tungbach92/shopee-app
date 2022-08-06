@@ -22,15 +22,22 @@ const AccountForm = (props) => {
     setPreviewImage,
     setFileImage,
     uploadProceesing,
-    setUploadSuccess,
     handleInfoSubmit,
-    isAnyUserInfoUpdateFail,
   } = props;
 
+  const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/;
   const validationSchema = yup.object().shape({
-    user: yup.string().required("Vui lòng nhập tên user"),
-    name: yup.string().required("Vui lòng nhập họ tên"),
-    phone: yup.string().required("SĐT không để trống!"),
+    user: yup
+      .string()
+      .min(2, "Tên user phải có tối thiểu 2 ký tự")
+      .max(50, "Tên user không vượt quá 20 ký tự")
+      .required("Vui lòng nhập tên user"),
+    name: yup
+      .string()
+      .min(2, "Tên phải có tối thiểu 2 ký tự")
+      .max(50, "Tên không vượt quá 20 ký tự")
+      .required("Vui lòng nhập họ tên"),
+    phone: yup.string().required("Vui lòng nhập SĐT").matches(phoneRegex, "SĐT không hợp lệ!"),
     gender: yup.string().required("Vui lòng chọn giới tính"),
     birthday: yup.string().required("Vui lòng chọn ngày sinh"),
     previewImage: yup.string().nullable(),
@@ -70,7 +77,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__user-label"
                   inputClassName="user-profile__user-input"
-                  invalidClassName= "user-profile__user-invalid"
+                  invalidClassName="user-profile__user-invalid"
                 ></FastField>
                 <FastField
                   name="name"
@@ -81,7 +88,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__name-label"
                   inputClassName="user-profile__name-input"
-                  invalidClassName= "user-profile__name-invalid"
+                  invalidClassName="user-profile__name-invalid"
                 ></FastField>
                 <label className="user-profile__email-label">Email</label>
                 <div className="user-profile__email-input">
@@ -102,7 +109,7 @@ const AccountForm = (props) => {
                   disabled={false}
                   labelClassName="user-profile__phone-label"
                   inputClassName="user-profile__phone-input"
-                  invalidClassName= "user-profile__phone-invalid"
+                  invalidClassName="user-profile__phone-invalid"
                 ></FastField>
                 <label className="user-profile__gender-label">Giới Tính</label>
                 <div className="user-profile__radio-container">
@@ -175,7 +182,6 @@ const AccountForm = (props) => {
                 setPreviewImage={setPreviewImage}
                 setFileImage={setFileImage}
                 uploadProceesing={uploadProceesing}
-                setUploadSuccess={setUploadSuccess}
               ></FastField>
             </div>
           </Form>
@@ -197,7 +203,6 @@ AccountForm.propTypes = {
   setPreviewImage: PropTypes.func,
   setFileImage: PropTypes.func,
   uploadProceesing: PropTypes.bool,
-  setUploadSuccess: PropTypes.func,
   handleInfoSubmit: PropTypes.func,
   isAnyUserInfoUpdateFail: PropTypes.bool,
 };
@@ -214,7 +219,6 @@ AccountForm.defaultProps = {
   setPreviewImage: null,
   setFileImage: null,
   uploadProceesing: false,
-  setUploadSuccess: null,
   handleInfoSubmit: null,
   isAnyUserInfoUpdateFail: true,
 };

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context";
-import { Link } from "react-router-dom";
 import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import PasswordResetModal from "./PasswordResetModal";
 
-function PasswordSmallContent({ setEmail, email }) {
+function AccountPassword({ setEmail, email }) {
   const { user } = useContext(ProductContext);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -62,7 +61,7 @@ function PasswordSmallContent({ setEmail, email }) {
       })
       .catch((err) => {
         let errors = {};
-        errors["password"] = "Password incorrect";
+        errors["password"] = "Mật khẩu cũ không đúng";
         setErrors(errors);
         setIsUpdatingPasswordProcess(false);
         setIsUpdatePasswordSuccess(false);
@@ -76,18 +75,18 @@ function PasswordSmallContent({ setEmail, email }) {
 
     if (!password) {
       isValid = false;
-      errors["password"] = "Please enter your password";
+      errors["password"] = "Vui lòng nhập mật khẩu cũ";
     }
 
     if (!newPassword) {
       isValid = false;
-      errors["newPassword"] = "Please enter new password";
+      errors["newPassword"] = "Vui lòng nhập mật khẩu mới";
     } else if (!confirmPassword) {
       isValid = false;
-      errors["confirmPassword"] = "Please enter confirm password";
+      errors["confirmPassword"] = "Vui lòng nhập lại mật khẩu mới";
     } else if (confirmPassword.length < 6 || newPassword.length < 6) {
       isValid = false;
-      errors["newPassword"] = "Password should be at least 6 characters";
+      errors["newPassword"] = "Mật khẩu mới phải chứa ít nhất 6 ký tự";
     }
 
     if (
@@ -96,7 +95,7 @@ function PasswordSmallContent({ setEmail, email }) {
     ) {
       if (newPassword !== confirmPassword) {
         isValid = false;
-        errors["newPassword"] = "Passwords doesn't match";
+        errors["newPassword"] = "Mật khẩu mới không khớp nhau";
       }
     }
     setErrors(errors);
@@ -150,7 +149,7 @@ function PasswordSmallContent({ setEmail, email }) {
             className="user-profile__newpassword-input"
           />
           <label className="user-profile__confirmPassword-label">
-            Xác Nhận Mật Khẩu:
+            Xác Nhận Mật Khẩu Mới:
           </label>
           <input
             type="password"
@@ -183,4 +182,4 @@ function PasswordSmallContent({ setEmail, email }) {
   );
 }
 
-export default PasswordSmallContent;
+export default AccountPassword;

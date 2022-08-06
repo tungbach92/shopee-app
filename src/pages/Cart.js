@@ -13,8 +13,8 @@ export default function Cart() {
     } else
       return (
         <>
-          <Header isCartPageLoaded={true}></Header>
-          <CartProduct isCartPageLoaded={true}></CartProduct>
+          <Header isCartPage={true}></Header>
+          <CartProduct isCartPage={true}></CartProduct>
         </>
       );
   } else return null;

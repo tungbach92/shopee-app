@@ -2116,6 +2116,7 @@ header {
   width: 100%;
   padding: 0.6rem;
   border: 1px solid var(--primary-color);
+  border-top: none;
   position: absolute;
   top: 100%;
   left: 0;
@@ -4505,6 +4506,11 @@ header {
   color: #585858;
   cursor: pointer;
 }
+
+.address-profile__district--disabled {
+  cursor: not-allowed;
+}
+
 .address-profile__ward {
   position: relative;
   padding: 1.2rem 0.6rem;
@@ -4517,6 +4523,10 @@ header {
   font: 400 1.33333rem Arial;
   color: #585858;
   cursor: pointer;
+}
+
+.address-profile__ward--disabled {
+  cursor: not-allowed;
 }
 
 .address-profile__province-error {
@@ -4551,6 +4561,15 @@ header {
   font-style: normal;
   font-size: 1.4rem;
   padding-left: 0.6rem;
+}
+
+.address-profile__name:hover,
+.address-profile__phone:hover,
+.address-profile__province:hover,
+.address-profile__ward:hover,
+.address-profile__district:hover,
+.address-profile__address-detail:hover {
+  border: 1px solid black;
 }
 
 .address-profile__provinces,
@@ -4688,9 +4707,10 @@ header {
   font-weight: 600;
 }
 .payment-profile__btn-container {
-  margin-left: 10rem;
   display: flex;
   align-items: center;
+  width: 30rem;
+  justify-content: flex-end;
 }
 .payment-profile__card-delete {
   margin-right: 2rem;

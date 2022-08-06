@@ -42,7 +42,7 @@ function App() {
           <Route
             path="/user/account/*"
             element={
-              <Elements stripe={stripePromise}>
+              <Elements stripe={stripePromise}>  
                 <Account />
               </Elements>
             }

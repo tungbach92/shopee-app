@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
-const EmailSmallContent = ({ setEmail, email }) => {
+const AccountEmail = ({ setEmail, email }) => {
   const { user } = useContext(ProductContext);
   const [verifyPassword, setVerifyPassword] = useState();
   const [isWrongPassword, setIsWrongPassword] = useState(false);
@@ -171,4 +171,4 @@ const EmailSmallContent = ({ setEmail, email }) => {
   );
 };
 
-export default EmailSmallContent;
+export default AccountEmail;

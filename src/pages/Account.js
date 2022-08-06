@@ -3,11 +3,10 @@ import React, { useContext } from "react";
 import Header from "../components/Header/Header";
 import { ProductContext } from "../context";
 import AccountContent from "../components/AccountContent";
-import { Route, Navigate } from "react-router";
+import { Navigate } from "react-router";
 
 export default function Account() {
-  const { authorized, searchInput, searchHistory, addToSearchHistory } =
-    useContext(ProductContext);
+  const { authorized } = useContext(ProductContext);
 
   if (authorized !== null) {
     if (!authorized) {
@@ -15,16 +14,9 @@ export default function Account() {
     }
     return (
       <>
-        <Header
-          isAccountPage={true}
-        ></Header>
+        <Header isAccountPage={true}></Header>
         <AccountContent></AccountContent>
       </>
     );
-  } else
-    return (
-      <Header
-        isAccountPage={true}
-      ></Header>
-    );
+  } else return <Header isAccountPage={true}></Header>;
 }

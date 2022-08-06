@@ -3,7 +3,7 @@ import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
-const PaymentSmallContent = () => {
+const AccountPayment = () => {
   const {
     paymentMethodList,
     setPaymentMethodList,
@@ -117,4 +117,4 @@ const PaymentSmallContent = () => {
   );
 };
 
-export default PaymentSmallContent;
+export default AccountPayment;

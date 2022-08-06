@@ -21,7 +21,7 @@ export default function PopupModal(props) {
     setPaymentMethodID,
     handlePaymentDeleteTrue,
     isSearchPage,
-    isCartPageLoaded,
+    isCartPage,
     deleteID,
     setDeleteID,
     isDeleteSelected,
@@ -44,13 +44,13 @@ export default function PopupModal(props) {
 
     // set those values to defaultm undefined if setState function true
     if (setDeleteID) {
-      setDeleteID();
+      setDeleteID(null);
     }
     if (setPaymentMethodID) {
-      setPaymentMethodID();
+      setPaymentMethodID(null);
     }
     if (setShipInfoIndex) {
-      setShipInfoIndex();
+      setShipInfoIndex(null);
     }
     if (setIsDeleteSelected) {
       setIsDeleteSelected(false);
@@ -59,12 +59,7 @@ export default function PopupModal(props) {
 
   const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
-    if (
-      !isCartPageLoaded &&
-      !isAccountPage &&
-      !isSearchPage &&
-      !isProductPage
-    ) {
+    if (!isCartPage && !isAccountPage && !isSearchPage && !isProductPage) {
       if (shipInfos?.length <= 0) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else if (!Object.keys(shipUnit)?.length) {
@@ -78,32 +73,22 @@ export default function PopupModal(props) {
       }
     }
 
-    if (
-      isAccountPage &&
-      typeof shipInfoIndex === "undefined" &&
-      typeof paymentMethodID === "undefined"
-    ) {
+    if (isAccountPage && !shipInfoIndex && !paymentMethodID) {
       navigate("/user");
-    } else if (isAccountPage && typeof shipInfoIndex !== "undefined") {
+    } else if (isAccountPage && shipInfoIndex) {
       handleDeleteTrue(shipInfoIndex);
       setShipInfoIndex();
-    } else if (isAccountPage && typeof paymentMethodID !== "undefined") {
+    } else if (isAccountPage && paymentMethodID) {
       handlePaymentDeleteTrue(paymentMethodID);
       setPaymentMethodID();
     }
 
-    if (
-      (isCartPageLoaded || isSearchPage || isProductPage) &&
-      typeof deleteID !== "undefined"
-    ) {
+    if ((isCartPage || isSearchPage || isProductPage) && deleteID) {
       handleDeleteCartTrue();
       setDeleteID();
     }
 
-    if (
-      (isCartPageLoaded || isSearchPage || isProductPage) &&
-      isDeleteSelected
-    ) {
+    if ((isCartPage || isSearchPage || isProductPage) && isDeleteSelected) {
       handleDeleteSelectionTrue();
       setIsDeleteSelected(false);
     }
@@ -127,12 +112,12 @@ export default function PopupModal(props) {
               ? "Bạn chắc chắn muốn xóa địa chỉ này?"
               : isAccountPage && paymentMethodID !== null
               ? "Bạn chắc chắn muốn xóa thẻ này?"
-              : (isCartPageLoaded || isSearchPage || isProductPage) &&
+              : (isCartPage || isSearchPage || isProductPage) &&
                 (deleteID !== null || isDeleteSelected)
               ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
-              : isCartPageLoaded && checked?.length === 0
+              : isCartPage && checked?.length === 0
               ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
-              : isCartPageLoaded && isVariationChoose === false
+              : isCartPage && isVariationChoose === false
               ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
               : shipInfos?.length <= 0
               ? "Bạn vẫn chưa nhập địa chỉ nhận hàng."
@@ -148,10 +133,7 @@ export default function PopupModal(props) {
           </span>
         </div>
         <div className="cart-product__popup-footer">
-          {(isAccountPage ||
-            isCartPageLoaded ||
-            isSearchPage ||
-            isProductPage) &&
+          {(isAccountPage || isCartPage || isSearchPage || isProductPage) &&
             (shipInfoIndex !== null ||
               paymentMethodID !== null ||
               deleteID !== null ||
@@ -190,7 +172,7 @@ PopupModal.propTypes = {
   setPaymentMethodID: PropTypes.func,
   handlePaymentDeleteTrue: PropTypes.func,
   isSearchPage: PropTypes.bool,
-  isCartPageLoaded: PropTypes.bool,
+  isCartPage: PropTypes.bool,
   deleteID: PropTypes.number,
   setDeleteID: PropTypes.func,
   isDeleteSelected: PropTypes.bool,
@@ -222,7 +204,7 @@ PopupModal.defaultProps = {
   setPaymentMethodID: () => {},
   handlePaymentDeleteTrue: () => {},
   isSearchPage: false,
-  isCartPageLoaded: false,
+  isCartPage: false,
   deleteID: null,
   setDeleteID: () => {},
   isDeleteSelected: false,

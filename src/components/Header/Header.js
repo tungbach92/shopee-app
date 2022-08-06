@@ -4,7 +4,6 @@ import qrCodeNavImg from "../../img/qr-code-home.png";
 import appShopeeImg from "../../img/app-shopee.png";
 import ggShopeeImg from "../../img/gg-shopee.png";
 import appGalShopeeImg from "../../img/app-gal-shopee.png";
-import shirtImg from "../../img/ao.png";
 import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import HeaderSearchHistory from "./HeaderSearchHistory";
@@ -14,7 +13,7 @@ import { ProductContext } from "../../context";
 
 const Header = ({
   isProductPage,
-  isCartPageLoaded,
+  isCartPage,
   isCheckoutPage,
   isSearchPage,
   isLoginPage,
@@ -106,11 +105,11 @@ const Header = ({
         {!isLoginPage && !isRegisterPage && (
           <nav className="header__nav">
             <div className="header__nav-list">
-              <li className="header__nav-item">
+              {/* <li className="header__nav-item">
                 <a href="# " className="header__nav-item-link">
                   Kênh Người Bán
                 </a>
-              </li>
+              </li> */}
               <li className="header__nav-item header__nav-item--qr">
                 <a href="# " className="header__nav-item-link">
                   Tải ứng dụng
@@ -121,7 +120,7 @@ const Header = ({
                     alt="qr-code"
                     className="header__nav-qr-img"
                   />
-                  <a href="https://www.google.com/" className="header__nav-app">
+                  <a href="# " className="header__nav-app">
                     <img
                       src={appShopeeImg}
                       alt="qr-code"
@@ -152,7 +151,7 @@ const Header = ({
               </li>
             </div>
             <ul className="header__nav-list">
-              <li className="header__nav-item-right header__nav-item-right--notify">
+              {/* <li className="header__nav-item-right header__nav-item-right--notify">
                 <a href="# " className="header__nav-item-link">
                   <i className="header__nav-icon bi bi-bell"></i>Thông Báo
                 </a>
@@ -173,61 +172,29 @@ const Header = ({
                       </div>
                     </a>
                   </div>
-                  {/* <div className="header__notify-news">
-                    <a href="# " className="header__notify-link">
-                      <div className="header__notify-img">
-                        <img src={shirtImg} alt="" />
-                      </div>
-                      <div className="header__notify-info">
-                        <p>Xem bài đăng của shoppevn:</p>
-                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="header__notify-news">
-                    <a href="# " className="header__notify-link">
-                      <div className="header__notify-img">
-                        <img src={shirtImg} alt="" />
-                      </div>
-                      <div className="header__notify-info">
-                        <p>Xem bài đăng của shoppevn:</p>
-                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="header__notify-user">
-                    <a href="# " className="header__notify-link">
-                      <div className="header__notify-img">
-                        <img src={shirtImg} alt="" />
-                      </div>
-                      <div className="header__notify-info">
-                        <p>Xem bài đăng của shoppevn:</p>
-                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
-                      </div>
-                    </a>
-                  </div>
-                  <div className="header__notify-user">
-                    <a href="# " className="header__notify-link">
-                      <div className="header__notify-img">
-                        <img src={shirtImg} alt="" />
-                      </div>
-                      <div className="header__notify-info">
-                        <p>Xem bài đăng của shoppevn:</p>
-                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
-                      </div>
-                    </a>
-                  </div> */}
                   <a href="# " className="header__notify-showAll">
                     Xem tất cả
                   </a>
                 </div>
-              </li>
-              <li className="header__nav-item-right">
+              </li> */}
+              {/* <div className="header__notify-news">
+                    <a href="# " className="header__notify-link">
+                      <div className="header__notify-img">
+                        <img src={shirtImg} alt="" />
+                      </div>
+                      <div className="header__notify-info">
+                        <p>Xem bài đăng của shoppevn:</p>
+                        <p>CHIA SẺ KẾT QUẢ LẮC XU - TẶNG THƯỞNG THÊM...</p>
+                      </div>
+                    </a>
+                  </div>
+                  */}
+              {/* <li className="header__nav-item-right">
                 <a href="# " className="header__nav-item-link">
                   <i className="header__nav-icon bi bi-question-circle"></i>Trợ
                   Giúp
                 </a>
-              </li>
+              </li> */}
               {/* Logged:  header__nav-item-right--user */}
               <div
                 className={
@@ -294,7 +261,13 @@ const Header = ({
                   >
                     Đơn mua
                   </Link>
-                  <div onClick={handleLogout} className="header__user-item">
+                  <div
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/");
+                    }}
+                    className="header__user-item"
+                  >
                     Đăng xuất
                   </div>
                 </div>
@@ -307,7 +280,7 @@ const Header = ({
         {!isLoginPage && !isRegisterPage && (
           <div
             className={classNames("header__search", {
-              "header__search--cart": isCartPageLoaded || isCheckoutPage,
+              "header__search--cart": isCartPage || isCheckoutPage,
             })}
           >
             <div className="header__logo-wrapper">
@@ -315,12 +288,12 @@ const Header = ({
                 href="/"
                 className={classNames("header__logo-link", {
                   "header__logo-link--notHome":
-                    isCartPageLoaded || isCheckoutPage,
+                    isCartPage || isCheckoutPage,
                 })}
               >
                 <img src={shopeeLogo} alt="shoppe-logo" />
               </a>
-              {isCartPageLoaded && (
+              {isCartPage && (
                 <div className="header__page-name">Giỏ hàng</div>
               )}
               {isCheckoutPage && (
@@ -329,7 +302,7 @@ const Header = ({
             </div>
 
             {!isCheckoutPage ? (
-              !isCartPageLoaded ? (
+              !isCartPage ? (
                 <>
                   <div className="header__search-content">
                     <div className="header__search-wrapper">
@@ -384,7 +357,7 @@ const Header = ({
               ) : (
                 <div
                   className={classNames("header__search-content", {
-                    "header__search-content--cart": isCartPageLoaded,
+                    "header__search-content--cart": isCartPage,
                   })}
                 >
                   <div className="header__search-wrapper">
@@ -457,7 +430,7 @@ const Header = ({
 
 Header.propTypes = {
   isProductPage: PropTypes.bool,
-  isCartPageLoaded: PropTypes.bool,
+  isCartPage: PropTypes.bool,
   isCheckoutPage: PropTypes.bool,
   isSearchPage: PropTypes.bool,
   isLoginPage: PropTypes.bool,
@@ -466,7 +439,7 @@ Header.propTypes = {
 };
 Header.defaultProps = {
   isProductPage: false,
-  isCartPageLoaded: false,
+  isCartPage: false,
   isCheckoutPage: false,
   isSearchPage: false,
   isLoginPage: false,

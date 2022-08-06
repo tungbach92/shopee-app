@@ -40,7 +40,7 @@ export default class ProductProvider extends Component {
     voucherList: [
       { code: "FREE", discount: "100%" },
       { code: "SALE50", discount: "50%" },
-      { code: "SALE10000", discount: "100000" },
+      { code: "SALE100000", discount: "100000" },
     ],
     shipPriceProvince: [0, 0],
     orderItems: null,
@@ -213,7 +213,7 @@ export default class ProductProvider extends Component {
   };
 
   updateCustomerBillingAddress = async (tempShipInfos) => {
-    const { customerID, paymentMethodList, defaultPaymentMethodID, user } =
+    const { customerID, paymentMethodList, defaultPaymentMethodID } =
       this.state;
     if (customerID && paymentMethodList && defaultPaymentMethodID) {
       let defaultshipInfo;
@@ -786,7 +786,7 @@ export default class ProductProvider extends Component {
     });
   };
 
-  similarProduct = () => {
+  filterItemsBySimilar = () => {
     const { items, category } = this.state;
     let tempItems = [...items];
     //filter by category
@@ -896,7 +896,10 @@ export default class ProductProvider extends Component {
       similarDisPlay: !cartItems[index].similarDisPlay,
     };
     const category = cartItems[index].category;
-    this.setState({ cartItems: newCartItems, category }, this.similarProduct);
+    this.setState(
+      { cartItems: newCartItems, category },
+      this.filterItemsBySimilar
+    );
   };
 
   saveCartItemsToFirebase = async (cartItems) => {
@@ -1013,6 +1016,13 @@ export default class ProductProvider extends Component {
       auth.signOut();
     }
   };
+
+  // const handlePhoneChange = (e) => {
+  //   e.target.value = e.target.value
+  //     .replace(/[^0-9.]/g, "")
+  //     .replace(/(\..*)\./g, "$1");
+  //   setPhone(e.target.value);
+  // };
 
   render() {
     console.log("provider render");

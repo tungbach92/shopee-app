@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
 import useModal from "../hooks/useModal";
-import useProvinceDistrict from "../hooks/useProvinceDistrict";
-import AddressAddPopup from "./AddressAddPopup";
+import useAddress from "../hooks/useAddress";
+import AddressModal from "./AddressModal";
 import PopupModal from "./PopupModal";
 
-const AddressSmallContent = () => {
+const AccountAddress = () => {
   const {
     shipInfos,
     setShipInfos,
@@ -46,7 +46,7 @@ const AddressSmallContent = () => {
     handleDistrictChoose,
     handleProvinceChoose,
     handleWardChoose,
-  } = useProvinceDistrict();
+  } = useAddress();
 
   const handleDefaultClick = (index) => {
     let tempShipInfos = [...shipInfos];
@@ -113,7 +113,7 @@ const AddressSmallContent = () => {
             >
               Thêm địa chỉ mới
             </button>
-            <AddressAddPopup
+            <AddressModal
               name={name}
               setName={setName}
               street={street}
@@ -146,7 +146,7 @@ const AddressSmallContent = () => {
               isAddressAddShowing={isAddressAddShowing}
               toggleAddressAdd={toggleAddressAdd}
               shipInfoIndex={shipInfoIndex}
-            ></AddressAddPopup>
+            ></AddressModal>
           </div>
         </div>
       </div>
@@ -228,4 +228,4 @@ const AddressSmallContent = () => {
   );
 };
 
-export default AddressSmallContent;
+export default AccountAddress;

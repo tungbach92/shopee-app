@@ -14,7 +14,6 @@ const AccountProfile = ({
   setPreviewImage,
   setFileImage,
   uploadProceesing,
-  setUploadSuccess,
   handleInfoSubmit,
   isAnyUserInfoUpdateFail,
 }) => {
@@ -42,7 +41,6 @@ const AccountProfile = ({
           fileImage={fileImage}
           setFileImage={setFileImage}
           uploadProceesing={uploadProceesing}
-          setUploadSuccess={setUploadSuccess}
           handleInfoSubmit={handleInfoSubmit}
           isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
         ></AccountForm>

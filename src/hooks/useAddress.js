@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import ProvincesCitiesVN from "pc-vn";
 
-const useProvinceDistrict = () => {
+const useAddress = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
@@ -122,4 +122,4 @@ const useProvinceDistrict = () => {
   };
 };
 
-export default useProvinceDistrict;
+export default useAddress;

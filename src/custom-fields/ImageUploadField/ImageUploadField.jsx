@@ -14,7 +14,6 @@ const ImageUploadField = (props) => {
     setPreviewImage,
     setFileImage,
     uploadProceesing,
-    setUploadSuccess,
   } = props;
   const { name, value, onBlur } = field;
 
@@ -42,7 +41,6 @@ const ImageUploadField = (props) => {
       const previewImage = URL.createObjectURL(fileImage);
       form.setFieldValue(name, previewImage);
       setPreviewImage(previewImage);
-      setUploadSuccess(false);
     }
   };
 

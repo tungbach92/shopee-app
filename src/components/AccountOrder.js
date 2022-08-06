@@ -7,7 +7,7 @@ import moment from "moment";
 import Pagination from "./Pagination";
 import MiniPageControl from "./MiniPageControl";
 
-const OrderSmallContent = () => {
+const AccountOrder = () => {
   const {
     orderItems,
     setPageIndex,
@@ -280,4 +280,4 @@ const OrderSmallContent = () => {
   );
 };
 
-export default OrderSmallContent;
+export default AccountOrder;

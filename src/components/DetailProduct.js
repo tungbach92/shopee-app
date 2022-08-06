@@ -66,21 +66,33 @@ export default function DetailProduct() {
         },
         {
           original:
-            item.imageUrlList.length > 0 ? item.imageUrlList[0] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[0]
+              ? item.imageUrlList[0]
+              : item.imageUrl,
           thumbnail:
-            item.imageUrlList.length > 0 ? item.imageUrlList[0] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[0]
+              ? item.imageUrlList[0]
+              : item.imageUrl,
         },
         {
           original:
-            item.imageUrlList.length > 0 ? item.imageUrlList[1] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[1]
+              ? item.imageUrlList[1]
+              : item.imageUrl,
           thumbnail:
-            item.imageUrlList.length > 0 ? item.imageUrlList[1] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[1]
+              ? item.imageUrlList[1]
+              : item.imageUrl,
         },
         {
           original:
-            item.imageUrlList.length > 0 ? item.imageUrlList[2] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[2]
+              ? item.imageUrlList[2]
+              : item.imageUrl,
           thumbnail:
-            item.imageUrlList.length > 0 ? item.imageUrlList[2] : item.imageUrl,
+            item.imageUrlList.length > 0 && item.imageUrlList[2]
+              ? item.imageUrlList[2]
+              : item.imageUrl,
         },
       ];
       setImages(images);
@@ -389,7 +401,7 @@ export default function DetailProduct() {
                   </span>
                   <span className="detail-product__shipprice-content">
                     ₫{lookupShipPrice[0]} - ₫{lookupShipPrice[1]}
-                    <svg
+                    {/* <svg
                       enableBackground="new 0 0 11 11"
                       viewBox="0 0 11 11"
                       x="0"
@@ -399,7 +411,7 @@ export default function DetailProduct() {
                       <g>
                         <path d="m11 2.5c0 .1 0 .2-.1.3l-5 6c-.1.1-.3.2-.4.2s-.3-.1-.4-.2l-5-6c-.2-.2-.1-.5.1-.7s.5-.1.7.1l4.6 5.5 4.6-5.5c.2-.2.5-.2.7-.1.1.1.2.3.2.4z"></path>
                       </g>
-                    </svg>
+                    </svg> */}
                   </span>
                 </div>
 
@@ -598,7 +610,7 @@ export default function DetailProduct() {
                   ĐÁNH GIÁ SẢN PHẨM
                 </div>
 
-                <div className="detail-content__rating-overview">
+                {/* <div className="detail-content__rating-overview">
                   <div className="detail-content__rating-score">
                     <span className="detail-content__score-result">4.9</span>
                     <span className="detail-content__score-oufof">trên 5</span>
@@ -702,7 +714,6 @@ export default function DetailProduct() {
                     </button>
                   </div>
                 </div>
-                {/* ĐÁNH GIÁ SẢN PHẨM */}
                 <div className="detail-content__rating-list">
                   <div className="detail-content__rating-item">
                     <div className="detail-content__rating-name">
@@ -740,7 +751,7 @@ export default function DetailProduct() {
                       2021-04-23 07:57
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="detail-content__right">

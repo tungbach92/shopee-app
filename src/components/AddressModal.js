@@ -1,9 +1,8 @@
 import React, { useContext, useState } from "react";
 import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
-import { db } from "../firebase";
 
-const AddressAddPopup = ({
+const AddressModal = ({
   isAddressAddShowing,
   toggleAddressAdd,
   phone,
@@ -44,36 +43,45 @@ const AddressAddPopup = ({
 
     if (!name) {
       isValid = false;
-      errors["name"] = "Please enter a name!";
-    } else if (!/(\D*[\s]){2,}/.test(name)) {
-      // contain atleast 2 space, only char
+      errors["name"] = "Vui lòng nhập Họ tên!";
+    }
+
+    const nameRegex = /(\D*[\s]){2,}/; // contain atleast 2 space, only char
+    if (name && !nameRegex.test(name)) {
       isValid = false;
-      errors["name"] = "Please enter a full and valid name!";
+      errors["name"] = "Nhập đầy đủ cả họ và tên, không chứa số!";
     }
 
     if (!phone) {
       isValid = false;
-      errors["phone"] = "Please enter a phone number!";
+      errors["phone"] = "Vui lòng nhập Số điện thoại";
+    }
+
+    const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/; // đầu số 03, 05, 07, 08, 09, bắt đầu với +84 hoặc 84
+    if (phone && !phoneRegex.test(phone)) {
+      isValid = false;
+      errors["phone"] = "Số điện thoại không hợp lệ!";
     }
 
     if (!province) {
       isValid = false;
-      errors["province"] = "Please choose a province!";
+      errors["province"] = "Vui lòng chọn Tỉnh/thành phố";
     }
 
     if (!district) {
       isValid = false;
-      errors["district"] = "Please choose a district!";
+      errors["district"] = "Vui lòng chọn Quận/huyện";
     }
 
     if (!ward) {
       isValid = false;
-      errors["ward"] = "Please choose a ward!";
+      errors["ward"] = "Vui lòng chọn Phường/xã/thị trấn";
     }
 
     if (!street) {
       isValid = false;
-      errors["street"] = "Please enter street detail!";
+      errors["street"] =
+        "Vui lòng nhập Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)";
     }
 
     setErrors(errors);
@@ -214,6 +222,8 @@ const AddressAddPopup = ({
                 className={
                   district
                     ? "address-profile__district address-profile__district--selected"
+                    : !province
+                    ? "address-profile__district address-profile__district--disabled"
                     : "address-profile__district"
                 }
               >
@@ -237,6 +247,8 @@ const AddressAddPopup = ({
                 className={
                   ward
                     ? "address-profile__ward address-profile__ward--selected"
+                    : !district
+                    ? "address-profile__ward address-profile__ward--disabled"
                     : "address-profile__ward"
                 }
               >
@@ -295,4 +307,4 @@ const AddressAddPopup = ({
     : null;
 };
 
-export default AddressAddPopup;
+export default AddressModal;
