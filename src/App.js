@@ -27,28 +27,22 @@ function App() {
     <>
       <Suspense fallback={<div className="app__no-product">Loading...</div>}>
         <Routes>
-          <Route exact path="/" element={<Product />}></Route>
-          <Route exact path="/cart" element={<Cart />}></Route>
+          <Route path="/" element={<Product />}></Route>
+          <Route path="/cart" element={<Cart />}></Route>
+          <Route path="/product/:metaTitle/:id" element={<Detail />}></Route>
           <Route
-            exact
-            path="/product/:metaTitle/:id"
-            element={<Detail />}
-          ></Route>
-          <Route
-            exact
             path="/user"
             element={<Navigate to="/user/account/"></Navigate>}
           ></Route>
           <Route
             path="/user/account/*"
             element={
-              <Elements stripe={stripePromise}>  
+              <Elements stripe={stripePromise}>
                 <Account />
               </Elements>
             }
           ></Route>
           <Route
-            exact
             path="/checkout"
             element={
               <Elements stripe={stripePromise}>
@@ -56,10 +50,10 @@ function App() {
               </Elements>
             }
           ></Route>
-          <Route exact path="/login" element={<Login />}></Route>
-          <Route exact path="/register" element={<Register />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
           <Route path="/search" element={<Search />}></Route>
-          <Route exact path="/admin" element={<Admin />}></Route>
+          <Route path="/admin" element={<Admin />}></Route>
           <Route path="*" element={<Error />} />
         </Routes>
       </Suspense>

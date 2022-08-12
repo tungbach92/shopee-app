@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import phonevalidate from "vn-phone-validator";
 import { ErrorMessage } from "formik";
 import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 const InputField = (props) => {

@@ -67,7 +67,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         item.card.exp_year === tokenServerSide.card.exp_year
     );
     if (!isCardDuplicate) {
-      //Create a setupIntent(plus creat customer), use paymentIntent to continue payment flow
+      //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
       const response = await axios({
         method: "POST",
         url: "/create-setup-intent",

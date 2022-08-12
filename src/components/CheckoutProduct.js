@@ -4,7 +4,6 @@ import React, {
   useState,
   useRef,
   useMemo,
-  useCallback,
 } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
@@ -16,16 +15,11 @@ import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
 import cimbImg from "../img/ic_cimb_bank@4x.png";
 import mbImg from "../img/ic_MBBank@4x.png";
-import visaImg from "../img/visa.png";
-import masterImg from "../img/master.png";
-import jcbImg from "../img/jcb.png";
-import expressImg from "../img/express.png";
 import ErrorModal from "./ErrorModal";
 import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
 import { useStripe } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
-import firebase from "firebase/app";
 import "firebase/firestore";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
@@ -104,9 +98,6 @@ export default function CheckoutProduct() {
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
   const [isImmediatePayment, setIsImmediatePayment] = useState(false);
-  const [card4digits, setCard4digits] = useState("");
-  const [cardBrand, setCardBrand] = useState("");
-  const [setUpIntentSecret, setSetUpIntentSecret] = useState();
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
 
@@ -316,12 +307,6 @@ export default function CheckoutProduct() {
     updateDefaultPaymentMethodIDToStripe(paymentMethodID);
   };
 
-  const handleChange = (e) => {
-    e.target.value = e.target.value
-      .replace(/[^0-9.]/g, "")
-      .replace(/(\..*)\./g, "$1");
-  };
-
   const handleShipInfoAddClick = () => {
     toggleAddressAdd(!isAddressAddShowing);
     setName("");
@@ -369,6 +354,7 @@ export default function CheckoutProduct() {
       paymentMethod.length > 0
     ) {
       setProcessing(true);
+
       if (isCardPayment && defaultPaymentMethodID) {
         let defaultshipInfo;
         shipInfos.forEach((item) => {
@@ -376,6 +362,7 @@ export default function CheckoutProduct() {
             defaultshipInfo = { ...item };
           }
         });
+        // Thanh toán off-season vơi thẻ được lưu ( setupIntent PaymentMethod ID)
         axios({
           method: "POST",
           url: `/charge-card-off-session?total=${getItemsPriceFinal(
@@ -410,9 +397,8 @@ export default function CheckoutProduct() {
             // Card needs to be authenticatied
             // Reuse the card details we have to use confirmCardPayment() to prompt for authentication
             // showAuthenticationView(data);
-            alert(
-              "Card needs to be authenticatied for charging. Press OK and wait."
-            );
+            alert("Thẻ cần xác thực để thanh toán. Vui lòng nhấn ok và đợi.");
+            // Tương đương với sd PPaymentIntents method to confirm paymentIntent
             stripe
               .confirmCardPayment(result.data.clientSecret, {
                 payment_method: result.data.paymentMethod,
@@ -453,7 +439,11 @@ export default function CheckoutProduct() {
             // Card was declined off-session -- ask customer for a new card
             // showEl(".requires-pm");
             alert(
-              `${result.data.card.brand} ****${result.data.card.last4} was declined off-session or insufficient funds. Please enter a new card detail`
+              `${result.data.card?.brand ? result.data.card.brand : null} ${
+                result.data.card?.last4
+                  ? "****" + result.data.card.last4
+                  : "Thẻ"
+              } bị từ chối thanh toán off-session hoặc không đủ tiền. Vui lòng sử dụng thẻ khác`
             );
             setSucceeded(false);
             setProcessing(false);
@@ -465,12 +455,15 @@ export default function CheckoutProduct() {
             handleOrderSucceeded(result.data.paymentIntent);
           }
         });
-      } else if (
+      } 
+      
+      if (
         isCardPayment &&
         typeof defaultPaymentMethodID === "undefined"
       ) {
         togglePopup(!isPopupShowing);
       } else {
+        // payment in delivery
         const paymentIntent = {
           id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
           amount: getItemsPriceFinal(checkoutItems, shipUnit, voucher),

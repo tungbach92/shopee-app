@@ -230,6 +230,10 @@ app.post("/charge-card-off-session", async (request, response) => {
       response.send({
         error: error.code,
         clientSecret: error.raw.payment_intent.client_secret,
+        card: {
+          brand: error.raw.payment_method.card.brand,
+          last4: error.raw.payment_method.card.last4,
+        },
       });
     } else {
       console.log("Unknown error occurred", error);
@@ -238,48 +242,48 @@ app.post("/charge-card-off-session", async (request, response) => {
 });
 // Charge card on season
 
-// Web hook copy code
-app.post("/webhook", async (req, res) => {
-  // Check if webhook signing is configured.
-  let data;
-  let eventType;
-  if (process.env.STRIPE_WEBHOOK_SECRET) {
-    // Retrieve the event by verifying the signature using the raw body and secret.
-    let event;
-    const signature = req.headers["stripe-signature"];
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.rawBody,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (err) {
-      console.log("⚠️  Webhook signature verification failed.");
-      return res.sendStatus(400);
-    }
-    data = event.data;
-    eventType = event.type;
-  } else {
-    // Webhook signing is recommended, but if the secret is not configured in `config.js`,
-    // we can retrieve the event data directly from the request body.
-    data = req.body.data;
-    eventType = req.body.type;
-  }
-  if (eventType === "payment_intent.succeeded") {
-    // The payment was complete
-    // Fulfill any orders, e-mail receipts, etc
-    console.log(
-      "💰 Payment succeeded with payment method " + data.object.payment_method
-    );
-  } else if (eventType === "payment_intent.payment_failed") {
-    // The payment failed to go through due to decline or authentication request
-    const error = data.object.last_payment_error.message;
-    console.log("❌ Payment failed with error: " + error);
-  } else if (eventType === "payment_method.attached") {
-    // A new payment method was attached to a customer
-    console.log("💳 Attached " + data.object.id + " to customer");
-  }
-  res.sendStatus(200);
-});
+// // Web hook copy code
+// app.post("/webhook", async (req, res) => {
+//   // Check if webhook signing is configured.
+//   let data;
+//   let eventType;
+//   if (process.env.STRIPE_WEBHOOK_SECRET) {
+//     // Retrieve the event by verifying the signature using the raw body and secret.
+//     let event;
+//     const signature = req.headers["stripe-signature"];
+//     try {
+//       event = stripe.webhooks.constructEvent(
+//         req.rawBody,
+//         signature,
+//         process.env.STRIPE_WEBHOOK_SECRET
+//       );
+//     } catch (err) {
+//       console.log("⚠️  Webhook signature verification failed.");
+//       return res.sendStatus(400);
+//     }
+//     data = event.data;
+//     eventType = event.type;
+//   } else {
+//     // Webhook signing is recommended, but if the secret is not configured in `config.js`,
+//     // we can retrieve the event data directly from the request body.
+//     data = req.body.data;
+//     eventType = req.body.type;
+//   }
+//   if (eventType === "payment_intent.succeeded") {
+//     // The payment was complete
+//     // Fulfill any orders, e-mail receipts, etc
+//     console.log(
+//       "💰 Payment succeeded with payment method " + data.object.payment_method
+//     );
+//   } else if (eventType === "payment_intent.payment_failed") {
+//     // The payment failed to go through due to decline or authentication request
+//     const error = data.object.last_payment_error.message;
+//     console.log("❌ Payment failed with error: " + error);
+//   } else if (eventType === "payment_method.attached") {
+//     // A new payment method was attached to a customer
+//     console.log("💳 Attached " + data.object.id + " to customer");
+//   }
+//   res.sendStatus(200);
+// });
 // Listen command
 exports.api = functions.https.onRequest(app);

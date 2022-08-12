@@ -180,14 +180,14 @@ const AddressModal = ({
             <div className="address-profile__modal-content">
               <input
                 type="text"
-                defaultValue={name}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="address-profile__name"
                 placeholder="Họ và tên"
               />
               <input
                 type="text"
-                defaultValue={phone}
+                value={phone}
                 onChange={handlePhoneChange}
                 className="address-profile__phone"
                 placeholder="Số điện thoại"
@@ -276,7 +276,7 @@ const AddressModal = ({
               <div className="address-profile__ward-error">{errors.ward}</div>
               <input
                 type="text"
-                defaultValue={street}
+                value={street}
                 onChange={(e) => setStreet(e.target.value)}
                 className="address-profile__address-detail"
                 placeholder="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
