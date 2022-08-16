@@ -501,7 +501,10 @@ export default class ProductProvider extends Component {
   setCustomerInfo = (name, phone, address) => {
     this.setState({ name, phone, address });
   };
-
+  /**
+   * It goes to {@link componentDidMount}
+   * TODO refactor this
+   */
   getDataFireBase = async () => {
     try {
       let items = [];

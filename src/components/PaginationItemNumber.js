@@ -5,17 +5,15 @@ import { useContext } from "react";
 
 export default function PaginationItemNumber() {
   const context = useContext(ProductContext);
-  let {
-    pageIndex,
-    setPageIndex,
-    pageTotal,
-   } = context;
-
-  let jsxArray = [];
-  for (let index = 3; index <= pageTotal; index++) {
-    //Hiện 5 trang đầu
-    if (pageIndex <= 5 && index <= 5) {
-      jsxArray.push(
+  let { pageIndex, setPageIndex, pageTotal } = context;
+  const numOfPageShowing = 5;
+  const numberOfPageHiddingFromStart = 3;
+  const numberOfPageHiddingFromEnd = 3;
+  let arrayOfPageIndex = [];
+  for (let index = numberOfPageHiddingFromStart; index <= pageTotal; index++) {
+    //show pages from index to ...
+    if (pageIndex <= numOfPageShowing && index <= numOfPageShowing) {
+      arrayOfPageIndex.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -28,13 +26,13 @@ export default function PaginationItemNumber() {
       );
     }
 
-    //Hiện 5 trang giữa
+    //show pages between ... and ...
     else if (
-      pageIndex >= 5 &&
-      index <= pageIndex + 2 &&
-      index >= pageIndex - 2
+      pageIndex >= numOfPageShowing &&
+      index < pageIndex + numberOfPageHiddingFromEnd &&
+      index > pageIndex - numberOfPageHiddingFromStart
     ) {
-      jsxArray.push(
+      arrayOfPageIndex.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -47,9 +45,12 @@ export default function PaginationItemNumber() {
       );
     }
 
-    //Hiện 5 trang cuối
-    else if (pageIndex >= pageTotal - 2 && index > pageTotal - 5) {
-      jsxArray.push(
+    //show pages from ... to the end
+    else if (
+      pageIndex > pageTotal - numberOfPageHiddingFromEnd &&
+      index > pageTotal - numOfPageShowing
+    ) {
+      arrayOfPageIndex.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -81,19 +82,20 @@ export default function PaginationItemNumber() {
       >
         <div className="pagination-item__link">2</div>
       </li>
-      {/* Hiện ... khi quá 5 trnag đầu */}
-      {pageIndex > 5 && (
+      {/* Show ... when pageIndex > numOfPageShowing   */}
+      {pageIndex > numOfPageShowing && (
         <li className="pagination-item pagination-item--non-click">
           <div className="pagination-item__link">...</div>
         </li>
       )}
-      {jsxArray}
-      {/* Hiện ... khi quá 5 trang cuối */}
-      {pageTotal > 5 && pageIndex <= pageTotal - 3 && (
-        <li className="pagination-item pagination-item--non-click">
-          <div className="pageTotalpagination-item__link">...</div>
-        </li>
-      )}
+      {arrayOfPageIndex}
+      {/* show ... */}
+      {pageTotal > numOfPageShowing &&
+        pageIndex <= pageTotal - numberOfPageHiddingFromEnd && (
+          <li className="pagination-item pagination-item--non-click">
+            <div className="pageTotalpagination-item__link">...</div>
+          </li>
+        )}
     </>
   );
 }

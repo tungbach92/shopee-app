@@ -28,18 +28,23 @@ export default function ProductList({
     searchItems,
     setSearchItemFiltered,
     pageTotalCalc,
-    setPageSize,
     setFilter,
     setFilterPrice,
     setCategory,
     loading,
   } = context;
+  
+  const productPageIndex = 1;
+  const similarPageIndex = 1;
+  const similarPageSize = 6;
+  const searchPageIndex = 1;
+  const searchPageSize = pageSize;
+  const category = "allProduct";
+  const filter = "all";
+  const filterPrice = "default";
 
   // set default value for product page, search page
   useEffect(() => {
-    const category = "allProduct";
-    const filter = "all";
-    const filterPrice = "default";
     setCategory(category);
     setFilter(filter);
     setFilterPrice(filterPrice);
@@ -72,54 +77,46 @@ export default function ProductList({
   //pagination value depend on page
   useEffect(() => {
     if (isProductPage) {
-      const pageIndex = 1;
-      const pageSize = 10;
       const pageTotal = pageTotalCalc(categoryItemsFiltered, pageSize);
-      setPageIndex(pageIndex);
-      setPageSize(pageSize);
+      setPageIndex(productPageIndex);
       setPageTotal(pageTotal);
     }
     if (isSearchPage) {
-      const searchPageIndex = 1;
-      const searchPageSize = 10;
       const searchPageTotal = pageTotalCalc(searchItemFiltered, searchPageSize);
       setPageIndex(searchPageIndex);
-      setPageSize(searchPageSize);
       setPageTotal(searchPageTotal);
     }
     if (similarDisPlay) {
-      const similarPageIndex = 1;
-      const similarPageSize = 6;
       const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
       setPageIndex(similarPageIndex);
-      setPageSize(similarPageSize);
       setPageTotal(similarPageTotal);
     }
   }, [
+    categoryItemsFiltered,
     isProductPage,
     isSearchPage,
+    pageSize,
     pageTotalCalc,
+    searchItemFiltered,
+    searchPageSize,
     setPageIndex,
-    setPageSize,
     setPageTotal,
     similarDisPlay,
     similarItems,
-    categoryItemsFiltered,
-    searchItemFiltered,
   ]);
 
   const getRenderItems = () => {
     let renderItem = [];
     if (isSearchPage) {
       renderItem = searchItemFiltered.slice(
-        (pageIndex - 1) * pageSize,
-        pageIndex * pageSize
+        (pageIndex - 1) * searchPageSize,
+        pageIndex * searchPageSize
       );
     }
     if (similarDisPlay) {
       renderItem = similarItems.slice(
-        (pageIndex - 1) * pageSize,
-        pageIndex * pageSize
+        (pageIndex - 1) * similarPageSize,
+        pageIndex * similarPageSize
       );
     }
     if (isProductPage) {

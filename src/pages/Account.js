@@ -8,15 +8,15 @@ import { Navigate, useNavigate } from "react-router";
 export default function Account() {
   const { authorized } = useContext(ProductContext);
   const navigate = useNavigate();
-  if (!authorized) {
-    // return <Navigate to="/login"></Navigate>;
-    navigate("/login");
-    return null;
-  }
-  return (
-    <>
-      <Header isAccountPage={true}></Header>
-      <AccountContent></AccountContent>
-    </>
-  );
+  if (authorized !== null) {
+    if (!authorized) {
+      return <Navigate to="/login"></Navigate>;
+    }
+    return (
+      <>
+        <Header isAccountPage={true}></Header>
+        <AccountContent></AccountContent>
+      </>
+    );
+  } else return null;
 }

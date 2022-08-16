@@ -313,7 +313,7 @@ const Header = ({
                         onKeyUp={inputOnKeyUp}
                         className="header__search-input"
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
-                        // value={searchInput}
+                        value={searchInput}
                       />
                       <a
                         href="# "
@@ -368,7 +368,7 @@ const Header = ({
                       onKeyUp={inputOnKeyUp}
                       className="header__search-input"
                       placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
-                      // value={searchInput}
+                      value={searchInput}
                     />
                     <a
                       href="# "

@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
@@ -97,7 +91,7 @@ export default function CheckoutProduct() {
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
-  const [isImmediatePayment, setIsImmediatePayment] = useState(false);
+  const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
 
@@ -289,9 +283,9 @@ export default function CheckoutProduct() {
     const paymentMethod = e.target.innerText;
     if (paymentMethod === "Thẻ Tín dụng/Ghi nợ") {
       setIsCardPayment(true);
-      setIsImmediatePayment(false);
+      setIsDeliveryPayment(false);
     } else if (paymentMethod === "Thanh toán khi nhận hàng") {
-      setIsImmediatePayment(true);
+      setIsDeliveryPayment(true);
       setIsCardPayment(false);
     }
     if (paymentMethod.length > 0) {
@@ -455,14 +449,13 @@ export default function CheckoutProduct() {
             handleOrderSucceeded(result.data.paymentIntent);
           }
         });
-      } 
-      
-      if (
-        isCardPayment &&
-        typeof defaultPaymentMethodID === "undefined"
-      ) {
+      }
+
+      if (isCardPayment && typeof defaultPaymentMethodID === "undefined") {
         togglePopup(!isPopupShowing);
-      } else {
+      }
+
+      if (isDeliveryPayment) {
         // payment in delivery
         const paymentIntent = {
           id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
@@ -715,7 +708,7 @@ export default function CheckoutProduct() {
         </ul>
         <div className="checkout-product__first-addition">
           <span className="checkout-product__message-wrapper">
-            <span className="checkout-product__message-label">Lời nhắn:</span>
+            {/* <span className="checkout-product__message-label">Lời nhắn:</span>
             <input
               ref={inputMessageEl}
               onBlur={handleInputBlur}
@@ -723,7 +716,7 @@ export default function CheckoutProduct() {
               type="text"
               placeholder="Lưu ý cho người bán..."
               className="checkout-product__message-input"
-            />
+            /> */}
           </span>
           <span className="checkout-product__transport-wrapper">
             <span className="checkout-product__transport-label">
@@ -960,7 +953,7 @@ export default function CheckoutProduct() {
                     "btn",
                     "checkout-product__method-Immediatepay",
                     {
-                      "checkout-product__method--selected": isImmediatePayment,
+                      "checkout-product__method--selected": isDeliveryPayment,
                     }
                   )}
                 >
@@ -987,7 +980,7 @@ export default function CheckoutProduct() {
             <div className="checkout-product__method-notify">
               <span className="checkout-product__notify-label">
                 {isCardPayment ? "Chọn thẻ" : ""}
-                {isImmediatePayment ? "Thanh toán khi nhận hàng" : ""}
+                {isDeliveryPayment ? "Thanh toán khi nhận hàng" : ""}
               </span>
               {isCardPayment && (
                 <div className="checkout-product__card-list">
@@ -1043,14 +1036,14 @@ export default function CheckoutProduct() {
                   )}
                 </div>
               )}
-              {isImmediatePayment && (
+              {isDeliveryPayment && (
                 <span className="checkout-product__immediatepay-notify">
                   Phí thu hộ: ₫0 VNĐ. Ưu đãi về phí vận chuyển (nếu có) áp dụng
                   cả với phí thu hộ.
                 </span>
               )}
             </div>
-            {isCardPayment && (
+            {/* {isCardPayment && (
               <div className="checkout-product__promo-item">
                 <div className="checkout-product__promo-cimb">
                   <span className="checkout-product__cimb-discount">
@@ -1079,7 +1072,7 @@ export default function CheckoutProduct() {
                   />
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="checkout-product__calc-wrapper">
             <span className="checkout-product__payment-label">

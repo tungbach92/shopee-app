@@ -11,20 +11,19 @@ const AccountOrder = () => {
   const {
     orderItems,
     setPageIndex,
-    setPageSize,
     setPageTotal,
     pageIndex,
-    pageSize,
     pageTotalCalc,
   } = useContext(ProductContext);
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
   const [isOrderPage, setIsOrderPage] = useState(false);
-
+  const orderPageIndex = 1;
+  const orderPageSize = 2;
   const currentOrderItems = [...searchOrderItemsFiltered].slice(
-    (pageIndex - 1) * pageSize,
-    pageIndex * pageSize
+    (pageIndex - 1) * orderPageSize,
+    pageIndex * orderPageSize
   );
 
   const handleSearchInput = (e) => {
@@ -89,19 +88,13 @@ const AccountOrder = () => {
   }, [filter, handleFilterSearchOrderItems]);
 
   useEffect(() => {
-    const orderPageIndex = 1;
-    const orderPageSize = 2;
-    const orderPageTotal = pageTotalCalc(searchOrderItemsFiltered, orderPageSize);
+    const orderPageTotal = pageTotalCalc(
+      searchOrderItemsFiltered,
+      orderPageSize
+    );
     setPageIndex(orderPageIndex);
-    setPageSize(orderPageSize);
     setPageTotal(orderPageTotal);
-  }, [
-    searchOrderItemsFiltered,
-    pageTotalCalc,
-    setPageIndex,
-    setPageSize,
-    setPageTotal,
-  ]);
+  }, [searchOrderItemsFiltered, pageTotalCalc, setPageIndex, setPageTotal]);
 
   useEffect(() => {
     setIsOrderPage(true);
