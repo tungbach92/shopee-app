@@ -1,6 +1,6 @@
 /* shopee additional customize*/
 :root {
-  --while-color: #fff;
+  --white-color: #fff;
   --black-color: #000;
   --text-color: #333;
   --grey-color: #888;
@@ -71,7 +71,7 @@ button[disabled] {
 
 .btn {
   padding: 0 1.5rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border: none;
   text-decoration: none;
   border-radius: 0.2rem;
@@ -88,7 +88,7 @@ button[disabled] {
   margin-left: 1.3rem;
   padding: 0 1.5rem;
   min-width: 15.4rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border: none;
   text-decoration: none;
   border-radius: 0.2rem;
@@ -141,7 +141,7 @@ button[disabled] {
 
 .pagination-number--active {
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .pagination-number--active:hover {

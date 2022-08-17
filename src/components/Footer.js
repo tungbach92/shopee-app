@@ -1,8 +1,8 @@
 import React from "react";
-import qrCodeNavImg from '../img/qr-code-home.png';
-import appShopeeImg from '../img/app-shopee.png';
-import ggShopeeImg from '../img/gg-shopee.png';
-import appGalShopeeImg from '../img/app-gal-shopee.png';
+import qrCodeNavImg from "../img/qr-code-home.png";
+import appShopeeImg from "../img/app-shopee.png";
+import ggShopeeImg from "../img/gg-shopee.png";
+import appGalShopeeImg from "../img/app-gal-shopee.png";
 
 export default function Footer() {
   return (
@@ -12,7 +12,7 @@ export default function Footer() {
         <div className="grid__row grid__row--padtb3">
           <div className="grid__col-2c4x">
             <h3 className="footer__heading">Chăm sóc khách hàng</h3>
-            <ul className="footer__list">
+            {/* <ul className="footer__list">
               <li className="footer__item">
                 <a href="# " className="footer__item-link">
                   Trung tâm trợ giúp
@@ -68,11 +68,11 @@ export default function Footer() {
                   Chính sách bảo hành
                 </a>
               </li>
-            </ul>
+            </ul> */}
           </div>
           <div className="grid__col-2c4x">
             <h3 className="footer__heading">Về Shopee</h3>
-            <ul className="footer__list">
+            {/* <ul className="footer__list">
               <li className="footer__item">
                 <a href="# " className="footer__item-link">
                   Giới thiệu về Shopee Việt Nam
@@ -118,7 +118,7 @@ export default function Footer() {
                   Liên Hệ Với Truyền Thông
                 </a>
               </li>
-            </ul>
+            </ul> */}
           </div>
           <div className="grid__col-2c4x">
             <h3 className="footer__heading">THANH TOÁN</h3>

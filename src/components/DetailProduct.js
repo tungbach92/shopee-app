@@ -8,6 +8,7 @@ import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
 import CurrencyFormat from "react-currency-format";
+import { Rating } from "@mui/material";
 
 export default function DetailProduct() {
   const { metaTitle, id } = useParams();
@@ -201,22 +202,18 @@ export default function DetailProduct() {
                   onClick={handleScrollTo}
                   className="detail-product__rating"
                 >
-                  <span className="detail-product__rating-number">4.9</span>
+                  <span className="detail-product__rating-number">
+                    {item?.rating}
+                  </span>
                   <div className="detail-product__rating-icons">
-                    <svg
-                      enableBackground="new 0 0 15 15"
-                      viewBox="0 0 15 15"
-                      x="0"
-                      y="0"
-                      className="detail-product__rating-icon"
-                    >
-                      <polygon
-                        points="7.5 .8 9.7 5.4 14.5 5.9 10.7 9.1 11.8 14.2 7.5 11.6 3.2 14.2 4.3 9.1 .5 5.9 5.3 5.4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeMiterlimit="10"
-                      ></polygon>
-                    </svg>
+                    <Rating
+                      name="half-rating-read"
+                      size="large"
+                      defaultValue={0}
+                      value={item?.rating}
+                      precision={0.1}
+                      readOnly
+                    />
                   </div>
                 </div>
                 <div

@@ -15,7 +15,7 @@ header {
 .header--login {
   position: unset;
   background-image: none;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 
 .header__nav {
@@ -33,7 +33,7 @@ header {
   display: inline-flex;
   align-items: center;
   padding: 0 0.6rem;
-  color: var(--while-color);
+  color: var(--white-color);
   position: relative;
 }
 .header__nav-item--qr::before {
@@ -73,7 +73,7 @@ header {
 }
 
 .header__nav-item-link {
-  color: var(--while-color);
+  color: var(--white-color);
   text-decoration: none;
   cursor: pointer;
   line-height: 3rem;
@@ -103,7 +103,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .header__noavatar-svg {
   border-radius: 50%;
@@ -114,7 +114,7 @@ header {
 
 .header__nav-login-link {
   display: none;
-  color: var(--while-color);
+  color: var(--white-color);
   text-decoration: none;
 }
 
@@ -122,7 +122,7 @@ header {
   width: 18.6rem;
   position: absolute;
   top: 100%;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 2px;
   display: none;
   flex-direction: column;
@@ -314,7 +314,7 @@ header {
   align-items: center;
   padding: 0 0.6rem;
   position: relative;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__nav-reg::before {
@@ -328,7 +328,7 @@ header {
 .header__nav-login {
   margin-right: 2rem;
   text-decoration: none;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__nav-login:hover {
@@ -337,7 +337,7 @@ header {
 
 .header__nav-register {
   text-decoration: none;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__nav-register:hover {
@@ -414,10 +414,10 @@ header {
   font-size: 2rem;
   font-weight: 500;
   text-transform: capitalize;
-  border-left: 0.0625rem solid var(--while-color);
+  border-left: 0.0625rem solid var(--white-color);
   padding-left: 1rem;
   margin: 0.8rem 0 0;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__page-name--login {
@@ -471,7 +471,7 @@ header {
 .header__search-wrapper {
   position: relative;
   padding-left: 0.6rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 0.2rem;
   box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 9%);
 }
@@ -482,10 +482,10 @@ header {
   border: none;
   outline: none;
 }
-
+/* 
 .header__search-input:focus ~ .header__history-list {
   display: block;
-}
+} */
 
 .header__search-input::placeholder {
   opacity: 0.7;
@@ -511,7 +511,7 @@ header {
   font-size: 1.4rem;
   display: block;
   line-height: 3.3rem;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__history-list {
@@ -519,21 +519,20 @@ header {
   width: 90%;
   max-height: 36vh;
   left: 0;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   top: 110%;
   padding-left: 0.6rem;
   border-radius: 0.2rem;
   font-size: 1.3rem;
   line-height: 3.8rem;
   box-shadow: 0 1px 4px 0 rgb(0 0 0 / 26%);
-  display: none;
   z-index: 2;
   overflow-y: auto;
 }
 
-.header__history-list:hover {
+/* .header__history-list:hover {
   display: block;
-}
+} */
 
 .header__history-list::before {
   content: "";
@@ -624,14 +623,14 @@ header {
   display: inline-block;
   font-size: 2.5rem;
   position: relative;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .header__cart-numb {
   position: absolute;
   font-size: 1.4rem;
   font-weight: 500;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   min-width: 1.3rem;
   padding: 0 0.3rem;
   text-align: center;
@@ -647,7 +646,7 @@ header {
   position: absolute;
   top: 140%;
   right: -50%;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 0.2rem;
   font-size: 1.3rem;
   color: var(--text-color);
@@ -802,7 +801,7 @@ header {
   background-color: var(--primary-color);
   border: none;
   outline: none;
-  color: var(--while-color);
+  color: var(--white-color);
   text-decoration: none;
   border-radius: 0.2rem;
   float: right;
@@ -891,7 +890,7 @@ header {
 
 .btn--active {
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .app__filter-item {
@@ -899,7 +898,7 @@ header {
 }
 
 .app__filter-item:active {
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
 }
 
@@ -914,7 +913,7 @@ header {
 
 .app__input-list {
   position: absolute;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   top: 3.7rem;
   left: 0;
   min-width: 100%;
@@ -974,7 +973,7 @@ header {
   line-height: 3.4rem;
   text-align: center;
   border: none;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   box-shadow: 0 0.1rem 0.1rem 0 rgb(0 0 0 / 10%);
   border-radius: 0.2rem;
   text-decoration: none;
@@ -1016,14 +1015,21 @@ header {
   margin: 1rem 0;
   padding: 0 0.3rem;
   position: relative;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   font-size: 1.2rem;
   transform: translateY(0);
+  transition: transform linear 0.1s;
+  will-change: transform;
 }
 
 .app__product-item:hover .app__product-cart-btn {
   transform: translateX(0);
   opacity: 1;
+}
+
+.app__product-item:hover {
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.0625rem 1rem 0 rgb(0 0 0 / 5%);
 }
 
 .app__product-link {
@@ -1033,14 +1039,8 @@ header {
   text-decoration: none;
   color: var(--text-color);
   position: relative;
-  transition: transform linear 0.1s;
-  will-change: transform;
 }
 
-.app__product-link:hover {
-  transform: translateY(-0.2rem);
-  box-shadow: 0 0.0625rem 1rem 0 rgb(0 0 0 / 5%);
-}
 
 .app__product-link:before {
   content: "";
@@ -1069,7 +1069,7 @@ header {
 }
 
 .app__product-cart-btn:hover {
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .app__product-cart-btn--disabled {
@@ -1086,7 +1086,7 @@ header {
   position: absolute;
   top: 3%;
   left: -2%;
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
 }
 
@@ -1120,7 +1120,7 @@ header {
 
 .app__product-sale-off-label {
   display: block;
-  color: var(--while-color);
+  color: var(--white-color);
   text-transform: uppercase;
   font-size: 1.25rem;
   margin-top: 0.5rem;
@@ -1140,7 +1140,7 @@ header {
 .app__product-name {
   line-height: 1.4rem;
   height: 2.8rem;
-  font-weight: 200;
+  font-weight: 400;
   overflow: hidden;
 
   display: block;
@@ -1209,7 +1209,7 @@ header {
 .app__more-rating {
   /* flex: 1; */
   /* text-align: right; */
-  margin-left: auto;
+  /* margin-left: auto; */
   margin-top: -0.2rem;
   margin-right: 0.6rem;
 }
@@ -1222,10 +1222,10 @@ header {
   margin-top: 0.6rem;
   text-align: right;
   opacity: 0.9;
-  font-weight: 200;
+  font-weight: 400;
   font-size: 1.1rem;
 }
-.app__no-product {
+.app__no-product{
   flex: 1;
   text-align: center;
   padding: 14.5rem;
@@ -1269,7 +1269,7 @@ header {
   padding: 2rem;
   margin: 0.6rem 0;
   align-items: center;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   font-size: 1.4rem;
   box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
   border-radius: 3px;
@@ -1281,7 +1281,7 @@ header {
   display: flex;
   margin-bottom: 1rem;
   font-size: 1.6rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
 }
 
 .user-order__filter-item {
@@ -1404,7 +1404,7 @@ header {
   display: flex;
   padding: 2rem;
   align-items: center;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   font-size: 1.4rem;
   box-shadow: 0 1px 1px 0 rgb(0 0 0 / 5%);
   border-radius: 3px;
@@ -1557,8 +1557,8 @@ header {
   border-top: 1px solid var(--primary-color);
   border-left: 1px solid var(--primary-color);
   border-right: 1px solid var(--primary-color);
-  /* border-bottom: 1px solid var(--while-color); */
-  background-color: var(--while-color);
+  /* border-bottom: 1px solid var(--white-color); */
+  background-color: var(--white-color);
   z-index: 3;
 }
 
@@ -1588,7 +1588,7 @@ header {
   position: absolute;
   top: 8.2rem;
   left: 0rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border: 1px solid var(--primary-color);
   box-shadow: 0 5px 10px 0 var(--primary-color);
   z-index: 1;
@@ -1634,7 +1634,7 @@ header {
   position: absolute;
   top: 70%;
   right: 50%;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   z-index: 3;
 }
 
@@ -1707,7 +1707,7 @@ header {
 
 .cart-product__tick-icon {
   width: 1rem;
-  fill: var(--while-color);
+  fill: var(--white-color);
   position: absolute;
   bottom: 0;
   right: 0;
@@ -1729,7 +1729,7 @@ header {
 
 .cart-product__notify-ok {
   padding: 0.8rem 3.6rem;
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
   text-transform: uppercase;
 }
@@ -1742,7 +1742,7 @@ header {
   margin-top: 2.6rem;
   display: grid;
   grid-template-columns: 1fr 38.6125rem 11.875rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   position: sticky;
   bottom: 0;
 }
@@ -1918,7 +1918,7 @@ header {
   padding: 1.3rem 7rem;
   font-size: 1.4rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 
@@ -1962,7 +1962,7 @@ header {
   transform: translate(-50%, -50%);
   width: 50rem;
   padding: 3rem 3rem 0rem;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .address-profile__modal-container {
   width: 62rem;
@@ -2049,7 +2049,7 @@ header {
 .app-product__popup-label {
   font-size: 1.6rem;
   margin-top: 1rem;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .forgot-password__popup-footer,
@@ -2061,7 +2061,7 @@ header {
 .app-product__modal-icon {
   width: 6rem;
   padding: 1rem;
-  fill: var(--while-color);
+  fill: var(--white-color);
   border-radius: 50%;
   background-color: #00bfa5;
 }
@@ -2169,7 +2169,7 @@ header {
   background-color: var(--primary-color);
   font-size: 1.4rem;
   text-transform: uppercase;
-  color: var(--while-color);
+  color: var(--white-color);
   cursor: pointer;
 }
 
@@ -2339,7 +2339,7 @@ header {
   background-color: var(--primary-color);
   font-size: 1.4rem;
   text-transform: uppercase;
-  color: var(--while-color);
+  color: var(--white-color);
   cursor: pointer;
   flex: 1;
 }
@@ -2411,7 +2411,7 @@ header {
 .cart-product__error-btn {
   padding: 1.4rem 4rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
   font-size: 1.4rem;
 }
 
@@ -2448,7 +2448,7 @@ header {
   padding: 1rem 4rem;
   font-size: 1.4rem;
   text-transform: uppercase;
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
 }
 
@@ -2475,7 +2475,7 @@ header {
 }
 .checkout-product__address-wrapper {
   padding: 3rem 2.6rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 
@@ -2562,7 +2562,7 @@ header {
   padding: 1rem 2rem;
   background-color: var(--primary-color);
   text-transform: capitalize;
-  color: var(--while-color);
+  color: var(--white-color);
   font-size: 1.4rem;
 }
 .checkout-product__address-cancel {
@@ -2582,7 +2582,7 @@ header {
   display: flex;
   margin-top: 1.4rem;
   padding: 3.8rem 2.6rem 0;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
 }
 
 .checkout-product__product {
@@ -2619,7 +2619,7 @@ header {
   display: flex;
   align-items: center;
   font-size: 1.4rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
 }
 
 .checkout-product__name-wrapper {
@@ -2754,7 +2754,7 @@ header {
 }
 
 .checkout-product__item-loading {
-  background: var(--while-color);
+  background: var(--white-color);
   text-align: center;
   padding: 6rem;
   font-size: 1.6rem;
@@ -2765,12 +2765,12 @@ header {
 .checkout-product__first-addition {
   display: flex;
   align-items: center;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 
 .checkout-product__checkout-wrapper {
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 
@@ -2926,7 +2926,7 @@ header {
   height: 3.2rem;
   top: 0rem;
   right: 0rem;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .checkout-product__mb-img {
   position: absolute;
@@ -2934,7 +2934,7 @@ header {
   height: 3.2rem;
   top: 0rem;
   right: 0rem;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .checkout-product__method-action {
   flex: 1;
@@ -3078,7 +3078,7 @@ header {
 .checkout-product__order-btn {
   margin-left: auto;
   padding: 1.6rem 6.8rem;
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
   font-size: 1.6rem;
   text-transform: capitalize;
@@ -3119,7 +3119,7 @@ header {
   padding: 1.6rem;
   border-radius: 0.3rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
-  background-color: var(--while-color);
+  background-color: var(--white-color);
 }
 
 .detail-product__info-left {
@@ -3366,7 +3366,7 @@ header {
   padding: 1rem 0;
   border: 1px solid rgba(0, 0, 0, 0.09);
   z-index: 3;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .detail-product__picker-input {
   margin: 0 1rem;
@@ -3451,7 +3451,7 @@ header {
 .detail-product__variation-item {
   margin-left: 1rem;
   padding: 1rem 1.4rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
 
@@ -3529,7 +3529,7 @@ header {
   margin-left: 1.6rem;
   background-color: var(--primary-color);
   text-transform: capitalize;
-  color: var(--while-color);
+  color: var(--white-color);
   font-size: 1.4rem;
   text-decoration: none;
 }
@@ -3577,7 +3577,7 @@ header {
   grid-row-gap: 2.6rem;
   align-items: center;
   padding: 4rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 0.3rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
   font-size: 1.4rem;
@@ -3630,7 +3630,7 @@ header {
 .detail-content__rating {
   padding: 2.6rem;
   margin-top: 1.6rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 0.3rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
@@ -3675,7 +3675,7 @@ header {
 .detail-content__overview-item {
   margin: 0 1rem 1rem 0;
   padding: 0.6rem 2rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   color: var(--text-color);
   border: 1px solid rgba(0, 0, 0, 0.09);
 }
@@ -3733,7 +3733,7 @@ header {
 .detail-content__right {
   flex: 1;
   margin-left: 1.6rem;
-  background-color: var(--while-color);
+  background-color: var(--white-color);
   border-radius: 0.3rem;
 }
 
@@ -3795,7 +3795,7 @@ header {
   flex-direction: column;
   width: 40rem;
   min-height: 48rem;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 .login-content__title {
   font-size: 1.6rem;
@@ -3820,7 +3820,7 @@ header {
   margin-top: 2rem;
   padding: 1.2rem 0;
   text-transform: uppercase;
-  color: var(--while-color);
+  color: var(--white-color);
   background-color: var(--primary-color);
 }
 
@@ -3904,7 +3904,7 @@ header {
   align-items: center;
   justify-content: center;
   justify-self: center;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 
 .user-profile__image-user {
@@ -3981,7 +3981,7 @@ header {
 .address-profile__address-container,
 .payment-profile__payment-container {
   padding: 0 3rem;
-  background: var(--while-color);
+  background: var(--white-color);
 }
 
 .address-profile__address--empty {
@@ -4024,7 +4024,7 @@ header {
   padding: 3rem 3rem;
   display: flex;
   justify-content: space-between;
-  background: var(--while-color);
+  background: var(--white-color);
   border-bottom: 1px solid rgba(0, 0, 0, 0.09);
 }
 .address-profile__address-content:last-child {
@@ -4075,7 +4075,7 @@ header {
   padding: 1rem 2rem;
   text-align: center;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
   display: block;
 }
 
@@ -4172,7 +4172,7 @@ header {
   padding: 1rem 2rem;
   text-align: center;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
   max-width: 10rem;
 }
 
@@ -4296,7 +4296,7 @@ header {
   max-width: 6.2rem;
   text-align: center;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .user-profile__info-submit:hover {
@@ -4344,7 +4344,7 @@ header {
   text-align: center;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .user-profile__image-btn:hover {
@@ -4364,7 +4364,7 @@ header {
   text-align: center;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .user-profile__card-add:hover {
@@ -4388,7 +4388,7 @@ header {
   margin-left: 0.6rem;
   padding: 0.2rem 0.5rem;
   background-color: #00bfa5;
-  color: var(--while-color);
+  color: var(--white-color);
   border-radius: 0.3rem;
   text-transform: capitalize;
   font-size: 1.2rem;
@@ -4419,7 +4419,7 @@ header {
   text-align: center;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
   display: block;
   margin-top: 1rem;
   text-transform: capitalize;
@@ -4585,7 +4585,7 @@ header {
   border: 1px solid rgba(0, 0, 0, 0.09);
   font-size: 1.4rem;
   font-style: normal;
-  background: var(--while-color);
+  background: var(--white-color);
   z-index: 3;
 }
 .address-profile__provinces,
@@ -4650,7 +4650,7 @@ header {
   justify-self: flex-end;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .address-profile__popup-apply:hover {
@@ -4696,7 +4696,7 @@ header {
   background-color: #00bfa5;
   border-radius: 0.2rem;
   font-size: 1.2rem;
-  color: var(--while-color);
+  color: var(--white-color);
 }
 .payment-profile__card-spacer {
   flex: 1;
@@ -4725,7 +4725,7 @@ header {
   text-align: center;
   padding: 1rem 2rem;
   background-color: var(--primary-color);
-  color: var(--while-color);
+  color: var(--white-color);
 }
 
 .payment-profile__default-btn:hover {
@@ -4744,7 +4744,7 @@ header {
 .footer__ads {
   height: 12rem;
   border-top: 3px solid var(--primary-color);
-  background-color: var(--while-color);
+  background-color: var(--white-color);
 }
 
 .pagination--mtb3 {

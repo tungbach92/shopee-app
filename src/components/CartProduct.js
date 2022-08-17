@@ -35,6 +35,7 @@ export default function CartProduct(props) {
     voucher,
     setVoucher,
     cartItems,
+    cartItemsLoading,
     handleClick,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
@@ -48,7 +49,14 @@ export default function CartProduct(props) {
     user,
     setCartItemsFromFirebase,
     setCheckoutItemsFromFirebase,
+    setSearchInput,
   } = useContext(ProductContext);
+
+  // scrollToTop
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setSearchInput("");
+  }, [setSearchInput]);
 
   useEffect(() => {
     console.log(location.state?.from.pathname);
@@ -233,7 +241,7 @@ export default function CartProduct(props) {
 
   return (
     <div className="main">
-      {cartItems?.length > 0 && (
+      {cartItems.length > 0 && (
         <div className="grid cart-product">
           <div className="cart-product__notify">
             <svg
@@ -922,7 +930,7 @@ export default function CartProduct(props) {
           </div>
         </div>
       )}
-      {cartItems?.length === 0 && user && (
+      {cartItems.length === 0 && user && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">
@@ -934,9 +942,7 @@ export default function CartProduct(props) {
         </div>
       )}
 
-      {cartItems === null && (
-        <div className="grid cart-loading">Loading...</div>
-      )}
+      {cartItemsLoading && <div className="grid cart-loading">Loading...</div>}
 
       {isAddCartPopup && (
         <AddCartModal

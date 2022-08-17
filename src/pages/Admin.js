@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { db } from "../firebase";
 import { data } from "../data";
+import { random } from "lodash";
 
 const Admin = (props) => {
   const [items, setItems] = useState(data);
@@ -65,12 +66,8 @@ const Admin = (props) => {
         imageUrl: element.imageUrl,
         imageUrlList: element.imageUrlList ? element.imageUrlList : [],
         price: element.price,
-        rating: element.rating
-          ? element.rating
-          : Math.floor(Math.random() * 5) + 2,
-        soldAmount: element.soldAmount
-          ? element.soldAmount
-          : Math.floor(Math.random() * 2000) + 250,
+        rating: Number(random(2.0, 5.0, true).toFixed(1)),
+        soldAmount: element.soldAmount ? element.soldAmount : random(250, 2000),
         description: element.description,
         location: element.location ? element.location : "USA",
         date: element.date ? element.date : new Date().toString(),
@@ -86,7 +83,7 @@ const Admin = (props) => {
         includedVAT: true,
         favorite: false,
         discount: Math.floor(Math.random() * 50) + 5,
-        freeShip: false,
+        freeShip: element.freeShip ? element.freeShip : false,
         metaKeyword: 1,
         metaDescription: 1,
       });

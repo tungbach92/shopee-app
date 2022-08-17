@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
+import { Box } from "@mui/material";
 
 export default function ProductList({
   isProductPage,
@@ -33,7 +34,7 @@ export default function ProductList({
     setCategory,
     loading,
   } = context;
-  
+
   const productPageIndex = 1;
   const similarPageIndex = 1;
   const similarPageSize = 6;
@@ -42,6 +43,11 @@ export default function ProductList({
   const category = "allProduct";
   const filter = "all";
   const filterPrice = "default";
+
+  // scrollToTop
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // set default value for product page, search page
   useEffect(() => {
@@ -131,7 +137,20 @@ export default function ProductList({
   if (getRenderItems().length === 0 && isSearchPage) {
     return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
   } else if (loading) {
-    return <div className="app__no-product">Loading...</div>;
+    return (
+      <Box
+        sx={{
+          flex: 1,
+          textAlign: "center",
+          padding: "14.5rem",
+          fontSize: "1.6rem",
+          color: "var(--primary-color)",
+          fontWeight: "600",
+        }}
+      >
+        Loading...
+      </Box>
+    );
   }
   return getRenderItems().map((item) => (
     <ProductItem

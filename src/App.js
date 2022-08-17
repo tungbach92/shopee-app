@@ -4,7 +4,6 @@ import "./css/main.css";
 import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Cart from "./pages/Cart";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
@@ -13,13 +12,13 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { Suspense, useContext, useEffect, useState } from "react";
-import { ProductContext } from "./context";
+import React, { Suspense } from "react";
 import Search from "./pages/Search";
 import Admin from "./pages/Admin";
 
 //Lazy load product page
 const Product = React.lazy(() => import("./pages/Product"));
+const Cart = React.lazy(() => import("./pages/Cart"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {

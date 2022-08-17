@@ -9,11 +9,11 @@ export default function PaginationItemNumber() {
   const numOfPageShowing = 5;
   const numberOfPageHiddingFromStart = 3;
   const numberOfPageHiddingFromEnd = 3;
-  let arrayOfPageIndex = [];
+  let arrayOfPageIndexElements = [];
   for (let index = numberOfPageHiddingFromStart; index <= pageTotal; index++) {
     //show pages from index to ...
     if (pageIndex <= numOfPageShowing && index <= numOfPageShowing) {
-      arrayOfPageIndex.push(
+      arrayOfPageIndexElements.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -32,7 +32,7 @@ export default function PaginationItemNumber() {
       index < pageIndex + numberOfPageHiddingFromEnd &&
       index > pageIndex - numberOfPageHiddingFromStart
     ) {
-      arrayOfPageIndex.push(
+      arrayOfPageIndexElements.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -50,7 +50,7 @@ export default function PaginationItemNumber() {
       pageIndex > pageTotal - numberOfPageHiddingFromEnd &&
       index > pageTotal - numOfPageShowing
     ) {
-      arrayOfPageIndex.push(
+      arrayOfPageIndexElements.push(
         <li
           key={index}
           onClick={() => setPageIndex(index)}
@@ -82,14 +82,14 @@ export default function PaginationItemNumber() {
       >
         <div className="pagination-item__link">2</div>
       </li>
-      {/* Show ... when pageIndex > numOfPageShowing   */}
+      {/* Show ... from the start  */}
       {pageIndex > numOfPageShowing && (
         <li className="pagination-item pagination-item--non-click">
           <div className="pagination-item__link">...</div>
         </li>
       )}
-      {arrayOfPageIndex}
-      {/* show ... */}
+      {arrayOfPageIndexElements}
+      {/* show ... from the end*/}
       {pageTotal > numOfPageShowing &&
         pageIndex <= pageTotal - numberOfPageHiddingFromEnd && (
           <li className="pagination-item pagination-item--non-click">

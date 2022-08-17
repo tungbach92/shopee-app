@@ -6,7 +6,6 @@ import ggShopeeImg from "../../img/gg-shopee.png";
 import appGalShopeeImg from "../../img/app-gal-shopee.png";
 import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
-import HeaderSearchHistory from "./HeaderSearchHistory";
 import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
@@ -23,6 +22,8 @@ const Header = ({
   const inputEl = useRef("");
   const navigate = useNavigate();
   const [recommendSearch, setRecommendSearch] = useState([]);
+  const [isHistory, setIsHistory] = useState(false);
+
   function getUnique(items) {
     let uniqueItems = new Set(items);
     return [...uniqueItems];
@@ -42,10 +43,11 @@ const Header = ({
     handleLogout,
   } = useContext(ProductContext);
 
-  const handleSearchIconClick = () => {
-    // let text = inputEl.current.value;
-    filterItemsBySearch(searchInput);
-    addToSearchHistory(searchInput);
+  const handleSearchIconClick = (text) => {
+    filterItemsBySearch(text);
+    addToSearchHistory(text);
+    setSearchInput(text);
+    setIsHistory(false);
     if (!isSearchPage) {
       navigate("/search");
     }
@@ -54,11 +56,7 @@ const Header = ({
   const inputOnKeyUp = (event) => {
     if (event.keyCode === 13) {
       event.currentTarget.blur();
-      filterItemsBySearch(searchInput);
-      addToSearchHistory(searchInput);
-      if (!isSearchPage) {
-        navigate("/search");
-      }
+      handleSearchIconClick(event.target.value);
     }
   };
 
@@ -287,15 +285,12 @@ const Header = ({
               <a
                 href="/"
                 className={classNames("header__logo-link", {
-                  "header__logo-link--notHome":
-                    isCartPage || isCheckoutPage,
+                  "header__logo-link--notHome": isCartPage || isCheckoutPage,
                 })}
               >
                 <img src={shopeeLogo} alt="shoppe-logo" />
               </a>
-              {isCartPage && (
-                <div className="header__page-name">Giỏ hàng</div>
-              )}
+              {isCartPage && <div className="header__page-name">Giỏ hàng</div>}
               {isCheckoutPage && (
                 <div className="header__page-name">Thanh Toán</div>
               )}
@@ -307,36 +302,47 @@ const Header = ({
                   <div className="header__search-content">
                     <div className="header__search-wrapper">
                       <input
-                        ref={inputEl}
                         type="text"
-                        onChange={searchInputOnChange}
+                        onChange={(e) => {
+                          setSearchInput(e.target.value);
+                        }}
+                        onClick={() => setIsHistory(true)}
+                        onBlur={() => {
+                          setTimeout(() => {
+                            setIsHistory(false);
+                          }, 300);
+                        }}
                         onKeyUp={inputOnKeyUp}
                         className="header__search-input"
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                         value={searchInput}
+                        defaultValue=""
                       />
                       <a
                         href="# "
-                        onClick={handleSearchIconClick}
+                        onClick={() => handleSearchIconClick(searchInput)}
                         className="header__search-icon"
                       >
                         <i className="bi bi-search"></i>
                       </a>
-                      <ul className="header__history-list">
-                        <li className="header__history-title">
-                          Lịch Sử Tìm Kiếm
-                        </li>
-                        {getUnique(searchHistory).map((item, index) => (
-                          <HeaderSearchHistory
-                            inputEl={inputEl}
-                            key={index}
-                            text={item}
-                            filterItemsBySearch={filterItemsBySearch}
-                            setSearchInput={setSearchInput}
-                            isSearchPage={isSearchPage}
-                          ></HeaderSearchHistory>
-                        ))}
-                      </ul>
+                      {isHistory && (
+                        <ul className="header__history-list">
+                          <li className="header__history-title">
+                            Lịch Sử Tìm Kiếm
+                          </li>
+                          {getUnique(searchHistory).map((item, index) => (
+                            <li
+                              key={index}
+                              onClick={() => handleSearchIconClick(item)}
+                              className="header__history-item"
+                            >
+                              <a href="# " className="header__history-link">
+                                {item}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
 
                     <ul className="header__search-list">
@@ -362,36 +368,47 @@ const Header = ({
                 >
                   <div className="header__search-wrapper">
                     <input
-                      ref={inputEl}
                       type="text"
-                      onChange={searchInputOnChange}
+                      onChange={(e) => {
+                        setSearchInput(e.target.value);
+                      }}
+                      onBlur={() => {
+                        setTimeout(() => {
+                          setIsHistory(false);
+                        }, 300);
+                      }}
+                      onClick={() => setIsHistory(true)}
                       onKeyUp={inputOnKeyUp}
                       className="header__search-input"
                       placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                       value={searchInput}
+                      defaultValue=""
                     />
                     <a
                       href="# "
-                      onClick={handleSearchIconClick}
+                      onClick={() => handleSearchIconClick(searchInput)}
                       className="header__search-icon"
                     >
                       <i className="bi bi-search"></i>
                     </a>
-                    <ul className="header__history-list">
-                      <li className="header__history-title">
-                        Lịch Sử Tìm Kiếm
-                      </li>
-                      {getUnique(searchHistory).map((item, index) => (
-                        <HeaderSearchHistory
-                          key={index}
-                          text={item}
-                          inputEl={inputEl}
-                          filterItemsBySearch={filterItemsBySearch}
-                          setSearchInput={setSearchInput}
-                          isSearchPage={isSearchPage}
-                        ></HeaderSearchHistory>
-                      ))}
-                    </ul>
+                    {isHistory && (
+                      <ul className="header__history-list">
+                        <li className="header__history-title">
+                          Lịch Sử Tìm Kiếm
+                        </li>
+                        {getUnique(searchHistory).map((item, index) => (
+                          <li
+                            key={index}
+                            onClick={() => handleSearchIconClick(item)}
+                            className="header__history-item"
+                          >
+                            <a href="# " className="header__history-link">
+                              {item}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               )

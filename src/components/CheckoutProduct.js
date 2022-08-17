@@ -451,14 +451,18 @@ export default function CheckoutProduct() {
         });
       }
 
-      if (isCardPayment && typeof defaultPaymentMethodID === "undefined") {
+      if (
+        isCardPayment &&
+        (typeof defaultPaymentMethodID === "undefined" ||
+          defaultPaymentMethodID === null)
+      ) {
         togglePopup(!isPopupShowing);
       }
 
       if (isDeliveryPayment) {
         // payment in delivery
         const paymentIntent = {
-          id: `Pi_cash_${Math.random().toString(36).substring(2)}`,
+          id: `Pi_delivery_${Math.random().toString(36).substring(2)}`,
           amount: getItemsPriceFinal(checkoutItems, shipUnit, voucher),
           created: Math.floor(Date.now() / 1000),
         };
@@ -740,13 +744,15 @@ export default function CheckoutProduct() {
                 </span>
               </span>
             )}
+            {Object.keys(shipUnit).length > 0 && (
+              <span
+                onClick={handleShipUnitModal}
+                className="checkout-product__transport-action"
+              >
+                {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
+              </span>
+            )}
 
-            <span
-              onClick={handleShipUnitModal}
-              className="checkout-product__transport-action"
-            >
-              {Object.keys(shipUnit).length <= 0 ? "Chọn" : "Thay đổi"}
-            </span>
             {isShipUnits && (
               <ShipUnitsModal
                 isShipUnits={isShipUnits}
