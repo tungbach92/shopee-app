@@ -19,9 +19,10 @@ const Header = ({
   isRegisterPage,
   headerText,
 }) => {
-  const inputEl = useRef("");
+  const ref = useRef();
   const navigate = useNavigate();
   const [recommendSearch, setRecommendSearch] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [isHistory, setIsHistory] = useState(false);
 
   function getUnique(items) {
@@ -43,6 +44,29 @@ const Header = ({
     handleLogout,
   } = useContext(ProductContext);
 
+  const handleInputClick = (e) => {
+    const text = e.target.value;
+    setIsHistory(true);
+    changeSuggestionsByInputText(text);
+  };
+
+  const handleInputChange = (e) => {
+    const text = e.target.value;
+    setSearchInput(text);
+    changeSuggestionsByInputText(text);
+  };
+
+  const changeSuggestionsByInputText = (text) => {
+    const mathSuggestions = searchHistory.filter((item) => {
+      return item.trim().toLowerCase().includes(text.trim().toLowerCase());
+    });
+    if (text === "") {
+      setSuggestions(searchHistory);
+    } else {
+      setSuggestions(mathSuggestions);
+    }
+  };
+
   const handleSearchIconClick = (text) => {
     filterItemsBySearch(text);
     addToSearchHistory(text);
@@ -58,6 +82,12 @@ const Header = ({
       event.currentTarget.blur();
       handleSearchIconClick(event.target.value);
     }
+  };
+
+  const handleSearchBlur = () => {
+    ref.current = setTimeout(() => {
+      setIsHistory(false);
+    }, 300);
   };
 
   useEffect(() => {
@@ -81,11 +111,13 @@ const Header = ({
       createRecommendedSearch();
     }
   }, [orderItems]);
-  // useEffect(() => {
-  //   if (isSearchPage) {
-  //     inputEl.current.value = searchInput;
-  //   }
-  // }, [isSearchPage, searchInput]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(ref.current);
+    };
+  });
+
   return (
     <header
       className={classNames(
@@ -303,20 +335,13 @@ const Header = ({
                     <div className="header__search-wrapper">
                       <input
                         type="text"
-                        onChange={(e) => {
-                          setSearchInput(e.target.value);
-                        }}
-                        onClick={() => setIsHistory(true)}
-                        onBlur={() => {
-                          setTimeout(() => {
-                            setIsHistory(false);
-                          }, 300);
-                        }}
+                        onChange={handleInputChange}
+                        onClick={handleInputClick}
+                        onBlur={handleSearchBlur}
                         onKeyUp={inputOnKeyUp}
                         className="header__search-input"
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                         value={searchInput}
-                        defaultValue=""
                       />
                       <a
                         href="# "
@@ -330,7 +355,7 @@ const Header = ({
                           <li className="header__history-title">
                             Lịch Sử Tìm Kiếm
                           </li>
-                          {getUnique(searchHistory).map((item, index) => (
+                          {suggestions.map((item, index) => (
                             <li
                               key={index}
                               onClick={() => handleSearchIconClick(item)}
@@ -369,20 +394,13 @@ const Header = ({
                   <div className="header__search-wrapper">
                     <input
                       type="text"
-                      onChange={(e) => {
-                        setSearchInput(e.target.value);
-                      }}
-                      onBlur={() => {
-                        setTimeout(() => {
-                          setIsHistory(false);
-                        }, 300);
-                      }}
-                      onClick={() => setIsHistory(true)}
+                      onChange={handleInputChange}
+                      onBlur={handleSearchBlur}
+                      onClick={handleInputClick}
                       onKeyUp={inputOnKeyUp}
                       className="header__search-input"
                       placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                       value={searchInput}
-                      defaultValue=""
                     />
                     <a
                       href="# "
@@ -396,7 +414,7 @@ const Header = ({
                         <li className="header__history-title">
                           Lịch Sử Tìm Kiếm
                         </li>
-                        {getUnique(searchHistory).map((item, index) => (
+                        {suggestions.map((item, index) => (
                           <li
                             key={index}
                             onClick={() => handleSearchIconClick(item)}

@@ -638,7 +638,8 @@ export default class ProductProvider extends Component {
   saveSearchHistoryToFirebase = async (searchHistory) => {
     const { user } = this.state;
     try {
-      db.collection("users")
+      await db
+        .collection("users")
         .doc(user?.uid)
         .collection("searchHistory")
         .doc("searchHistoryItems")
@@ -1064,16 +1065,16 @@ export default class ProductProvider extends Component {
     }
   };
 
-  handleLogout = () => {
+  handleLogout = async () => {
     const { user, cartItems, checkoutItems, searchHistory } = this.state;
     if (user) {
       this.saveCartItemsToFirebase(cartItems);
-      this.saveSearchHistoryToFirebase(searchHistory);
+      await this.saveSearchHistoryToFirebase(searchHistory);
       this.saveCheckoutItemsToFirebase(checkoutItems);
       this.setCartItems([]);
       this.setCheckoutItems([]);
-      this.setState({ searchHistory: [] });
-      this.saveSearchHistoryToStorage();
+      this.setSearchInput("");
+      this.setState({ searchHistory: [] }, this.saveSearchHistoryToStorage);
       this.setOrderItems();
       this.setPaymentMethodList([]);
       this.setDefaultPaymentMethodID("");
