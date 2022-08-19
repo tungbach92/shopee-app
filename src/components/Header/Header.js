@@ -9,6 +9,7 @@ import HeaderCart from "./HeaderCart";
 import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
+import { Box, Stack } from "@mui/material";
 
 const Header = ({
   isProductPage,
@@ -87,7 +88,7 @@ const Header = ({
   const handleSearchBlur = () => {
     ref.current = setTimeout(() => {
       setIsHistory(false);
-    }, 300);
+    }, 200);
   };
 
   useEffect(() => {
@@ -130,7 +131,15 @@ const Header = ({
         }
       )}
     >
-      <div className="grid grid--fullheight">
+      <Stack
+        sx={{
+          width: "120rem",
+          maxWidth: "100%",
+          margin: "0 auto",
+          flexDirection: { xs: "row-reverse", sm: "column" },
+        }}
+      >
+        {/*TODO change to grid2 and give  flex-direction row-reverse for responsive*/}
         {/* HeaderNav */}
         {!isLoginPage && !isRegisterPage && (
           <nav className="header__nav">
@@ -277,7 +286,12 @@ const Header = ({
                     </div>
                   )}
 
-                  {user?.displayName}
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: "none", sm: "inline-block" } }}
+                  >
+                    {user?.displayName}
+                  </Box>
                 </a>
 
                 <div className="header__user-list">
@@ -305,7 +319,6 @@ const Header = ({
             </ul>
           </nav>
         )}
-
         {/* HeaderSearch */}
         {!isLoginPage && !isRegisterPage && (
           <div
@@ -433,7 +446,6 @@ const Header = ({
             ) : null}
           </div>
         )}
-
         {/* HeaderSimpleContent */}
         {(isLoginPage || isRegisterPage) && (
           <div className="header__simple-wrapper">
@@ -458,7 +470,7 @@ const Header = ({
             <div className="header__help">Cần trợ giúp?</div>
           </div>
         )}
-      </div>
+      </Stack>
     </header>
   );
 };

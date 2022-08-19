@@ -58,7 +58,7 @@ const ProductFilter = ({ isSearchPage }) => {
           data-name="filterPrice"
           onMouseEnter={handelHover}
           className={
-            totalItems === 0 ? "select-input--disabled" : "select-input"
+            totalItems === 0 ? " select-input--disabled" : " select-input"
           }
         >
           <span
@@ -90,8 +90,9 @@ const ProductFilter = ({ isSearchPage }) => {
               Giá: Thấp đến Cao
               <i
                 className={
-                  filterPrice === "priceAsc" ?
-                  "app__input-item-icon bi bi-check" : undefined
+                  filterPrice === "priceAsc"
+                    ? "app__input-item-icon bi bi-check"
+                    : undefined
                 }
               ></i>
             </li>
@@ -106,8 +107,9 @@ const ProductFilter = ({ isSearchPage }) => {
               Giá: Cao đến Thấp
               <i
                 className={
-                  filterPrice === "priceDesc" ?
-                  "app__input-item-icon bi bi-check" : undefined
+                  filterPrice === "priceDesc"
+                    ? "app__input-item-icon bi bi-check"
+                    : undefined
                 }
               ></i>
             </li>

@@ -5,7 +5,7 @@ header {
   background-image: linear-gradient(0, #ff6333, #f53e2d);
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 9999;
 }
 
 .header--checkout {
@@ -22,6 +22,7 @@ header {
   display: flex;
   justify-content: space-between;
   font-size: 1.3rem;
+  padding: 0.6rem 0;
 }
 
 .header__nav-list {
@@ -235,7 +236,7 @@ header {
   color: var(--text-color);
 }
 
-.header__notify-img{
+.header__notify-img {
   margin: auto;
 }
 
@@ -654,7 +655,7 @@ header {
   animation: headerNotifyGrowing ease-in 0.15s;
   transform-origin: 90% top;
   will-change: opacity, transform;
-  z-index: 3;
+  z-index: 9999;
   visibility: hidden;
 }
 
@@ -990,7 +991,6 @@ header {
   filter: brightness(70%);
 }
 
-
 .app__pre-page--disabled,
 .app__next-page--disabled {
   background-color: #f9f9f9;
@@ -1023,8 +1023,7 @@ header {
 }
 
 .app__product-item:hover .app__product-cart-btn {
-  transform: translateX(0);
-  opacity: 1;
+  display: flex;
 }
 
 .app__product-item:hover {
@@ -1041,7 +1040,6 @@ header {
   position: relative;
 }
 
-
 .app__product-link:before {
   content: "";
   position: absolute;
@@ -1053,8 +1051,7 @@ header {
 }
 
 .app__product-cart-btn {
-  display: flex;
-  opacity: 0;
+  display: none;
   padding: 0.8rem 1.6rem;
   position: absolute;
   right: 0;
@@ -1063,8 +1060,6 @@ header {
   color: var(--text-color);
   background-color: var(--primary-color);
   z-index: 1;
-  transition: transform linear 0.2s;
-  transform: translateX(101%);
   cursor: pointer;
 }
 
@@ -1225,7 +1220,7 @@ header {
   font-weight: 400;
   font-size: 1.1rem;
 }
-.app__no-product{
+.app__no-product {
   flex: 1;
   text-align: center;
   padding: 14.5rem;
@@ -1864,7 +1859,7 @@ header {
   cursor: pointer;
 }
 
-.cart-product__checkout-label:hover{
+.cart-product__checkout-label:hover {
   color: var(--primary-color);
 }
 
@@ -1920,7 +1915,6 @@ header {
   background-color: var(--primary-color);
   color: var(--white-color);
 }
-
 
 .cart-product__checkout-btn:hover {
   opacity: 0.9;
@@ -3210,6 +3204,7 @@ header {
 .detail-product__more {
   margin-top: 1.6rem;
   display: flex;
+  align-items: center;
 }
 
 .detail-product__review {
@@ -3221,14 +3216,12 @@ header {
 .detail-product__sold {
   padding: 0 1.6rem;
   border-left: 1px solid rgba(0, 0, 0, 0.09);
-  cursor: pointer;
 }
 
 .detail-product__rating {
   padding-right: 1.6rem;
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 
 .detail-product__rating-number {
@@ -3365,7 +3358,7 @@ header {
   left: 25%;
   padding: 1rem 0;
   border: 1px solid rgba(0, 0, 0, 0.09);
-  z-index: 3;
+  z-index: 2;
   background: var(--white-color);
 }
 .detail-product__picker-input {
@@ -4176,11 +4169,11 @@ header {
   max-width: 10rem;
 }
 
-.user-profile__info-form{
+.user-profile__info-form {
   flex: 1;
 }
 
-.user-profile_info-container{
+.user-profile_info-container {
   display: flex;
 }
 
@@ -4962,4 +4955,77 @@ header {
   margin: 0 auto;
   font-size: 1.3rem;
   color: var(--text-color);
+}
+@media screen and (max-width: 600px) {
+  .header__nav-list:first-child {
+    display: none;
+  }
+  .header__nav {
+    flex: 1;
+  }
+  .header__nav-list:last-child {
+    flex: 1;
+    justify-content: center;
+  }
+  .header__nav-item-right {
+    padding: 0 0 0 1rem;
+  }
+  .header__user-list {
+    top: 189%;
+    right: -2rem;
+  }
+
+  .header__search {
+    flex-basis: 85%;
+  }
+  .header__search-content {
+    flex-basis: 85%;
+  }
+  .header__cart {
+    flex-basis: 25%;
+  }
+  .header__logo-wrapper {
+    display: none;
+  }
+
+  .app__category-heading {
+    display: none;
+  }
+  .app__category-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+    z-index: 3;
+  }
+  .app__category-item {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    flex-grow: 1;
+    min-width: 9rem;
+    text-align: center;
+  }
+  .app__category-item:hover {
+    transform: translateX(0rem);
+  }
+
+  .app__filter {
+    padding: 0;
+  }
+  .app__filter-label {
+    display: none;
+  }
+  .app__filter-page {
+    display: none;
+  }
+  .app__filter-item {
+    margin: 0;
+    flex: 1;
+  }
+  .select-input {
+    margin: 0;
+  }
 }

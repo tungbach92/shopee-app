@@ -13,52 +13,9 @@ export default function Picker({
   const [district, setDistrict] = useState();
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
-
-  useEffect(() => {
-    const provinces = ProvincesCitiesVN.getProvinces();
-    const provincesWithShipPrice = provinces.map((item, index) => {
-      return {
-        ...item,
-        shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
-      };
-    });
-    console.log(provincesWithShipPrice);
-    if (province) {
-      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
-        province.code
-      );
-      setDistricts(districts);
-    }
-    setProvinces(provincesWithShipPrice);
-
-    return () => {
-      // cleanup
-    };
-  }, [province]);
-
-  useEffect(() => {
-    // effect
-    if (province && district) {
-      const address = district.full_name;
-      setAddress(address);
-      const shipPrice = province.shipPrice;
-      setLookupShipPrice(shipPrice);
-    }
-    if (isDistrictSelected) {
-      togglePicker(!isPickerShow);
-    }
-    return () => {
-      // cleanup
-    };
-  }, [
-    district,
-    province,
-    setAddress,
-    isPickerShow,
-    togglePicker,
-    isDistrictSelected,
-    setLookupShipPrice,
-  ]);
+  const [searchInput, setSearchInput] = useState("");
+  const [suggestProvince, setSuggestProvince] = useState([]);
+  const [suggestDistrict, setSuggestDistrict] = useState([]);
 
   const handleClick = (e) => {
     const value = e.target.innerText;
@@ -80,22 +37,78 @@ export default function Picker({
 
   const handlePickerInput = (e) => {
     let text = e.target.value;
+    setSearchInput(text);
     text = text.trim().toLowerCase();
-    const inputProvinces = provinces.filter((province) =>
+    changeSuggestProvinceAndDistrictBySearchInput(text);
+  };
+
+  const changeSuggestProvinceAndDistrictBySearchInput = (text) => {
+    const suggestProvince = provinces.filter((province) =>
       province.name.toLowerCase().includes(text)
     );
-    const inputDistricts = districts.filter((district) =>
+    const suggestDistrict = districts.filter((district) =>
       district.name.toLowerCase().includes(text)
     );
-    setProvinces(inputProvinces);
-    setDistricts(inputDistricts);
+    if (text === "") {
+      setSuggestProvince(provinces);
+      setSuggestDistrict(districts);
+    } else {
+      setSuggestProvince(suggestProvince);
+      setSuggestDistrict(suggestDistrict);
+    }
   };
+
+  useEffect(() => {
+    const provinces = ProvincesCitiesVN.getProvinces();
+    const provincesWithShipPrice = provinces.map((item, index) => {
+      return {
+        ...item,
+        shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
+      };
+    });
+    console.log(provincesWithShipPrice);
+    if (province) {
+      const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
+        province.code
+      );
+      setDistricts(districts);
+    }
+    setProvinces(provincesWithShipPrice);
+  }, [province]);
+
+  useEffect(() => {
+    // effect
+    if (province && district) {
+      const address = district.full_name;
+      setAddress(address);
+      const shipPrice = province.shipPrice;
+      setLookupShipPrice(shipPrice);
+    }
+    if (isDistrictSelected) {
+      togglePicker(!isPickerShow);
+    }
+  }, [
+    district,
+    province,
+    setAddress,
+    isPickerShow,
+    togglePicker,
+    isDistrictSelected,
+    setLookupShipPrice,
+  ]);
+
+  useEffect(() => {
+    setSuggestProvince(provinces);
+    setSuggestDistrict(districts);
+  }, [districts, isProvinceSelected, provinces]);
+
   return (
     <>
       <div className="detail-product__picker">
         <input
           type="text"
-          onKeyUp={handlePickerInput}
+          value={searchInput}
+          onChange={handlePickerInput}
           placeholder="Tìm"
           className="detail-product__picker-input"
         />
@@ -122,7 +135,7 @@ export default function Picker({
           )}
           <ul className="detail-product__picker-list">
             {isProvinceSelected === false
-              ? provinces.map((province, index) => (
+              ? suggestProvince.map((province, index) => (
                   <li
                     key={index}
                     onClick={handleClick}
@@ -131,7 +144,7 @@ export default function Picker({
                     {province.name}
                   </li>
                 ))
-              : districts.map((district, index) => (
+              : suggestDistrict.map((district, index) => (
                   <li
                     key={index}
                     onClick={handleClick}

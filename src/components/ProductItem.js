@@ -6,6 +6,7 @@ import AddCartModal from "./AddCartModal";
 import CurrencyFormat from "react-currency-format";
 import { ProductContext } from "../context";
 import { Typography, Rating } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2";
 
 const ProductItem = React.memo(function (props) {
   console.log("product item render");
@@ -27,14 +28,7 @@ const ProductItem = React.memo(function (props) {
     }
   };
   return (
-    <div
-      className={classNames(
-        { "grid__col-2c4x": !similarDisPlay },
-        {
-          "grid__col-2x": similarDisPlay,
-        }
-      )}
-    >
+    <Grid2 xs={6} sm={similarDisPlay ? 2 : 2.4}>
       <div className="app__product-item">
         <button
           disabled={isInCart}
@@ -193,7 +187,7 @@ const ProductItem = React.memo(function (props) {
           </div>
         </Link>
       </div>
-    </div>
+    </Grid2>
   );
 });
 export default ProductItem;

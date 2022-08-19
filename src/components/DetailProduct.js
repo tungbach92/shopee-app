@@ -8,7 +8,7 @@ import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
 import CurrencyFormat from "react-currency-format";
-import { Rating } from "@mui/material";
+import { Box, Rating } from "@mui/material";
 
 export default function DetailProduct() {
   const { metaTitle, id } = useParams();
@@ -144,15 +144,28 @@ export default function DetailProduct() {
     }
   };
 
-  const handleScrollTo = (e) => {
-    scrolltoEl.current.scrollIntoView();
-  };
-
   const handleScrollTop = (e) => {
     window.scrollTo(0, 0);
   };
+
+  // const handleScrollTo = (e) => {
+  //   scrolltoEl.current.scrollIntoView();
+  // };
+  
   if (!item) {
-    return <>Loading...</>;
+    return (
+      <Box
+        sx={{
+          textAlign: "center",
+          padding: "14.5rem",
+          fontSize: "1.6rem",
+          color: "var(--primary-color)",
+          fontWeight: "600",
+        }}
+      >
+        Loading...
+      </Box>
+    );
   } else
     return (
       <div className="main">
@@ -198,10 +211,7 @@ export default function DetailProduct() {
             <div className="detail-product__info-right">
               <div className="detail-product__name">{item?.name}</div>
               <div className="detail-product__more">
-                <div
-                  onClick={handleScrollTo}
-                  className="detail-product__rating"
-                >
+                <div className="detail-product__rating">
                   <span className="detail-product__rating-number">
                     {item?.rating}
                   </span>
@@ -216,13 +226,13 @@ export default function DetailProduct() {
                     />
                   </div>
                 </div>
-                <div
+                {/* <div
                   onClick={handleScrollTo}
                   className="detail-product__review"
                 >
                   <span className="detail-product__review-number">1.2k</span>
                   <span className="detail-product__review-label">Đánh giá</span>
-                </div>
+                </div> */}
                 <div className="detail-product__sold">
                   <span className="detail-product__sold-number">
                     {item?.soldAmount}
@@ -449,9 +459,9 @@ export default function DetailProduct() {
                   >
                     +
                   </button>
-                  <div className="detail-product__amount-left">
+                  {/* <div className="detail-product__amount-left">
                     645 sản phẩm có sẵn
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="detail-product__btn-wrapper">

@@ -744,7 +744,7 @@ export default function CheckoutProduct() {
                 </span>
               </span>
             )}
-            {Object.keys(shipUnit).length > 0 && (
+            {shipInfos?.length > 0 && (
               <span
                 onClick={handleShipUnitModal}
                 className="checkout-product__transport-action"

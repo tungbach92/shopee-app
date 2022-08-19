@@ -16,8 +16,13 @@
   margin: 0 auto;
 }
 
+.grid__full-width {
+  width: 100%;
+}
+
 .grid__row {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   margin-left: -0.5rem;
   margin-right: -0.5rem;
@@ -80,7 +85,7 @@ button[disabled] {
 }
 
 .btn:active {
-  filter: brightness(70%)
+  filter: brightness(70%);
 }
 
 /* Select input */
