@@ -578,11 +578,9 @@ export default function CartProduct(props) {
                 </span>
                 {cartItems[index].similarDisPlay && (
                   <div className="grid cart-product__similar-list">
-                    <div className="grid__row">
-                      <ProductList
-                        similarDisPlay={cartItems[index].similarDisPlay}
-                      ></ProductList>
-                    </div>
+                    <ProductList
+                      similarDisPlay={cartItems[index].similarDisPlay}
+                    ></ProductList>
                     <Pagination
                       similarDisPlay={cartItems[index].similarDisPlay}
                     ></Pagination>
