@@ -5,6 +5,7 @@ import ProductList from "../components/ProductList";
 import Pagination from "../components/Pagination";
 import Header from "../components/Header/Header";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { Box } from "@mui/material";
 
 export default function Product() {
   return (
@@ -13,12 +14,12 @@ export default function Product() {
 
       <Grid2
         container
-        maxWidth="120rem"
-        width="100%"
+        maxWidth="100%"
+        width="120rem"
         m="0 auto"
         sx={{
           flexDirection: { xs: "column", sm: "row" },
-          padding: { xs: "0", sm: "1rem 0" },
+          padding: { xs: "0", sm: "0.3rem 0" },
         }}
       >
         <Grid2
@@ -36,10 +37,10 @@ export default function Product() {
         </Grid2>
         <Grid2 xs sm={10}>
           <ProductFilter isProductPage={true}></ProductFilter>
-          <Grid2 container spacing={"0.5rem"}>
-            <ProductList isProductPage={true}></ProductList>
-          </Grid2>
-          <Pagination isProductPage={true}></Pagination>
+          <ProductList isProductPage={true}></ProductList>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <Pagination isProductPage={true}></Pagination>
+          </Box>
         </Grid2>
       </Grid2>
     </>

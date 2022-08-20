@@ -28,7 +28,7 @@ const ProductItem = React.memo(function (props) {
     }
   };
   return (
-    <Grid2 xs={6} sm={similarDisPlay ? 2 : 2.4}>
+    <Grid2 xs={6} md={similarDisPlay ? 3 : 4} lg={similarDisPlay ? 2 : 2.4}>
       <div className="app__product-item">
         <button
           disabled={isInCart}

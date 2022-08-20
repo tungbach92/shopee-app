@@ -140,13 +140,12 @@ export default function CartProduct(props) {
     delCartItem(deleteID, deleteVariation);
     const isCheckedItem = checked.some(
       (checkedItem) =>
-        checkedItem.id === Number(deleteID) &&
-        checkedItem.variation === deleteVariation
+        checkedItem.id === deleteID && checkedItem.variation === deleteVariation
     );
     if (isCheckedItem) {
       const newChecked = [...checked].filter(
         (checkedItem) =>
-          checkedItem.id !== Number(deleteID) ||
+          checkedItem.id !== deleteID ||
           checkedItem.variation !== deleteVariation
       );
       setChecked(newChecked);
@@ -578,11 +577,9 @@ export default function CartProduct(props) {
                 </span>
                 {cartItems[index].similarDisPlay && (
                   <div className="grid cart-product__similar-list">
-                    <div className="grid__row">
-                      <ProductList
-                        similarDisPlay={cartItems[index].similarDisPlay}
-                      ></ProductList>
-                    </div>
+                    <ProductList
+                      similarDisPlay={cartItems[index].similarDisPlay}
+                    ></ProductList>
                     <Pagination
                       similarDisPlay={cartItems[index].similarDisPlay}
                     ></Pagination>

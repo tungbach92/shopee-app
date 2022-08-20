@@ -2,9 +2,9 @@ import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
-import { Box } from "@mui/material";
-
-export default function ProductList({
+import { Box, useMediaQuery } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2";
+export default React.memo(function ProductList({
   isProductPage,
   similarDisPlay,
   isSearchPage,
@@ -35,6 +35,7 @@ export default function ProductList({
     loading,
   } = context;
 
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const productPageIndex = 1;
   const similarPageIndex = 1;
   const similarPageSize = 6;
@@ -80,6 +81,7 @@ export default function ProductList({
     setSearchItemFiltered,
   ]);
 
+  //TODO: refactor, move all logic to pagination component
   //pagination value depend on page
   useEffect(() => {
     if (isProductPage) {
@@ -131,6 +133,9 @@ export default function ProductList({
         pageIndex * pageSize
       );
     }
+    if (xsBreakpointMatches) {
+      renderItem = categoryItemsFiltered;
+    }
     return renderItem;
   };
 
@@ -152,16 +157,20 @@ export default function ProductList({
       </Box>
     );
   }
-  return getRenderItems().map((item) => (
-    <ProductItem
-      key={item.id}
-      cartItems={cartItems}
-      similarDisPlay={similarDisPlay}
-      item={item}
-      handleClick={handleClick}
-    ></ProductItem>
-  ));
-}
+  return (
+    <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
+      {getRenderItems().map((item) => (
+        <ProductItem
+          key={item.id}
+          cartItems={cartItems}
+          similarDisPlay={similarDisPlay}
+          item={item}
+          handleClick={handleClick}
+        ></ProductItem>
+      ))}
+    </Grid2>
+  );
+});
 
 ProductList.propTypes = {
   isSearchPage: PropTypes.bool,

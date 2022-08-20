@@ -3,10 +3,15 @@ import qrCodeNavImg from "../img/qr-code-home.png";
 import appShopeeImg from "../img/app-shopee.png";
 import ggShopeeImg from "../img/gg-shopee.png";
 import appGalShopeeImg from "../img/app-gal-shopee.png";
+import { Box } from "@mui/material";
 
 export default function Footer() {
   return (
-    <footer className="footer">
+    <Box
+      component="footer"
+      className="footer"
+      sx={{ display: { xs: "none", sm: "block" } }}
+    >
       <div className="footer__ads"></div>
       <div className="grid footer__grid">
         <div className="grid__row grid__row--padtb3">
@@ -233,6 +238,6 @@ export default function Footer() {
           </p>
         </div>
       </div>
-    </footer>
+    </Box>
   );
 }

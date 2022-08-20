@@ -139,7 +139,6 @@ const Header = ({
           flexDirection: { xs: "row-reverse", sm: "column" },
         }}
       >
-        {/*TODO change to grid2 and give  flex-direction row-reverse for responsive*/}
         {/* HeaderNav */}
         {!isLoginPage && !isRegisterPage && (
           <nav className="header__nav">
