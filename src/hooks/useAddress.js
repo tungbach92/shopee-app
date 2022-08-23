@@ -6,9 +6,9 @@ const useAddress = () => {
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
 
-  const [province, setProvince] = useState();
-  const [district, setDistrict] = useState();
-  const [ward, setWard] = useState();
+  const [province, setProvince] = useState(null);
+  const [district, setDistrict] = useState(null);
+  const [ward, setWard] = useState(null);
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -16,14 +16,14 @@ const useAddress = () => {
   const handleProvinceChoose = (e, value) => {
     console.log(value);
     const province = provinces.find((province) => province.name === value);
-    setDistrict(undefined);
-    setWard(undefined);
+    setDistrict(null);
+    setWard(null);
     setProvince(province || null);
   };
 
   const handleDistrictChoose = (e, value) => {
     const district = districts.find((district) => district.name === value);
-    setWard(undefined);
+    setWard(null);
     setDistrict(district || null);
   };
 

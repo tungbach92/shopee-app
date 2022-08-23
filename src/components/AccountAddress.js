@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { ProductContext } from "../context";
-import { db } from "../firebase";
 import useModal from "../hooks/useModal";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
@@ -53,10 +52,10 @@ const AccountAddress = () => {
     setName("");
     setPhone("");
     setStreet("");
-    setProvince(undefined);
-    setDistrict(undefined);
-    setWard(undefined);
-    setShipInfoIndex(undefined);
+    setProvince(null);
+    setDistrict(null);
+    setWard(null);
+    setShipInfoIndex(null);
   };
 
   const handleEditClick = (index) => {

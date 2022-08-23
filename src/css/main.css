@@ -2016,8 +2016,7 @@ header {
 .forgot-password__email-select:hover {
   background-color: rgba(0, 0, 0, 0.089);
 }
-.forgot-password__email-icon {
-}
+
 .forgot-password__email-text {
   margin-left: 2rem;
   font-size: 1.4rem;
@@ -2047,7 +2046,7 @@ header {
 
 .forgot-password__popup-footer,
 .address-profile__popup-footer {
-  margin-top: 4rem;
+  margin-top: 2rem;
   display: flex;
 }
 
@@ -4371,11 +4370,7 @@ header {
   grid-template-columns: 1fr 33rem;
   font-size: 1.4rem;
 }
-.address-profile__name-label {
-  color: rgba(85, 85, 85, 0.8);
-}
-.address-profile__name-text {
-}
+
 .address-profile__default-badge {
   margin-left: 0.6rem;
   padding: 0.2rem 0.5rem;
@@ -4384,14 +4379,6 @@ header {
   border-radius: 0.3rem;
   text-transform: capitalize;
   font-size: 1.2rem;
-}
-.address-profile__phone-label {
-  color: rgba(85, 85, 85, 0.8);
-}
-.address-profile__phone-text {
-}
-.address-profile__address-label {
-  color: rgba(85, 85, 85, 0.8);
 }
 
 .address-profile__btn-container {
@@ -4421,8 +4408,6 @@ header {
   font-size: 1.6rem;
 }
 
-.address-profile__address-text {
-}
 .address-profile__modal-container {
   padding: 3rem;
 }
@@ -4433,25 +4418,17 @@ header {
   grid-template-columns: 18rem 18rem 18rem;
 }
 .address-profile__name {
-  padding-left: 0.6rem;
-  outline: none;
-  border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 1;
   grid-row-end: 2;
-  height: 3.8rem;
 }
 
 .address-profile__phone {
-  padding-left: 0.6rem;
-  outline: none;
-  border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: 1;
   grid-row-end: 2;
-  height: 3.8rem;
 }
 .address-profile__name-error {
   grid-column-start: 1;
@@ -4477,15 +4454,10 @@ header {
 }
 
 .address-profile__district {
-  padding-left: 0.6rem;
   grid-column-start: 2;
   grid-column-end: 3;
   grid-row-start: 3;
   grid-row-end: 4;
-}
-
-.address-profile__district--disabled {
-  cursor: not-allowed;
 }
 
 .address-profile__ward {
@@ -4493,10 +4465,6 @@ header {
   grid-column-end: 4;
   grid-row-start: 3;
   grid-row-end: 4;
-}
-
-.address-profile__ward--disabled {
-  cursor: not-allowed;
 }
 
 .address-profile__province-error {
@@ -4524,64 +4492,11 @@ header {
   font-size: 1.2rem;
 }
 
-.address-profile__province--selected,
-.address-profile__district--selected,
-.address-profile__ward--selected {
-  color: var(--text-color);
-  font-style: normal;
-  font-size: 1.4rem;
-  padding-left: 0.6rem;
-}
-
-.address-profile__provinces,
-.address-profile__districts,
-.address-profile__wards {
-  position: absolute;
-  top: 100%;
-  left: 0%;
-  width: 22rem;
-  padding: 1.2rem 0.6rem;
-  max-height: 36vh;
-  overflow-y: auto;
-  border: 1px solid rgba(0, 0, 0, 0.09);
-  font-size: 1.4rem;
-  font-style: normal;
-  background: var(--white-color);
-  z-index: 3;
-}
-.address-profile__provinces,
-.address-profile__districts,
-.address-profile__wards {
-  width: 17.9rem;
-}
-
-.address-profile__provinces-item,
-.address-profile__wards-item,
-.address-profile__districts-item {
-  margin-top: 0.6rem;
-}
-
-.address-profile__provinces-item:first-child,
-.address-profile__wards-item:first-child,
-.address-profile__districts-item:first-child {
-  margin-top: 0;
-}
-
-.address-profile__provinces-item:hover,
-.address-profile__wards-item:hover,
-.address-profile__districts-item:hover {
-  color: var(--primary-color);
-}
-
 .address-profile__address-detail {
-  padding-left: 0.6rem;
-  outline: none;
-  border: 1px solid rgba(0, 0, 0, 0.14);
   grid-column-start: 1;
   grid-column-end: 4;
   grid-row-start: 5;
   grid-row-end: 6;
-  height: 4.9rem;
 }
 
 .address-profile__street-error {

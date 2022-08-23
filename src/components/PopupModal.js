@@ -40,7 +40,7 @@ export default function PopupModal(props) {
   } = props;
 
   const handleBackClick = (e) => {
-    togglePopup(!isPopupShowing);
+    togglePopup(false);
 
     // set those values to defaultm undefined if setState function true
     if (setDeleteID) {

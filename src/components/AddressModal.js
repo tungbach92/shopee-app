@@ -3,6 +3,20 @@ import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: (props) => props !== "isValid",
+})(({ isValid }) => ({
+  "& .MuiInputBase-root, & .MuiOutlinedInput-root": {
+    fontSize: "1.3rem",
+  },
+  "& .MuiFormLabel-root, & .MuiInputLabel-root": {
+    fontSize: "1.3rem",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: isValid === false && "red",
+  },
+}));
+
 const StyleAutocomplete = styled(Autocomplete, {
   shouldForwardProp: (props) => props !== "isValid",
 })(({ isValid }) => ({
@@ -45,22 +59,29 @@ const AddressModal = ({
 }) => {
   const { shipInfos, updateShipInfoToFirebase } = useContext(ProductContext);
   const [errors, setErrors] = useState({});
-  const [isProvinceValid, setIsProvinceValid] = useState();
-  const [isDistrictValid, setIsDistrictValid] = useState();
-  const [isWardsValid, setIsWardsValid] = useState();
+
+  const [isNameValid, setIsNameValid] = useState(null);
+  const [isPhoneValid, setIsPhoneValid] = useState(null);
+  const [isStreetValid, setIsStreetValid] = useState(null);
+  const [isProvinceValid, setIsProvinceValid] = useState(null);
+  const [isDistrictValid, setIsDistrictValid] = useState(null);
+  const [isWardsValid, setIsWardsValid] = useState(null);
   const buttonRef = useRef();
 
   const validateName = () => {
     let isValid = true;
     let error;
+    setIsNameValid(true);
     // contain atleast 3 space
     if (!name) {
       isValid = false;
+      setIsNameValid(false);
       error = "Vui lòng nhập Họ tên!";
     }
 
     const nameRegex = /(\D*[\s]){2,}/; // contain atleast 2 space, only char
     if (name && !nameRegex.test(name)) {
+      setIsNameValid(false);
       isValid = false;
       error = "Nhập đầy đủ cả họ và tên, không chứa số!";
     }
@@ -71,13 +92,16 @@ const AddressModal = ({
   const validatePhone = () => {
     let isValid = true;
     let error;
+    setIsPhoneValid(true);
     if (!phone) {
       isValid = false;
+      setIsPhoneValid(false);
       error = "Vui lòng nhập Số điện thoại";
     }
 
     const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/; // đầu số 03, 05, 07, 08, 09, bắt đầu với +84 hoặc 84
     if (phone && !phoneRegex.test(phone)) {
+      setIsPhoneValid(false);
       isValid = false;
       error = "Số điện thoại không hợp lệ!";
     }
@@ -127,8 +151,10 @@ const AddressModal = ({
   const validateStreet = () => {
     let isValid = true;
     let error;
+    setIsStreetValid(true);
     if (!street) {
       isValid = false;
+      setIsStreetValid(false);
       error = "Vui lòng nhập Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)";
     }
     setErrors((prev) => ({ ...prev, street: error }));
@@ -136,25 +162,31 @@ const AddressModal = ({
   };
 
   const handleBack = () => {
-    toggleAddressAdd(!isAddressAddShowing);
+    toggleAddressAdd(false);
+    setIsNameValid(null);
+    setIsPhoneValid(null);
+    setIsStreetValid(null);
+    setIsProvinceValid(null);
+    setIsDistrictValid(null);
+    setIsWardsValid(null);
     setErrors({});
   };
 
   const handleApply = (e) => {
     e.preventDefault();
-    const isNameValid = validateName();
-    const isPhoneValid = validatePhone();
-    const isProvinceValid = validateProvince();
-    const isDistrictValid = validateDistrict();
-    const isWardValid = validateWard();
-    const isStreetValid = validateStreet();
+    validateName();
+    validatePhone();
+    validateProvince();
+    validateDistrict();
+    validateWard();
+    validateStreet();
 
     if (
       isNameValid &&
       isPhoneValid &&
       isProvinceValid &&
       isDistrictValid &&
-      isWardValid &&
+      isWardsValid &&
       isStreetValid
     ) {
       toggleAddressAdd(!isAddressAddShowing);
@@ -238,7 +270,11 @@ const AddressModal = ({
               className="address-profile__modal-content"
               onSubmit={handleApply}
             >
-              <input
+              <StyledTextField
+                isValid={isNameValid}
+                size="small"
+                variant="outlined"
+                label="Họ và tên"
                 type="text"
                 name="name"
                 value={name}
@@ -247,10 +283,12 @@ const AddressModal = ({
                   validateName();
                 }}
                 className="address-profile__name"
-                placeholder="Họ và tên"
               />
-              <input
+              <StyledTextField
+                isValid={isPhoneValid}
+                size="small"
                 type="text"
+                variant="outlined"
                 name="phone"
                 value={phone}
                 onChange={handlePhoneChange}
@@ -258,13 +296,17 @@ const AddressModal = ({
                   validatePhone();
                 }}
                 className="address-profile__phone"
-                placeholder="Số điện thoại"
+                label="Số điện thoại"
               />
               <div className="address-profile__name-error">{errors.name}</div>
               <div className="address-profile__phone-error">{errors.phone}</div>
               <div className="address-profile__province">
                 <StyleAutocomplete
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
                   isValid={isProvinceValid}
+                  size="small"
                   ListboxProps={{
                     sx: { fontSize: "1.3rem" },
                   }}
@@ -283,8 +325,12 @@ const AddressModal = ({
               </div>
               <div className="address-profile__district">
                 <StyleAutocomplete
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
                   sx={{ cursor: "not-allowed !important" }}
                   isValid={isDistrictValid}
+                  size="small"
                   ListboxProps={{
                     sx: { fontSize: "1.3rem" },
                   }}
@@ -294,7 +340,6 @@ const AddressModal = ({
                   onBlur={() => {
                     validateDistrict();
                   }}
-                  size="medium"
                   disablePortal
                   id="district"
                   options={districts.map((district) => district.name)}
@@ -305,7 +350,11 @@ const AddressModal = ({
               </div>
               <div className="address-profile__ward">
                 <StyleAutocomplete
+                  selectOnFocus
+                  clearOnBlur
+                  handleHomeEndKeys
                   isValid={isWardsValid}
+                  size="small"
                   ListboxProps={{
                     sx: { fontSize: "1.3rem" },
                   }}
@@ -315,7 +364,6 @@ const AddressModal = ({
                   onBlur={() => {
                     validateWard();
                   }}
-                  size="medium"
                   disablePortal
                   id="ward"
                   options={wards.map((ward) => ward.name)}
@@ -332,15 +380,18 @@ const AddressModal = ({
                 {errors.district}
               </div>
               <div className="address-profile__ward-error">{errors.ward}</div>
-              <input
+              <StyledTextField
+                isValid={isStreetValid}
+                size="small"
                 type="text"
+                variant="outlined"
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
                 onBlur={() => {
                   validateStreet();
                 }}
                 className="address-profile__address-detail"
-                placeholder="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
+                label="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
               />
               <div className="address-profile__street-error">
                 {errors.street}
