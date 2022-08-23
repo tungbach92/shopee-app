@@ -4,11 +4,7 @@ import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
-export default React.memo(function ProductList({
-  isProductPage,
-  similarDisPlay,
-  isSearchPage,
-}) {
+function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
@@ -120,22 +116,31 @@ export default React.memo(function ProductList({
         (pageIndex - 1) * searchPageSize,
         pageIndex * searchPageSize
       );
+      if (xsBreakpointMatches) {
+        renderItem = searchItemFiltered;
+      }
     }
+    
     if (similarDisPlay) {
       renderItem = similarItems.slice(
         (pageIndex - 1) * similarPageSize,
         pageIndex * similarPageSize
       );
+      if (xsBreakpointMatches) {
+        renderItem = similarItems;
+      }
     }
+    
     if (isProductPage) {
       renderItem = categoryItemsFiltered.slice(
         (pageIndex - 1) * pageSize,
         pageIndex * pageSize
       );
+      if (xsBreakpointMatches) {
+        renderItem = categoryItemsFiltered;
+      }
     }
-    if (xsBreakpointMatches) {
-      renderItem = categoryItemsFiltered;
-    }
+    console.log(renderItem);
     return renderItem;
   };
 
@@ -170,7 +175,7 @@ export default React.memo(function ProductList({
       ))}
     </Grid2>
   );
-});
+}
 
 ProductList.propTypes = {
   isSearchPage: PropTypes.bool,
@@ -183,3 +188,5 @@ ProductList.defaultProps = {
   isProductPage: false,
   similarDisPlay: false,
 };
+
+export default React.memo(ProductList);

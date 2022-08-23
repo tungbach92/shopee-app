@@ -1,6 +1,27 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { ProductContext } from "../context";
+import { Autocomplete, Button, styled, TextField } from "@mui/material";
+
+const StyleAutocomplete = styled(Autocomplete, {
+  shouldForwardProp: (props) => props !== "isValid",
+})(({ isValid }) => ({
+  "& .MuiFormLabel-root, & .MuiInputLabel-root": {
+    fontSize: "1.3rem",
+  },
+  "& .MuiInputBase-root, & .MuiOutlinedInput-root": {
+    fontSize: "1.3rem",
+  },
+  "& .MuiAutocomplete-endAdornment": {
+    top: "calc(50% - 10px)",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: isValid === false && "red",
+  },
+  "& .Mui-disabled": {
+    cursor: "not-allowed",
+  },
+}));
 
 const AddressModal = ({
   isAddressAddShowing,
@@ -14,90 +35,128 @@ const AddressModal = ({
   ward,
   province,
   district,
-  isProvince,
-  isDistrict,
-  isWard,
-  setIsProvince,
-  setIsDistrict,
-  setIsWard,
   provinces,
   districts,
   wards,
-  toggleDistrict,
-  toggleProvince,
-  toggleWard,
   handleDistrictChoose,
   handleProvinceChoose,
   handleWardChoose,
-  fullAddress,
-  setFullAddress,
   shipInfoIndex,
 }) => {
   const { shipInfos, updateShipInfoToFirebase } = useContext(ProductContext);
   const [errors, setErrors] = useState({});
+  const [isProvinceValid, setIsProvinceValid] = useState();
+  const [isDistrictValid, setIsDistrictValid] = useState();
+  const [isWardsValid, setIsWardsValid] = useState();
+  const buttonRef = useRef();
 
-  const validate = () => {
+  const validateName = () => {
     let isValid = true;
-    let errors = {};
+    let error;
     // contain atleast 3 space
-
     if (!name) {
       isValid = false;
-      errors["name"] = "Vui lòng nhập Họ tên!";
+      error = "Vui lòng nhập Họ tên!";
     }
 
     const nameRegex = /(\D*[\s]){2,}/; // contain atleast 2 space, only char
     if (name && !nameRegex.test(name)) {
       isValid = false;
-      errors["name"] = "Nhập đầy đủ cả họ và tên, không chứa số!";
+      error = "Nhập đầy đủ cả họ và tên, không chứa số!";
     }
+    setErrors((prev) => ({ ...prev, name: error }));
+    return isValid;
+  };
 
+  const validatePhone = () => {
+    let isValid = true;
+    let error;
     if (!phone) {
       isValid = false;
-      errors["phone"] = "Vui lòng nhập Số điện thoại";
+      error = "Vui lòng nhập Số điện thoại";
     }
 
     const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/; // đầu số 03, 05, 07, 08, 09, bắt đầu với +84 hoặc 84
     if (phone && !phoneRegex.test(phone)) {
       isValid = false;
-      errors["phone"] = "Số điện thoại không hợp lệ!";
+      error = "Số điện thoại không hợp lệ!";
     }
+    setErrors((prev) => ({ ...prev, phone: error }));
+    return isValid;
+  };
 
+  const validateProvince = () => {
+    let isValid = true;
+    let error;
+    setIsProvinceValid(true);
     if (!province) {
       isValid = false;
-      errors["province"] = "Vui lòng chọn Tỉnh/thành phố";
+      error = "Vui lòng chọn Tỉnh/thành phố";
+      setIsProvinceValid(false);
     }
+    setErrors((prev) => ({ ...prev, province: error }));
+    return isValid;
+  };
 
+  const validateDistrict = () => {
+    let isValid = true;
+    let error;
+    setIsDistrictValid(true);
     if (!district) {
       isValid = false;
-      errors["district"] = "Vui lòng chọn Quận/huyện";
+      setIsDistrictValid(false);
+      error = "Vui lòng chọn Quận/huyện";
     }
+    setErrors((prev) => ({ ...prev, district: error }));
+    return isValid;
+  };
 
+  const validateWard = () => {
+    let isValid = true;
+    let error;
+    setIsWardsValid(true);
     if (!ward) {
+      setIsWardsValid(false);
       isValid = false;
-      errors["ward"] = "Vui lòng chọn Phường/xã/thị trấn";
+      error = "Vui lòng chọn Phường/xã/thị trấn";
     }
+    setErrors((prev) => ({ ...prev, ward: error }));
+    return isValid;
+  };
 
+  const validateStreet = () => {
+    let isValid = true;
+    let error;
     if (!street) {
       isValid = false;
-      errors["street"] =
-        "Vui lòng nhập Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)";
+      error = "Vui lòng nhập Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)";
     }
-
-    setErrors(errors);
+    setErrors((prev) => ({ ...prev, street: error }));
     return isValid;
   };
 
   const handleBack = () => {
     toggleAddressAdd(!isAddressAddShowing);
-    setIsProvince(false);
-    setIsDistrict(false);
-    setIsWard(false);
     setErrors({});
   };
 
-  const handleApply = () => {
-    if (validate()) {
+  const handleApply = (e) => {
+    e.preventDefault();
+    const isNameValid = validateName();
+    const isPhoneValid = validatePhone();
+    const isProvinceValid = validateProvince();
+    const isDistrictValid = validateDistrict();
+    const isWardValid = validateWard();
+    const isStreetValid = validateStreet();
+
+    if (
+      isNameValid &&
+      isPhoneValid &&
+      isProvinceValid &&
+      isDistrictValid &&
+      isWardValid &&
+      isStreetValid
+    ) {
       toggleAddressAdd(!isAddressAddShowing);
       if (typeof shipInfoIndex !== "undefined") {
         updateShipInfo();
@@ -129,7 +188,6 @@ const AddressModal = ({
         } else return shipInfo;
       });
 
-      setFullAddress(fullAddress);
       updateShipInfoToFirebase(tempShipInfos);
     } catch (error) {
       console.log(error);
@@ -155,7 +213,6 @@ const AddressModal = ({
       };
 
       tempShipInfos = [...tempShipInfos, shipInfo];
-      setFullAddress(fullAddress);
       updateShipInfoToFirebase(tempShipInfos);
     } catch (err) {
       console.log(err);
@@ -177,96 +234,97 @@ const AddressModal = ({
             <div className="address-profile__modal-header">
               <span className="address-profile__header-label">Địa Chỉ Mới</span>
             </div>
-            <div className="address-profile__modal-content">
+            <form
+              className="address-profile__modal-content"
+              onSubmit={handleApply}
+            >
               <input
                 type="text"
+                name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onBlur={(e) => {
+                  validateName();
+                }}
                 className="address-profile__name"
                 placeholder="Họ và tên"
               />
               <input
                 type="text"
+                name="phone"
                 value={phone}
                 onChange={handlePhoneChange}
+                onBlur={() => {
+                  validatePhone();
+                }}
                 className="address-profile__phone"
                 placeholder="Số điện thoại"
               />
               <div className="address-profile__name-error">{errors.name}</div>
               <div className="address-profile__phone-error">{errors.phone}</div>
-              <div
-                onClick={toggleProvince}
-                className={
-                  province
-                    ? "address-profile__province address-profile__province--selected"
-                    : "address-profile__province"
-                }
-              >
-                {province ? province.name : "Thành phố"}
-                {isProvince && (
-                  <div className="address-profile__provinces">
-                    {provinces.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={handleProvinceChoose}
-                        className="address-profile__provinces-item"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="address-profile__province">
+                <StyleAutocomplete
+                  isValid={isProvinceValid}
+                  ListboxProps={{
+                    sx: { fontSize: "1.3rem" },
+                  }}
+                  value={province?.name || null}
+                  onChange={handleProvinceChoose}
+                  onBlur={() => {
+                    validateProvince();
+                  }}
+                  disablePortal
+                  id="province"
+                  options={provinces.map((province) => province.name)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Thành phố" />
+                  )}
+                />
               </div>
-              <div
-                onClick={toggleDistrict}
-                className={
-                  district
-                    ? "address-profile__district address-profile__district--selected"
-                    : !province
-                    ? "address-profile__district address-profile__district--disabled"
-                    : "address-profile__district"
-                }
-              >
-                {district ? district.name : "Quận/Huyện"}
-                {isDistrict && (
-                  <div className="address-profile__districts">
-                    {districts.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={handleDistrictChoose}
-                        className="address-profile__districts-item"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="address-profile__district">
+                <StyleAutocomplete
+                  sx={{ cursor: "not-allowed !important" }}
+                  isValid={isDistrictValid}
+                  ListboxProps={{
+                    sx: { fontSize: "1.3rem" },
+                  }}
+                  disabled={!province}
+                  value={district?.name || null}
+                  onChange={handleDistrictChoose}
+                  onBlur={() => {
+                    validateDistrict();
+                  }}
+                  size="medium"
+                  disablePortal
+                  id="district"
+                  options={districts.map((district) => district.name)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Quận/Huyện" />
+                  )}
+                />
               </div>
-              <div
-                onClick={toggleWard}
-                className={
-                  ward
-                    ? "address-profile__ward address-profile__ward--selected"
-                    : !district
-                    ? "address-profile__ward address-profile__ward--disabled"
-                    : "address-profile__ward"
-                }
-              >
-                {ward ? ward.name : "Phường/Xã"}
-                {isWard && (
-                  <div className="address-profile__wards">
-                    {wards.map((item, index) => (
-                      <div
-                        key={index}
-                        onClick={handleWardChoose}
-                        className="address-profile__wards-item"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="address-profile__ward">
+                <StyleAutocomplete
+                  isValid={isWardsValid}
+                  ListboxProps={{
+                    sx: { fontSize: "1.3rem" },
+                  }}
+                  disabled={!district}
+                  value={ward?.name || null}
+                  onChange={handleWardChoose}
+                  onBlur={() => {
+                    validateWard();
+                  }}
+                  size="medium"
+                  disablePortal
+                  id="ward"
+                  options={wards.map((ward) => ward.name)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Phường/Xã" />
+                  )}
+                />
               </div>
+
               <div className="address-profile__province-error">
                 {errors.province}
               </div>
@@ -278,13 +336,21 @@ const AddressModal = ({
                 type="text"
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
+                onBlur={() => {
+                  validateStreet();
+                }}
                 className="address-profile__address-detail"
                 placeholder="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
               />
               <div className="address-profile__street-error">
                 {errors.street}
               </div>
-            </div>
+              <Button
+                sx={{ display: "none" }}
+                ref={buttonRef}
+                type="submit"
+              ></Button>
+            </form>
 
             <div className="address-profile__popup-footer">
               <button
@@ -294,7 +360,9 @@ const AddressModal = ({
                 Trở lại
               </button>
               <button
-                onClick={handleApply}
+                onClick={() => {
+                  buttonRef.current.click();
+                }}
                 className="btn address-profile__popup-apply "
               >
                 Xác nhận

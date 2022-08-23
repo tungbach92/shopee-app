@@ -28,7 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Product />}></Route>
           <Route path="/cart" element={<Cart />}></Route>
-          <Route path="/product/:metaTitle/:id" element={<Detail />}></Route>
+          <Route path="/product/:metaTitle/:productId" element={<Detail />}></Route>
           <Route
             path="/user"
             element={<Navigate to="/user/account/"></Navigate>}

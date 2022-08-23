@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { useContext } from "react";
@@ -11,7 +11,7 @@ export default function PaginationItemNumber() {
   const numberOfPageHiddingFromEnd = 3;
   let arrayOfPageIndexElements = [];
   for (let index = numberOfPageHiddingFromStart; index <= pageTotal; index++) {
-    //show pages from index to ...
+    //show pages from index to ... of pagination bar
     if (pageIndex <= numOfPageShowing && index <= numOfPageShowing) {
       arrayOfPageIndexElements.push(
         <li
@@ -26,7 +26,7 @@ export default function PaginationItemNumber() {
       );
     }
 
-    //show pages between ... and ...
+    //show pages between ... and ... of pagination bar
     else if (
       pageIndex >= numOfPageShowing &&
       index < pageIndex + numberOfPageHiddingFromEnd &&
@@ -45,7 +45,7 @@ export default function PaginationItemNumber() {
       );
     }
 
-    //show pages from ... to the end
+    //show pages from ... to the end of pagination bar
     else if (
       pageIndex > pageTotal - numberOfPageHiddingFromEnd &&
       index > pageTotal - numOfPageShowing
@@ -82,14 +82,14 @@ export default function PaginationItemNumber() {
       >
         <div className="pagination-item__link">2</div>
       </li>
-      {/* Show ... from the start  */}
+      {/* Show ... from the start of pagination bar  */}
       {pageIndex > numOfPageShowing && (
         <li className="pagination-item pagination-item--non-click">
           <div className="pagination-item__link">...</div>
         </li>
       )}
       {arrayOfPageIndexElements}
-      {/* show ... from the end*/}
+      {/* show ... from the ending of pagination bar*/}
       {pageTotal > numOfPageShowing &&
         pageIndex <= pageTotal - numberOfPageHiddingFromEnd && (
           <li className="pagination-item pagination-item--non-click">

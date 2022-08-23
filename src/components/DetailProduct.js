@@ -11,7 +11,7 @@ import CurrencyFormat from "react-currency-format";
 import { Box, Rating } from "@mui/material";
 
 export default function DetailProduct() {
-  const { metaTitle, id } = useParams();
+  const { productId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const scrolltoEl = useRef();
@@ -45,7 +45,7 @@ export default function DetailProduct() {
   // set rendering item with amount + soldAmount
   useEffect(() => {
     if (items.length > 0) {
-      let item = items.find((i) => i.id === id);
+      let item = items.find((i) => i.id === productId);
       item = {
         ...item,
         amount: 1,
@@ -55,7 +55,7 @@ export default function DetailProduct() {
       };
       setItem(item);
     }
-  }, [id, items]);
+  }, [productId, items]);
 
   useEffect(() => {
     //Img by item
@@ -151,7 +151,7 @@ export default function DetailProduct() {
   // const handleScrollTo = (e) => {
   //   scrolltoEl.current.scrollIntoView();
   // };
-  
+
   if (!item) {
     return (
       <Box

@@ -1,14 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import ProvincesCitiesVN from "pc-vn";
 
 const useAddress = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
-  const [fullAddress, setFullAddress] = useState("");
-  const [isProvince, setIsProvince] = useState(false);
-  const [isDistrict, setIsDistrict] = useState(false);
-  const [isWard, setIsWard] = useState(false);
+
   const [province, setProvince] = useState();
   const [district, setDistrict] = useState();
   const [ward, setWard] = useState();
@@ -16,53 +13,23 @@ const useAddress = () => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-  const toggleProvince = useCallback(() => {
-    setIsProvince(!isProvince);
-    setIsDistrict(false);
-    setIsWard(false);
-  }, [isProvince]);
-
-  const toggleDistrict = useCallback(() => {
-    if (province) {
-      setIsDistrict(!isDistrict);
-      setIsProvince(false);
-      setIsWard(false);
-    }
-  }, [isDistrict, province]);
-
-  const toggleWard = useCallback(() => {
-    if (province && district) {
-      setIsWard(!isWard);
-      setIsProvince(false);
-      setIsDistrict(false);
-    }
-  }, [district, isWard, province]);
-
-  const handleProvinceChoose = (e) => {
-    const value = e.target.innerText;
+  const handleProvinceChoose = (e, value) => {
+    console.log(value);
     const province = provinces.find((province) => province.name === value);
     setDistrict(undefined);
     setWard(undefined);
-    setProvince(province);
-    // setIsProvince(!isProvince);
-    toggleProvince();
+    setProvince(province || null);
   };
 
-  const handleDistrictChoose = (e) => {
-    const value = e.target.innerText;
+  const handleDistrictChoose = (e, value) => {
     const district = districts.find((district) => district.name === value);
     setWard(undefined);
-    setDistrict(district);
-    // setIsDistrict(!isDistrict);
-    toggleDistrict();
+    setDistrict(district || null);
   };
 
-  const handleWardChoose = (e) => {
-    const value = e.target.innerText;
+  const handleWardChoose = (e, value) => {
     const ward = wards.find((ward) => ward.name === value);
-    setWard(ward);
-    // setIsWard(!isWard);
-    toggleWard();
+    setWard(ward || null);
   };
 
   //Get and set province and set districts and district depend on province
@@ -87,7 +54,7 @@ const useAddress = () => {
       const wards = ProvincesCitiesVN.getWardsByDistrictCode(district.code);
       setWards(wards);
     }
-  }, [district, isDistrict, isProvince, province, ward]);
+  }, [district, province, ward]);
 
   return {
     name,
@@ -96,14 +63,6 @@ const useAddress = () => {
     setPhone,
     street,
     setStreet,
-    fullAddress,
-    setFullAddress,
-    isProvince,
-    isDistrict,
-    isWard,
-    setIsProvince,
-    setIsDistrict,
-    setIsWard,
     provinces,
     districts,
     wards,
@@ -113,9 +72,6 @@ const useAddress = () => {
     setDistrict,
     ward,
     setWard,
-    toggleDistrict,
-    toggleProvince,
-    toggleWard,
     handleDistrictChoose,
     handleProvinceChoose,
     handleWardChoose,

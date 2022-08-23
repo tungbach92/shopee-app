@@ -102,26 +102,15 @@ export default function CheckoutProduct() {
     setPhone,
     street,
     setStreet,
-    fullAddress,
-    setFullAddress,
     province,
     setProvince,
     district,
     setDistrict,
     ward,
     setWard,
-    isProvince,
-    isDistrict,
-    isWard,
-    setIsProvince,
-    setIsDistrict,
-    setIsWard,
     provinces,
     districts,
     wards,
-    toggleDistrict,
-    toggleProvince,
-    toggleWard,
     handleDistrictChoose,
     handleProvinceChoose,
     handleWardChoose,
@@ -526,23 +515,12 @@ export default function CheckoutProduct() {
                   setWard={setWard}
                   phone={phone}
                   setPhone={setPhone}
-                  isProvince={isProvince}
-                  isDistrict={isDistrict}
-                  isWard={isWard}
-                  setIsProvince={setIsProvince}
-                  setIsDistrict={setIsDistrict}
-                  setIsWard={setIsWard}
                   provinces={provinces}
                   districts={districts}
                   wards={wards}
-                  toggleDistrict={toggleDistrict}
-                  toggleProvince={toggleProvince}
-                  toggleWard={toggleWard}
                   handleDistrictChoose={handleDistrictChoose}
                   handleProvinceChoose={handleProvinceChoose}
                   handleWardChoose={handleWardChoose}
-                  fullAddress={fullAddress}
-                  setFullAddress={setFullAddress}
                   isAddressAddShowing={isAddressAddShowing}
                   toggleAddressAdd={toggleAddressAdd}
                 ></AddressModal>

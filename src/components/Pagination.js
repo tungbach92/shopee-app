@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { ProductContext } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";

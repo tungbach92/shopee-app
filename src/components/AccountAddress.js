@@ -23,26 +23,15 @@ const AccountAddress = () => {
     setPhone,
     street,
     setStreet,
-    fullAddress,
-    setFullAddress,
     province,
     setProvince,
     district,
     setDistrict,
     ward,
     setWard,
-    isProvince,
-    isDistrict,
-    isWard,
-    setIsProvince,
-    setIsDistrict,
-    setIsWard,
     provinces,
     districts,
     wards,
-    toggleDistrict,
-    toggleProvince,
-    toggleWard,
     handleDistrictChoose,
     handleProvinceChoose,
     handleWardChoose,
@@ -118,8 +107,6 @@ const AccountAddress = () => {
               setName={setName}
               street={street}
               setStreet={setStreet}
-              fullAddress={fullAddress}
-              setFullAddress={setFullAddress}
               district={district}
               setDistrict={setDistrict}
               province={province}
@@ -128,18 +115,9 @@ const AccountAddress = () => {
               setWard={setWard}
               phone={phone}
               setPhone={setPhone}
-              isProvince={isProvince}
-              isDistrict={isDistrict}
-              isWard={isWard}
-              setIsProvince={setIsProvince}
-              setIsDistrict={setIsDistrict}
-              setIsWard={setIsWard}
               provinces={provinces}
               districts={districts}
               wards={wards}
-              toggleDistrict={toggleDistrict}
-              toggleProvince={toggleProvince}
-              toggleWard={toggleWard}
               handleDistrictChoose={handleDistrictChoose}
               handleProvinceChoose={handleProvinceChoose}
               handleWardChoose={handleWardChoose}
