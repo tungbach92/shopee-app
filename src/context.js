@@ -82,7 +82,10 @@ export default class ProductProvider extends Component {
   };
 
   setFilterPrice = (filterPrice) => {
-    this.setState({ filterPrice });
+    this.setState({ filterPrice }, () => {
+      this.filterCategoryItems();
+      this.filterSearchItems();
+    });
   };
 
   setFilter = (filter) => {
@@ -579,11 +582,7 @@ export default class ProductProvider extends Component {
       });
     }
     if (name === "filterPrice") {
-      this.setState({ [name]: value }, () => {
-        this.filterCategoryItems();
-        this.filterSearchItems();
-      });
-      event.currentTarget.parentElement.style.display = "none";
+      this.setFilterPrice(value);
     }
 
     if (name === "addToCartBtn") {

@@ -25,6 +25,7 @@ const Header = ({
   const [recommendSearch, setRecommendSearch] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isHistory, setIsHistory] = useState(false);
+  const [isUserListShowing, setIsUserListShowing] = useState(false);
 
   function getUnique(items) {
     let uniqueItems = new Set(items);
@@ -39,7 +40,6 @@ const Header = ({
     filterItemsBySearch,
     addToSearchHistory,
     searchHistory,
-    searchInputOnChange,
     searchInput,
     setSearchInput,
     handleLogout,
@@ -47,7 +47,7 @@ const Header = ({
 
   const handleInputClick = (e) => {
     const text = e.target.value;
-    setIsHistory(true);
+    setIsHistory(!isHistory);
     changeSuggestionsByInputText(text);
   };
 
@@ -240,6 +240,7 @@ const Header = ({
                     ? "header__nav-item-right header__nav-item-right--user"
                     : "header__nav-item-right header__nav-item-right--reg"
                 }
+                onClick={() => setIsUserListShowing(!isUserListShowing)}
               >
                 <div className="header__nav-reg">
                   <Link to="/register" className="header__nav-login">
@@ -292,28 +293,29 @@ const Header = ({
                     {user?.displayName}
                   </Box>
                 </a>
-
-                <div className="header__user-list">
-                  <div className="header__user-arrow"></div>
-                  <Link to="/user/account" className="header__user-item">
-                    Tài khoản của tôi
-                  </Link>
-                  <Link
-                    to="/user/account/purchase"
-                    className="header__user-item"
-                  >
-                    Đơn mua
-                  </Link>
-                  <div
-                    onClick={() => {
-                      handleLogout();
-                      navigate("/");
-                    }}
-                    className="header__user-item"
-                  >
-                    Đăng xuất
+                {isUserListShowing && (
+                  <div className="header__user-list">
+                    <div className="header__user-arrow"></div>
+                    <Link to="/user/account" className="header__user-item">
+                      Tài khoản của tôi
+                    </Link>
+                    <Link
+                      to="/user/account/purchase"
+                      className="header__user-item"
+                    >
+                      Đơn mua
+                    </Link>
+                    <div
+                      onClick={() => {
+                        handleLogout();
+                        navigate("/");
+                      }}
+                      className="header__user-item"
+                    >
+                      Đăng xuất
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </ul>
           </nav>
