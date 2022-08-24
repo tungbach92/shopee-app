@@ -4,6 +4,13 @@ import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import PasswordResetModal from "./PasswordResetModal";
+import { styled } from "@mui/material";
+
+const StyledInput = styled("input", {
+  shouldForwardProp: (props) => props !== "isValid",
+})(({ isValid }) => ({
+  borderColor: isValid === false && "red",
+}));
 
 function AccountPassword({ setEmail, email }) {
   const { user } = useContext(ProductContext);
@@ -11,6 +18,9 @@ function AccountPassword({ setEmail, email }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isPasswordValid, setIsPasswordValid] = useState(null);
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(null);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(null);
   const [isUpdatingPasswordProcess, setIsUpdatingPasswordProcess] =
     useState(false);
   const [isUpdatePasswordSuccess, setIsUpdatePasswordSuccess] = useState(false);
@@ -34,7 +44,10 @@ function AccountPassword({ setEmail, email }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
+    validatePassword();
+    validateNewPassword();
+    validateConfirmPassword();
+    if (isPasswordValid && isNewPasswordValid && isConfirmPasswordValid) {
       setNewPassword("");
       setConfirmPassword("");
       updatePassword();
@@ -60,47 +73,56 @@ function AccountPassword({ setEmail, email }) {
           });
       })
       .catch((err) => {
-        let errors = {};
-        errors["password"] = "Mật khẩu cũ không đúng";
-        setErrors(errors);
+        let errors;
+        errors = "Mật khẩu cũ không đúng";
+        setErrors((prevErrors) => ({ ...prevErrors, password: errors }));
         setIsUpdatingPasswordProcess(false);
         setIsUpdatePasswordSuccess(false);
         console.log(err);
       });
   };
 
-  const validate = () => {
-    let isValid = true;
-    let errors = {};
-
+  const validatePassword = () => {
+    let errors;
+    setIsPasswordValid(true);
     if (!password) {
-      isValid = false;
-      errors["password"] = "Vui lòng nhập mật khẩu cũ";
+      setIsPasswordValid(false);
+      errors = "Vui lòng nhập mật khẩu cũ";
+    } else if (password.length < 6) {
+      setIsPasswordValid(false);
+      errors = "Mật khẩu phải chứa ít nhất 6 ký tự";
     }
-
-    if (!newPassword) {
-      isValid = false;
-      errors["newPassword"] = "Vui lòng nhập mật khẩu mới";
-    } else if (!confirmPassword) {
-      isValid = false;
-      errors["confirmPassword"] = "Vui lòng nhập lại mật khẩu mới";
-    } else if (confirmPassword.length < 6 || newPassword.length < 6) {
-      isValid = false;
-      errors["newPassword"] = "Mật khẩu mới phải chứa ít nhất 6 ký tự";
-    }
-
-    if (
-      typeof newPassword !== "undefined" &&
-      typeof confirmPassword !== "undefined"
-    ) {
-      if (newPassword !== confirmPassword) {
-        isValid = false;
-        errors["newPassword"] = "Mật khẩu mới không khớp nhau";
-      }
-    }
-    setErrors(errors);
-    return isValid;
+    setErrors((prevErrors) => ({ ...prevErrors, password: errors }));
   };
+  const validateNewPassword = () => {
+    let errors;
+    setIsNewPasswordValid(true);
+    if (!newPassword) {
+      setIsNewPasswordValid(false);
+      errors = "Vui lòng nhập mật khẩu mới";
+    } else if (newPassword.length < 6) {
+      setIsNewPasswordValid(false);
+      errors = "Mật khẩu mới phải chứa ít nhất 6 ký tự";
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, newPassword: errors }));
+  };
+  const validateConfirmPassword = () => {
+    let errors;
+    setIsConfirmPasswordValid(true);
+    if (!confirmPassword) {
+      setIsConfirmPasswordValid(false);
+      errors = "Vui lòng nhập lại mật khẩu mới";
+    } else if (confirmPassword.length < 6) {
+      setIsConfirmPasswordValid(false);
+      errors = "Mật khẩu mới phải chứa ít nhất 6 ký tự";
+    } else if (newPassword !== confirmPassword) {
+      setIsConfirmPasswordValid(false);
+      errors = "Mật khẩu mới không khớp nhau";
+    }
+
+    setErrors((prevErrors) => ({ ...prevErrors, confirmPassword: errors }));
+  };
+
   return (
     <>
       <div className="user-profile__title-container">
@@ -119,7 +141,10 @@ function AccountPassword({ setEmail, email }) {
           <label className="user-profile__oldpassword-label">
             Mật khẩu hiện tại:
           </label>
-          <input
+          <StyledInput
+            isValid={isPasswordValid}
+            onBlur={validatePassword}
+            name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -142,24 +167,34 @@ function AccountPassword({ setEmail, email }) {
           <label className="user-profile__newpassword-label">
             Mật Khẩu Mới:
           </label>
-          <input
+          <StyledInput
+            isValid={isNewPasswordValid}
+            onBlur={validateNewPassword}
+            name="newPassword"
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="user-profile__newpassword-input"
           />
+          <div className="user-profile__newPassword-error">
+            {errors.newPassword}
+          </div>
+
           <label className="user-profile__confirmPassword-label">
             Xác Nhận Mật Khẩu Mới:
           </label>
-          <input
+          <StyledInput
+            isValid={isConfirmPasswordValid}
+            onBlur={validateConfirmPassword}
+            name="confirmPassword"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="user-profile__confirmPassword-input"
           />
 
-          <div className="user-profile__newPassword-error">
-            {errors.newPassword}
+          <div className="user-profile__confirmPassword-error">
+            {errors.confirmPassword}
           </div>
           <button
             disabled={isUpdatingPasswordProcess}

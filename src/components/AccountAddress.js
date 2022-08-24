@@ -13,7 +13,7 @@ const AccountAddress = () => {
     updateCustomerBillingAddress,
   } = useContext(ProductContext);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
-  const [shipInfoIndex, setShipInfoIndex] = useState();
+  const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();
   const {
     name,

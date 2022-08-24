@@ -69,12 +69,10 @@ const AddressModal = ({
   const buttonRef = useRef();
 
   const validateName = () => {
-    let isValid = true;
     let error;
     setIsNameValid(true);
     // contain atleast 3 space
     if (!name) {
-      isValid = false;
       setIsNameValid(false);
       error = "Vui lòng nhập Họ tên!";
     }
@@ -82,19 +80,15 @@ const AddressModal = ({
     const nameRegex = /(\D*[\s]){2,}/; // contain atleast 2 space, only char
     if (name && !nameRegex.test(name)) {
       setIsNameValid(false);
-      isValid = false;
       error = "Nhập đầy đủ cả họ và tên, không chứa số!";
     }
     setErrors((prev) => ({ ...prev, name: error }));
-    return isValid;
   };
 
   const validatePhone = () => {
-    let isValid = true;
     let error;
     setIsPhoneValid(true);
     if (!phone) {
-      isValid = false;
       setIsPhoneValid(false);
       error = "Vui lòng nhập Số điện thoại";
     }
@@ -102,11 +96,9 @@ const AddressModal = ({
     const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/; // đầu số 03, 05, 07, 08, 09, bắt đầu với +84 hoặc 84
     if (phone && !phoneRegex.test(phone)) {
       setIsPhoneValid(false);
-      isValid = false;
       error = "Số điện thoại không hợp lệ!";
     }
     setErrors((prev) => ({ ...prev, phone: error }));
-    return isValid;
   };
 
   const validateProvince = () => {
@@ -114,7 +106,6 @@ const AddressModal = ({
     let error;
     setIsProvinceValid(true);
     if (!province) {
-      isValid = false;
       error = "Vui lòng chọn Tỉnh/thành phố";
       setIsProvinceValid(false);
     }
@@ -123,42 +114,33 @@ const AddressModal = ({
   };
 
   const validateDistrict = () => {
-    let isValid = true;
     let error;
     setIsDistrictValid(true);
     if (!district) {
-      isValid = false;
       setIsDistrictValid(false);
       error = "Vui lòng chọn Quận/huyện";
     }
     setErrors((prev) => ({ ...prev, district: error }));
-    return isValid;
   };
 
   const validateWard = () => {
-    let isValid = true;
     let error;
     setIsWardsValid(true);
     if (!ward) {
       setIsWardsValid(false);
-      isValid = false;
       error = "Vui lòng chọn Phường/xã/thị trấn";
     }
     setErrors((prev) => ({ ...prev, ward: error }));
-    return isValid;
   };
 
   const validateStreet = () => {
-    let isValid = true;
     let error;
     setIsStreetValid(true);
     if (!street) {
-      isValid = false;
       setIsStreetValid(false);
       error = "Vui lòng nhập Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)";
     }
     setErrors((prev) => ({ ...prev, street: error }));
-    return isValid;
   };
 
   const handleBack = () => {
@@ -190,7 +172,7 @@ const AddressModal = ({
       isStreetValid
     ) {
       toggleAddressAdd(!isAddressAddShowing);
-      if (typeof shipInfoIndex !== "undefined") {
+      if (shipInfoIndex) {
         updateShipInfo();
       } else {
         addNewShipInfo();
@@ -279,9 +261,7 @@ const AddressModal = ({
                 name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                onBlur={(e) => {
-                  validateName();
-                }}
+                onBlur={validateName}
                 className="address-profile__name"
               />
               <StyledTextField
@@ -292,9 +272,7 @@ const AddressModal = ({
                 name="phone"
                 value={phone}
                 onChange={handlePhoneChange}
-                onBlur={() => {
-                  validatePhone();
-                }}
+                onBlur={validatePhone}
                 className="address-profile__phone"
                 label="Số điện thoại"
               />
@@ -312,9 +290,7 @@ const AddressModal = ({
                   }}
                   value={province?.name || null}
                   onChange={handleProvinceChoose}
-                  onBlur={() => {
-                    validateProvince();
-                  }}
+                  onBlur={validateProvince}
                   disablePortal
                   id="province"
                   options={provinces.map((province) => province.name)}
@@ -337,9 +313,7 @@ const AddressModal = ({
                   disabled={!province}
                   value={district?.name || null}
                   onChange={handleDistrictChoose}
-                  onBlur={() => {
-                    validateDistrict();
-                  }}
+                  onBlur={validateDistrict}
                   disablePortal
                   id="district"
                   options={districts.map((district) => district.name)}
@@ -361,9 +335,7 @@ const AddressModal = ({
                   disabled={!district}
                   value={ward?.name || null}
                   onChange={handleWardChoose}
-                  onBlur={() => {
-                    validateWard();
-                  }}
+                  onBlur={validateWard}
                   disablePortal
                   id="ward"
                   options={wards.map((ward) => ward.name)}
@@ -387,9 +359,7 @@ const AddressModal = ({
                 variant="outlined"
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
-                onBlur={() => {
-                  validateStreet();
-                }}
+                onBlur={validateStreet}
                 className="address-profile__address-detail"
                 label="Tổ dân phố, ngõ, số nhà, đường(thôn, xóm)"
               />

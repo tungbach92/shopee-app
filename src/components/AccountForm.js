@@ -1,8 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FastField, Field, Form, Formik } from "formik";
-import PopupModal from "./PopupModal";
-import useModal from "../hooks/useModal";
 import InputField from "../custom-fields/InputField/InputField";
 import RadioGroupField from "../custom-fields/RadioGroupField/RadioGroupField";
 import { Link } from "react-router-dom";
@@ -30,12 +28,12 @@ const AccountForm = (props) => {
     user: yup
       .string()
       .min(2, "Tên user phải có tối thiểu 2 ký tự")
-      .max(50, "Tên user không vượt quá 20 ký tự")
+      .max(20, "Tên user không vượt quá 20 ký tự")
       .required("Vui lòng nhập tên user"),
     name: yup
       .string()
       .min(2, "Tên phải có tối thiểu 2 ký tự")
-      .max(50, "Tên không vượt quá 20 ký tự")
+      .max(20, "Tên không vượt quá 20 ký tự")
       .required("Vui lòng nhập họ tên"),
     phone: yup.string().required("Vui lòng nhập SĐT").matches(phoneRegex, "SĐT không hợp lệ!"),
     gender: yup.string().required("Vui lòng chọn giới tính"),

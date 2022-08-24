@@ -1,10 +1,24 @@
-import React, { useRef, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../axios";
 import { ProductContext } from "../context";
 import { db } from "../firebase";
+import { styled } from "@mui/material";
+
+const StyledInput = styled("input", {
+  shouldForwardProp: (props) => props !== "isValid",
+})(({ isValid }) => ({
+  borderColor: isValid === false && "red",
+}));
+
+const StyledCardElement = styled(CardElement, {
+  shouldForwardProp: (props) => props !== "isValid",
+})(({ isValid }) => ({
+  borderColor: isValid === false && "red",
+  fontSize: "1.3rem",
+}));
 
 export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const stripe = useStripe();
@@ -20,14 +34,11 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
 
   const [cardName, setCardName] = useState("");
   const [cardAddress, setCardAddress] = useState("");
-  const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [nameIsValid, setNameIsValid] = useState(false);
-  const [numberIsValid, setNumberIsValid] = useState(false);
-  const [errorNumberMsg, setErrorNumberMsg] = useState(null);
-  const [errorNameMsg, setErrorNameMsg] = useState(null);
-  const [successed, setSuccessed] = useState(false);
+  const [nameIsValid, setNameIsValid] = useState(null);
+  const [numberIsValid, setNumberIsValid] = useState(null);
+  const [errorNumberMsg, setErrorNumberMsg] = useState("");
+  const [errorNameMsg, setErrorNameMsg] = useState("");
   const [processing, setProcessing] = useState(false);
 
   const handleClick = () => {
@@ -37,10 +48,43 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const handleCardElChange = (e) => {
     setNumberIsValid(!e.error && e.complete ? true : false);
     setErrorNumberMsg(e.error ? e.error.message : "");
+    console.log(e);
   };
+  const validateCardName = () => {
+    setNameIsValid(true);
+    let nameValidation = validCardCheck.cardholderName(cardName);
+    if (cardName) {
+      if (!nameValidation.isValid) {
+        setNameIsValid(false);
+        setErrorNameMsg(
+          "Tên thẻ phải là các ký tự alphabet và có thể chứa các ký hiệu apostrophe('), minus(-) and dot(.)."
+        );
+      } else {
+        setNameIsValid(true);
+        setErrorNameMsg("");
+      }
+    } else {
+      setNameIsValid(false);
+      setErrorNameMsg("Vui lòng nhập tên thẻ.");
+    }
+  };
+  //! validateCardNumber not work because no way to retrieve card number from CardElement
+  // const validateCardNumber = () => {
+  //   setNumberIsValid(true);
+  //   if (cardNuber) {
+  //     setNameIsValid(false);
+  //     setErrorNumberMsg("Vui lòng nhập số thẻ.");
+  //   }
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    validateCardName();
+    // validateCardNumber();
+    if (!numberIsValid && !errorNumberMsg) {
+      setErrorNumberMsg("Vui lòng nhập số thẻ.");
+    }
+
     if (!nameIsValid || !numberIsValid) {
       return;
     }
@@ -50,22 +94,30 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       console.log("There is no stripe and elements hook");
       return;
     }
-    const cardEl = elements.getElement(CardElement);
-    const tokenClientSide = await stripe.createToken(cardEl);
 
-    //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
-    const tokenServerSideRes = await axios({
-      method: "POST",
-      url: "/create-token-server-side",
-      data: { tokenClientSideID: tokenClientSide.token.id },
-    });
-    const tokenServerSide = tokenServerSideRes.data.tokenResult;
-    const isCardDuplicate = paymentMethodList.some(
-      (item) =>
-        item.card.fingerprint === tokenServerSide.card.fingerprint &&
-        item.card.exp_month === tokenServerSide.card.exp_month &&
-        item.card.exp_year === tokenServerSide.card.exp_year
-    );
+    const cardEl = elements.getElement(CardElement);
+    let isCardDuplicate;
+    //TODO: refactor this with try catch
+    try {
+      const tokenClientSide = await stripe.createToken(cardEl);
+      //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
+      const tokenServerSideRes = await axios({
+        method: "POST",
+        url: "/create-token-server-side",
+        data: { tokenClientSideID: tokenClientSide.token.id },
+      });
+      const tokenServerSide = tokenServerSideRes.data.tokenResult;
+      isCardDuplicate = paymentMethodList.some(
+        (item) =>
+          item.card.fingerprint === tokenServerSide.card.fingerprint &&
+          item.card.exp_month === tokenServerSide.card.exp_month &&
+          item.card.exp_year === tokenServerSide.card.exp_year
+      );
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+
     if (!isCardDuplicate) {
       //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
       const response = await axios({
@@ -136,28 +188,10 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       alert("Thẻ này trùng với thẻ đang được sử dụng!");
     }
   };
+  
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
-    }
-  };
-  const handleInputChange = (e) => {
-    const name = e.target.value;
-    setCardName(name);
-    let nameValidation = validCardCheck.cardholderName(name);
-    if (name) {
-      if (!nameValidation.isValid) {
-        setNameIsValid(false);
-        setErrorNameMsg(
-          "Tên thẻ phải là các ký tự alphabet và có thể chứa các ký hiệu apostrophe('), minus(-) and dot(.)."
-        );
-      } else {
-        setNameIsValid(true);
-        setErrorNameMsg("");
-      }
-    } else {
-      setNameIsValid(false);
-      setErrorNameMsg("Vui lòng nhập tên thẻ.");
     }
   };
   // useEffect(() => {
@@ -185,11 +219,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         .then((doc) => {
           if (doc.exists) {
             const phone = doc.data().phone;
-            const address = doc.data().address;
-            const name = doc.data().name;
-            setName(name);
             setPhone(phone ? phone : "");
-            setAddress(address ? address : "");
           }
         })
         .catch((err) => alert(err));
@@ -231,22 +261,25 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         <form onSubmit={handleSubmit}>
           <div className="cart-product__card-info">
             <label className="cart-product__card-label">Chi tiết thẻ</label>
-            <input
+            <StyledInput
+              isValid={nameIsValid}
               onKeyDown={handleKeyDown}
-              onChange={handleInputChange}
-              onBlur={handleInputChange}
+              onChange={(e) => setCardName(e.target.value)}
+              onBlur={validateCardName}
               value={cardName}
               type="text"
               name="name"
               className="cart-product__card-name"
               placeholder="Họ tên trên thẻ"
-              required
             />
             {errorNameMsg && (
               <label className="cart-product__name-error">{errorNameMsg}</label>
             )}
             <div className="cart-product__number-wrapper">
-              <CardElement onChange={handleCardElChange}></CardElement>
+              <StyledCardElement
+                isValid={numberIsValid}
+                onChange={handleCardElChange}
+              ></StyledCardElement>
             </div>
             {errorNumberMsg && (
               <label className="cart-product__number-error">
@@ -277,7 +310,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
               Trở lại
             </button>
             <button
-              disabled={processing || successed} //fix
+              disabled={processing} //fix
               type="submit"
               className="btn cart-product__modal-apply"
             >
