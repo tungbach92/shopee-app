@@ -29,6 +29,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     setFilterPrice,
     setCategory,
     loading,
+    categoryItems,
   } = context;
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
@@ -120,7 +121,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         renderItem = searchItemFiltered;
       }
     }
-    
+
     if (similarDisPlay) {
       renderItem = similarItems.slice(
         (pageIndex - 1) * similarPageSize,
@@ -130,7 +131,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         renderItem = similarItems;
       }
     }
-    
+
     if (isProductPage) {
       renderItem = categoryItemsFiltered.slice(
         (pageIndex - 1) * pageSize,
@@ -159,6 +160,21 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         }}
       >
         Loading...
+      </Box>
+    );
+  } else if (categoryItems.length === 0) {
+    return (
+      <Box
+        sx={{
+          flex: 1,
+          textAlign: "center",
+          padding: "14.5rem",
+          fontSize: "1.6rem",
+          color: "var(--primary-color)",
+          fontWeight: "600",
+        }}
+      >
+        Không có sản phẩm...
       </Box>
     );
   }

@@ -1,12 +1,110 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProductContext } from "../context";
 import { useContext } from "react";
 import classNames from "classnames";
-import { Box } from "@mui/material";
+import {
+  Box,
+  Button,
+  Rating,
+  styled,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { FilterAlt } from "@mui/icons-material";
+
+const StyledBox = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  cursor: "pointer",
+  marginBottom: "0.6rem",
+});
+
+const StyledTypography = styled(Typography)({
+  fontSize: "1.3rem",
+  marginLeft: "0.6rem",
+});
+
+const StyledTextField = styled(TextField)({
+  width: "40%",
+  "& .MuiInputBase-input, & .MuiOutlinedInput-input": {
+    padding: "0.45rem 0.6rem",
+    fontSize: "1.2rem",
+  },
+});
 
 export default function ProductCategory() {
   const context = useContext(ProductContext);
-  const { category, handleClick } = context;
+  const {
+    category,
+    handleClick,
+    categoryItems,
+    setCategoryItems,
+    setCategoryItemsFiltered,
+    setCategory,
+    setFilter,
+    setFilterPrice,
+    filterItemsByCategory,
+    items,
+  } = context;
+  const [startPrice, setStartPrice] = useState("");
+  const [endPrice, setEndPrice] = useState("");
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
+  const fiveRating = 5;
+  const fourRating = 4;
+  const threeRating = 3;
+  const twoRating = 2;
+  const oneRating = 1;
+  const defaultCategory = "allProduct";
+  const defaultFilter = "all";
+  const defaultFilterPrice = "default";
+
+  const handleResetAll = () => {
+    setCategory(defaultCategory);
+    setFilter(defaultFilter);
+    setFilterPrice(defaultFilterPrice);
+    //set categoryItemsFiltered by default value
+    const categoryItems = items.filter((item) => item.category !== category);
+    const categoryItemsFiltered = [...categoryItems];
+    setCategoryItems(categoryItems);
+    setCategoryItemsFiltered(categoryItemsFiltered);
+  };
+
+  const handleRating = (ratingValue) => {
+    let ratingCategoryItems = [...categoryItems];
+    ratingCategoryItems = ratingCategoryItems.filter(
+      (item) => item.rating >= ratingValue
+    );
+    setCategoryItems(ratingCategoryItems);
+    setCategoryItemsFiltered(ratingCategoryItems);
+  };
+
+  const handleFilerPriceRange = () => {
+    let priceRangeCategoryItems = [...categoryItems];
+    if (startPrice.length > 0 && endPrice.length === 0) {
+      priceRangeCategoryItems = priceRangeCategoryItems.filter(
+        (item) => item.price >= Number(startPrice)
+      );
+      setCategoryItems(priceRangeCategoryItems);
+      setCategoryItemsFiltered(priceRangeCategoryItems);
+    }
+    if (startPrice.length > 0 && endPrice.length > 0) {
+      priceRangeCategoryItems = priceRangeCategoryItems.filter(
+        (item) =>
+          item.price >= Number(startPrice) && item.price <= Number(endPrice)
+      );
+      setCategoryItems(priceRangeCategoryItems);
+      setCategoryItemsFiltered(priceRangeCategoryItems);
+    }
+    if (startPrice.length === 0 && endPrice.length > 0) {
+      priceRangeCategoryItems = priceRangeCategoryItems.filter(
+        (item) => item.price <= Number(endPrice)
+      );
+      setCategoryItems(priceRangeCategoryItems);
+      setCategoryItemsFiltered(priceRangeCategoryItems);
+    }
+  };
+
   return (
     <div className="app__container-category">
       <div className="app__category-heading">
@@ -151,6 +249,150 @@ export default function ProductCategory() {
           <p className="app__item-link">Phụ kiện</p>
         </li>
       </ul>
+
+      {/* TODO: Responsive price range and rating */}
+      {!xsBreakpointMatches && (
+        <>
+          <Box
+            p="2rem 0"
+            sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}
+            display="flex"
+            alignItems="center"
+          >
+            <FilterAlt></FilterAlt>
+            <Typography ml="1rem" fontSize="1.6rem" variant="h6">
+              Bộ lọc tìm kiếm
+            </Typography>
+          </Box>
+          <Box
+            p="2rem 0"
+            sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.05)" }}
+          >
+            <Typography fontSize="1.4rem">Khoảng giá</Typography>
+            <Box
+              mt="1rem"
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <StyledTextField
+                type="text"
+                inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                name="startPrice"
+                value={startPrice}
+                onChange={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9.]/g, "")
+                    .replace(/(\..*)\./g, "$1");
+                  setStartPrice(e.target.value);
+                }}
+                placeholder="Từ"
+                size="small"
+                disabled={categoryItems.length === 0}
+              ></StyledTextField>
+              <Typography fontSize="1.4rem">-</Typography>
+              <StyledTextField
+                type="text"
+                inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                name="endPrice"
+                value={endPrice}
+                onChange={(e) => {
+                  e.target.value = e.target.value
+                    .replace(/[^0-9.]/g, "")
+                    .replace(/(\..*)\./g, "$1");
+                  setEndPrice(e.target.value);
+                }}
+                placeholder="Đến"
+                size="small"
+                disabled={categoryItems.length === 0}
+              ></StyledTextField>
+            </Box>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{
+                marginTop: "1rem",
+                fontSize: "1.3rem",
+                color: "white",
+                "&:disabled": { cursor: "not-allowed" },
+              }}
+              onClick={handleFilerPriceRange}
+              disabled={categoryItems.length === 0}
+            >
+              Áp dụng
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              padding: "2rem 0",
+              borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+            }}
+          >
+            <Typography
+              sx={{ fontSize: "1.4rem", marginBottom: "0.6rem" }}
+              component="p"
+            >
+              Đánh giá
+            </Typography>
+            <StyledBox onClick={() => handleRating(fiveRating)}>
+              <Rating
+                name="fiveRating"
+                value={fiveRating}
+                readOnly
+                disabled={categoryItems.length === 0}
+              />
+            </StyledBox>
+            <StyledBox onClick={() => handleRating(fourRating)}>
+              <Rating
+                name="fourRating"
+                value={fourRating}
+                readOnly
+                disabled={categoryItems.length === 0}
+              />
+              <StyledTypography>trở lên</StyledTypography>
+            </StyledBox>
+            <StyledBox onClick={() => handleRating(threeRating)}>
+              <Rating
+                name="threeRating"
+                value={threeRating}
+                readOnly
+                disabled={categoryItems.length === 0}
+              />
+              <StyledTypography>trở lên</StyledTypography>
+            </StyledBox>
+            <StyledBox onClick={() => handleRating(twoRating)}>
+              <Rating
+                name="twoRating"
+                value={twoRating}
+                readOnly
+                disabled={categoryItems.length === 0}
+              />
+              <StyledTypography>trở lên</StyledTypography>
+            </StyledBox>
+            <StyledBox onClick={() => handleRating(oneRating)}>
+              <Rating
+                name="oneRating"
+                value={oneRating}
+                readOnly
+                disabled={categoryItems.length === 0}
+              />
+              <StyledTypography>trở lên</StyledTypography>
+            </StyledBox>
+          </Box>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{
+              marginTop: "1rem",
+              fontSize: "1.3rem",
+              color: "white",
+            }}
+            onClick={handleResetAll}
+          >
+            Xoá tất cả
+          </Button>
+        </>
+      )}
     </div>
   );
 }

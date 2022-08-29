@@ -2,17 +2,20 @@ import React, { useContext, useEffect, useState } from "react";
 import noCartImg from "../../img/no-cart.png";
 import { ProductContext } from "../../context";
 import classNames from "classnames";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CurrencyFormat from "react-currency-format";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../PopupModal";
 import PropTypes from "prop-types";
+import { useMediaQuery } from "@mui/material";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
   const { cartItems, handleClick, delCartItem } = useContext(ProductContext);
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
   const [isCartShowing, setIsCartShowing] = useState(false);
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
+  const navigate = useNavigate();
 
   const handleCartDelete = (id) => {
     setDeleteID(id);
@@ -26,7 +29,16 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
     <div className="header__cart">
       <div
         className="header__cart-wrapper"
-        onClick={() => setIsCartShowing(!isCartShowing)}
+        onClick={() =>
+          xsBreakpointMatches
+            ? navigate("/cart")
+            : setIsCartShowing(!isCartShowing)
+        }
+        onBlur={() =>
+          setTimeout(() => {
+            setIsCartShowing(false);
+          }, 200)
+        }
       >
         <a href="# " className="header__cart-icon-link">
           <i className="header__cart-icon bi bi-cart">

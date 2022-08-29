@@ -15,7 +15,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
 import Search from "./pages/Search";
 import Admin from "./pages/Admin";
-
+import { theme } from "./theme";
+import { ThemeProvider } from "@mui/material";
 //Lazy load product page
 const Product = React.lazy(() => import("./pages/Product"));
 const Cart = React.lazy(() => import("./pages/Cart"));
@@ -24,39 +25,44 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   return (
     <>
-      <Suspense fallback={<div className="app__no-product">Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Product />}></Route>
-          <Route path="/cart" element={<Cart />}></Route>
-          <Route path="/product/:metaTitle/:productId" element={<Detail />}></Route>
-          <Route
-            path="/user"
-            element={<Navigate to="/user/account/"></Navigate>}
-          ></Route>
-          <Route
-            path="/user/account/*"
-            element={
-              <Elements stripe={stripePromise}>
-                <Account />
-              </Elements>
-            }
-          ></Route>
-          <Route
-            path="/checkout"
-            element={
-              <Elements stripe={stripePromise}>
-                <Checkout />
-              </Elements>
-            }
-          ></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/search" element={<Search />}></Route>
-          <Route path="/admin" element={<Admin />}></Route>
-          <Route path="*" element={<Error />} />
-        </Routes>
-      </Suspense>
-      <Footer></Footer>
+      <ThemeProvider theme={theme}>
+        <Suspense fallback={<div className="app__no-product">Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<Product />}></Route>
+            <Route path="/cart" element={<Cart />}></Route>
+            <Route
+              path="/product/:metaTitle/:productId"
+              element={<Detail />}
+            ></Route>
+            <Route
+              path="/user"
+              element={<Navigate to="/user/account/"></Navigate>}
+            ></Route>
+            <Route
+              path="/user/account/*"
+              element={
+                <Elements stripe={stripePromise}>
+                  <Account />
+                </Elements>
+              }
+            ></Route>
+            <Route
+              path="/checkout"
+              element={
+                <Elements stripe={stripePromise}>
+                  <Checkout />
+                </Elements>
+              }
+            ></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+            <Route path="/search" element={<Search />}></Route>
+            <Route path="/admin" element={<Admin />}></Route>
+            <Route path="*" element={<Error />} />
+          </Routes>
+        </Suspense>
+        <Footer></Footer>
+      </ThemeProvider>
     </>
   );
 }

@@ -886,7 +886,7 @@ export default class ProductProvider extends Component {
     }
 
     // Date Filter
-    let newestDays = 10;
+    let newestDays = 30;
     let oneDayinMs = 24 * 60 * 60 * 1000;
     if (filter === "date") {
       filterCommonItems = filterCommonItems.filter(

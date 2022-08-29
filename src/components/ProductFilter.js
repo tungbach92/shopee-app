@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import MiniPageControl from "./MiniPageControl";
 import PropTypes from "prop-types";
 import { ArrowDownward, ArrowUpward, UnfoldMore } from "@mui/icons-material";
-import { useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 
 const ProductFilter = ({ isSearchPage }) => {
   let {
@@ -21,13 +21,20 @@ const ProductFilter = ({ isSearchPage }) => {
     setIsFilterPriceDescForXsResponsive,
   ] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-
+  const defaultFilterPrice = "default";
+  
   let totalItems = 0;
   if (isSearchPage) {
     totalItems = searchItems.length;
   } else {
     totalItems = categoryItems.length;
   }
+
+  useEffect(() => {
+    if (categoryItems.length === 0) {
+      setFilterPrice(defaultFilterPrice);
+    }
+  }, [categoryItems, setFilterPrice]);
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
@@ -39,8 +46,9 @@ const ProductFilter = ({ isSearchPage }) => {
       setIsFilterPriceDescForXsResponsive(false);
     }
   };
+
   return (
-    <div className="app__filter">
+    <Box sx={{ top: isSearchPage && "8.5rem" }} className="app__filter">
       <div className="app__filter-label">Sắp xếp theo</div>
       <div className="app__filter-list">
         {/* <!-- active: btn--active --> */}
@@ -51,6 +59,7 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-popular", {
             "btn--active": filter === "all",
           })}
+          disabled={categoryItems.length === 0}
         >
           Tất cả
         </button>
@@ -61,6 +70,7 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-newest", {
             "btn--active": filter === "date",
           })}
+          disabled={categoryItems.length === 0}
         >
           Mới nhất
         </button>
@@ -71,15 +81,17 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-bestSell", {
             "btn--active": filter === "bestSelling",
           })}
+          disabled={categoryItems.length === 0}
         >
           Bán chạy
         </button>
         <div
           data-name="filterPrice"
           onClick={() =>
-            xsBreakpointMatches
+            categoryItems.length !== 0 &&
+            (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
-              : setIsFilterPriceShow(!isFilterPriceShow)
+              : setIsFilterPriceShow(!isFilterPriceShow))
           }
           className={
             totalItems === 0 ? " select-input--disabled" : " select-input"
@@ -170,7 +182,7 @@ const ProductFilter = ({ isSearchPage }) => {
       <div className="app__filter-page">
         <MiniPageControl totalItems={totalItems}></MiniPageControl>
       </div>
-    </div>
+    </Box>
   );
 };
 

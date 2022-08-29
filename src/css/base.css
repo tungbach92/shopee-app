@@ -6,7 +6,8 @@
   --grey-color: #888;
   --lighter-grey-color: #f8f8f8;
   --primary-color: #ee4d2d;
-  --primary-light-color: rgba(255, 87, 34, 0.1);
+  --primary-light-color: #ee8e7a;
+  --primary-dark-color: #c02000;
 }
 
 /* shopee customize responsive */

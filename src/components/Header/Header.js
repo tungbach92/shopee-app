@@ -10,6 +10,7 @@ import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
 import { Box, Stack } from "@mui/material";
+import { useMediaQuery } from "@mui/material";
 
 const Header = ({
   isProductPage,
@@ -26,6 +27,7 @@ const Header = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isHistory, setIsHistory] = useState(false);
   const [isUserListShowing, setIsUserListShowing] = useState(false);
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
 
   function getUnique(items) {
     let uniqueItems = new Set(items);
@@ -79,13 +81,15 @@ const Header = ({
   };
 
   const inputOnKeyUp = (event) => {
-    if (event.keyCode === 13) {
+    const enter = 13;
+    if (event.keyCode === enter) {
       event.currentTarget.blur();
       handleSearchIconClick(event.target.value);
     }
   };
 
   const handleSearchBlur = () => {
+    console.log("b");
     ref.current = setTimeout(() => {
       setIsHistory(false);
     }, 200);
@@ -240,7 +244,16 @@ const Header = ({
                     ? "header__nav-item-right header__nav-item-right--user"
                     : "header__nav-item-right header__nav-item-right--reg"
                 }
-                onClick={() => setIsUserListShowing(!isUserListShowing)}
+                onClick={() =>
+                  xsBreakpointMatches
+                    ? navigate("/user/account")
+                    : setIsUserListShowing(!isUserListShowing)
+                }
+                onBlur={() =>
+                  setTimeout(() => {
+                    setIsUserListShowing(false);
+                  }, 200)
+                }
               >
                 <div className="header__nav-reg">
                   <Link to="/register" className="header__nav-login">
