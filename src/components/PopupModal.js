@@ -205,7 +205,7 @@ PopupModal.defaultProps = {
   handlePaymentDeleteTrue: () => {},
   isSearchPage: false,
   isCartPage: false,
-  deleteID: "",
+  deleteID: null,
   setDeleteID: () => {},
   isDeleteSelected: false,
   setIsDeleteSelected: () => {},

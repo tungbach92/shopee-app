@@ -337,7 +337,7 @@ export default function ProductCategory() {
             <StyledBox onClick={() => handleRating(fiveRating)}>
               <Rating
                 name="fiveRating"
-                value={fiveRating}
+                defaultValue={fiveRating}
                 readOnly
                 disabled={categoryItems.length === 0}
               />
@@ -345,7 +345,7 @@ export default function ProductCategory() {
             <StyledBox onClick={() => handleRating(fourRating)}>
               <Rating
                 name="fourRating"
-                value={fourRating}
+                defaultValue={fourRating}
                 readOnly
                 disabled={categoryItems.length === 0}
               />
@@ -354,7 +354,7 @@ export default function ProductCategory() {
             <StyledBox onClick={() => handleRating(threeRating)}>
               <Rating
                 name="threeRating"
-                value={threeRating}
+                defaultValue={threeRating}
                 readOnly
                 disabled={categoryItems.length === 0}
               />
@@ -363,7 +363,7 @@ export default function ProductCategory() {
             <StyledBox onClick={() => handleRating(twoRating)}>
               <Rating
                 name="twoRating"
-                value={twoRating}
+                defaultValue={twoRating}
                 readOnly
                 disabled={categoryItems.length === 0}
               />
@@ -372,7 +372,7 @@ export default function ProductCategory() {
             <StyledBox onClick={() => handleRating(oneRating)}>
               <Rating
                 name="oneRating"
-                value={oneRating}
+                defaultValue={oneRating}
                 readOnly
                 disabled={categoryItems.length === 0}
               />

@@ -1,17 +1,16 @@
 import classNames from "classnames";
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import CurrencyFormat from "react-currency-format";
 import { ProductContext } from "../context";
-import { Typography, Rating } from "@mui/material";
+import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
-const ProductItem = React.memo(function (props) {
+const ProductItem = function ({ item, similarDisPlay }) {
   console.log("product item render");
-  const { item, similarDisPlay, cartItems, handleClick } = props;
-  const { user } = useContext(ProductContext);
+  const { user, cartItems, handleClick } = useContext(ProductContext);
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
@@ -153,9 +152,8 @@ const ProductItem = React.memo(function (props) {
               </div> */}
               <div className="app__more-rating">
                 <Rating
-                  name="half-rating-read"
-                  defaultValue={0}
-                  value={item.rating}
+                  name="rating-star"
+                  defaultValue={rating}
                   precision={0.1}
                   readOnly
                 />
@@ -189,5 +187,5 @@ const ProductItem = React.memo(function (props) {
       </div>
     </Grid2>
   );
-});
-export default ProductItem;
+};
+export default React.memo(ProductItem);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
@@ -17,10 +17,8 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     setCheckoutItems,
     categoryItemsFiltered,
     similarItems,
-    cartItems,
     pageIndex,
     pageSize,
-    handleClick,
     searchItemFiltered,
     searchItems,
     setSearchItemFiltered,
@@ -183,10 +181,8 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
       {getRenderItems().map((item) => (
         <ProductItem
           key={item.id}
-          cartItems={cartItems}
-          similarDisPlay={similarDisPlay}
           item={item}
-          handleClick={handleClick}
+          similarDisPlay={similarDisPlay}
         ></ProductItem>
       ))}
     </Grid2>
@@ -205,4 +201,4 @@ ProductList.defaultProps = {
   similarDisPlay: false,
 };
 
-export default React.memo(ProductList);
+export default ProductList;

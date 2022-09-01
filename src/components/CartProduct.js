@@ -18,7 +18,7 @@ export default function CartProduct(props) {
   const { isCartPage } = props;
   const [variation, setVariation] = useState("");
   const [isVariationChoose, setIsVariationChoose] = useState(false);
-  const [deleteID, setDeleteID] = useState();
+  const [deleteID, setDeleteID] = useState(null);
   const [deleteVariation, setDeleteVariation] = useState();
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const [checked, setChecked] = useState([]);

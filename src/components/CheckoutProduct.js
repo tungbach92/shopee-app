@@ -1,14 +1,13 @@
-import React, { useContext, useEffect, useState, useRef, useMemo } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { ProductContext } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
+import { UNSAFE_NavigationContext as NavigationContext } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import ShipUnitsModal from "./ShipUnitsModal";
 import VoucherModal from "./VoucherModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
-import cimbImg from "../img/ic_cimb_bank@4x.png";
-import mbImg from "../img/ic_MBBank@4x.png";
 import ErrorModal from "./ErrorModal";
 import CurrencyFormat from "react-currency-format";
 import axios from "../axios";
@@ -17,10 +16,11 @@ import { db } from "../firebase";
 import "firebase/firestore";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
+
 export default function CheckoutProduct() {
   console.log("check out render");
   const stripe = useStripe();
-  const inputMessageEl = useRef([]);
+  const { navigator } = useContext(NavigationContext);
   //
   const {
     shipPriceProvince,
@@ -257,16 +257,35 @@ export default function CheckoutProduct() {
     setCheckedAndShipUnit();
   }, [shipUnit, shipUnitList]);
 
-  const handleInputBlur = (e) => {
-    let text = e.target.value;
-    setMessage(text);
-  };
+  useEffect(() => {
+    if (!processing) return;
 
-  const handleInputEnter = (e) => {
-    if (e.keyCode === 13) {
-      inputMessageEl.current.blur();
-    }
-  };
+    const blocker = (tx) => {
+      if (
+        window.confirm(
+          "Việc này có thể khiến quá trình thanh toán bị gián đoạn. Bạn vẫn muốn rời khỏi trang web?"
+        )
+      )
+        tx.retry();
+    };
+
+    const unblock = navigator.block((tx) => {
+      const autoUnblockingTx = {
+        ...tx,
+        retry() {
+          // Automatically unblock the transition so it can play all the way
+          // through before retrying it. TODO: Figure out how to re-enable
+          // this block if the transition is cancelled for some reason.
+          unblock();
+          tx.retry();
+        },
+      };
+
+      blocker(autoUnblockingTx);
+    });
+
+    return unblock;
+  }, [navigator, processing]);
 
   const handlePaymentMethodSelect = (e) => {
     const paymentMethod = e.target.innerText;
@@ -337,7 +356,6 @@ export default function CheckoutProduct() {
       paymentMethod.length > 0
     ) {
       setProcessing(true);
-
       if (isCardPayment && defaultPaymentMethodID) {
         let defaultshipInfo;
         shipInfos.forEach((item) => {
@@ -380,8 +398,11 @@ export default function CheckoutProduct() {
             // Card needs to be authenticatied
             // Reuse the card details we have to use confirmCardPayment() to prompt for authentication
             // showAuthenticationView(data);
-            alert("Thẻ cần xác thực để thanh toán. Vui lòng nhấn ok và đợi.");
+            alert(
+              "Thẻ cần xác thực để thanh toán. Vui lòng nhấn ok và đợi cửa sổ xác thực"
+            );
             // Tương đương với sd PPaymentIntents method to confirm paymentIntent
+
             stripe
               .confirmCardPayment(result.data.clientSecret, {
                 payment_method: result.data.paymentMethod,
@@ -396,7 +417,7 @@ export default function CheckoutProduct() {
                   // hideEl(".requires-auth");
                   // showEl(".requires-pm");
                   alert(
-                    `${result.data.card.brand} **** ${result.data.card.last4} authentication failed. Please provide an new card or try again.`
+                    `Xác thực thẻ ${result.data.card.brand} **** ${result.data.card.last4} thất bại. Vui lòng chọn phương thức thanh toán khác hoặc thử lại.`
                   );
                   setSucceeded(false);
                   setProcessing(false);
@@ -410,6 +431,7 @@ export default function CheckoutProduct() {
                   // paymentIntentSucceeded(clientSecret, ".requires-auth");
                   console.log(stripeJsResult.paymentIntent);
                   handleOrderSucceeded(stripeJsResult.paymentIntent);
+                  setProcessing(false);
                 }
                 // paymentIntent = payment confirmation
                 // SetSuccess(true);
@@ -426,7 +448,7 @@ export default function CheckoutProduct() {
                 result.data.card?.last4
                   ? "****" + result.data.card.last4
                   : "Thẻ"
-              } bị từ chối thanh toán off-session hoặc không đủ tiền. Vui lòng sử dụng thẻ khác`
+              } bị từ chối thanh toán hoặc không đủ tiền. Vui lòng sử dụng thẻ khác`
             );
             setSucceeded(false);
             setProcessing(false);
@@ -436,6 +458,7 @@ export default function CheckoutProduct() {
             // paymentIntentSucceeded(data.clientSecret, ".sr-select-pm");
             console.log(result.data.paymentIntent);
             handleOrderSucceeded(result.data.paymentIntent);
+            setProcessing(false);
           }
         });
       }
