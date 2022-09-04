@@ -3,6 +3,7 @@ import { ProductContext } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
 const Pagination = ({
   isProductPage,
@@ -19,7 +20,46 @@ const Pagination = ({
     pageSize,
     searchItemFiltered,
     similarItems,
+    setPageTotal,
+    pageTotalCalc,
   } = useContext(ProductContext);
+  const productPageIndex = 1;
+  const similarPageIndex = 1;
+  const searchPageIndex = 1;
+  const similarPageSize = 6;
+  const searchPageSize = pageSize;
+
+  //TODO: refactor, move all logic to pagination component
+  //pagination value depend on page
+  useEffect(() => {
+    if (isProductPage) {
+      const pageTotal = pageTotalCalc(categoryItemsFiltered, pageSize);
+      setPageIndex(productPageIndex);
+      setPageTotal(pageTotal);
+    }
+    if (isSearchPage) {
+      const searchPageTotal = pageTotalCalc(searchItemFiltered, searchPageSize);
+      setPageIndex(searchPageIndex);
+      setPageTotal(searchPageTotal);
+    }
+    if (similarDisPlay) {
+      const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
+      setPageIndex(similarPageIndex);
+      setPageTotal(similarPageTotal);
+    }
+  }, [
+    categoryItemsFiltered,
+    isProductPage,
+    isSearchPage,
+    pageSize,
+    pageTotalCalc,
+    searchItemFiltered,
+    searchPageSize,
+    setPageIndex,
+    setPageTotal,
+    similarDisPlay,
+    similarItems,
+  ]);
 
   if (
     (isProductPage && categoryItemsFiltered.length <= pageSize) ||

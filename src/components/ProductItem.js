@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
@@ -154,7 +154,7 @@ const ProductItem = function ({ item, similarDisPlay }) {
                 <Rating
                   name="rating-star"
                   defaultValue={rating}
-                  precision={0.1}
+                  // precision={0.1} // TODO: performance problems
                   readOnly
                 />
                 {/* app__more-rating-icon--gold */}

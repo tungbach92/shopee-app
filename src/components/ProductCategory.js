@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ProductContext } from "../context";
 import { useContext } from "react";
 import classNames from "classnames";
@@ -44,7 +44,6 @@ export default function ProductCategory() {
     setCategory,
     setFilter,
     setFilterPrice,
-    filterItemsByCategory,
     items,
   } = context;
   const [startPrice, setStartPrice] = useState("");
@@ -58,6 +57,16 @@ export default function ProductCategory() {
   const defaultCategory = "allProduct";
   const defaultFilter = "all";
   const defaultFilterPrice = "default";
+
+  useEffect(() => {
+    setCategory(defaultCategory);
+    const categoryItems = items.filter(
+      (item) => item.category !== defaultCategory
+    );
+    const categoryItemsFiltered = [...categoryItems];
+    setCategoryItems(categoryItems);
+    setCategoryItemsFiltered(categoryItemsFiltered);
+  }, [items, setCategory, setCategoryItems, setCategoryItemsFiltered]);
 
   const handleResetAll = () => {
     setCategory(defaultCategory);

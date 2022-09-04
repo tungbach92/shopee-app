@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { ProductContext } from "../context";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
@@ -11,8 +11,6 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     items,
     setCategoryItems,
     setCategoryItemsFiltered,
-    setPageIndex,
-    setPageTotal,
     getCheckoutItemsFromStorage,
     setCheckoutItems,
     categoryItemsFiltered,
@@ -20,92 +18,43 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     pageIndex,
     pageSize,
     searchItemFiltered,
-    searchItems,
     setSearchItemFiltered,
-    pageTotalCalc,
-    setFilter,
-    setFilterPrice,
-    setCategory,
+    searchItems,
     loading,
     categoryItems,
+    category,
   } = context;
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  const productPageIndex = 1;
-  const similarPageIndex = 1;
   const similarPageSize = 6;
-  const searchPageIndex = 1;
   const searchPageSize = pageSize;
-  const category = "allProduct";
-  const filter = "all";
-  const filterPrice = "default";
 
   // scrollToTop
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // set default value for product page, search page
   useEffect(() => {
-    setCategory(category);
-    setFilter(filter);
-    setFilterPrice(filterPrice);
+    if (isProductPage) {
+      setSearchItemFiltered([]);
+    }
 
-    //set categoryItemsFiltered by default value
-    const categoryItems = items.filter((item) => item.category !== category);
-    const categoryItemsFiltered = [...categoryItems];
-    setCategoryItems(categoryItems);
-    setCategoryItemsFiltered(categoryItemsFiltered);
+    if (isSearchPage) {
+      setCategoryItems([]);
+      setCategoryItemsFiltered([]);
+    }
 
     //get and set checkoutItems state
     const checkoutItems = getCheckoutItemsFromStorage();
     setCheckoutItems(checkoutItems);
-
-    //set SearchItemFiltered by default value
-    setSearchItemFiltered(searchItems);
   }, [
     getCheckoutItemsFromStorage,
-    items,
-    setCategoryItems,
-    setCheckoutItems,
-    setFilter,
-    setFilterPrice,
-    setCategoryItemsFiltered,
-    setCategory,
-    searchItems,
-    setSearchItemFiltered,
-  ]);
-
-  //TODO: refactor, move all logic to pagination component
-  //pagination value depend on page
-  useEffect(() => {
-    if (isProductPage) {
-      const pageTotal = pageTotalCalc(categoryItemsFiltered, pageSize);
-      setPageIndex(productPageIndex);
-      setPageTotal(pageTotal);
-    }
-    if (isSearchPage) {
-      const searchPageTotal = pageTotalCalc(searchItemFiltered, searchPageSize);
-      setPageIndex(searchPageIndex);
-      setPageTotal(searchPageTotal);
-    }
-    if (similarDisPlay) {
-      const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
-      setPageIndex(similarPageIndex);
-      setPageTotal(similarPageTotal);
-    }
-  }, [
-    categoryItemsFiltered,
     isProductPage,
     isSearchPage,
-    pageSize,
-    pageTotalCalc,
-    searchItemFiltered,
-    searchPageSize,
-    setPageIndex,
-    setPageTotal,
-    similarDisPlay,
-    similarItems,
+    setCategoryItems,
+    setCategoryItemsFiltered,
+    setCheckoutItems,
+    setSearchItemFiltered,
   ]);
 
   const getRenderItems = () => {
@@ -143,7 +92,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     return renderItem;
   };
 
-  if (getRenderItems().length === 0 && isSearchPage) {
+  if (isSearchPage && getRenderItems().length === 0) {
     return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
   } else if (loading) {
     return (
@@ -160,7 +109,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         Loading...
       </Box>
     );
-  } else if (categoryItems.length === 0) {
+  } else if (isProductPage && categoryItems.length === 0) {
     return (
       <Box
         sx={{

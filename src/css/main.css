@@ -932,8 +932,30 @@ header {
   color: var(--primary-color);
 }
 
-.select-input:hover .app__input-list {
-  display: block;
+.select-input {
+  margin-left: 1.3rem;
+  padding: 0 1.5rem;
+  min-width: 15.4rem;
+  background-color: var(--white-color);
+  border: none;
+  text-decoration: none;
+  border-radius: 0.2rem;
+  color: var(--text-color);
+  position: relative;
+  cursor: pointer;
+}
+
+.select-input--disabled {
+  background-color: rgba(0, 0, 0, 0.09);
+  color: rgba(0, 0, 0, 0.26);
+  margin-left: 1.3rem;
+  padding: 0 1.5rem;
+  min-width: 15.4rem;
+  border: none;
+  text-decoration: none;
+  border-radius: 0.2rem;
+  position: relative;
+  cursor: not-allowed;
 }
 
 .app__filter-page {
@@ -4803,7 +4825,7 @@ header {
   }
   .header__user-list {
     top: 189%;
-    right: -0.8rem; 
+    right: -0.8rem;
   }
   .header__nav-avatar,
   .header__nav-noavatar {
@@ -4877,6 +4899,7 @@ header {
     padding: 0;
     flex: 1;
   }
+  .select-input--disabled,
   .select-input {
     margin: 0;
     min-width: unset;
@@ -4885,6 +4908,7 @@ header {
     justify-content: space-between;
     flex-basis: 7rem;
   }
+
   .app__input-icon {
     display: none;
   }

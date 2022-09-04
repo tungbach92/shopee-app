@@ -6,14 +6,16 @@ import PropTypes from "prop-types";
 import { ArrowDownward, ArrowUpward, UnfoldMore } from "@mui/icons-material";
 import { Box, useMediaQuery } from "@mui/material";
 
-const ProductFilter = ({ isSearchPage }) => {
+const ProductFilter = ({ isSearchPage, isProductPage }) => {
   let {
     filter,
     filterPrice,
     handleClick,
     categoryItems,
     searchItems,
+    setFilter,
     setFilterPrice,
+    setSearchItemFiltered,
   } = useContext(ProductContext);
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
@@ -22,7 +24,8 @@ const ProductFilter = ({ isSearchPage }) => {
   ] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const defaultFilterPrice = "default";
-  
+  const defaultFilter = "all";
+
   let totalItems = 0;
   if (isSearchPage) {
     totalItems = searchItems.length;
@@ -31,10 +34,24 @@ const ProductFilter = ({ isSearchPage }) => {
   }
 
   useEffect(() => {
-    if (categoryItems.length === 0) {
+    setFilter(defaultFilter);
+    setFilterPrice(defaultFilterPrice);
+    if (isProductPage && categoryItems.length === 0) {
       setFilterPrice(defaultFilterPrice);
     }
-  }, [categoryItems, setFilterPrice]);
+    if (isSearchPage && searchItems.length === 0) {
+      setFilterPrice(defaultFilterPrice);
+    }
+  }, [
+    categoryItems.length,
+    isProductPage,
+    isSearchPage,
+    searchItems,
+    searchItems.length,
+    setFilter,
+    setFilterPrice,
+    setSearchItemFiltered,
+  ]);
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
@@ -59,7 +76,10 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-popular", {
             "btn--active": filter === "all",
           })}
-          disabled={categoryItems.length === 0}
+          disabled={
+            (isProductPage && categoryItems.length === 0) ||
+            (isSearchPage && searchItems.length === 0)
+          }
         >
           Tất cả
         </button>
@@ -70,7 +90,10 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-newest", {
             "btn--active": filter === "date",
           })}
-          disabled={categoryItems.length === 0}
+          disabled={
+            (isProductPage && categoryItems.length === 0) ||
+            (isSearchPage && searchItems.length === 0)
+          }
         >
           Mới nhất
         </button>
@@ -81,20 +104,30 @@ const ProductFilter = ({ isSearchPage }) => {
           className={classNames("btn app__filter-item app__filter-bestSell", {
             "btn--active": filter === "bestSelling",
           })}
-          disabled={categoryItems.length === 0}
+          disabled={
+            (isProductPage && categoryItems.length === 0) ||
+            (isSearchPage && searchItems.length === 0)
+          }
         >
           Bán chạy
         </button>
         <div
           data-name="filterPrice"
           onClick={() =>
-            categoryItems.length !== 0 &&
+            ((isProductPage && categoryItems.length !== 0) ||
+              (isSearchPage && searchItems.length !== 0)) &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
           }
+          tabindex="0"
+          onBlur={() =>
+            setTimeout(() => {
+              setIsFilterPriceShow(false);
+            }, 200)
+          }
           className={
-            totalItems === 0 ? " select-input--disabled" : " select-input"
+            totalItems === 0 ? "select-input--disabled" : " select-input"
           }
         >
           <span
@@ -188,10 +221,12 @@ const ProductFilter = ({ isSearchPage }) => {
 
 ProductFilter.propTypes = {
   isSearchPage: PropTypes.bool,
+  isProductPage: PropTypes.bool,
 };
 
 ProductFilter.defaultProps = {
   isSearchPage: false,
+  isProductPage: false,
 };
 
 export default ProductFilter;

@@ -89,33 +89,6 @@ button[disabled] {
   filter: brightness(70%);
 }
 
-/* Select input */
-.select-input {
-  margin-left: 1.3rem;
-  padding: 0 1.5rem;
-  min-width: 15.4rem;
-  background-color: var(--white-color);
-  border: none;
-  text-decoration: none;
-  border-radius: 0.2rem;
-  color: var(--text-color);
-  position: relative;
-  cursor: pointer;
-}
-
-.select-input--disabled {
-  margin-left: 1.3rem;
-  padding: 0 1.5rem;
-  min-width: 15.4rem;
-  background-color: #ccc;
-  border: none;
-  text-decoration: none;
-  border-radius: 0.2rem;
-  color: var(--text-color);
-  position: relative;
-  cursor: pointer;
-}
-
 /* Pagination */
 .pagination {
   display: flex;
