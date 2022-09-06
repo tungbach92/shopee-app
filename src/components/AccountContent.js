@@ -21,8 +21,8 @@ const AccountContent = () => {
   const [gender, setGender] = useState("");
   const [birthday, setBirthday] = useState("");
   const [fileImage, setFileImage] = useState();
-  const [previewImage, setPreviewImage] = useState();
-  const [uploadProceesing, setUploadProcessing] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [isInfoUpdating, setIsInfoUpdating] = useState(false);
   const [isUserUpdateFailed, setIsUserUpdateFailed] = useState(false);
   const [isImageUploadFailed, setIsImageUploadFailed] = useState(false);
   const { isPopupShowing, togglePopup } = useModal();
@@ -32,8 +32,10 @@ const AccountContent = () => {
     if (user) {
       const userName = user.displayName;
       const email = user.email;
+      const previewImage = userAvatar;
       setUsetName(userName ? userName : "");
       setEmail(email ? email : "");
+      setPreviewImage(previewImage);
 
       db.collection("users")
         .doc(user?.uid)
@@ -52,11 +54,11 @@ const AccountContent = () => {
             setPhone(phone ? phone : "");
           }
         })
-        .catch((err) => alert(err));
+        .catch((err) => alert(err.message));
     }
-  }, [user]); // rerender if upload success
+  }, [user, userAvatar]); // rerender if upload success
 
-  const handleInfoSubmit = ({
+  const handleInfoSubmit = async ({
     user: userName,
     name,
     phone,
@@ -64,27 +66,15 @@ const AccountContent = () => {
     birthday,
     previewImage,
   }) => {
-    // e.preventDefault();
-    console.log("submit");
-    if (uploadProceesing) {
-      return;
-    }
-
-    user
-      .updateProfile({
+    setIsInfoUpdating(true);
+    try {
+      //upadating info
+      await user.updateProfile({
         displayName: userName,
-      })
-      .then(() => {
-        //success
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsUserUpdateFailed(true);
-        return;
       });
 
-    try {
-      db.collection("users")
+      await db
+        .collection("users")
         .doc(user?.uid)
         .collection("infos")
         .doc("infoItems") // TO DO: need to create document infoItems before update infoItems
@@ -94,13 +84,15 @@ const AccountContent = () => {
           birthday: birthday,
           phone: phone,
         });
+      setIsInfoUpdating(false);
     } catch (error) {
-      console.log(error.message);
+      togglePopup(!isPopupShowing);
+      setIsInfoUpdating(false);
       setIsUserUpdateFailed(true);
-      return;
     }
 
-    if (previewImage) {
+    //updating image
+    if (previewImage && fileImage) {
       // dont upload if no fileImage or without choose fileImage again
       const storageRef = storage.ref(`users/${user.uid}/avatar`);
       const uploadTask = storageRef.put(fileImage);
@@ -110,32 +102,32 @@ const AccountContent = () => {
           switch (snapshot.state) {
             case "running":
               console.log("Upload is running");
-              setUploadProcessing(true);
+              setIsInfoUpdating(true);
               break;
             case "pause":
-              setUploadProcessing(false);
+              setIsInfoUpdating(false);
               console.log("Upload is paused");
               break;
             default:
               break;
           }
         },
+        //Handle unsuccessful uploads
         (error) => {
-          setUploadProcessing(false);
+          setIsInfoUpdating(false);
           setIsImageUploadFailed(true);
-          console.log(error.message);
           togglePopup(!isPopupShowing);
-          // Handle unsuccessful uploads
         },
+        //handle successful uploads
         () => {
           setUserAvatar();
-          setUploadProcessing(false);
+          setIsInfoUpdating(false);
           togglePopup(!isPopupShowing);
-          console.log("Upload image successfully");
         }
       );
+    } else {
+      togglePopup(!isPopupShowing);
     }
-    // alert("Cập nhật thành công");
   };
 
   return (
@@ -217,9 +209,8 @@ const AccountContent = () => {
                     userAvatar={userAvatar}
                     fileImage={fileImage}
                     previewImage={previewImage}
-                    setPreviewImage={setPreviewImage}
                     setFileImage={setFileImage}
-                    uploadProceesing={uploadProceesing}
+                    isInfoUpdating={isInfoUpdating}
                     handleInfoSubmit={handleInfoSubmit}
                   ></AccountProfile>
                 }
