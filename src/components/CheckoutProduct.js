@@ -17,7 +17,7 @@ import "firebase/firestore";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
 
-export default function CheckoutProduct() {
+export default function CheckoutProduct({ isCheckoutPage }) {
   console.log("check out render");
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
@@ -1153,6 +1153,7 @@ export default function CheckoutProduct() {
                 isCardPayment={isCardPayment}
                 defaultPaymentMethodID={defaultPaymentMethodID}
                 succeeded={succeeded}
+                isCheckoutPage={isCheckoutPage}
               ></PopupModal>
             )}
           </div>

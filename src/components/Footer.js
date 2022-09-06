@@ -12,7 +12,7 @@ export default function Footer() {
       className="footer"
       sx={{ display: { xs: "none", sm: "block" } }}
     >
-      <div className="footer__ads"></div>
+      {/* <div className="footer__ads"></div> */}
       <div className="grid footer__grid">
         <div className="grid__row grid__row--padtb3">
           <div className="grid__col-2c4x">

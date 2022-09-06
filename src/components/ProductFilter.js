@@ -16,6 +16,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
     setFilter,
     setFilterPrice,
     setSearchItemFiltered,
+    categoryItemsFiltered,
   } = useContext(ProductContext);
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
@@ -114,7 +115,9 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
         <div
           data-name="filterPrice"
           onClick={() =>
-            ((isProductPage && categoryItems.length !== 0) ||
+            ((isProductPage &&
+              categoryItems.length !== 0 &&
+              categoryItemsFiltered.length !== 0) ||
               (isSearchPage && searchItems.length !== 0)) &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
@@ -127,7 +130,9 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
             }, 200)
           }
           className={
-            totalItems === 0 ? "select-input--disabled" : " select-input"
+            categoryItems.length === 0 || categoryItemsFiltered.length === 0
+              ? "select-input--disabled"
+              : " select-input"
           }
         >
           <span

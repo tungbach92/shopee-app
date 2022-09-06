@@ -109,7 +109,10 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         Loading...
       </Box>
     );
-  } else if (isProductPage && categoryItems.length === 0) {
+  } else if (
+    isProductPage &&
+    (categoryItems.length === 0 || categoryItemsFiltered.length === 0)
+  ) {
     return (
       <Box
         sx={{

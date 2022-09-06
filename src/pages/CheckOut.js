@@ -14,7 +14,7 @@ export default function Checkout() {
     return (
       <>
         <Header isCheckoutPage={true}></Header>
-        <CheckoutProduct></CheckoutProduct>
+        <CheckoutProduct isCheckoutPage={true}></CheckoutProduct>
       </>
     );
   } else return null;

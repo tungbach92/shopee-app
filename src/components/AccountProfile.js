@@ -15,7 +15,6 @@ const AccountProfile = ({
   setFileImage,
   uploadProceesing,
   handleInfoSubmit,
-  isAnyUserInfoUpdateFail,
 }) => {
   return (
     <>
@@ -42,7 +41,6 @@ const AccountProfile = ({
           setFileImage={setFileImage}
           uploadProceesing={uploadProceesing}
           handleInfoSubmit={handleInfoSubmit}
-          isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
         ></AccountForm>
       </div>
     </>

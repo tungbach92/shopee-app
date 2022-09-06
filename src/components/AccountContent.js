@@ -1,13 +1,7 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../context";
 import { db, storage } from "../firebase";
-import {
-  Link,
-  Route,
-  Navigate,
-  NavLink,
-  Routes,
-} from "react-router-dom";
+import { Link, Route, Navigate, NavLink, Routes } from "react-router-dom";
 import AccountEmail from "./AccountEmail";
 import AccountPassword from "./AccountPassword";
 import AccountAddress from "./AccountAddress";
@@ -18,7 +12,7 @@ import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
 const AccountContent = () => {
-  const { user, userAvatar, setUserAvatar, loading} =
+  const { user, userAvatar, setUserAvatar, loading } =
     useContext(ProductContext);
   const [userName, setUsetName] = useState("");
   const [name, setName] = useState("");
@@ -29,7 +23,8 @@ const AccountContent = () => {
   const [fileImage, setFileImage] = useState();
   const [previewImage, setPreviewImage] = useState();
   const [uploadProceesing, setUploadProcessing] = useState(false);
-  const [isAnyUserInfoUpdateFail, setIsAnyUserInfoUpdateFail] = useState(false);
+  const [isUserUpdateFailed, setIsUserUpdateFailed] = useState(false);
+  const [isImageUploadFailed, setIsImageUploadFailed] = useState(false);
   const { isPopupShowing, togglePopup } = useModal();
 
   // set user info from db
@@ -84,7 +79,7 @@ const AccountContent = () => {
       })
       .catch((err) => {
         console.log(err);
-        setIsAnyUserInfoUpdateFail(true);
+        setIsUserUpdateFailed(true);
         return;
       });
 
@@ -101,7 +96,7 @@ const AccountContent = () => {
         });
     } catch (error) {
       console.log(error.message);
-      setIsAnyUserInfoUpdateFail(true);
+      setIsUserUpdateFailed(true);
       return;
     }
 
@@ -127,7 +122,7 @@ const AccountContent = () => {
         },
         (error) => {
           setUploadProcessing(false);
-          setIsAnyUserInfoUpdateFail(true);
+          setIsImageUploadFailed(true);
           console.log(error.message);
           togglePopup(!isPopupShowing);
           // Handle unsuccessful uploads
@@ -226,7 +221,6 @@ const AccountContent = () => {
                     setFileImage={setFileImage}
                     uploadProceesing={uploadProceesing}
                     handleInfoSubmit={handleInfoSubmit}
-                    isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
                   ></AccountProfile>
                 }
               ></Route>
@@ -268,8 +262,9 @@ const AccountContent = () => {
       </div>
       {isPopupShowing && (
         <PopupModal
-          isAnyUserInfoUpdateFail={isAnyUserInfoUpdateFail}
+          isUserUpdateFailed={isUserUpdateFailed}
           isAccountPage={true}
+          isImageUploadFailed={isImageUploadFailed}
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}
         ></PopupModal>

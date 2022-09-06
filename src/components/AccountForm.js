@@ -35,7 +35,10 @@ const AccountForm = (props) => {
       .min(2, "Tên phải có tối thiểu 2 ký tự")
       .max(20, "Tên không vượt quá 20 ký tự")
       .required("Vui lòng nhập họ tên"),
-    phone: yup.string().required("Vui lòng nhập SĐT").matches(phoneRegex, "SĐT không hợp lệ!"),
+    phone: yup
+      .string()
+      .required("Vui lòng nhập SĐT")
+      .matches(phoneRegex, "SĐT không hợp lệ!"),
     gender: yup.string().required("Vui lòng chọn giới tính"),
     birthday: yup.string().required("Vui lòng chọn ngày sinh"),
     previewImage: yup.string().nullable(),
@@ -170,7 +173,7 @@ const AccountForm = (props) => {
                 </button>
               </div>
 
-              <FastField
+              <Field
                 name="previewImage"
                 component={ImageUploadField}
                 type="file"
@@ -180,7 +183,7 @@ const AccountForm = (props) => {
                 setPreviewImage={setPreviewImage}
                 setFileImage={setFileImage}
                 uploadProceesing={uploadProceesing}
-              ></FastField>
+              ></Field>
             </div>
           </Form>
         );

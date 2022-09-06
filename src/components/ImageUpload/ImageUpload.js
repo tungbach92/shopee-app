@@ -25,7 +25,7 @@ const ImageUpload = (props) => {
     <div className="user-profile__image-input">
       <div
         onClick={() => {
-          inputEl.current.click();
+          !uploadProceesing && inputEl.current.click();
         }}
         className="user-profile__input-image"
       >

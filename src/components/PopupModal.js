@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export default function PopupModal(props) {
   const navigate = useNavigate();
+  //TODO: set message base on condititon value
+  const [title, setTitle] = useState("");
+  const [isBackBtnHidden, setIsBackBtnHidden] = useState(false);
 
   const {
+    isCheckoutPage,
     isProductPage,
     isAccountPage,
-    isAnyUserInfoUpdateFail,
+    isUserUpdateFailed,
+    isImageUploadFailed,
     isUpdateEmailSuccess,
     isUpdatePasswordSuccess,
     handleDeleteTrue,
@@ -39,6 +44,108 @@ export default function PopupModal(props) {
     succeeded,
   } = props;
 
+  useEffect(() => {
+    const setTitleAndBackBtnHidden = () => {
+      let isBackBtnHidden = false;
+      let title = "";
+
+      if (isAccountPage && isUpdateEmailSuccess) {
+        isBackBtnHidden = true;
+        title = "Cập nhật địa chỉ email thành công";
+      }
+      if (isAccountPage && isUpdatePasswordSuccess) {
+        isBackBtnHidden = true;
+        title = "Cập nhật mật khẩu thành công";
+      }
+      if (isAccountPage && !isUserUpdateFailed && !isImageUploadFailed) {
+        isBackBtnHidden = true;
+        title = "Cập nhật thông tin người dùng thành công";
+      }
+      if (isAccountPage && isUserUpdateFailed) {
+        isBackBtnHidden = true;
+        title = "Có lỗi xảy ra khi cập nhật thông tin người dùng lên hệ thống.";
+      }
+      if (isAccountPage && isImageUploadFailed) {
+        isBackBtnHidden = true;
+        title = "Có lỗi xảy ra khi tải ảnh người dùng lên hệ thống";
+      }
+      if (isAccountPage && shipInfoIndex !== null) {
+        isBackBtnHidden = false;
+        title = "Bạn chắc chắn muốn xóa địa chỉ này ?";
+      }
+      if (isAccountPage && paymentMethodID.length > 0) {
+        isBackBtnHidden = false;
+        title = "Bạn chắc chắn muốn xóa thẻ này ?";
+      }
+
+      if (
+        (isCartPage || isSearchPage || isProductPage) &&
+        (deleteID !== null || isDeleteSelected)
+      ) {
+        isBackBtnHidden = false;
+        title = "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?";
+      } else if (isCartPage && checked?.length === 0) {
+        isBackBtnHidden = true;
+        title = "Bạn vẫn chưa chọn sản phẩm nào để mua.";
+      } else if (isCartPage && isVariationChoose === false) {
+        isBackBtnHidden = true;
+        title = "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua.";
+      }
+
+      if (isCheckoutPage && shipInfos?.length <= 0) {
+        isBackBtnHidden = true;
+        title = "Bạn vẫn chưa nhập địa chỉ nhận hàng.";
+      } else if (isCheckoutPage && !Object.keys(shipUnit)?.length) {
+        isBackBtnHidden = true;
+        title = "Vui lòng chọn đơn vị vận chuyển.";
+      } else if (isCheckoutPage && paymentMethod?.length <= 0) {
+        isBackBtnHidden = true;
+        title = "Vui lòng chọn phương thức thanh toán.";
+      } else if (
+        isCheckoutPage &&
+        isCardPayment &&
+        typeof defaultPaymentMethodID === "undefined"
+      ) {
+        isBackBtnHidden = true;
+        title =
+          "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ";
+      } else if (isCheckoutPage && succeeded) {
+        isBackBtnHidden = true;
+        title = "Đặt hàng thành công";
+      } else if (isCheckoutPage && !succeeded) {
+        isBackBtnHidden = true;
+        title = "Có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ tổng đài";
+      }
+      setTitle(title);
+      setIsBackBtnHidden(isBackBtnHidden);
+    };
+    setTitleAndBackBtnHidden();
+  }, [
+    checked?.length,
+    defaultPaymentMethodID,
+    deleteID,
+    isAccountPage,
+    isCardPayment,
+    isCartPage,
+    isCheckoutPage,
+    isDeleteSelected,
+    isImageUploadFailed,
+    isProductPage,
+    isSearchPage,
+    isUpdateEmailSuccess,
+    isUpdatePasswordSuccess,
+    isUserUpdateFailed,
+    isVariationChoose,
+    paymentMethod?.length,
+    paymentMethodID,
+    shipInfoIndex,
+    shipInfos?.length,
+    shipUnit,
+    succeeded,
+  ]);
+
+  //TODO: hide back button base on condition and page
+  //Back button
   const handleBackClick = (e) => {
     togglePopup(false);
 
@@ -57,9 +164,10 @@ export default function PopupModal(props) {
     }
   };
 
+  // Ok button
   const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
-    if (!isCartPage && !isAccountPage && !isSearchPage && !isProductPage) {
+    if (isCheckoutPage) {
       if (shipInfos?.length <= 0) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else if (!Object.keys(shipUnit)?.length) {
@@ -73,22 +181,25 @@ export default function PopupModal(props) {
       }
     }
 
+    //AccountPage user info, ship info, card info
     if (isAccountPage && !shipInfoIndex && !paymentMethodID) {
       navigate("/user");
-    } else if (isAccountPage && shipInfoIndex) {
+    }
+    if (isAccountPage && shipInfoIndex) {
       handleDeleteTrue(shipInfoIndex);
       setShipInfoIndex();
-    } else if (isAccountPage && paymentMethodID) {
+    }
+    if (isAccountPage && paymentMethodID) {
       handlePaymentDeleteTrue(paymentMethodID);
       setPaymentMethodID();
     }
 
-    if ((isCartPage || isSearchPage || isProductPage) && deleteID) {
+    //Cart page popup delete
+    if (isCartPage && deleteID) {
       handleDeleteCartTrue();
       setDeleteID();
     }
-
-    if ((isCartPage || isSearchPage || isProductPage) && isDeleteSelected) {
+    if (isCartPage && isDeleteSelected) {
       handleDeleteSelectionTrue();
       setIsDeleteSelected(false);
     }
@@ -99,52 +210,17 @@ export default function PopupModal(props) {
       <div className="cart-product__modal-overlay"></div>
       <div className="cart-product__modal-container">
         <div className="cart-product__modal-header">
-          <span className="cart-product__popup-label">
-            {isAccountPage && isUpdateEmailSuccess
-              ? "Cập nhật địa chỉ email thành công"
-              : isAccountPage && isUpdatePasswordSuccess
-              ? "Cập nhật mật khẩu thành công"
-              : isAccountPage &&
-                !isAnyUserInfoUpdateFail &&
-                typeof isAnyUserInfoUpdateFail !== "undefined"
-              ? "Cập nhật thông tin người dùng thành công"
-              : isAccountPage && shipInfoIndex !== null
-              ? "Bạn chắc chắn muốn xóa địa chỉ này?"
-              : isAccountPage && paymentMethodID !== null
-              ? "Bạn chắc chắn muốn xóa thẻ này?"
-              : (isCartPage || isSearchPage || isProductPage) &&
-                (deleteID !== null || isDeleteSelected)
-              ? "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?"
-              : isCartPage && checked?.length === 0
-              ? "Bạn vẫn chưa chọn sản phẩm nào để mua."
-              : isCartPage && isVariationChoose === false
-              ? "Bạn vẫn chưa chọn loại hay kích cỡ sản phẩm để mua."
-              : shipInfos?.length <= 0
-              ? "Bạn vẫn chưa nhập địa chỉ nhận hàng."
-              : !Object.keys(shipUnit)?.length
-              ? "Vui lòng chọn đơn vị vận chuyển."
-              : paymentMethod?.length <= 0
-              ? "Vui lòng chọn phương thức thanh toán."
-              : isCardPayment && typeof defaultPaymentMethodID === "undefined"
-              ? "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ"
-              : succeeded
-              ? "Đặt hàng thành công"
-              : "Có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ tổng đài"}
-          </span>
+          <span className="cart-product__popup-label">{title}</span>
         </div>
         <div className="cart-product__popup-footer">
-          {(isAccountPage || isCartPage || isSearchPage || isProductPage) &&
-            (shipInfoIndex !== null ||
-              paymentMethodID !== null ||
-              deleteID !== null ||
-              isDeleteSelected) && (
-              <button
-                className="btn cart-product__popup-cancle"
-                onClick={handleBackClick}
-              >
-                Back
-              </button>
-            )}
+          {!isBackBtnHidden && (
+            <button
+              className="btn cart-product__popup-cancle"
+              onClick={handleBackClick}
+            >
+              Back
+            </button>
+          )}
 
           <button
             onClick={handleApplyClick}
@@ -162,7 +238,8 @@ export default function PopupModal(props) {
 PopupModal.propTypes = {
   isProductPage: PropTypes.bool,
   isAccountPage: PropTypes.bool,
-  isAnyUserInfoUpdateFail: PropTypes.bool,
+  isUserUpdateFailed: PropTypes.bool,
+  isImageUploadFailed: PropTypes.bool,
   isUpdateEmailSuccess: PropTypes.bool,
   isUpdatePasswordSuccess: PropTypes.bool,
   handleDeleteTrue: PropTypes.func,
@@ -194,7 +271,8 @@ PopupModal.propTypes = {
 PopupModal.defaultProps = {
   isProductPage: false,
   isAccountPage: false,
-  isAnyUserInfoUpdateFail: true,
+  isUserUpdateFailed: false,
+  isImageUploadFailed: false,
   isUpdateEmailSuccess: false,
   isUpdatePasswordSuccess: false,
   handleDeleteTrue: () => {},
