@@ -48,7 +48,6 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const handleCardElChange = (e) => {
     setNumberIsValid(!e.error && e.complete ? true : false);
     setErrorNumberMsg(e.error ? e.error.message : "");
-    console.log(e);
   };
   const validateCardName = () => {
     setNameIsValid(true);
@@ -88,16 +87,17 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
     if (!nameIsValid || !numberIsValid) {
       return;
     }
+
     setProcessing(true);
     if (!stripe || !elements) {
       setProcessing(false);
-      console.log("There is no stripe and elements hook");
+      alert("There is no stripe and elements hook");
       return;
     }
 
     const cardEl = elements.getElement(CardElement);
-    let isCardDuplicate;
     //TODO: refactor this with try catch
+    let isCardDuplicate;
     try {
       const tokenClientSide = await stripe.createToken(cardEl);
       //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
@@ -179,7 +179,6 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
         alert("Lưu thông tin thẻ thành công!");
       } else {
-        console.log(setUpIntentResult);
         alert(setUpIntentResult.error.message);
         setProcessing(false);
       }
@@ -188,26 +187,12 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       alert("Thẻ này trùng với thẻ đang được sử dụng!");
     }
   };
-  
+
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
     }
   };
-  // useEffect(() => {
-  //   //create setup intent and get intent secret for Confirm later in client
-  //   if (!setUpIntentSecret) {
-  //     const getSetUpIntentSecret = async () => {
-  //       const response = await axios({
-  //         method: "GET",
-  //         url: "/create-setup-intent",
-  //       });
-  //       setSetUpIntentSecret(response.data.setUpIntentSecret);
-  //       setCustomerID(response.data.customerID);
-  //     };
-  //     getSetUpIntentSecret();
-  //   }
-  // }, [setCustomerID, setSetUpIntentSecret, setUpIntentSecret]);
 
   useEffect(() => {
     if (user) {

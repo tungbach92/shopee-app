@@ -101,12 +101,10 @@ const AccountContent = () => {
         (snapshot) => {
           switch (snapshot.state) {
             case "running":
-              console.log("Upload is running");
               setIsInfoUpdating(true);
               break;
             case "pause":
               setIsInfoUpdating(false);
-              console.log("Upload is paused");
               break;
             default:
               break;
@@ -177,19 +175,23 @@ const AccountContent = () => {
             </div>
             <div className="user-profile__category">
               {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
-              <NavLink to="profile" className="user-profile__my-info">
+              <NavLink to="profile" className="user-profile__my-info" replace>
                 Hồ sơ
               </NavLink>
-              <NavLink to="payment" className="user-profile__my-bank">
+              <NavLink to="payment" className="user-profile__my-bank" replace>
                 Ngân hàng
               </NavLink>
-              <NavLink to="address" className="user-profile__my-adress">
+              <NavLink to="address" className="user-profile__my-adress" replace>
                 Địa chỉ
               </NavLink>
-              <NavLink to="password" className="user-profile__change-password">
+              <NavLink
+                to="password"
+                className="user-profile__change-password"
+                replace
+              >
                 Đổi mật khẩu
               </NavLink>
-              <NavLink to="purchase" className="user-profile__order">
+              <NavLink to="purchase" className="user-profile__order" replace>
                 Đơn Mua
               </NavLink>
             </div>

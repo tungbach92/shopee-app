@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
 export default function AddCartModal(props) {
-  console.log("add cart popup render");
   const { isAddCartPopup, toggleIsAddCardPopup } = props;
   //   const { toggleIsAddCardPopup } = useModal();
   const handleModalClick = () => {

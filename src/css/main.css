@@ -7,6 +7,7 @@ header {
   top: 0;
   left: 0;
   z-index: 9999;
+  max-width: 100%;
 }
 
 .header--checkout {
@@ -118,6 +119,7 @@ header {
   display: none;
   color: var(--white-color);
   text-decoration: none;
+  cursor: pointer;
 }
 
 .header__nav-qr {
@@ -494,6 +496,7 @@ header {
   text-align: center;
   background-color: #fb5533;
   border-radius: 0.2rem;
+  cursor: pointer;
 }
 
 .header__search-icon:hover {
@@ -598,6 +601,7 @@ header {
 
 .header__cart-icon-link {
   display: block;
+  cursor: pointer;
 }
 
 .header__cart-icon {

@@ -20,7 +20,7 @@ const AccountProfile = ({
   handleInfoSubmit,
 }) => {
   const phoneRegex = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/;
-  const validationSchema = yup.object().shape({
+  const validationSchema = yup.object({
     user: yup
       .string()
       .min(2, "Tên user phải có tối thiểu 2 ký tự")
@@ -66,8 +66,6 @@ const AccountProfile = ({
         >
           {(formikProps) => {
             const { values, errors, touched } = formikProps;
-            console.log({ values, errors, touched });
-            console.log(formikProps);
             return (
               <Form className="user-profile__info-form">
                 {/* onSubmit={handleInfoSubmit}> */}

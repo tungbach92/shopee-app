@@ -14,7 +14,6 @@ const useAddress = () => {
   const [wards, setWards] = useState([]);
 
   const handleProvinceChoose = (e, value) => {
-    console.log(value);
     const province = provinces.find((province) => province.name === value);
     setDistrict(null);
     setWard(null);

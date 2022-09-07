@@ -22,7 +22,6 @@ function PasswordResetModal(props) {
     auth
       .sendPasswordResetEmail(email)
       .then(() => {
-        console.log("email sent");
         setIsEmailSent(true);
         setIsEmailSentProcess(false);
       })

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ErrorMessage } from "formik";
+// import { ErrorMessage } from "formik";
 // import { FormFeedback, FormGroup, Input, Label } from "reactstrap";
 const InputField = (props) => {
   const {
@@ -15,7 +15,6 @@ const InputField = (props) => {
     inputClassName,
     invalidClassName,
   } = props;
-  console.log(props);
   const { name } = field;
   const { errors, touched } = form;
   const showError = errors[name] && touched[name];

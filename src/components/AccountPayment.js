@@ -6,9 +6,6 @@ import CardInfoModal from "./CardInfoModal";
 const AccountPayment = () => {
   const {
     paymentMethodList,
-    setPaymentMethodList,
-    customerID,
-    getPaymentMethodList,
     defaultPaymentMethodID,
     updateDefaultPaymentMethodIDToStripe,
     getCardImgByBrand,

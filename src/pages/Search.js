@@ -8,10 +8,12 @@ import { useSearchParams } from "react-router-dom";
 const Search = () => {
   const { searchInput } = useContext(ProductContext);
   const [searchParams, setSearchParams] = useSearchParams();
-  // const value = searchParams.get("keyword");
+  const value = searchParams.get("keyword");
 
   useEffect(() => {
-    setSearchParams({ keyword: searchInput });
+    if (searchInput) {
+      setSearchParams({ keyword: searchInput }, { replace: true });
+    }
   }, [searchInput, setSearchParams]);
 
   return (

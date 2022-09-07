@@ -66,7 +66,6 @@ export default function Picker({
         shipPrice: [10000 + 2000 * index, 15000 + 2000 * index],
       };
     });
-    console.log(provincesWithShipPrice);
     if (province) {
       const districts = ProvincesCitiesVN.getDistrictsByProvinceCode(
         province.code

@@ -11,11 +11,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
 
 const Header = ({
   isProductPage,
   isCartPage,
   isCheckoutPage,
+  isAccountPage,
   isSearchPage,
   isLoginPage,
   isRegisterPage,
@@ -49,7 +51,9 @@ const Header = ({
 
   const handleInputClick = (e) => {
     const text = e.target.value;
-    setIsHistory(!isHistory);
+    if (!xsBreakpointMatches) {
+      setIsHistory(!isHistory);
+    }
     changeSuggestionsByInputText(text);
   };
 
@@ -89,7 +93,6 @@ const Header = ({
   };
 
   const handleSearchBlur = () => {
-    console.log("b");
     ref.current = setTimeout(() => {
       setIsHistory(false);
     }, 200);
@@ -123,6 +126,12 @@ const Header = ({
     };
   });
 
+  useEffect(() => {
+    if (xsBreakpointMatches) {
+      setIsHistory(false);
+    }
+  }, [xsBreakpointMatches]);
+
   return (
     <header
       className={classNames(
@@ -137,10 +146,11 @@ const Header = ({
     >
       <Stack
         sx={{
-          width: "120rem",
           maxWidth: "100%",
+          width: "120rem",
           margin: "0 auto",
           flexDirection: { xs: "row-reverse", sm: "column" },
+          alignItems: { xs: "center", sm: "initial" },
         }}
       >
         {/* HeaderNav */}
@@ -246,7 +256,7 @@ const Header = ({
                 }
                 onClick={() =>
                   xsBreakpointMatches
-                    ? navigate("/user/account")
+                    ? navigate("/user/account/profile")
                     : setIsUserListShowing(!isUserListShowing)
                 }
                 onBlur={() =>
@@ -264,7 +274,7 @@ const Header = ({
                   </Link>
                 </div>
                 {/* <div className="header__nav-loading">Loading...</div> */}
-                <a href="# " className="header__nav-login-link">
+                <div className="header__nav-login-link">
                   {userAvatar && !loading ? (
                     <img
                       src={userAvatar}
@@ -305,7 +315,7 @@ const Header = ({
                   >
                     {user?.displayName}
                   </Box>
-                </a>
+                </div>
                 {isUserListShowing && (
                   <div className="header__user-list">
                     <div className="header__user-arrow"></div>
@@ -370,13 +380,12 @@ const Header = ({
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                         value={searchInput}
                       />
-                      <a
-                        href="# "
+                      <div
                         onClick={() => handleSearchIconClick(searchInput)}
                         className="header__search-icon"
                       >
                         <i className="bi bi-search"></i>
-                      </a>
+                      </div>
                       {isHistory && (
                         <ul className="header__history-list">
                           <li className="header__history-title">
@@ -429,13 +438,12 @@ const Header = ({
                       placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                       value={searchInput}
                     />
-                    <a
-                      href="# "
+                    <div
                       onClick={() => handleSearchIconClick(searchInput)}
                       className="header__search-icon"
                     >
                       <i className="bi bi-search"></i>
-                    </a>
+                    </div>
                     {isHistory && (
                       <ul className="header__history-list">
                         <li className="header__history-title">
@@ -460,6 +468,15 @@ const Header = ({
             ) : null}
           </div>
         )}
+        {xsBreakpointMatches && !isProductPage && (
+          <ArrowBack
+            sx={{ fontSize: "3rem", color: "white", marginLeft: "0.6rem" }}
+            onClick={() => {
+              navigate(-1);
+            }}
+          ></ArrowBack>
+        )}
+
         {/* HeaderSimpleContent */}
         {(isLoginPage || isRegisterPage) && (
           <div className="header__simple-wrapper">

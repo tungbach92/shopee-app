@@ -123,16 +123,19 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
           }
-          tabindex="0"
+          tabIndex="0"
           onBlur={() =>
             setTimeout(() => {
               setIsFilterPriceShow(false);
             }, 200)
           }
           className={
-            categoryItems.length === 0 || categoryItemsFiltered.length === 0
-              ? "select-input--disabled"
-              : " select-input"
+            (isProductPage &&
+              categoryItems.length !== 0 &&
+              categoryItemsFiltered.length !== 0) ||
+            (isSearchPage && searchItems.length !== 0)
+              ? "select-input"
+              : " select-input--disabled"
           }
         >
           <span

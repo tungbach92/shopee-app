@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 
 export default function PopupModal(props) {
   const navigate = useNavigate();
-  //TODO: set message base on condititon value
   const [title, setTitle] = useState("");
   const [isBackBtnHidden, setIsBackBtnHidden] = useState(false);
 
@@ -144,7 +143,6 @@ export default function PopupModal(props) {
     succeeded,
   ]);
 
-  //TODO: hide back button base on condition and page
   //Back button
   const handleBackClick = (e) => {
     togglePopup(false);

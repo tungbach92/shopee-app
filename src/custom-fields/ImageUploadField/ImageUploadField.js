@@ -13,7 +13,6 @@ const ImageUploadField = (props) => {
     isInfoUpdating,
   } = props;
   const { name, value } = field;
-  console.log(value);
   const inputEl = useRef();
   const maxSizeFileInMB = 8;
   const maxSizeFileInKB = maxSizeFileInMB * 1048576;

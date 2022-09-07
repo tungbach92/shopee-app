@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import CartProduct from "../components/CartProduct";
 import { ProductContext } from "../context";
-import { Route, Navigate } from "react-router";
+import { Navigate } from "react-router";
 import Header from "../components/Header/Header";
 
 export default function Cart() {

@@ -8,7 +8,6 @@ import expressImg from "./img/express.png";
 import _ from "lodash";
 export const ProductContext = React.createContext();
 export const ProductConsumer = ProductContext.Consumer;
-const itemsApi = "http://localhost:3000/items";
 
 export default class ProductProvider extends Component {
   state = {
@@ -56,7 +55,6 @@ export default class ProductProvider extends Component {
   }; // json server->fetch data to here and pass to value of Provider component
 
   componentDidMount() {
-    console.log("provider mount");
     this.getDataFireBase();
     this.setUser(() => {
       this.setOrderItems();
@@ -66,7 +64,6 @@ export default class ProductProvider extends Component {
       this.setCartItemsFromFirebase();
       this.setSearchHistoryFromFirebase();
     });
-    console.log(this.state.items);
   }
 
   setAuthorized = (authorized) => {
@@ -193,7 +190,6 @@ export default class ProductProvider extends Component {
         data: { paymentMethodID: paymentMethodID, customerID: customerID },
       }).then((res) => {
         // console.log(res.data.paymentMethod);
-        console.log("detach payment method successfully");
         this.getPaymentMethodList();
       });
     }
@@ -251,8 +247,6 @@ export default class ProductProvider extends Component {
         },
       })
         .then((res) => {
-          console.log(res.data.customer);
-          console.log("update billing success");
         })
         .catch((err) => {
           console.log(err.message);
@@ -307,18 +301,16 @@ export default class ProductProvider extends Component {
                 .doc("shipInfoDoc")
                 .set({ shipInfos: [] })
                 .then(() => {
-                  console.log("Document successfully written!");
                 });
             }
             db.collection("users")
               .doc(user?.uid)
               .collection("shipInfos")
-              .doc("shipInfoDoc") // TO DO: need to create document shipInfoDoc before update shipInfoDoc
+              .doc("shipInfoDoc") 
               .update({
                 shipInfos: shipInfos,
               })
               .then(() => {
-                console.log("update shipInfo successfully!");
                 this.setState({ shipInfos });
               });
           });
@@ -402,7 +394,6 @@ export default class ProductProvider extends Component {
             Number(voucher.discount.slice(0, -1))) /
           100
         : voucher.discount;
-      console.log(result);
       return result;
     } else {
       return 0;
@@ -419,7 +410,6 @@ export default class ProductProvider extends Component {
 
   setUser = (cb) => {
     auth.onAuthStateChanged((authUser) => {
-      console.log(authUser);
       if (authUser) {
         //user will log in or logged in
         this.setState({ user: authUser }, cb);
@@ -504,7 +494,6 @@ export default class ProductProvider extends Component {
   };
   /**
    * It goes to {@link componentDidMount}
-   * TODO refactor this
    */
   getDataFireBase = async () => {
     try {
@@ -561,7 +550,6 @@ export default class ProductProvider extends Component {
   };
 
   handleClick = (event, item) => {
-    console.log(event);
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     const id = event.currentTarget.dataset.id;
@@ -887,7 +875,7 @@ export default class ProductProvider extends Component {
 
     // Date Filter
     let newestDays = 30;
-    let oneDayinMs = 24 * 60 * 60 * 1000;
+    let oneDayinMs = 24 * 3600 * 1000;
     if (filter === "date") {
       filterCommonItems = filterCommonItems.filter(
         (item) =>
@@ -1092,7 +1080,6 @@ export default class ProductProvider extends Component {
   // };
 
   render() {
-    console.log("provider render");
     return (
       <ProductContext.Provider
         value={{

@@ -29,7 +29,6 @@ const Pagination = ({
   const similarPageSize = 6;
   const searchPageSize = pageSize;
 
-  //TODO: refactor, move all logic to pagination component
   //pagination value depend on page
   useEffect(() => {
     if (isProductPage) {

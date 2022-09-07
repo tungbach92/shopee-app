@@ -18,7 +18,6 @@ import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
 
 export default function CheckoutProduct({ isCheckoutPage }) {
-  console.log("check out render");
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
   //
@@ -87,7 +86,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
   const [shipUnit, setShipUnit] = useState({});
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
-  const [message, setMessage] = useState("");
   const [isPaymentMethod, setIsPaymentMethod] = useState(false);
   const [shipChecked, setShipChecked] = useState([]);
   const [isCardPayment, setIsCardPayment] = useState(false);
@@ -194,7 +192,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
       });
     })
       .then((data) => {
-        console.log("update soldAmount");
       })
       .catch((error) => {
         console.log(error);
@@ -429,7 +426,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                   // There's a risk your customer will drop-off or close the browser before this callback executes
                   // We recommend handling any business-critical post-payment logic in a webhook
                   // paymentIntentSucceeded(clientSecret, ".requires-auth");
-                  console.log(stripeJsResult.paymentIntent);
                   handleOrderSucceeded(stripeJsResult.paymentIntent);
                   setProcessing(false);
                 }
@@ -456,7 +452,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             // Card was successfully charged off-session
             // No recovery flow needed
             // paymentIntentSucceeded(data.clientSecret, ".sr-select-pm");
-            console.log(result.data.paymentIntent);
             handleOrderSucceeded(result.data.paymentIntent);
             setProcessing(false);
           }

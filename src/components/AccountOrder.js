@@ -1,20 +1,14 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
-import { db } from "../firebase";
 import CurrencyFormat from "react-currency-format";
 import moment from "moment";
 import Pagination from "./Pagination";
 import MiniPageControl from "./MiniPageControl";
 
 const AccountOrder = () => {
-  const {
-    orderItems,
-    setPageIndex,
-    setPageTotal,
-    pageIndex,
-    pageTotalCalc,
-  } = useContext(ProductContext);
+  const { orderItems, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =
+    useContext(ProductContext);
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
@@ -55,14 +49,14 @@ const AccountOrder = () => {
     (filter) => {
       let searchOrderItemsFiltered = [];
       switch (filter) {
-        case "cash":
+        case "delivery":
           searchOrderItemsFiltered = [...searchOrderItems].filter((item) =>
             item.id.includes(filter)
           );
           break;
         case "card":
           searchOrderItemsFiltered = [...searchOrderItems].filter(
-            (item) => !item.id.includes("cash")
+            (item) => !item.id.includes("delivery")
           );
           break;
         case "all":
@@ -103,7 +97,7 @@ const AccountOrder = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   return (
     <>
       <div className="user-order__filter-container">
@@ -119,9 +113,9 @@ const AccountOrder = () => {
           Tất cả
         </div>
         <div
-          data-name="cash"
+          data-name="delivery"
           className={
-            filter === "cash"
+            filter === "delivery"
               ? "user-order__filter-item user-order__filter-item--selected"
               : "user-order__filter-item"
           }

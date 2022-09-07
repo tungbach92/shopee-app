@@ -59,7 +59,6 @@ export default function CartProduct(props) {
   }, [setSearchInput]);
 
   useEffect(() => {
-    console.log(location.state?.from.pathname);
     if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
     }
@@ -234,9 +233,6 @@ export default function CartProduct(props) {
     );
     return result;
   };
-  useEffect(() => {
-    console.log(checked);
-  }, [checked]);
 
   return (
     <div className="main">

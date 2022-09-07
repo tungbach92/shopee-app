@@ -64,7 +64,6 @@ function AccountPassword({ setEmail, email }) {
             setIsUpdatingPasswordProcess(false);
             togglePopup(!isPopupShowing);
             setIsUpdatePasswordSuccess(true);
-            console.log("update password successfully");
           })
           .catch((err) => {
             setIsUpdatingPasswordProcess(false);

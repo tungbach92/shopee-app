@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Header from "../components/Header/Header";
 import CheckoutProduct from "../components/CheckoutProduct";
 import { ProductContext } from "../context";
-import { Route, Navigate } from "react-router";
+import { Navigate } from "react-router";
 
 export default function Checkout() {
   const { authorized } = useContext(ProductContext);

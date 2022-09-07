@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import noCartImg from "../../img/no-cart.png";
 import { ProductContext } from "../../context";
 import classNames from "classnames";
@@ -10,17 +10,13 @@ import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
-  const { cartItems, handleClick, delCartItem } = useContext(ProductContext);
+  const { cartItems, delCartItem } = useContext(ProductContext);
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
   const [isCartShowing, setIsCartShowing] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
-  const handleCartDelete = (id) => {
-    setDeleteID(id);
-    togglePopup(!isPopupShowing);
-  };
   const handleDeleteCartTrue = (id) => {
     delCartItem(id);
   };
@@ -40,12 +36,12 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
           }, 200)
         }
       >
-        <a href="# " className="header__cart-icon-link">
+        <div className="header__cart-icon-link">
           <i className="header__cart-icon bi bi-cart">
             {/* <!-- No cart: empty --> */}
             <div className="header__cart-numb">{cartItems?.length}</div>
           </i>
-        </a>
+        </div>
         {isCartShowing && (
           <div
             className={classNames("header__cart-list", {

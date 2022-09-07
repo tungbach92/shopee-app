@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { db, auth } from "../firebase";
+import { auth } from "../firebase";
 import { ProductContext } from "../context";
 function LoginContent({ isLoginPage, submitText }) {
   const { loading, setLoading } = useContext(ProductContext);
@@ -13,7 +13,6 @@ function LoginContent({ isLoginPage, submitText }) {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        console.log(userCredential);
         setLoading(false);
         navigate("/");
       })
@@ -28,7 +27,6 @@ function LoginContent({ isLoginPage, submitText }) {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        console.log(userCredential);
         if (userCredential) {
           //create account success
           const user = userCredential.user;
@@ -48,7 +46,6 @@ function LoginContent({ isLoginPage, submitText }) {
         alert(error.message);
         setLoading(false);
       });
-    console.log("register");
   };
   return (
     <div className="main main--login">

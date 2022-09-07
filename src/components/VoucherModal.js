@@ -4,7 +4,7 @@ export default function VoucherModal(props) {
   const [isInvalidVoucher, setIsInvalidVoucher] = useState(true);
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();
-  const { isVoucherShowing, toggleVoucher, voucher, setVoucher, voucherList } =
+  const { isVoucherShowing, toggleVoucher, setVoucher, voucherList } =
     props;
 
   const handleClick = (e) => {

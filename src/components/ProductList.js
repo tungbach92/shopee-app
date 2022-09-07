@@ -8,7 +8,6 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
-    items,
     setCategoryItems,
     setCategoryItemsFiltered,
     getCheckoutItemsFromStorage,
@@ -19,10 +18,8 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     pageSize,
     searchItemFiltered,
     setSearchItemFiltered,
-    searchItems,
     loading,
     categoryItems,
-    category,
   } = context;
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
@@ -88,7 +85,6 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         renderItem = categoryItemsFiltered;
       }
     }
-    console.log(renderItem);
     return renderItem;
   };
 

@@ -9,7 +9,6 @@ import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
 const ProductItem = function ({ item, similarDisPlay }) {
-  console.log("product item render");
   const { user, cartItems, handleClick } = useContext(ProductContext);
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
@@ -27,7 +26,12 @@ const ProductItem = function ({ item, similarDisPlay }) {
     }
   };
   return (
-    <Grid2 xs={6} md={similarDisPlay ? 3 : 4} lg={similarDisPlay ? 2 : 2.4}>
+    <Grid2
+      xs={6}
+      sm={similarDisPlay ? 3 : 4}
+      md={similarDisPlay ? 2.4 : 3}
+      lg={similarDisPlay ? 2 : 2.4}
+    >
       <div className="app__product-item">
         <button
           disabled={isInCart}

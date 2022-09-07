@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { db } from "../firebase";
 import { data } from "../data";
 import { random } from "lodash";
 
-const Admin = (props) => {
+const Admin = () => {
   const [items, setItems] = useState(data);
   const addProducts = (item) => {
     //collection.add(data)
@@ -101,7 +100,5 @@ const Admin = (props) => {
   };
   return <button onClick={createAndAddMock}>Add mock</button>;
 };
-
-Admin.propTypes = {};
 
 export default Admin;
