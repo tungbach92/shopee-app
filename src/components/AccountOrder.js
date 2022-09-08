@@ -225,7 +225,12 @@ const AccountOrder = () => {
                   {/* cart-product__price-item--before  */}
                   {/* cart-product__price-item--after  */}
                   <span className="order-product__price-item">
-                    {basketItem.price}
+                    <NumericFormat
+                      value={basketItem.price}
+                      prefix={"₫"}
+                      thousandSeparator={true}
+                      displayType="text"
+                    ></NumericFormat>
                   </span>
                 </div>
                 <div className="grid__col order-product__item-amount">
@@ -234,7 +239,12 @@ const AccountOrder = () => {
                   </div>
                 </div>
                 <div className="grid__col order-product__item-total">
-                  {basketItem.price * basketItem.amount}
+                  <NumericFormat
+                    value={basketItem.price * basketItem.amount}
+                    prefix={"₫"}
+                    thousandSeparator={true}
+                    displayType="text"
+                  ></NumericFormat>
                 </div>
               </div>
             ))}
@@ -242,11 +252,10 @@ const AccountOrder = () => {
               <span className="order-product__label">Tổng số tiền:</span>
               <span className="order-product__total-all">
                 <NumericFormat
-                  decimalScale={2}
                   value={item.data.amount}
-                  
                   thousandSeparator={true}
                   displayType="text"
+                  prefix={"₫"}
                 ></NumericFormat>
               </span>
             </div>

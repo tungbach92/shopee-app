@@ -241,9 +241,8 @@ export default function DetailProduct() {
               </div>
               <div className="detail-product__price">
                 <NumericFormat
-                  decimalScale={2}
                   value={item?.price}
-                  
+                  prefix={"₫"}
                   thousandSeparator={true}
                   displayType="text"
                 ></NumericFormat>
@@ -406,7 +405,19 @@ export default function DetailProduct() {
                     Phí Vận Chuyển
                   </span>
                   <span className="detail-product__shipprice-content">
-                    ₫{lookupShipPrice[0]} - ₫{lookupShipPrice[1]}
+                    <NumericFormat
+                      value={lookupShipPrice[0]}
+                      thousandSeparator={true}
+                      displayType="text"
+                      prefix={"₫"}
+                    ></NumericFormat>{" "}
+                    -{" "}
+                    <NumericFormat
+                      value={lookupShipPrice[1]}
+                      thousandSeparator={true}
+                      displayType="text"
+                      prefix={"₫"}
+                    ></NumericFormat>
                     {/* <svg
                       enableBackground="new 0 0 11 11"
                       viewBox="0 0 11 11"

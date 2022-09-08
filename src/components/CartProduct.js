@@ -475,11 +475,10 @@ export default function CartProduct(props) {
                 </span> */}
                 <span className="cart-product__price-item">
                   <NumericFormat
-                    decimalScale={2}
                     value={item.price}
-                    thousandsGroupStyle="lakh"
-                    thousandSeparator=","
+                    thousandSeparator={true}
                     displayType="text"
+                    prefix={"₫"}
                   ></NumericFormat>
                 </span>
               </div>
@@ -539,11 +538,10 @@ export default function CartProduct(props) {
               </div>
               <div className="grid__col cart-product__total">
                 <NumericFormat
-                  decimalScale={2}
                   value={item.price * item.amount}
-                  
                   thousandSeparator={true}
                   displayType="text"
+                  prefix={"₫"}
                 ></NumericFormat>
               </div>
               <div className="grid__col cart-product__action">
@@ -777,11 +775,10 @@ export default function CartProduct(props) {
                     voucher.discount
                   ) : (
                     <NumericFormat
-                      decimalScale={2}
                       value={voucher.discount}
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator=","
+                      thousandSeparator={true}
                       displayType="text"
+                      prefix={"₫"}
                     ></NumericFormat>
                   )}
                 </span>
@@ -892,11 +889,10 @@ export default function CartProduct(props) {
                   </span>
                   <span className="cart-product__total-all">
                     <NumericFormat
-                      decimalScale={2}
                       value={getItemsPriceTotal(checked)}
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator=","
+                      thousandSeparator={true}
                       displayType="text"
+                      prefix={"₫"}
                     ></NumericFormat>
                   </span>
                 </div>
@@ -904,11 +900,10 @@ export default function CartProduct(props) {
                   <span className="cart-product__saved-label">Tiết kiệm:</span>
                   <span className="cart-product__saved-value">
                     <NumericFormat
-                      decimalScale={2}
                       value={getSaved(voucher, checked)}
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator=","
+                      thousandSeparator={true}
                       displayType="text"
+                      prefix={"₫"}
                     ></NumericFormat>
                   </span>
                 </div>

@@ -64,10 +64,9 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                       <div className="header__cart-name">{item.name}</div>
                       <div className="header__cart-price">
                         <NumericFormat
-                          decimalScale={2}
                           value={item.price}
-                          thousandsGroupStyle="lakh"
-                          thousandSeparator=","
+                          prefix={"₫"}
+                          thousandSeparator={true}
                           displayType="text"
                         ></NumericFormat>
                       </div>

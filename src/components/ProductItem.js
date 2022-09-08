@@ -84,11 +84,10 @@ const ProductItem = function ({ item, similarDisPlay }) {
             <div className="app__product-price-wrapper">
               <div className="app__product-price">
                 <NumericFormat
-                  decimalScale={2}
                   value={price}
-                  
                   thousandSeparator={true}
                   displayType="text"
+                  prefix={"₫"}
                 ></NumericFormat>
               </div>
               {/* empty: app__product-free-ship--empty */}
@@ -175,8 +174,7 @@ const ProductItem = function ({ item, similarDisPlay }) {
                     <NumericFormat
                       decimalScale={1}
                       value={soldAmount / 1000}
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator=","
+                      thousandSeparator={true}
                       suffix={"k"}
                       displayType="text"
                     ></NumericFormat>

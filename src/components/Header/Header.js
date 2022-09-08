@@ -80,7 +80,7 @@ const Header = ({
     setSearchInput(text);
     setIsHistory(false);
     if (!isSearchPage) {
-      navigate("/search");
+      navigate("/search", { replace: true });
     }
   };
 
@@ -257,7 +257,7 @@ const Header = ({
                 tabIndex="0"
                 onClick={() =>
                   xsBreakpointMatches
-                    ? navigate("/user/account/profile")
+                    ? navigate("/user/account/profile", { replace: true })
                     : setIsUserListShowing(!isUserListShowing)
                 }
                 onBlur={() =>

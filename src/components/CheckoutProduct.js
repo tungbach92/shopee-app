@@ -662,11 +662,10 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                 </div>
                 <span className="checkout-product__item-price">
                   <NumericFormat
-                    decimalScale={2}
                     value={item.price}
-                    thousandsGroupStyle="lakh"
-                    thousandSeparator=","
+                    thousandSeparator={true}
                     displayType="text"
+                    prefix={"₫"}
                   ></NumericFormat>
                 </span>
                 <span className="checkout-product__item-amount">
@@ -674,11 +673,10 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                 </span>
                 <span className="checkout-product__item-total">
                   <NumericFormat
-                    decimalScale={2}
                     value={item.price * item.amount}
-                    thousandsGroupStyle="lakh"
-                    thousandSeparator=","
+                    thousandSeparator={true}
                     displayType="text"
+                    prefix={"₫"}
                   ></NumericFormat>
                 </span>
               </li>
@@ -689,11 +687,10 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                   </span>
                   <span className="checkout-product__additon-price">
                     <NumericFormat
-                      decimalScale={2}
                       value={item.price * item.amount}
-                      thousandsGroupStyle="lakh"
-                      thousandSeparator=","
+                      thousandSeparator={true}
                       displayType="text"
+                      prefix={"₫"}
                     ></NumericFormat>
                   </span>
                 </span>
@@ -762,11 +759,10 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             {Object.keys(shipUnit).length > 0 && (
               <span className="checkout-product__transport-price">
                 <NumericFormat
-                  decimalScale={2}
                   value={shipUnit.price}
-                  
                   thousandSeparator={true}
                   displayType="text"
+                  prefix={"₫"}
                 ></NumericFormat>
               </span>
             )}
@@ -1081,10 +1077,8 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             </span>
             <span className="checkout-product__payment">
               <NumericFormat
-                decimalScale={2}
                 value={getItemsPriceTotal(checkoutItems)}
-                thousandsGroupStyle="lakh"
-                thousandSeparator=","
+                thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>
             </span>
@@ -1093,20 +1087,16 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             </span>
             <span className="checkout-product__ship">
               <NumericFormat
-                decimalScale={2}
                 value={getShipPrice(shipUnit)}
-                thousandsGroupStyle="lakh"
-                thousandSeparator=","
+                thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>
             </span>
             <span className="checkout-product__discount-label">Tiết kiệm:</span>
             <span className="checkout-product__discount">
               <NumericFormat
-                decimalScale={2}
                 value={getSaved(voucher, checkoutItems)}
-                thousandsGroupStyle="lakh"
-                thousandSeparator=","
+                thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>
             </span>
@@ -1115,10 +1105,9 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             </span>
             <span className="checkout-product__final">
               <NumericFormat
-                decimalScale={2}
                 value={getItemsPriceFinal(checkoutItems, shipUnit, voucher)}
-                thousandsGroupStyle="lakh"
-                thousandSeparator=","
+                prefix={"₫"}
+                thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>
             </span>
