@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import { ProductContext } from "../context";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
@@ -83,13 +83,13 @@ const ProductItem = function ({ item, similarDisPlay }) {
             </div>
             <div className="app__product-price-wrapper">
               <div className="app__product-price">
-                <CurrencyFormat
+                <NumericFormat
                   decimalScale={2}
                   value={price}
-                  displayType={"text"}
+                  
                   thousandSeparator={true}
-                  prefix={"₫"}
-                ></CurrencyFormat>
+                  displayType="text"
+                ></NumericFormat>
               </div>
               {/* empty: app__product-free-ship--empty */}
               {item.freeShip && (
@@ -172,13 +172,14 @@ const ProductItem = function ({ item, similarDisPlay }) {
                 <span>
                   Đã bán{" "}
                   {soldAmount >= 1000 ? (
-                    <CurrencyFormat
+                    <NumericFormat
                       decimalScale={1}
                       value={soldAmount / 1000}
-                      displayType={"text"}
-                      thousandSeparator={true}
+                      thousandsGroupStyle="lakh"
+                      thousandSeparator=","
                       suffix={"k"}
-                    ></CurrencyFormat>
+                      displayType="text"
+                    ></NumericFormat>
                   ) : (
                     soldAmount
                   )}

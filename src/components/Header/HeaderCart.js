@@ -3,7 +3,7 @@ import noCartImg from "../../img/no-cart.png";
 import { ProductContext } from "../../context";
 import classNames from "classnames";
 import { Link, useNavigate } from "react-router-dom";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../PopupModal";
 import PropTypes from "prop-types";
@@ -63,13 +63,13 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
                       />
                       <div className="header__cart-name">{item.name}</div>
                       <div className="header__cart-price">
-                        <CurrencyFormat
+                        <NumericFormat
                           decimalScale={2}
                           value={item.price}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          prefix={"₫"}
-                        ></CurrencyFormat>
+                          thousandsGroupStyle="lakh"
+                          thousandSeparator=","
+                          displayType="text"
+                        ></NumericFormat>
                       </div>
                       <span>x</span>
                       <div className="header__cart-amount">{item.amount}</div>

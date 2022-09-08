@@ -9,7 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
 import PopupModal from "../components/PopupModal";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 
 export default function CartProduct(props) {
@@ -474,13 +474,13 @@ export default function CartProduct(props) {
                   {item.price}
                 </span> */}
                 <span className="cart-product__price-item">
-                  <CurrencyFormat
+                  <NumericFormat
                     decimalScale={2}
                     value={item.price}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"₫"}
-                  ></CurrencyFormat>
+                    thousandsGroupStyle="lakh"
+                    thousandSeparator=","
+                    displayType="text"
+                  ></NumericFormat>
                 </span>
               </div>
               <div className="grid__col cart-product__amount">
@@ -538,13 +538,13 @@ export default function CartProduct(props) {
                 </div>
               </div>
               <div className="grid__col cart-product__total">
-                <CurrencyFormat
+                <NumericFormat
                   decimalScale={2}
                   value={item.price * item.amount}
-                  displayType={"text"}
+                  
                   thousandSeparator={true}
-                  prefix={"₫"}
-                ></CurrencyFormat>
+                  displayType="text"
+                ></NumericFormat>
               </div>
               <div className="grid__col cart-product__action">
                 <span
@@ -776,13 +776,13 @@ export default function CartProduct(props) {
                   {voucher.discount.includes("%") ? (
                     voucher.discount
                   ) : (
-                    <CurrencyFormat
+                    <NumericFormat
                       decimalScale={2}
                       value={voucher.discount}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"₫"}
-                    ></CurrencyFormat>
+                      thousandsGroupStyle="lakh"
+                      thousandSeparator=","
+                      displayType="text"
+                    ></NumericFormat>
                   )}
                 </span>
               )}
@@ -891,25 +891,25 @@ export default function CartProduct(props) {
                     Tổng thanh toán ({getItemsTotal(checked)} sản phẩm):
                   </span>
                   <span className="cart-product__total-all">
-                    <CurrencyFormat
+                    <NumericFormat
                       decimalScale={2}
                       value={getItemsPriceTotal(checked)}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"₫"}
-                    ></CurrencyFormat>
+                      thousandsGroupStyle="lakh"
+                      thousandSeparator=","
+                      displayType="text"
+                    ></NumericFormat>
                   </span>
                 </div>
                 <div className="cart-product__checkout-saved">
                   <span className="cart-product__saved-label">Tiết kiệm:</span>
                   <span className="cart-product__saved-value">
-                    <CurrencyFormat
+                    <NumericFormat
                       decimalScale={2}
                       value={getSaved(voucher, checked)}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"₫"}
-                    ></CurrencyFormat>
+                      thousandsGroupStyle="lakh"
+                      thousandSeparator=","
+                      displayType="text"
+                    ></NumericFormat>
                   </span>
                 </div>
               </div>

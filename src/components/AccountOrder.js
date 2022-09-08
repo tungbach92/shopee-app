@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { ProductContext } from "../context";
 import { Link } from "react-router-dom";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import Pagination from "./Pagination";
 import MiniPageControl from "./MiniPageControl";
@@ -241,13 +241,13 @@ const AccountOrder = () => {
             <div className="order-product__footer">
               <span className="order-product__label">Tổng số tiền:</span>
               <span className="order-product__total-all">
-                <CurrencyFormat
+                <NumericFormat
                   decimalScale={2}
                   value={item.data.amount}
-                  displayType={"text"}
+                  
                   thousandSeparator={true}
-                  prefix={"₫"}
-                ></CurrencyFormat>
+                  displayType="text"
+                ></NumericFormat>
               </span>
             </div>
           </div>

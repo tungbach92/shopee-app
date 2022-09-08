@@ -9,7 +9,7 @@ import VoucherModal from "./VoucherModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
 import ErrorModal from "./ErrorModal";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import axios from "../axios";
 import { useStripe } from "@stripe/react-stripe-js";
 import { db } from "../firebase";
@@ -191,8 +191,7 @@ export default function CheckoutProduct({ isCheckoutPage }) {
         // return data;
       });
     })
-      .then((data) => {
-      })
+      .then((data) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -662,25 +661,25 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                   </span>
                 </div>
                 <span className="checkout-product__item-price">
-                  <CurrencyFormat
+                  <NumericFormat
                     decimalScale={2}
                     value={item.price}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"₫"}
-                  ></CurrencyFormat>
+                    thousandsGroupStyle="lakh"
+                    thousandSeparator=","
+                    displayType="text"
+                  ></NumericFormat>
                 </span>
                 <span className="checkout-product__item-amount">
                   {item.amount}
                 </span>
                 <span className="checkout-product__item-total">
-                  <CurrencyFormat
+                  <NumericFormat
                     decimalScale={2}
                     value={item.price * item.amount}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    prefix={"₫"}
-                  ></CurrencyFormat>
+                    thousandsGroupStyle="lakh"
+                    thousandSeparator=","
+                    displayType="text"
+                  ></NumericFormat>
                 </span>
               </li>
               <div className="checkout-product__addition">
@@ -689,13 +688,13 @@ export default function CheckoutProduct({ isCheckoutPage }) {
                     Tổng số tiền ({item.amount} sản phẩm):
                   </span>
                   <span className="checkout-product__additon-price">
-                    <CurrencyFormat
+                    <NumericFormat
                       decimalScale={2}
                       value={item.price * item.amount}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"₫"}
-                    ></CurrencyFormat>
+                      thousandsGroupStyle="lakh"
+                      thousandSeparator=","
+                      displayType="text"
+                    ></NumericFormat>
                   </span>
                 </span>
               </div>
@@ -762,13 +761,13 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             )}
             {Object.keys(shipUnit).length > 0 && (
               <span className="checkout-product__transport-price">
-                <CurrencyFormat
+                <NumericFormat
                   decimalScale={2}
                   value={shipUnit.price}
-                  displayType={"text"}
+                  
                   thousandSeparator={true}
-                  prefix={"₫"}
-                ></CurrencyFormat>
+                  displayType="text"
+                ></NumericFormat>
               </span>
             )}
           </span>
@@ -1081,47 +1080,47 @@ export default function CheckoutProduct({ isCheckoutPage }) {
               Tổng tiền hàng:
             </span>
             <span className="checkout-product__payment">
-              <CurrencyFormat
+              <NumericFormat
                 decimalScale={2}
                 value={getItemsPriceTotal(checkoutItems)}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₫"}
-              ></CurrencyFormat>
+                thousandsGroupStyle="lakh"
+                thousandSeparator=","
+                displayType="text"
+              ></NumericFormat>
             </span>
             <span className="checkout-product__ship-label">
               Tổng phí vận chuyển:
             </span>
             <span className="checkout-product__ship">
-              <CurrencyFormat
+              <NumericFormat
                 decimalScale={2}
                 value={getShipPrice(shipUnit)}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₫"}
-              ></CurrencyFormat>
+                thousandsGroupStyle="lakh"
+                thousandSeparator=","
+                displayType="text"
+              ></NumericFormat>
             </span>
             <span className="checkout-product__discount-label">Tiết kiệm:</span>
             <span className="checkout-product__discount">
-              <CurrencyFormat
+              <NumericFormat
                 decimalScale={2}
                 value={getSaved(voucher, checkoutItems)}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₫"}
-              ></CurrencyFormat>
+                thousandsGroupStyle="lakh"
+                thousandSeparator=","
+                displayType="text"
+              ></NumericFormat>
             </span>
             <span className="checkout-product__final-label">
               Tổng thanh toán:
             </span>
             <span className="checkout-product__final">
-              <CurrencyFormat
+              <NumericFormat
                 decimalScale={2}
                 value={getItemsPriceFinal(checkoutItems, shipUnit, voucher)}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"₫"}
-              ></CurrencyFormat>
+                thousandsGroupStyle="lakh"
+                thousandSeparator=","
+                displayType="text"
+              ></NumericFormat>
             </span>
           </div>
           <div className="checkout-product__order-wrapper">

@@ -6,7 +6,7 @@ import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
-import CurrencyFormat from "react-currency-format";
+import { NumericFormat } from "react-number-format";
 import { Box, Rating } from "@mui/material";
 
 export default function DetailProduct() {
@@ -240,13 +240,13 @@ export default function DetailProduct() {
                 </div>
               </div>
               <div className="detail-product__price">
-                <CurrencyFormat
+                <NumericFormat
                   decimalScale={2}
                   value={item?.price}
-                  displayType={"text"}
+                  
                   thousandSeparator={true}
-                  prefix={"₫"}
-                ></CurrencyFormat>
+                  displayType="text"
+                ></NumericFormat>
               </div>
               <div className="detail-product__info-wrapper">
                 {/* <div className="detail-product__combo-label">
