@@ -6,7 +6,6 @@ import { Navigate } from "react-router";
 
 export default function Checkout() {
   const { authorized } = useContext(ProductContext);
-
   if (authorized !== null) {
     if (!authorized) {
       return <Navigate to="/login"></Navigate>;

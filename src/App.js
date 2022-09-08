@@ -7,7 +7,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
-import Checkout from "./pages/Checkout";
+import Checkout from "./pages/CheckOut";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Elements } from "@stripe/react-stripe-js";
