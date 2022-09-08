@@ -35,8 +35,7 @@
     "stripe": "^10.8.0",
     "styled-components": "^5.3.5",
     "web-vitals": "^1.1.1",
-    "yup": "^0.32.11",
-    "node-sass": "^6.0.1"
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -62,8 +61,10 @@
       "last 1 safari version"
     ]
   },
+  "devDependencies": {
+    "node-sass": "^6.0.1"
+  },
   "engines": {
-    "node": "16.17.0",
-    "npm": "8.19.1"
+    "node": "16.x"
   }
 }
