@@ -254,6 +254,7 @@ const Header = ({
                     ? "header__nav-item-right header__nav-item-right--user"
                     : "header__nav-item-right header__nav-item-right--reg"
                 }
+                tabIndex="0"
                 onClick={() =>
                   xsBreakpointMatches
                     ? navigate("/user/account/profile")

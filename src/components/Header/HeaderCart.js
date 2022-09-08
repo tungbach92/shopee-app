@@ -25,6 +25,7 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
     <div className="header__cart">
       <div
         className="header__cart-wrapper"
+        tabIndex="0"
         onClick={() =>
           xsBreakpointMatches
             ? navigate("/cart")
