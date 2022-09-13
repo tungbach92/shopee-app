@@ -58,7 +58,7 @@ export default class ProductProvider extends Component {
     this.getDataFireBase();
     this.setUser(() => {
       this.setOrderItems();
-      this.setUserAvatar();
+      this.setUserAvatar(this.state.user.photoURL);
       this.getShipInfos();
       this.getCustomerIdFromFirebase();
       this.setCartItemsFromFirebase();
@@ -246,8 +246,7 @@ export default class ProductProvider extends Component {
           street: defaultshipInfo.street,
         },
       })
-        .then((res) => {
-        })
+        .then((res) => {})
         .catch((err) => {
           console.log(err.message);
         });
@@ -287,36 +286,36 @@ export default class ProductProvider extends Component {
   updateShipInfoToFirebase = (shipInfos) => {
     const user = this.state.user;
     if (user) {
-      try {
-        db.collection("users")
-          .doc(user?.uid)
-          .collection("shipInfos")
-          .doc("shipInfoDoc")
-          .get()
-          .then((doc) => {
-            if (!doc.exists) {
-              db.collection("users")
-                .doc(user?.uid)
-                .collection("shipInfos")
-                .doc("shipInfoDoc")
-                .set({ shipInfos: [] })
-                .then(() => {
-                });
-            }
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("shipInfos")
+        .doc("shipInfoDoc")
+        .get()
+        .then((doc) => {
+          if (!doc.exists) {
             db.collection("users")
               .doc(user?.uid)
               .collection("shipInfos")
-              .doc("shipInfoDoc") 
-              .update({
-                shipInfos: shipInfos,
-              })
-              .then(() => {
-                this.setState({ shipInfos });
-              });
-          });
-      } catch (error) {
-        console.log(error);
-      }
+              .doc("shipInfoDoc")
+              .set({ shipInfos: [] })
+              .then(() => {});
+          }
+        })
+        .then(() => {
+          db.collection("users")
+            .doc(user?.uid)
+            .collection("shipInfos")
+            .doc("shipInfoDoc")
+            .update({
+              shipInfos: shipInfos,
+            });
+        })
+        .then(() => {
+          this.setState({ shipInfos });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -338,22 +337,20 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setUserAvatar = () => {
+  setUserAvatar = (userAvatar) => {
     const user = this.state.user;
-    let userAvatar = "";
-    if (user) {
-      const storageRef = storage.ref(`users/${user.uid}/avatar`);
-      storageRef
-        .getDownloadURL()
-        .then((downloadURL) => {
-          userAvatar = downloadURL;
-          this.setState({ userAvatar });
-        })
-        .catch((error) => {
-          // 404
-          this.setState({ userAvatar });
-        });
-    }
+    const path = `users/${user.uid}/avatar`;
+    const storageRef = storage.ref(path);
+
+    storageRef.getDownloadURL().catch((error) => {
+      // 404
+      user.updateProfile({
+        photoURL: null,
+      });
+      this.setState({ userAvatar: null });
+      return;
+    });
+    this.setState({ userAvatar });
   };
 
   setSearchInput = (searchInput) => {
@@ -606,6 +603,18 @@ export default class ProductProvider extends Component {
       this.setState({ searchHistory: uniqueSearchHistory }, () => {
         this.saveSearchHistoryToStorage(uniqueSearchHistory);
       });
+    }
+  };
+
+  deleteFromSearchHistory = (text) => {
+    let { searchHistory } = this.state;
+    text = text.trim();
+    if (text.length > 0) {
+      searchHistory = [...searchHistory].filter((item) => item !== text);
+      this.setState({ searchHistory }, () => {
+        this.saveSearchHistoryToStorage(searchHistory);
+      });
+      this.saveSearchHistoryToFirebase(searchHistory);
     }
   };
 
@@ -1066,7 +1075,6 @@ export default class ProductProvider extends Component {
       this.setPaymentMethodList([]);
       this.setDefaultPaymentMethodID("");
       this.setShipInfos([]);
-      this.setUserAvatar();
       this.setCustomerID("");
       auth.signOut();
     }
@@ -1147,6 +1155,7 @@ export default class ProductProvider extends Component {
           setAuthorized: this.setAuthorized,
           getShipInfos: this.getShipInfos,
           handleLogout: this.handleLogout,
+          deleteFromSearchHistory: this.deleteFromSearchHistory,
         }}
       >
         {this.props.children}

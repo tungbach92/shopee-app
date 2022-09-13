@@ -65,7 +65,7 @@ const AccountProfile = ({
           onSubmit={handleInfoSubmit}
         >
           {(formikProps) => {
-            const { values, errors, touched } = formikProps;
+            const { values, errors, touched, dirty } = formikProps;
             return (
               <Form className="user-profile__info-form">
                 {/* onSubmit={handleInfoSubmit}> */}
@@ -169,7 +169,7 @@ const AccountProfile = ({
                       invalidClassName="user-profile__birthday-invalid"
                     ></FastField>
                     <button
-                      disabled={isInfoUpdating}
+                      disabled={isInfoUpdating || !dirty}
                       type="submit"
                       className="btn user-profile__info-submit"
                     >

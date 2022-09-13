@@ -544,6 +544,14 @@ header {
   opacity: 0.3;
 }
 
+.header__history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  cursor: pointer;
+}
+
 .header__history-item:hover {
   background-color: var(--lighter-grey-color);
 }

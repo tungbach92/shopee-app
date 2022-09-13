@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import noCartImg from "../../img/no-cart.png";
 import { ProductContext } from "../../context";
 import classNames from "classnames";
@@ -16,10 +16,17 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
   const [isCartShowing, setIsCartShowing] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
+  const ref = useRef();
 
   const handleDeleteCartTrue = (id) => {
     delCartItem(id);
   };
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(ref.current);
+    };
+  });
 
   return (
     <div className="header__cart">
@@ -32,9 +39,9 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
             : setIsCartShowing(!isCartShowing)
         }
         onBlur={() =>
-          setTimeout(() => {
+          (ref.current = setTimeout(() => {
             setIsCartShowing(false);
-          }, 200)
+          }, 200))
         }
       >
         <div className="header__cart-icon-link">

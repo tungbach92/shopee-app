@@ -11,7 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, Close } from "@mui/icons-material";
 
 const Header = ({
   isProductPage,
@@ -47,6 +47,7 @@ const Header = ({
     searchInput,
     setSearchInput,
     handleLogout,
+    deleteFromSearchHistory,
   } = useContext(ProductContext);
 
   const handleInputClick = (e) => {
@@ -74,13 +75,23 @@ const Header = ({
     }
   };
 
+  const deleteFromSuggestions = (text) => {
+    const mathSuggestions = [...suggestions].filter((item) => item !== text);
+    setSuggestions(mathSuggestions);
+  };
+
+  const handleHistoryDelete = (item) => {
+    deleteFromSearchHistory(item);
+    deleteFromSuggestions(item);
+  };
+
   const handleSearchIconClick = (text) => {
     filterItemsBySearch(text);
     addToSearchHistory(text);
     setSearchInput(text);
     setIsHistory(false);
     if (!isSearchPage) {
-      navigate("/search", { replace: true });
+      navigate("/search");
     }
   };
 
@@ -257,13 +268,13 @@ const Header = ({
                 tabIndex="0"
                 onClick={() =>
                   xsBreakpointMatches
-                    ? navigate("/user/account/profile", { replace: true })
+                    ? navigate("/user/account/profile")
                     : setIsUserListShowing(!isUserListShowing)
                 }
                 onBlur={() =>
-                  setTimeout(() => {
+                  (ref.current = setTimeout(() => {
                     setIsUserListShowing(false);
-                  }, 200)
+                  }, 200))
                 }
               >
                 <div className="header__nav-reg">
@@ -393,15 +404,41 @@ const Header = ({
                             Lịch Sử Tìm Kiếm
                           </li>
                           {suggestions.map((item, index) => (
-                            <li
+                            <Stack
+                              sx={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                "&:hover": {
+                                  backgroundColor: "var(--lighter-grey-color)",
+                                },
+                              }}
                               key={index}
-                              onClick={() => handleSearchIconClick(item)}
-                              className="header__history-item"
                             >
-                              <a href="# " className="header__history-link">
-                                {item}
-                              </a>
-                            </li>
+                              <li
+                                onClick={() => handleSearchIconClick(item)}
+                                className="header__history-item"
+                              >
+                                <a href="# " className="header__history-link">
+                                  {item}
+                                </a>
+                              </li>
+                              <Box
+                                sx={{
+                                  height: "100%",
+                                  marginRight: "0.6rem",
+                                  "& :hover": { color: "var(--primary-color)" },
+                                  cursor: "pointer",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Close
+                                  onClick={() => handleHistoryDelete(item)}
+                                ></Close>
+                              </Box>
+                            </Stack>
                           ))}
                         </ul>
                       )}
@@ -451,15 +488,41 @@ const Header = ({
                           Lịch Sử Tìm Kiếm
                         </li>
                         {suggestions.map((item, index) => (
-                          <li
+                          <Stack
+                            sx={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              "&:hover": {
+                                backgroundColor: "var(--lighter-grey-color)",
+                              },
+                            }}
                             key={index}
-                            onClick={() => handleSearchIconClick(item)}
-                            className="header__history-item"
                           >
-                            <a href="# " className="header__history-link">
-                              {item}
-                            </a>
-                          </li>
+                            <li
+                              onClick={() => handleSearchIconClick(item)}
+                              className="header__history-item"
+                            >
+                              <a href="# " className="header__history-link">
+                                {item}
+                              </a>
+                            </li>
+                            <Box
+                              sx={{
+                                height: "100%",
+                                marginRight: "0.6rem",
+                                "& :hover": { color: "var(--primary-color)" },
+                                cursor: "pointer",
+                                textAlign: "center",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Close
+                                onClick={() => handleHistoryDelete(item)}
+                              ></Close>
+                            </Box>
+                          </Stack>
                         ))}
                       </ul>
                     )}

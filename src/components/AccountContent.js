@@ -77,8 +77,8 @@ const AccountContent = () => {
         .collection("users")
         .doc(user?.uid)
         .collection("infos")
-        .doc("infoItems") // TO DO: need to create document infoItems before update infoItems
-        .update({
+        .doc("infoItems")
+        .set({
           name: name,
           gender: gender,
           birthday: birthday,
@@ -118,9 +118,18 @@ const AccountContent = () => {
         },
         //handle successful uploads
         () => {
-          setUserAvatar();
-          setIsInfoUpdating(false);
-          togglePopup(!isPopupShowing);
+          uploadTask.snapshot.ref
+            .getDownloadURL()
+            .then((downloadURL) => {
+              user.updateProfile({
+                photoURL: downloadURL,
+              });
+              setUserAvatar(downloadURL);
+            })
+            .then(() => {
+              setIsInfoUpdating(false);
+              togglePopup(!isPopupShowing);
+            });
         }
       );
     } else {
