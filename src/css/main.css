@@ -61,6 +61,7 @@ header {
 
 .header__nav-item-right {
   padding: 0 1rem;
+  cursor: pointer;
 }
 
 .header__nav-item-right--notify {
@@ -275,6 +276,14 @@ header {
   position: relative;
 }
 
+.header__nav-item-right--user:hover .header__user-list {
+  display: block;
+}
+
+.header__nav-item-right--user:hover .header__user-arrow {
+  display: block;
+}
+
 .header__nav-item-right--user .header__nav-login-link,
 .header__user-list {
   display: flex;
@@ -286,10 +295,10 @@ header {
 }
 
 .header__user-arrow {
-  display: block;
   position: absolute;
   right: 2rem;
   top: -1.2rem;
+  display: none;
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
   border-bottom: 12px solid white;
@@ -341,7 +350,6 @@ header {
 }
 
 .header__user-list {
-  display: block;
   width: 15rem;
   position: absolute;
   top: 100%;
@@ -350,18 +358,20 @@ header {
   border-radius: 2px;
   border-top: 0px;
   box-shadow: rgb(0 0 0 / 20%) 0px 0.0625rem 3.125rem 0px;
+  display: none;
   z-index: 3;
   animation: headerNotifyGrowing ease-in 0.15s;
   transform-origin: 90% top;
   will-change: opacity, transform;
+  display: none;
 }
 
 .header__user-list::before {
   content: "";
   width: 15rem;
-  height: 2rem;
+  height: 1rem;
   position: absolute;
-  top: -1rem;
+  top: -0.4rem;
   right: 0;
   z-index: 3;
 }
@@ -595,6 +605,18 @@ header {
   position: relative;
 }
 
+.header__cart-wrapper:hover .header__cart-arrow {
+  display: block;
+}
+
+.header__cart-wrapper:hover .header__cart-list {
+  visibility: visible;
+}
+
+.header__cart-wrapper:hover .header__cart-list--empty {
+  display: block;
+}
+
 .header__cart-list--empty .header__cart-empty-img,
 .header__cart-list--empty .header__cart-empty-info {
   display: block;
@@ -648,6 +670,7 @@ header {
   transform-origin: 90% top;
   will-change: opacity, transform;
   z-index: 9999;
+  visibility: hidden;
 }
 
 .header__cart-list::before {
@@ -689,7 +712,6 @@ header {
 }
 
 .header__cart-arrow {
-  display: block;
   position: absolute;
   top: -1rem;
   left: 34.5rem;

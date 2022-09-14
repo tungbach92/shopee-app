@@ -226,7 +226,7 @@ const AccountContent = () => {
                   ></AccountProfile>
                 }
               ></Route>
-              <Route index element={<Navigate to="profile" />} />
+              <Route index element={<Navigate to="profile" replace />} />
               <Route
                 path="email"
                 element={
@@ -250,7 +250,6 @@ const AccountContent = () => {
                 element={<AccountAddress></AccountAddress>}
               ></Route>
               <Route
-                exact
                 path="payment"
                 element={<AccountPayment></AccountPayment>}
               ></Route>

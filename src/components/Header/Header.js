@@ -7,7 +7,7 @@ import appGalShopeeImg from "../../img/app-gal-shopee.png";
 import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import classNames from "classnames";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ProductContext } from "../../context";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
@@ -24,12 +24,13 @@ const Header = ({
   headerText,
 }) => {
   const ref = useRef();
+  let inputSearchEle = null;
   const navigate = useNavigate();
   const [recommendSearch, setRecommendSearch] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isHistory, setIsHistory] = useState(false);
-  const [isUserListShowing, setIsUserListShowing] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
+  const location = useLocation();
 
   function getUnique(items) {
     let uniqueItems = new Set(items);
@@ -83,6 +84,7 @@ const Header = ({
   const handleHistoryDelete = (item) => {
     deleteFromSearchHistory(item);
     deleteFromSuggestions(item);
+    inputSearchEle.focus();
   };
 
   const handleSearchIconClick = (text) => {
@@ -108,7 +110,6 @@ const Header = ({
       setIsHistory(false);
     }, 200);
   };
-
   useEffect(() => {
     if (orderItems) {
       function createRecommendedSearch() {
@@ -265,17 +266,11 @@ const Header = ({
                     ? "header__nav-item-right header__nav-item-right--user"
                     : "header__nav-item-right header__nav-item-right--reg"
                 }
-                tabIndex="0"
-                onClick={() =>
-                  xsBreakpointMatches
-                    ? navigate("/user/account/profile")
-                    : setIsUserListShowing(!isUserListShowing)
-                }
-                onBlur={() =>
-                  (ref.current = setTimeout(() => {
-                    setIsUserListShowing(false);
-                  }, 200))
-                }
+                onClick={(e) => {
+                  if (location.pathname !== "/user/account/profile") {
+                    navigate("/user/account/profile");
+                  }
+                }}
               >
                 <div className="header__nav-reg">
                   <Link to="/register" className="header__nav-login">
@@ -328,29 +323,32 @@ const Header = ({
                     {user?.displayName}
                   </Box>
                 </div>
-                {isUserListShowing && (
-                  <div className="header__user-list">
-                    <div className="header__user-arrow"></div>
-                    <Link to="/user/account" className="header__user-item">
-                      Tài khoản của tôi
-                    </Link>
-                    <Link
-                      to="/user/account/purchase"
-                      className="header__user-item"
-                    >
-                      Đơn mua
-                    </Link>
-                    <div
-                      onClick={() => {
-                        handleLogout();
-                        navigate("/");
-                      }}
-                      className="header__user-item"
-                    >
-                      Đăng xuất
-                    </div>
+                <div
+                  className="header__user-list"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <div className="header__user-arrow"></div>
+                  <Link to="/user/account" className="header__user-item">
+                    Tài khoản của tôi
+                  </Link>
+                  <Link
+                    to="/user/account/purchase"
+                    className="header__user-item"
+                  >
+                    Đơn mua
+                  </Link>
+                  <div
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/");
+                    }}
+                    className="header__user-item"
+                  >
+                    Đăng xuất
                   </div>
-                )}
+                </div>
               </div>
             </ul>
           </nav>
@@ -384,6 +382,7 @@ const Header = ({
                     <div className="header__search-wrapper">
                       <input
                         type="text"
+                        ref={(element) => (inputSearchEle = element)}
                         onChange={handleInputChange}
                         onClick={handleInputClick}
                         onBlur={handleSearchBlur}
