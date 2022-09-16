@@ -357,7 +357,9 @@ const Header = ({
         {!isLoginPage && !isRegisterPage && (
           <div
             className={classNames("header__search", {
-              "header__search--cart": isCartPage || isCheckoutPage,
+              "header__search--cart":
+                (isCartPage && !xsBreakpointMatches) ||
+                (isCheckoutPage && !xsBreakpointMatches),
             })}
           >
             <div className="header__logo-wrapper">
@@ -461,7 +463,8 @@ const Header = ({
               ) : (
                 <div
                   className={classNames("header__search-content", {
-                    "header__search-content--cart": isCartPage,
+                    "header__search-content--cart":
+                      isCartPage && !xsBreakpointMatches,
                   })}
                 >
                   <div className="header__search-wrapper">

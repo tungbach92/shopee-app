@@ -16,8 +16,9 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     similarItems,
     pageIndex,
     pageSize,
-    searchItemFiltered,
-    setSearchItemFiltered,
+    setCategorySearchItems,
+    categorySearchItemsFiltered,
+    setCategorySearchItemsFiltered,
     loading,
     categoryItems,
   } = context;
@@ -33,7 +34,8 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
 
   useEffect(() => {
     if (isProductPage) {
-      setSearchItemFiltered([]);
+      setCategorySearchItems([]);
+      setCategorySearchItemsFiltered([]);
     }
 
     if (isSearchPage) {
@@ -51,18 +53,19 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     setCategoryItems,
     setCategoryItemsFiltered,
     setCheckoutItems,
-    setSearchItemFiltered,
+    setCategorySearchItemsFiltered,
+    setCategorySearchItems,
   ]);
 
   const getRenderItems = () => {
     let renderItem = [];
     if (isSearchPage) {
-      renderItem = searchItemFiltered.slice(
+      renderItem = categorySearchItemsFiltered.slice(
         (pageIndex - 1) * searchPageSize,
         pageIndex * searchPageSize
       );
       if (xsBreakpointMatches) {
-        renderItem = searchItemFiltered;
+        renderItem = categorySearchItemsFiltered;
       }
     }
 

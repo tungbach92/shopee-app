@@ -13,9 +13,11 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
     handleClick,
     categoryItems,
     searchItems,
+    categorySearchItems,
+    categorySearchItemsFiltered,
     setFilter,
     setFilterPrice,
-    setSearchItemFiltered,
+    setCategorySearchItemsFiltered,
     categoryItemsFiltered,
   } = useContext(ProductContext);
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
@@ -40,7 +42,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
     if (isProductPage && categoryItems.length === 0) {
       setFilterPrice(defaultFilterPrice);
     }
-    if (isSearchPage && searchItems.length === 0) {
+    if (isSearchPage && categorySearchItems.length === 0) {
       setFilterPrice(defaultFilterPrice);
     }
   }, [
@@ -48,10 +50,10 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
     isProductPage,
     isSearchPage,
     searchItems,
-    searchItems.length,
     setFilter,
     setFilterPrice,
-    setSearchItemFiltered,
+    setCategorySearchItemsFiltered,
+    categorySearchItems.length,
   ]);
 
   const handleFilterPriceClickForXsResponsive = () => {
@@ -79,7 +81,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
           })}
           disabled={
             (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && searchItems.length === 0)
+            (isSearchPage && categorySearchItems.length === 0)
           }
         >
           Tất cả
@@ -93,7 +95,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
           })}
           disabled={
             (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && searchItems.length === 0)
+            (isSearchPage && categorySearchItems.length === 0)
           }
         >
           Mới nhất
@@ -107,7 +109,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
           })}
           disabled={
             (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && searchItems.length === 0)
+            (isSearchPage && categorySearchItems.length === 0)
           }
         >
           Bán chạy
@@ -115,10 +117,8 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
         <div
           data-name="filterPrice"
           onClick={() =>
-            ((isProductPage &&
-              categoryItems.length !== 0 &&
-              categoryItemsFiltered.length !== 0) ||
-              (isSearchPage && searchItems.length !== 0)) &&
+            ((isProductPage && categoryItemsFiltered.length !== 0) ||
+              (isSearchPage && categorySearchItemsFiltered.length !== 0)) &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
@@ -130,10 +130,8 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
             }, 200)
           }
           className={
-            (isProductPage &&
-              categoryItems.length !== 0 &&
-              categoryItemsFiltered.length !== 0) ||
-            (isSearchPage && searchItems.length !== 0)
+            (isProductPage && categoryItemsFiltered.length !== 0) ||
+            (isSearchPage && categorySearchItemsFiltered.length !== 0)
               ? "select-input"
               : " select-input--disabled"
           }

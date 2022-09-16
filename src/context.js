@@ -12,11 +12,12 @@ export const ProductConsumer = ProductContext.Consumer;
 export default class ProductProvider extends Component {
   state = {
     items: [],
-    categoryItemsFiltered: [], // items sort
     similarItems: [],
     categoryItems: [], // category
+    categoryItemsFiltered: [], // items sort
     searchItems: [], // search
-    searchItemFiltered: [],
+    categorySearchItems: [],
+    categorySearchItemsFiltered: [],
     today: new Date(),
     defaultPageIndex: 1,
     bestSelling: 1000,
@@ -65,6 +66,10 @@ export default class ProductProvider extends Component {
       this.setSearchHistoryFromFirebase();
     });
   }
+
+  setCategorySearchItems = (categorySearchItems) => {
+    this.setState({ categorySearchItems });
+  };
 
   setAuthorized = (authorized) => {
     this.setState({ authorized });
@@ -356,8 +361,8 @@ export default class ProductProvider extends Component {
   setSearchInput = (searchInput) => {
     this.setState({ searchInput });
   };
-  setSearchItemFiltered = (searchItemFiltered) => {
-    this.setState({ searchItemFiltered });
+  setCategorySearchItemsFiltered = (categorySearchItemsFiltered) => {
+    this.setState({ categorySearchItemsFiltered });
   };
 
   setSearchItems = (searchItems) => {
@@ -555,7 +560,10 @@ export default class ProductProvider extends Component {
     if (name === "category") {
       this.setState(
         { [name]: value, filter: "all", filterPrice: "default" },
-        this.filterItemsByCategory
+        () => {
+          this.filterItemsByCategory();
+          this.filterSearchItemsByCategory();
+        }
       );
       // set category filter filterPrice state, and categoryItemsFiltered categoryItem pageIndex after state mutate
       // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
@@ -841,6 +849,21 @@ export default class ProductProvider extends Component {
     });
   };
 
+  filterSearchItemsByCategory = () => {
+    //get categoryItemsFiltered by category using items
+    const { searchItems, category } = this.state;
+    let tempItems = [...searchItems];
+    //filter by category
+    if (category !== "allProduct") {
+      tempItems = tempItems.filter((item) => item.category === category);
+    }
+    //change state
+    this.setState({
+      categorySearchItems: tempItems,
+      categorySearchItemsFiltered: tempItems,
+    });
+  };
+
   filterItemsBySimilar = () => {
     const { items, category } = this.state;
     let tempItems = [...items];
@@ -862,8 +885,8 @@ export default class ProductProvider extends Component {
 
   filterSearchItems = () => {
     //get categoryItemsFiltered by filter using searchItems
-    let { searchItems } = this.state;
-    this.filterCommonItems(searchItems, "searchItemFiltered");
+    let { categorySearchItems } = this.state;
+    this.filterCommonItems(categorySearchItems, "categorySearchItemsFiltered");
   };
 
   filterCommonItems = (commonItems, name) => {
@@ -1129,7 +1152,8 @@ export default class ProductProvider extends Component {
           saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
           setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
           setSearchItems: this.setSearchItems,
-          setSearchItemFiltered: this.setSearchItemFiltered,
+          setCategorySearchItems: this.setCategorySearchItems,
+          setCategorySearchItemsFiltered: this.setCategorySearchItemsFiltered,
           setSearchInput: this.setSearchInput,
           setUserAvatar: this.setUserAvatar,
           setShipInfos: this.setShipInfos,

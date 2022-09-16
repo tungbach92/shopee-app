@@ -18,7 +18,7 @@ const Pagination = ({
     setPageIndex,
     pageTotal,
     pageSize,
-    searchItemFiltered,
+    categorySearchItemsFiltered,
     similarItems,
     setPageTotal,
     pageTotalCalc,
@@ -37,7 +37,7 @@ const Pagination = ({
       setPageTotal(pageTotal);
     }
     if (isSearchPage) {
-      const searchPageTotal = pageTotalCalc(searchItemFiltered, searchPageSize);
+      const searchPageTotal = pageTotalCalc(categorySearchItemsFiltered, searchPageSize);
       setPageIndex(searchPageIndex);
       setPageTotal(searchPageTotal);
     }
@@ -52,7 +52,7 @@ const Pagination = ({
     isSearchPage,
     pageSize,
     pageTotalCalc,
-    searchItemFiltered,
+    categorySearchItemsFiltered,
     searchPageSize,
     setPageIndex,
     setPageTotal,
@@ -62,7 +62,7 @@ const Pagination = ({
 
   if (
     (isProductPage && categoryItemsFiltered.length <= pageSize) ||
-    (isSearchPage && searchItemFiltered.length <= pageSize) ||
+    (isSearchPage && categorySearchItemsFiltered.length <= pageSize) ||
     (isOrderPage && searchOrderItemsFiltered.length <= pageSize) ||
     (similarDisPlay && similarItems.length <= pageSize)
   ) {

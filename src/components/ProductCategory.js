@@ -33,18 +33,24 @@ const StyledTextField = styled(TextField)({
   },
 });
 
-export default function ProductCategory() {
+export default function ProductCategory({ isProductPage, isSearchPage }) {
   const context = useContext(ProductContext);
   const {
     category,
     handleClick,
     categoryItems,
+    categoryItemsFiltered,
+    categorySearchItems,
+    categorySearchItemsFiltered,
     setCategoryItems,
     setCategoryItemsFiltered,
+    setCategorySearchItems,
+    setCategorySearchItemsFiltered,
     setCategory,
     setFilter,
     setFilterPrice,
     items,
+    searchItems,
   } = context;
   const [startPrice, setStartPrice] = useState("");
   const [endPrice, setEndPrice] = useState("");
@@ -58,59 +64,139 @@ export default function ProductCategory() {
   const defaultFilter = "all";
   const defaultFilterPrice = "default";
 
+  const filterDisabled =
+    (isProductPage &&
+      (categoryItems.length === 0 || categoryItemsFiltered.length === 0)) ||
+    (isSearchPage &&
+      (categorySearchItems.length === 0 ||
+        categorySearchItemsFiltered.length === 0));
+
   useEffect(() => {
     setCategory(defaultCategory);
-    const categoryItems = items.filter(
-      (item) => item.category !== defaultCategory
-    );
-    const categoryItemsFiltered = [...categoryItems];
-    setCategoryItems(categoryItems);
-    setCategoryItemsFiltered(categoryItemsFiltered);
-  }, [items, setCategory, setCategoryItems, setCategoryItemsFiltered]);
+
+    if (isProductPage) {
+      const categoryItems = items.filter(
+        (item) => item.category !== defaultCategory
+      );
+      const categoryItemsFiltered = [...categoryItems];
+      setCategoryItems(categoryItems);
+      setCategoryItemsFiltered(categoryItemsFiltered);
+    }
+
+    if (isSearchPage) {
+      const categorySearchItems = searchItems.filter(
+        (item) => item.category !== defaultCategory
+      );
+      const categorySearchItemsFiltered = [...categorySearchItems];
+      setCategorySearchItems(categorySearchItems);
+      setCategorySearchItemsFiltered(categorySearchItemsFiltered);
+    }
+  }, [
+    isProductPage,
+    isSearchPage,
+    items,
+    searchItems,
+    setCategory,
+    setCategoryItems,
+    setCategoryItemsFiltered,
+    setCategorySearchItems,
+    setCategorySearchItemsFiltered,
+  ]);
 
   const handleResetAll = () => {
     setCategory(defaultCategory);
     setFilter(defaultFilter);
     setFilterPrice(defaultFilterPrice);
     //set categoryItemsFiltered by default value
-    const categoryItems = items.filter((item) => item.category !== category);
-    const categoryItemsFiltered = [...categoryItems];
-    setCategoryItems(categoryItems);
-    setCategoryItemsFiltered(categoryItemsFiltered);
+    if (isProductPage) {
+      const categoryItems = items.filter(
+        (item) => item.category !== defaultCategory
+      );
+      const categoryItemsFiltered = [...categoryItems];
+      setCategoryItems(categoryItems);
+      setCategoryItemsFiltered(categoryItemsFiltered);
+    }
+    if (isSearchPage) {
+      const categorySearchItems = searchItems.filter(
+        (item) => item.category !== defaultCategory
+      );
+      const categorySearchItemsFiltered = [...categorySearchItems];
+      setCategorySearchItems(categorySearchItems);
+      setCategorySearchItemsFiltered(categorySearchItemsFiltered);
+    }
   };
 
   const handleRating = (ratingValue) => {
-    let ratingCategoryItems = [...categoryItems];
-    ratingCategoryItems = ratingCategoryItems.filter(
-      (item) => item.rating >= ratingValue
-    );
-    setCategoryItems(ratingCategoryItems);
-    setCategoryItemsFiltered(ratingCategoryItems);
+    if (isProductPage) {
+      let ratingCategoryItems = [...categoryItems];
+      ratingCategoryItems = ratingCategoryItems.filter(
+        (item) => item.rating >= ratingValue
+      );
+      setCategoryItems(ratingCategoryItems);
+      setCategoryItemsFiltered(ratingCategoryItems);
+    }
+
+    if (isSearchPage) {
+      let ratingCategorySearchItems = [...categorySearchItems];
+      ratingCategorySearchItems = ratingCategorySearchItems.filter(
+        (item) => item.rating >= ratingValue
+      );
+      setCategorySearchItems(ratingCategorySearchItems);
+      setCategorySearchItemsFiltered(ratingCategorySearchItems);
+    }
   };
 
   const handleFilerPriceRange = () => {
-    let priceRangeCategoryItems = [...categoryItems];
-    if (startPrice.length > 0 && endPrice.length === 0) {
-      priceRangeCategoryItems = priceRangeCategoryItems.filter(
-        (item) => item.price >= Number(startPrice)
-      );
-      setCategoryItems(priceRangeCategoryItems);
-      setCategoryItemsFiltered(priceRangeCategoryItems);
+    if (isProductPage) {
+      let priceRangeCategoryItems = [...categoryItems];
+      if (startPrice.length > 0 && endPrice.length === 0) {
+        priceRangeCategoryItems = priceRangeCategoryItems.filter(
+          (item) => item.price >= Number(startPrice)
+        );
+        setCategoryItems(priceRangeCategoryItems);
+        setCategoryItemsFiltered(priceRangeCategoryItems);
+      }
+      if (startPrice.length > 0 && endPrice.length > 0) {
+        priceRangeCategoryItems = priceRangeCategoryItems.filter(
+          (item) =>
+            item.price >= Number(startPrice) && item.price <= Number(endPrice)
+        );
+        setCategoryItems(priceRangeCategoryItems);
+        setCategoryItemsFiltered(priceRangeCategoryItems);
+      }
+      if (startPrice.length === 0 && endPrice.length > 0) {
+        priceRangeCategoryItems = priceRangeCategoryItems.filter(
+          (item) => item.price <= Number(endPrice)
+        );
+        setCategoryItems(priceRangeCategoryItems);
+        setCategoryItemsFiltered(priceRangeCategoryItems);
+      }
     }
-    if (startPrice.length > 0 && endPrice.length > 0) {
-      priceRangeCategoryItems = priceRangeCategoryItems.filter(
-        (item) =>
-          item.price >= Number(startPrice) && item.price <= Number(endPrice)
-      );
-      setCategoryItems(priceRangeCategoryItems);
-      setCategoryItemsFiltered(priceRangeCategoryItems);
-    }
-    if (startPrice.length === 0 && endPrice.length > 0) {
-      priceRangeCategoryItems = priceRangeCategoryItems.filter(
-        (item) => item.price <= Number(endPrice)
-      );
-      setCategoryItems(priceRangeCategoryItems);
-      setCategoryItemsFiltered(priceRangeCategoryItems);
+
+    if (isSearchPage) {
+      let priceRangeCategorySearchItems = [...categoryItems];
+      if (startPrice.length > 0 && endPrice.length === 0) {
+        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
+          (item) => item.price >= Number(startPrice)
+        );
+        setCategorySearchItems(priceRangeCategorySearchItems);
+        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
+      }
+      if (startPrice.length > 0 && endPrice.length > 0) {
+        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
+          (item) =>
+            item.price >= Number(startPrice) && item.price <= Number(endPrice)
+        );
+        setCategorySearchItems(priceRangeCategorySearchItems);
+        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
+      }
+      if (startPrice.length === 0 && endPrice.length > 0) {
+        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
+          (item) => item.price <= Number(endPrice)
+        );
+        setCategorySearchItems(priceRangeCategorySearchItems);
+        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
+      }
     }
   };
 
@@ -297,7 +383,7 @@ export default function ProductCategory() {
                 }}
                 placeholder="Từ"
                 size="small"
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               ></StyledTextField>
               <Typography fontSize="1.4rem">-</Typography>
               <StyledTextField
@@ -313,7 +399,7 @@ export default function ProductCategory() {
                 }}
                 placeholder="Đến"
                 size="small"
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               ></StyledTextField>
             </Box>
             <Button
@@ -326,7 +412,7 @@ export default function ProductCategory() {
                 "&:disabled": { cursor: "not-allowed" },
               }}
               onClick={handleFilerPriceRange}
-              disabled={categoryItems.length === 0}
+              disabled={filterDisabled}
             >
               Áp dụng
             </Button>
@@ -343,47 +429,57 @@ export default function ProductCategory() {
             >
               Đánh giá
             </Typography>
-            <StyledBox onClick={() => handleRating(fiveRating)}>
+            <StyledBox
+              onClick={() => !filterDisabled && handleRating(fiveRating)}
+            >
               <Rating
                 name="fiveRating"
                 defaultValue={fiveRating}
                 readOnly
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               />
             </StyledBox>
-            <StyledBox onClick={() => handleRating(fourRating)}>
+            <StyledBox
+              onClick={() => !filterDisabled && handleRating(fourRating)}
+            >
               <Rating
                 name="fourRating"
                 defaultValue={fourRating}
                 readOnly
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               />
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
-            <StyledBox onClick={() => handleRating(threeRating)}>
+            <StyledBox
+              onClick={() => !filterDisabled && handleRating(threeRating)}
+            >
               <Rating
                 name="threeRating"
                 defaultValue={threeRating}
                 readOnly
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               />
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
-            <StyledBox onClick={() => handleRating(twoRating)}>
+            <StyledBox
+              onClick={() => !filterDisabled && handleRating(twoRating)}
+            >
               <Rating
                 name="twoRating"
                 defaultValue={twoRating}
                 readOnly
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               />
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
-            <StyledBox onClick={() => handleRating(oneRating)}>
+            <StyledBox
+              onClick={() => !filterDisabled && handleRating(oneRating)}
+            >
               <Rating
                 name="oneRating"
                 defaultValue={oneRating}
                 readOnly
-                disabled={categoryItems.length === 0}
+                disabled={filterDisabled}
               />
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>

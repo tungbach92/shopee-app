@@ -242,4 +242,4 @@ app.post("/charge-card-off-session", async (request, response) => {
 });
 
 // Listen command
-exports.api = functions.https.onRequest(app);
+exports.api = functions.region("asia-southeast1").https.onRequest(app);
