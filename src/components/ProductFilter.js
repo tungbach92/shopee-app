@@ -117,21 +117,17 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
         <div
           data-name="filterPrice"
           onClick={() =>
-            ((isProductPage && categoryItemsFiltered.length !== 0) ||
-              (isSearchPage && categorySearchItemsFiltered.length !== 0)) &&
+            ((isProductPage && categoryItemsFiltered.length > 1) ||
+              (isSearchPage && categorySearchItemsFiltered.length > 1)) &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
           }
           tabIndex="0"
-          onBlur={() =>
-            setTimeout(() => {
-              setIsFilterPriceShow(false);
-            }, 200)
-          }
+          onBlur={() => setIsFilterPriceShow(false)}
           className={
-            (isProductPage && categoryItemsFiltered.length !== 0) ||
-            (isSearchPage && categorySearchItemsFiltered.length !== 0)
+            (isProductPage && categoryItemsFiltered.length > 1) ||
+            (isSearchPage && categorySearchItemsFiltered.length > 1)
               ? "select-input"
               : " select-input--disabled"
           }
@@ -175,9 +171,8 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
                 data-value="priceAsc"
                 onClick={(e) => {
                   handleClick(e);
-                  setTimeout(() => {
-                    setIsFilterPriceShow(!isFilterPriceShow);
-                  }, 200);
+
+                  setIsFilterPriceShow(!isFilterPriceShow);
                 }}
                 className={classNames("app__input-item", "app__price-asc", {
                   "app__input-item--active": filterPrice === "priceAsc",
@@ -197,9 +192,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
                 data-value="priceDesc"
                 onClick={(e) => {
                   handleClick(e);
-                  setTimeout(() => {
-                    setIsFilterPriceShow(!isFilterPriceShow);
-                  }, 200);
+                  setIsFilterPriceShow(!isFilterPriceShow);
                 }}
                 className={classNames("app__input-item", "app__price-desc", {
                   "app__input-item--active": filterPrice === "priceDesc",
