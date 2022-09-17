@@ -68,7 +68,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
   };
 
   return (
-    <Box sx={{ top: isSearchPage && "8.5rem" }} className="app__filter">
+    <Box className="app__filter">
       <div className="app__filter-label">Sắp xếp theo</div>
       <div className="app__filter-list">
         {/* <!-- active: btn--active --> */}

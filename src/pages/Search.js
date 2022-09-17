@@ -9,9 +9,7 @@ const Search = () => {
   const value = searchParams.get("keyword");
 
   useEffect(() => {
-    if (searchInput) {
-      setSearchParams({ keyword: searchInput }, { replace: true });
-    }
+    setSearchParams({ keyword: searchInput }, { replace: true });
   }, [searchInput, setSearchParams]);
 
   return (

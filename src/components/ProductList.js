@@ -8,6 +8,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
   let {
+    setSearchItems,
     setCategoryItems,
     setCategoryItemsFiltered,
     getCheckoutItemsFromStorage,
@@ -34,6 +35,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
 
   useEffect(() => {
     if (isProductPage) {
+      setSearchItems([]);
       setCategorySearchItems([]);
       setCategorySearchItemsFiltered([]);
     }
@@ -55,6 +57,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     setCheckoutItems,
     setCategorySearchItemsFiltered,
     setCategorySearchItems,
+    setSearchItems,
   ]);
 
   const getRenderItems = () => {

@@ -25,7 +25,7 @@ const ProductContent = ({ isProductPage, isSearchPage }) => {
         sm={2}
         sx={{
           position: { xs: "sticky", sm: "unset" },
-          top: { xs: "8.5rem", sm: "unset" },
+          top: { xs: "6.5rem", sm: "unset" },
           zIndex: { xs: "3", sm: "0" },
           padding: { xs: "1rem 0", sm: "0" },
         }}
