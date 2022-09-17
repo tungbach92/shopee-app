@@ -23,8 +23,7 @@ const Header = ({
   isRegisterPage,
   headerText,
 }) => {
-  const ref = useRef();
-  let inputSearchEle = null;
+  const wrapperRef = useRef();
   const navigate = useNavigate();
   const [recommendSearch, setRecommendSearch] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
@@ -84,7 +83,6 @@ const Header = ({
   const handleHistoryDelete = (item) => {
     deleteFromSearchHistory(item);
     deleteFromSuggestions(item);
-    inputSearchEle.focus();
   };
 
   const handleSearchIconClick = (text) => {
@@ -105,11 +103,6 @@ const Header = ({
     }
   };
 
-  const handleSearchBlur = () => {
-    ref.current = setTimeout(() => {
-      setIsHistory(false);
-    }, 200);
-  };
   useEffect(() => {
     if (orderItems) {
       function createRecommendedSearch() {
@@ -133,16 +126,23 @@ const Header = ({
   }, [orderItems]);
 
   useEffect(() => {
-    return () => {
-      clearTimeout(ref.current);
-    };
-  });
-
-  useEffect(() => {
     if (xsBreakpointMatches) {
       setIsHistory(false);
     }
   }, [xsBreakpointMatches]);
+
+  const onMouseDown = (e) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      setIsHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+    };
+  }, []);
 
   return (
     <header
@@ -380,14 +380,13 @@ const Header = ({
             {!isCheckoutPage ? (
               !isCartPage ? (
                 <>
-                  <div className="header__search-content">
+                  <div ref={wrapperRef} className="header__search-content">
                     <div className="header__search-wrapper">
                       <input
                         type="text"
-                        ref={(element) => (inputSearchEle = element)}
                         onChange={handleInputChange}
                         onClick={handleInputClick}
-                        onBlur={handleSearchBlur}
+                        // onBlur={handleSearchBlur}
                         onKeyUp={inputOnKeyUp}
                         className="header__search-input"
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
@@ -462,6 +461,7 @@ const Header = ({
                 </>
               ) : (
                 <div
+                  ref={wrapperRef}
                   className={classNames("header__search-content", {
                     "header__search-content--cart":
                       isCartPage && !xsBreakpointMatches,
@@ -471,7 +471,6 @@ const Header = ({
                     <input
                       type="text"
                       onChange={handleInputChange}
-                      onBlur={handleSearchBlur}
                       onClick={handleInputClick}
                       onKeyUp={inputOnKeyUp}
                       className="header__search-input"
