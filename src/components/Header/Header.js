@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import qrCodeNavImg from "../../img/qr-code-home.png";
 import appShopeeImg from "../../img/app-shopee.png";
@@ -23,20 +23,6 @@ const Header = ({
   isRegisterPage,
   headerText,
 }) => {
-  const ref = useRef();
-  let inputSearchEle = null;
-  const navigate = useNavigate();
-  const [recommendSearch, setRecommendSearch] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [isHistory, setIsHistory] = useState(false);
-  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  const location = useLocation();
-
-  function getUnique(items) {
-    let uniqueItems = new Set(items);
-    return [...uniqueItems];
-  }
-
   const {
     user,
     userAvatar,
@@ -51,11 +37,23 @@ const Header = ({
     deleteFromSearchHistory,
   } = useContext(ProductContext);
 
+  let inputSearchEle = null;
+  const closeRef = useRef(null);
+  const ref = useRef(null);
+  const navigate = useNavigate();
+  const [recommendSearch, setRecommendSearch] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
+  const location = useLocation();
+
+  function getUnique(items) {
+    let uniqueItems = new Set(items);
+    return [...uniqueItems];
+  }
+
   const handleInputClick = (e) => {
+    setSuggestions(searchHistory);
     const text = e.target.value;
-    if (!xsBreakpointMatches) {
-      setIsHistory(!isHistory);
-    }
     changeSuggestionsByInputText(text);
   };
 
@@ -69,7 +67,7 @@ const Header = ({
     const mathSuggestions = searchHistory.filter((item) => {
       return item.trim().toLowerCase().includes(text.trim().toLowerCase());
     });
-    if (text === "") {
+    if (text.length === 0) {
       setSuggestions(searchHistory);
     } else {
       setSuggestions(mathSuggestions);
@@ -84,14 +82,15 @@ const Header = ({
   const handleHistoryDelete = (item) => {
     deleteFromSearchHistory(item);
     deleteFromSuggestions(item);
-    inputSearchEle.focus();
+    // const text = inputSearchEle.value;
+    // changeSuggestionsByInputText(text);
   };
 
   const handleSearchIconClick = (text) => {
     filterItemsBySearch(text);
     addToSearchHistory(text);
     setSearchInput(text);
-    setIsHistory(false);
+    setSuggestions([]);
     if (!isSearchPage) {
       navigate("/search");
     }
@@ -106,10 +105,11 @@ const Header = ({
   };
 
   const handleSearchBlur = () => {
-    ref.current = setTimeout(() => {
-      setIsHistory(false);
-    }, 200);
+    // setTimeout(() => {
+    //   setSuggestions([]);
+    // }, 200);
   };
+
   useEffect(() => {
     if (orderItems) {
       function createRecommendedSearch() {
@@ -133,19 +133,28 @@ const Header = ({
   }, [orderItems]);
 
   useEffect(() => {
-    return () => {
-      clearTimeout(ref.current);
-    };
-  });
-
-  useEffect(() => {
     if (xsBreakpointMatches) {
-      setIsHistory(false);
+      setSuggestions([]);
     }
   }, [xsBreakpointMatches]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      console.log(ref);
+      console.log(closeRef);
+      if (closeRef.current && !closeRef.current.contains(event.target)) {
+        setSuggestions([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
   return (
     <header
+      ref={ref}
       className={classNames(
         "header",
         {
@@ -384,11 +393,11 @@ const Header = ({
                     <div className="header__search-wrapper">
                       <input
                         type="text"
-                        ref={(element) => (inputSearchEle = element)}
                         onChange={handleInputChange}
                         onClick={handleInputClick}
                         onBlur={handleSearchBlur}
                         onKeyUp={inputOnKeyUp}
+                        onFocus={handleInputClick}
                         className="header__search-input"
                         placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
                         value={searchInput}
@@ -399,7 +408,7 @@ const Header = ({
                       >
                         <i className="bi bi-search"></i>
                       </div>
-                      {isHistory && (
+                      {suggestions.length > 0 && !xsBreakpointMatches && (
                         <ul className="header__history-list">
                           <li className="header__history-title">
                             Lịch Sử Tìm Kiếm
@@ -436,6 +445,7 @@ const Header = ({
                                 }}
                               >
                                 <Close
+                                  ref={closeRef}
                                   onClick={() => handleHistoryDelete(item)}
                                 ></Close>
                               </Box>
@@ -484,7 +494,7 @@ const Header = ({
                     >
                       <i className="bi bi-search"></i>
                     </div>
-                    {isHistory && (
+                    {suggestions.length > 0 && !xsBreakpointMatches && (
                       <ul className="header__history-list">
                         <li className="header__history-title">
                           Lịch Sử Tìm Kiếm
@@ -521,6 +531,7 @@ const Header = ({
                               }}
                             >
                               <Close
+                                ref={closeRef}
                                 onClick={() => handleHistoryDelete(item)}
                               ></Close>
                             </Box>
