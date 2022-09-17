@@ -12,6 +12,7 @@ import PopupModal from "../components/PopupModal";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { ClipLoader } from "react-spinners";
 
 export default function CartProduct(props) {
   const navigate = useNavigate();
@@ -947,7 +948,11 @@ export default function CartProduct(props) {
         </div>
       )}
 
-      {cartItemsLoading && <div className="grid cart-loading">Loading...</div>}
+      {cartItemsLoading && (
+        <div className="grid cart-loading">
+          <ClipLoader color="var(--primary-color)" />
+        </div>
+      )}
 
       {isAddCartPopup && (
         <AddCartModal

@@ -5,6 +5,7 @@ import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import Pagination from "./Pagination";
 import MiniPageControl from "./MiniPageControl";
+import { ClipLoader } from "react-spinners";
 
 const AccountOrder = () => {
   const { orderItems, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =
@@ -266,7 +267,9 @@ const AccountOrder = () => {
         )}
 
         {orderItems === null && (
-          <div className="user-order__order-loading">Loading...</div>
+          <div className="user-order__order-loading">
+            <ClipLoader color="var(--primary-color)" />
+          </div>
         )}
       </div>
       <Pagination

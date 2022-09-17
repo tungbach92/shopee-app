@@ -3,6 +3,7 @@ import { ProductContext } from "../context";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
+import { ClipLoader } from "react-spinners";
 const AccountPayment = () => {
   const {
     paymentMethodList,
@@ -107,7 +108,9 @@ const AccountPayment = () => {
           </div>
         )}
         {paymentMethodList === null && (
-          <div className="payment-profile__payment-loading">Loading...</div>
+          <div className="payment-profile__payment-loading">
+            <ClipLoader color="var(--primary-color)" />
+          </div>
         )}
       </div>
     </>

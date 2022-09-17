@@ -4,6 +4,7 @@ import useModal from "../hooks/useModal";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
 import PopupModal from "./PopupModal";
+import { ClipLoader } from "react-spinners";
 
 const AccountAddress = () => {
   const {
@@ -188,7 +189,9 @@ const AccountAddress = () => {
           </div>
         )}
         {shipInfos === null && (
-          <div className="address-profile__address--loading">Loading...</div>
+          <div className="address-profile__address--loading">
+            <ClipLoader color="var(--primary-color)" />
+          </div>
         )}
       </div>
       {isPopupShowing && (

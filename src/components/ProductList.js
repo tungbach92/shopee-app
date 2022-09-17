@@ -4,6 +4,7 @@ import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { ClipLoader } from "react-spinners";
 function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
   // const _isMounted = useRef(true);
   const context = useContext(ProductContext);
@@ -108,7 +109,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
           fontWeight: "600",
         }}
       >
-        Loading...
+        <ClipLoader color="var(--primary-color)" />
       </Box>
     );
   } else if (

@@ -16,6 +16,7 @@ import { db } from "../firebase";
 import "firebase/firestore";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
+import { ClipLoader } from "react-spinners";
 
 export default function CheckoutProduct({ isCheckoutPage }) {
   const stripe = useStripe();
@@ -698,7 +699,9 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             </div>
           ))}
           {loading && (
-            <div className="checkout-product__item-loading">Loading...</div>
+            <div className="checkout-product__item-loading">
+              <ClipLoader color="var(--primary-color)" />
+            </div>
           )}
           {checkoutItems?.length === 0 && !loading && <ErrorModal></ErrorModal>}
         </ul>

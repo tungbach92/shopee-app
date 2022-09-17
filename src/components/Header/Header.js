@@ -12,6 +12,7 @@ import { ProductContext } from "../../context";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack, Close } from "@mui/icons-material";
+import { ClipLoader } from "react-spinners";
 
 const Header = ({
   isProductPage,
@@ -280,7 +281,12 @@ const Header = ({
                     Đăng nhập
                   </Link>
                 </div>
-                {/* <div className="header__nav-loading">Loading...</div> */}
+                {/* {loading && (
+                  <div className="header__nav-loading">
+                    <ClipLoader color="white" />
+                  </div>
+                )} */}
+                {/* // TODO display loading during get user */}
                 <div className="header__nav-login-link">
                   {userAvatar && !loading ? (
                     <img

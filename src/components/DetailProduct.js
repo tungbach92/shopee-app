@@ -8,6 +8,7 @@ import ImageGallery from "react-image-gallery";
 import Picker from "./Picker";
 import { NumericFormat } from "react-number-format";
 import { Box, Rating } from "@mui/material";
+import { ClipLoader } from "react-spinners";
 
 export default function DetailProduct() {
   const { productId } = useParams();
@@ -162,7 +163,7 @@ export default function DetailProduct() {
           fontWeight: "600",
         }}
       >
-        Loading...
+        <ClipLoader color="var(--primary-color)" />
       </Box>
     );
   } else

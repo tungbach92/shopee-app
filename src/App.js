@@ -17,6 +17,8 @@ import Search from "./pages/Search";
 import Admin from "./pages/Admin";
 import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
+import { ClipLoader } from "react-spinners";
+
 //Lazy load product page
 const Product = React.lazy(() => import("./pages/Product"));
 const Cart = React.lazy(() => import("./pages/Cart"));
@@ -26,7 +28,13 @@ function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <Suspense fallback={<div className="app__no-product">Loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="app__no-product">
+              <ClipLoader color="var(--primary-color)" />
+            </div>
+          }
+        >
           <Routes>
             <Route path="/" element={<Product />}></Route>
             <Route path="/cart" element={<Cart />}></Route>
