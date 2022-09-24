@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { UNSAFE_NavigationContext as NavigationContext } from "react-router-dom";
@@ -30,8 +30,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
     setVoucher,
     checkoutItems,
     setCheckoutItems,
-    orderItems,
-    setOrderItems,
     setCartItems,
     getItemsPriceTotal,
     getShipPrice,
@@ -51,8 +49,7 @@ export default function CheckoutProduct({ isCheckoutPage }) {
     updateDefaultPaymentMethodIDToStripe,
     updateCustomerBillingAddress,
     getShipInfos,
-    loading,
-  } = useContext(ProductContext);
+  } = useProduct();
 
   const shipUnitList = useMemo(() => {
     return [
@@ -93,6 +90,7 @@ export default function CheckoutProduct({ isCheckoutPage }) {
   const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     name,
@@ -128,30 +126,13 @@ export default function CheckoutProduct({ isCheckoutPage }) {
     toggleAddressAdd,
   } = useModal();
 
-  // useEffect(() => {
-  //   //generate the special stripe secret which allow us to charge customer
-  //   const getClientSecret = async () => {
-  //     const response = await axios({
-  //       method: "POST",
-  //       url: `/payment/create?total=${getItemsPriceFinal(
-  //         checkoutItems,
-  //         shipUnit,
-  //         voucher
-  //       )}&paymentMethodID=${paymentMethodID}`, // sub currency usd-> cent *100
-  //     });
-  //     setClientSecret(response.data.clientSecret);
-  //   };
-  //   getClientSecret();
-  // }, [
-  //   checkoutItems,
-  //   customerID,
-  //   getItemsPriceFinal,
-  //   paymentMethodID,
-  //   shipUnit,
-  //   voucher,
-  // ]);
   useEffect(() => {
-    setCheckoutItemsFromFirebase();
+    const setCheckout = async () => {
+      setLoading(true);
+      await setCheckoutItemsFromFirebase();
+      setLoading(false);
+    };
+    setCheckout();
   }, [setCheckoutItemsFromFirebase]);
 
   //Get and set province and set districts and district depend on province
@@ -480,12 +461,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
     }
   };
 
-  useEffect(() => {
-    if (!orderItems) {
-      setOrderItems(orderItems);
-    }
-  }, [orderItems, setOrderItems]);
-
   const handleVoucherDelete = () => {
     setVoucher({});
   };
@@ -722,7 +697,7 @@ export default function CheckoutProduct({ isCheckoutPage }) {
               Đơn vị vận chuyển:
             </span>
 
-            {Object.keys(shipUnit).length <= 0 ? (
+            {Object.keys(shipUnit).length === 0 ? (
               <span className="checkout-product__transport-notchoose">
                 Chưa chọn đơn vị vận chuyển
               </span>

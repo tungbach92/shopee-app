@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import qrCodeNavImg from "../../img/qr-code-home.png";
 import appShopeeImg from "../../img/app-shopee.png";
@@ -8,40 +8,25 @@ import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ProductContext } from "../../context";
+import { useProduct } from "../../context";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack, Close } from "@mui/icons-material";
-import { ClipLoader } from "react-spinners";
+import useCheckPhotoURL from "../../hooks/useCheckPhotoURL";
 
 const Header = ({
   isProductPage,
   isCartPage,
   isCheckoutPage,
-  isAccountPage,
   isSearchPage,
   isLoginPage,
   isRegisterPage,
   headerText,
 }) => {
-  const wrapperRef = useRef();
-  const navigate = useNavigate();
-  const [recommendSearch, setRecommendSearch] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [isHistory, setIsHistory] = useState(false);
-  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  const location = useLocation();
-
-  function getUnique(items) {
-    let uniqueItems = new Set(items);
-    return [...uniqueItems];
-  }
-
   const {
     user,
-    userAvatar,
-    loading,
-    orderItems,
+    userLoading,
+    setUserLoading,
     filterItemsBySearch,
     addToSearchHistory,
     searchHistory,
@@ -49,7 +34,17 @@ const Header = ({
     setSearchInput,
     handleLogout,
     deleteFromSearchHistory,
-  } = useContext(ProductContext);
+  } = useProduct();
+
+  const wrapperRef = useRef();
+  const navigate = useNavigate();
+  const [suggestions, setSuggestions] = useState([]);
+  const [isHistory, setIsHistory] = useState(false);
+  const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
+  const location = useLocation();
+  const userAvatar = user?.photoURL;
+
+  useCheckPhotoURL(user);
 
   const handleInputClick = (e) => {
     const text = e.target.value;
@@ -103,28 +98,6 @@ const Header = ({
       handleSearchIconClick(event.target.value);
     }
   };
-
-  useEffect(() => {
-    if (orderItems) {
-      function createRecommendedSearch() {
-        let orderedCheckoutItems = [];
-        orderItems.forEach((orderItem) => {
-          // console.log(orderItem.checkoutItems);
-          orderedCheckoutItems = [
-            ...orderedCheckoutItems,
-            ...orderItem.data.basket,
-          ];
-        });
-        let allTags = [];
-        orderedCheckoutItems.forEach((item) => {
-          // allTags = [...allTags,...item.tags] //TODO: add tag to item and enable this
-        });
-        allTags = getUnique(allTags);
-        setRecommendSearch(allTags);
-      }
-      createRecommendedSearch();
-    }
-  }, [orderItems]);
 
   useEffect(() => {
     if (xsBreakpointMatches) {
@@ -268,27 +241,30 @@ const Header = ({
                     : "header__nav-item-right header__nav-item-right--reg"
                 }
                 onClick={(e) => {
-                  if (location.pathname !== "/user/account/profile") {
+                  if (user && location.pathname !== "/user/account/profile") {
                     navigate("/user/account/profile");
                   }
                 }}
               >
-                <div className="header__nav-reg">
-                  <Link to="/register" className="header__nav-login">
-                    Đăng ký
-                  </Link>
-                  <Link to="/login" className="header__nav-register">
-                    Đăng nhập
-                  </Link>
-                </div>
-                {/* {loading && (
+                {!user && !userLoading && (
+                  <div className="header__nav-reg">
+                    <Link to="/register" className="header__nav-login">
+                      Đăng ký
+                    </Link>
+                    <Link to="/login" className="header__nav-register">
+                      Đăng nhập
+                    </Link>
+                  </div>
+                )}
+
+                {/* {userLoading && (
                   <div className="header__nav-loading">
                     <ClipLoader color="white" />
                   </div>
                 )} */}
                 {/* // TODO display loading during get user */}
                 <div className="header__nav-login-link">
-                  {userAvatar && !loading ? (
+                  {user && userAvatar ? (
                     <img
                       src={userAvatar}
                       alt=""
@@ -346,9 +322,11 @@ const Header = ({
                     Đơn mua
                   </Link>
                   <div
-                    onClick={() => {
-                      handleLogout();
-                      navigate("/");
+                    onClick={async () => {
+                      setUserLoading(true);
+                      await handleLogout();
+                      setUserLoading(false);
+                      window.location.reload(false);
                     }}
                     className="header__user-item"
                   >
@@ -451,7 +429,8 @@ const Header = ({
                     </div>
 
                     <ul className="header__search-list">
-                      {recommendSearch.map((item) => (
+                      {/* list of recommends */}
+                      {[].map((item) => (
                         <li className="header__search-item">
                           <a href="# " className="header__item-link">
                             {item}

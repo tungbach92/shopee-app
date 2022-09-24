@@ -3788,6 +3788,7 @@ header {
   display: flex;
   flex-direction: column;
   width: 40rem;
+  max-width: 100%;
   min-height: 48rem;
   background: var(--white-color);
 }

@@ -264,6 +264,7 @@ PopupModal.propTypes = {
   defaultPaymentMethodID: PropTypes.string,
   isCardPayment: PropTypes.bool,
   succeeded: PropTypes.bool,
+  shipInfos: PropTypes.arrayOf(PropTypes.object),
 };
 
 PopupModal.defaultProps = {
@@ -297,4 +298,5 @@ PopupModal.defaultProps = {
   defaultPaymentMethodID: undefined,
   isCardPayment: false,
   succeeded: false,
+  shipInfos: null,
 };

@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import noCartImg from "../../img/no-cart.png";
-import { ProductContext } from "../../context";
+import { useProduct } from "../../context";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
@@ -9,7 +9,7 @@ import PopupModal from "../PopupModal";
 import PropTypes from "prop-types";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
-  const { cartItems, delCartItem } = useContext(ProductContext);
+  const { cartItems, delCartItem } = useProduct();
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
   const navigate = useNavigate();

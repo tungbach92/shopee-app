@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../context";
+import React, { useState, useEffect } from "react";
+import { useProduct } from "../context";
 import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
@@ -13,7 +13,7 @@ const StyledInput = styled("input", {
 }));
 
 function AccountPassword({ setEmail, email }) {
-  const { user } = useContext(ProductContext);
+  const { user } = useProduct();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -111,9 +111,6 @@ function AccountPassword({ setEmail, email }) {
     if (!confirmPassword) {
       setIsConfirmPasswordValid(false);
       errors = "Vui lòng nhập lại mật khẩu mới";
-    } else if (confirmPassword.length < 6) {
-      setIsConfirmPasswordValid(false);
-      errors = "Mật khẩu mới phải chứa ít nhất 6 ký tự";
     } else if (newPassword !== confirmPassword) {
       setIsConfirmPasswordValid(false);
       errors = "Mật khẩu mới không khớp nhau";

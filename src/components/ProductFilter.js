@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ProductContext } from "../context";
+import React, { useEffect, useState } from "react";
+import { useProduct } from "../context";
 import classNames from "classnames";
 import MiniPageControl from "./MiniPageControl";
 import PropTypes from "prop-types";
@@ -19,7 +19,7 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
     setFilterPrice,
     setCategorySearchItemsFiltered,
     categoryItemsFiltered,
-  } = useContext(ProductContext);
+  } = useProduct();
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
     isFilterPriceDescForXsResponsive,

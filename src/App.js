@@ -7,7 +7,6 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Detail from "./pages/Detail";
 import Error from "./pages/Error";
 import Account from "./pages/Account";
-import Checkout from "./pages/CheckOut";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { Elements } from "@stripe/react-stripe-js";
@@ -22,6 +21,7 @@ import { ClipLoader } from "react-spinners";
 //Lazy load product page
 const Product = React.lazy(() => import("./pages/Product"));
 const Cart = React.lazy(() => import("./pages/Cart"));
+const Checkout = React.lazy(() => import("./pages/CheckOut"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {

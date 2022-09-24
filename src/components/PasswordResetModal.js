@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { auth } from "../firebase";
 function PasswordResetModal(props) {
-  const { user } = useContext(ProductContext);
+  const { user } = useProduct();
   const { isPasswordResetShowing, togglePasswordReset, email, setEmail } =
     props;
   const [isEmailSent, setIsEmailSent] = useState(false);

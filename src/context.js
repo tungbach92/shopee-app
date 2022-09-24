@@ -1,13 +1,16 @@
-import React, { Component } from "react";
-import { auth, db, storage } from "./firebase";
+import React, { Component, useContext } from "react";
+import { auth, db } from "./firebase";
 import axios from "./axios";
 import visaImg from "./img/visa.png";
 import masterImg from "./img/master.png";
 import jcbImg from "./img/jcb.png";
 import expressImg from "./img/express.png";
 import _ from "lodash";
+
 export const ProductContext = React.createContext();
-export const ProductConsumer = ProductContext.Consumer;
+export function useProduct() {
+  return useContext(ProductContext);
+}
 
 export default class ProductProvider extends Component {
   state = {
@@ -18,7 +21,6 @@ export default class ProductProvider extends Component {
     searchItems: [], // search
     categorySearchItems: [],
     categorySearchItemsFiltered: [],
-    today: new Date(),
     defaultPageIndex: 1,
     bestSelling: 1000,
     category: "allProduct",
@@ -27,7 +29,6 @@ export default class ProductProvider extends Component {
     pageIndex: 1,
     pageSize: 10,
     pageTotal: 0,
-    cartNumb: 0,
     cartItems: [],
     checkoutItems: [],
     searchInput: "",
@@ -43,29 +44,90 @@ export default class ProductProvider extends Component {
       { code: "SALE100000", discount: "100000" },
     ],
     shipPriceProvince: [0, 0],
-    orderItems: null,
     user: null,
-    userAvatar: null,
     shipInfos: null,
     paymentMethodList: null,
     defaultPaymentMethodID: "",
     customerID: "",
-    loading: false,
+    productLoading: false,
+    userLoading: false,
     cartItemsLoading: false,
     authorized: null,
   }; // json server->fetch data to here and pass to value of Provider component
+  newestDays = 30;
+  oneDayinMs = 24 * 3600 * 1000;
+  sessionExpinSec = this.oneDayinMs / 1000;
+  currentTimeinMs = new Date().valueOf();
 
   componentDidMount() {
     this.getDataFireBase();
-    this.setUser(() => {
-      this.setOrderItems();
-      this.setUserAvatar(this.state.user.photoURL);
-      this.getShipInfos();
-      this.getCustomerIdFromFirebase();
-      this.setCartItemsFromFirebase();
-      this.setSearchHistoryFromFirebase();
+    //onAuthStateChanged Observer for only user's signed-in signed out state.
+    //onIdTokenChanged.check Observer trigger if signed-in signed out, firebase auto changes id token
+    this.unSubcribe = auth.onIdTokenChanged((authUser) => {
+      this.setUserLoading(true);
+      if (authUser) {
+        //user will log in or logged in
+        this.setState({ user: authUser }, () => {
+          this.checkFirebaseIdTokenAuthTime();
+          this.setUserLoading(false);
+          this.getShipInfos();
+          this.getCustomerIdFromFirebase();
+          this.setCartItemsFromFirebase();
+          this.setSearchHistoryFromFirebase();
+        });
+        this.setAuthorized(true);
+        // cartItems = this.getCartItemsFromFirebase(authUser);
+      } else {
+        //user logged out
+        this.setState({ user: null });
+        this.setUserLoading(false);
+        this.setAuthorized(false);
+      }
     });
   }
+
+  componentWillUnmount() {
+    this.unSubcribe();
+  }
+
+  componentDidUpdate() {}
+
+  checkFirebaseIdTokenAuthTime = async () => {
+    try {
+      //revoke id token if expired
+      // const idToken = await auth.currentUser.getIdToken(
+      //   /* forceRefresh */ false
+      // );
+      const idToken = this.state.user._lat;
+      const result = await axios({
+        method: "POST",
+        url: "/verify-id-token-by-firebase",
+        data: { idToken },
+      });
+      if (result.data.revoked) {
+        // never be called cause idToken auto refresh after 1 hour by fỉrebase sdk unless manual refresh
+        alert("Id Token refreshed. Vui lòng đăng nhập lại!");
+        this.handleLogout();
+      }
+      if (result.data.invalid) {
+        alert("Token's invalid. Vui lòng đăng nhập lại!");
+        this.handleLogout();
+      }
+      if (result.data.succeeded) {
+        const idToken = result.data.idToken;
+        const authTime = idToken.auth_time; //auth time stay the same after idToken revoked
+        if (
+          Math.floor(this.currentTimeinMs / 1000) - authTime >=
+          this.sessionExpinSec
+        ) {
+          alert(`Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!`);
+          this.handleLogout();
+        }
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   setCategorySearchItems = (categorySearchItems) => {
     this.setState({ categorySearchItems });
@@ -75,8 +137,12 @@ export default class ProductProvider extends Component {
     this.setState({ authorized });
   };
 
-  setLoading = (loading) => {
-    this.setState({ loading });
+  setProductLoading = (productLoading) => {
+    this.setState({ productLoading });
+  };
+
+  setUserLoading = (userLoading) => {
+    this.setState({ userLoading });
   };
 
   setCategory = (category) => {
@@ -342,22 +408,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setUserAvatar = (userAvatar) => {
-    const user = this.state.user;
-    const path = `users/${user.uid}/avatar`;
-    const storageRef = storage.ref(path);
-
-    storageRef.getDownloadURL().catch((error) => {
-      // 404
-      user.updateProfile({
-        photoURL: null,
-      });
-      this.setState({ userAvatar: null });
-      return;
-    });
-    this.setState({ userAvatar });
-  };
-
   setSearchInput = (searchInput) => {
     this.setState({ searchInput });
   };
@@ -410,51 +460,6 @@ export default class ProductProvider extends Component {
     return result;
   };
 
-  setUser = (cb) => {
-    auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        //user will log in or logged in
-        this.setState({ user: authUser }, cb);
-        this.setAuthorized(true);
-        // cartItems = this.getCartItemsFromFirebase(authUser);
-      } else {
-        //user logged out
-        this.setState({ user: null });
-        this.setAuthorized(false);
-      }
-    });
-  };
-
-  setOrderItems = () => {
-    let { user } = this.state;
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("orders")
-        .orderBy("created", "desc")
-        //using onsnapshot for get all updated documents in the collection
-        .onSnapshot(
-          (snapshot) => {
-            this.setState({
-              orderItems: snapshot.docs.map((doc) => ({
-                id: doc.id,
-                data: doc.data(),
-              })),
-            });
-          },
-          (err) => {
-            console.log(err);
-          }
-        );
-    } else {
-      this.setState({ orderItems: [] });
-    }
-  };
-
-  setCartNumb = (cartNumb) => {
-    this.setState({ cartNumb });
-  };
-
   setCheckoutItems = (checkoutItems) => {
     this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
   };
@@ -500,7 +505,7 @@ export default class ProductProvider extends Component {
   getDataFireBase = async () => {
     try {
       let items = [];
-      this.setLoading(true);
+      this.setProductLoading(true);
       db.collection("products").onSnapshot(
         (querySnapshot) => {
           items = querySnapshot.docs.map((doc) => ({
@@ -508,7 +513,7 @@ export default class ProductProvider extends Component {
             id: doc.id,
           }));
           this.setState({ items });
-          this.setLoading(false);
+          this.setProductLoading(false);
 
           // onError((err) => alert(err));
         }
@@ -516,7 +521,7 @@ export default class ProductProvider extends Component {
       );
     } catch (error) {
       alert(error);
-      this.setLoading(false);
+      this.setProductLoading(false);
     }
   };
 
@@ -710,7 +715,6 @@ export default class ProductProvider extends Component {
     this.setState(
       {
         cartItems: cartItemsUpdated,
-        cartNumb: this.calcCartNumb(cartItemsUpdated),
       },
       callback
     );
@@ -725,7 +729,6 @@ export default class ProductProvider extends Component {
     this.setState(
       {
         cartItems: newCartItems,
-        cartNumb: this.calcCartNumb(cartItems),
       },
       () => {
         this.saveCartItemsToStorage();
@@ -752,7 +755,6 @@ export default class ProductProvider extends Component {
     this.setState(
       {
         cartItems,
-        cartNumb: this.calcCartNumb(cartItems),
       },
       () => {
         if (cartItems.length === 0) {
@@ -770,8 +772,6 @@ export default class ProductProvider extends Component {
       (item) => item.id === id && item.variation === variation
     );
     item.amount = amount;
-    const cartNumb = this.calcCartNumb(cartItems);
-    this.setCartNumb(cartNumb);
     this.setCartItems(cartItems);
   };
 
@@ -781,8 +781,6 @@ export default class ProductProvider extends Component {
       (item) => item.id === id && item.variation === variation
     );
     cartItems[indexOfItem].amount++;
-    const cartNumb = this.calcCartNumb(cartItems);
-    this.setCartNumb(cartNumb);
     this.setCartItems(cartItems);
   };
 
@@ -792,8 +790,6 @@ export default class ProductProvider extends Component {
       (item) => item.id === id && item.variation === variation
     );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
-    const cartNumb = this.calcCartNumb(cartItems);
-    this.setCartNumb(cartNumb);
     this.setCartItems(cartItems);
   };
 
@@ -906,13 +902,11 @@ export default class ProductProvider extends Component {
     }
 
     // Date Filter
-    let newestDays = 30;
-    let oneDayinMs = 24 * 3600 * 1000;
     if (filter === "date") {
       filterCommonItems = filterCommonItems.filter(
         (item) =>
-          Math.floor(new Date(item.date).valueOf() / oneDayinMs) >
-          Math.floor(new Date().valueOf() / oneDayinMs) - newestDays
+          Math.floor(new Date(item.date).valueOf() / this.oneDayinMs) >
+          Math.floor(this.currentTimeinMs / this.oneDayinMs) - this.newestDays
       );
     }
 
@@ -1056,14 +1050,12 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setCheckoutItemsFromFirebase = () => {
+  setCheckoutItemsFromFirebase = async () => {
     let checkoutItems = [];
     const { user } = this.state;
-    this.setLoading(true);
     if (this.getCheckoutItemsFromStorage().length > 0) {
       checkoutItems = this.getCheckoutItemsFromStorage();
       this.setCheckoutItems(checkoutItems);
-      this.setLoading(false);
     } else {
       db.collection("users")
         .doc(user?.uid)
@@ -1075,11 +1067,9 @@ export default class ProductProvider extends Component {
             checkoutItems = doc.data().basket;
           }
           this.setCheckoutItems(checkoutItems);
-          this.setLoading(false);
         })
         .catch((err) => {
           alert(err);
-          this.setLoading(false);
         });
     }
   };
@@ -1094,94 +1084,89 @@ export default class ProductProvider extends Component {
       this.setCheckoutItems([]);
       this.setSearchInput("");
       this.setState({ searchHistory: [] }, this.saveSearchHistoryToStorage);
-      this.setOrderItems();
       this.setPaymentMethodList([]);
       this.setDefaultPaymentMethodID("");
       this.setShipInfos([]);
       this.setCustomerID("");
-      auth.signOut();
+      await auth.signOut();
     }
   };
 
-  // const handlePhoneChange = (e) => {
-  //   e.target.value = e.target.value
-  //     .replace(/[^0-9.]/g, "")
-  //     .replace(/(\..*)\./g, "$1");
-  //   setPhone(e.target.value);
-  // };
+  signUp = () => {};
+
+  signIn = () => {};
 
   render() {
+    const value = {
+      ...this.state,
+      handleClick: this.handleClick,
+      filterItemsBySearch: this.filterItemsBySearch,
+      addToSearchHistory: this.addToSearchHistory,
+      changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
+      changeCartItemsVariation: this.changeCartItemsVariation,
+      changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
+      delCartItem: this.delCartItem,
+      delCartItems: this.delCartItems,
+      saveCartItemsToStorage: this.saveCartItemsToStorage,
+      saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
+      setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
+      setCustomerInfo: this.setCustomerInfo,
+      setVoucher: this.setVoucher,
+      setShipPriceProvince: this.setShipPriceProvince,
+      setCategoryItems: this.setCategoryItems,
+      setCategoryItemsFiltered: this.setCategoryItemsFiltered,
+      setPageIndex: this.setPageIndex,
+      setPageTotal: this.setPageTotal,
+      setCartItems: this.setCartItems,
+      calcCartNumb: this.calcCartNumb,
+      getCartItemsFromStorage: this.getCartItemsFromStorage,
+      setCartNumb: this.setCartNumb,
+      getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
+      setCheckoutItems: this.setCheckoutItems,
+      getItemsPriceTotal: this.getItemsPriceTotal,
+      getItemsTotal: this.getItemsTotal,
+      getShipPrice: this.getShipPrice,
+      getSaved: this.getSaved,
+      getItemsPriceFinal: this.getItemsPriceFinal,
+      getDataFireBase: this.getDataFireBase,
+      saveCartItemsToFirebase: this.saveCartItemsToFirebase,
+      setCartItemsFromFirebase: this.setCartItemsFromFirebase,
+      saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
+      setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
+      setSearchItems: this.setSearchItems,
+      setCategorySearchItems: this.setCategorySearchItems,
+      setCategorySearchItemsFiltered: this.setCategorySearchItemsFiltered,
+      setSearchInput: this.setSearchInput,
+      setShipInfos: this.setShipInfos,
+      updateShipInfoToFirebase: this.updateShipInfoToFirebase,
+      updateCustomerIdToFirebase: this.updateCustomerIdToFirebase,
+      setPaymentMethodList: this.setPaymentMethodList,
+      getPaymentMethodList: this.getPaymentMethodList,
+      updateDefaultPaymentMethodIDToStripe:
+        this.updateDefaultPaymentMethodIDToStripe,
+      getCardImgByBrand: this.getCardImgByBrand,
+      detachPaymentMethod: this.detachPaymentMethod,
+      updateCustomerBillingAddress: this.updateCustomerBillingAddress,
+      setOrderPageTotal: this.setOrderPageTotal,
+      setOrderPageIndex: this.setOrderPageIndex,
+      pageTotalCalc: this.pageTotalCalc,
+      setPageSize: this.setPageSize,
+      setFilter: this.setFilter,
+      setFilterPrice: this.setFilterPrice,
+      setCategory: this.setCategory,
+      setProductLoading: this.setProductLoading,
+      setCustomerID: this.setCustomerID,
+      setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
+      setAuthorized: this.setAuthorized,
+      getShipInfos: this.getShipInfos,
+      handleLogout: this.handleLogout,
+      deleteFromSearchHistory: this.deleteFromSearchHistory,
+      signIn: this.signIn,
+      signUp: this.signUp,
+      setUserLoading: this.setUserLoading,
+    };
     return (
-      <ProductContext.Provider
-        value={{
-          ...this.state,
-          setUser: this.setUser,
-          handleClick: this.handleClick,
-          filterItemsBySearch: this.filterItemsBySearch,
-          addToSearchHistory: this.addToSearchHistory,
-          changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
-          changeCartItemsVariation: this.changeCartItemsVariation,
-          changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
-          delCartItem: this.delCartItem,
-          delCartItems: this.delCartItems,
-          saveCartItemsToStorage: this.saveCartItemsToStorage,
-          saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
-          setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
-          setCustomerInfo: this.setCustomerInfo,
-          setVoucher: this.setVoucher,
-          setShipPriceProvince: this.setShipPriceProvince,
-          setCategoryItems: this.setCategoryItems,
-          setCategoryItemsFiltered: this.setCategoryItemsFiltered,
-          setPageIndex: this.setPageIndex,
-          setPageTotal: this.setPageTotal,
-          setCartItems: this.setCartItems,
-          calcCartNumb: this.calcCartNumb,
-          getCartItemsFromStorage: this.getCartItemsFromStorage,
-          setCartNumb: this.setCartNumb,
-          getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
-          setCheckoutItems: this.setCheckoutItems,
-          setOrderItems: this.setOrderItems,
-          getItemsPriceTotal: this.getItemsPriceTotal,
-          getItemsTotal: this.getItemsTotal,
-          getShipPrice: this.getShipPrice,
-          getSaved: this.getSaved,
-          getItemsPriceFinal: this.getItemsPriceFinal,
-          getDataFireBase: this.getDataFireBase,
-          saveCartItemsToFirebase: this.saveCartItemsToFirebase,
-          setCartItemsFromFirebase: this.setCartItemsFromFirebase,
-          saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
-          setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
-          setSearchItems: this.setSearchItems,
-          setCategorySearchItems: this.setCategorySearchItems,
-          setCategorySearchItemsFiltered: this.setCategorySearchItemsFiltered,
-          setSearchInput: this.setSearchInput,
-          setUserAvatar: this.setUserAvatar,
-          setShipInfos: this.setShipInfos,
-          updateShipInfoToFirebase: this.updateShipInfoToFirebase,
-          updateCustomerIdToFirebase: this.updateCustomerIdToFirebase,
-          setPaymentMethodList: this.setPaymentMethodList,
-          getPaymentMethodList: this.getPaymentMethodList,
-          updateDefaultPaymentMethodIDToStripe:
-            this.updateDefaultPaymentMethodIDToStripe,
-          getCardImgByBrand: this.getCardImgByBrand,
-          detachPaymentMethod: this.detachPaymentMethod,
-          updateCustomerBillingAddress: this.updateCustomerBillingAddress,
-          setOrderPageTotal: this.setOrderPageTotal,
-          setOrderPageIndex: this.setOrderPageIndex,
-          pageTotalCalc: this.pageTotalCalc,
-          setPageSize: this.setPageSize,
-          setFilter: this.setFilter,
-          setFilterPrice: this.setFilterPrice,
-          setCategory: this.setCategory,
-          setLoading: this.setLoading,
-          setCustomerID: this.setCustomerID,
-          setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
-          setAuthorized: this.setAuthorized,
-          getShipInfos: this.getShipInfos,
-          handleLogout: this.handleLogout,
-          deleteFromSearchHistory: this.deleteFromSearchHistory,
-        }}
-      >
+      <ProductContext.Provider value={value}>
         {this.props.children}
       </ProductContext.Provider>
     );

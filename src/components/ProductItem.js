@@ -1,15 +1,15 @@
 import classNames from "classnames";
-import React, { useContext } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import { NumericFormat } from "react-number-format";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
 const ProductItem = function ({ item, similarDisPlay }) {
-  const { user, cartItems, handleClick } = useContext(ProductContext);
+  const { user, cartItems, handleClick } = useProduct();
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();

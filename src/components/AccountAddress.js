@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { ProductContext } from "../context";
+import React, { useState } from "react";
+import { useProduct } from "../context";
 import useModal from "../hooks/useModal";
 import useAddress from "../hooks/useAddress";
 import AddressModal from "./AddressModal";
@@ -12,7 +12,7 @@ const AccountAddress = () => {
     setShipInfos,
     updateShipInfoToFirebase,
     updateCustomerBillingAddress,
-  } = useContext(ProductContext);
+  } = useProduct();
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();

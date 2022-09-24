@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { ProductContext } from "../context";
+import React, { useState } from "react";
+import { useProduct } from "../context";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 import CardInfoModal from "./CardInfoModal";
@@ -11,7 +11,7 @@ const AccountPayment = () => {
     updateDefaultPaymentMethodIDToStripe,
     getCardImgByBrand,
     detachPaymentMethod,
-  } = useContext(ProductContext);
+  } = useProduct();
   const [paymentMethodID, setPaymentMethodID] = useState();
   const { isPopupShowing, togglePopup, isCardInfoShowing, toggleCardInfo } =
     useModal();

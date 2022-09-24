@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { ProductContext } from "../context";
+import React from "react";
+import { useProduct } from "../context";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -22,7 +22,7 @@ const Pagination = ({
     similarItems,
     setPageTotal,
     pageTotalCalc,
-  } = useContext(ProductContext);
+  } = useProduct();
   const productPageIndex = 1;
   const similarPageIndex = 1;
   const searchPageIndex = 1;

@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import Header from "../components/Header/Header";
 import CheckoutProduct from "../components/CheckoutProduct";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { Navigate } from "react-router";
 
 export default function Checkout() {
-  const { authorized } = useContext(ProductContext);
+  const { authorized } = useProduct();
   if (authorized !== null) {
     if (!authorized) {
       return <Navigate to="/login"></Navigate>;

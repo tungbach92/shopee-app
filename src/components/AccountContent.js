@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../context";
+import React, { useState, useEffect } from "react";
+import { useProduct } from "../context";
 import { db, storage } from "../firebase";
 import { Link, Route, Navigate, NavLink, Routes } from "react-router-dom";
 import AccountEmail from "./AccountEmail";
@@ -12,9 +12,8 @@ import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
 const AccountContent = () => {
-  const { user, userAvatar, setUserAvatar, loading } =
-    useContext(ProductContext);
-  const [userName, setUsetName] = useState("");
+  const { user } = useProduct();
+  const [userName, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -26,16 +25,16 @@ const AccountContent = () => {
   const [isUserUpdateFailed, setIsUserUpdateFailed] = useState(false);
   const [isImageUploadFailed, setIsImageUploadFailed] = useState(false);
   const { isPopupShowing, togglePopup } = useModal();
+  const userAvatar = user?.photoURL;
 
   // set user info from db
   useEffect(() => {
     if (user) {
       const userName = user.displayName;
       const email = user.email;
-      const previewImage = userAvatar;
-      setUsetName(userName ? userName : "");
+      setUserName(userName ? userName : "");
       setEmail(email ? email : "");
-      setPreviewImage(previewImage);
+      setPreviewImage(userAvatar);
 
       db.collection("users")
         .doc(user?.uid)
@@ -124,7 +123,6 @@ const AccountContent = () => {
               user.updateProfile({
                 photoURL: downloadURL,
               });
-              setUserAvatar(downloadURL);
             })
             .then(() => {
               setIsInfoUpdating(false);
@@ -144,7 +142,7 @@ const AccountContent = () => {
           <div className="grid__col-2x">
             <div className="user-profile__name-container">
               <div className="user-profile__image-container">
-                {userAvatar && !loading ? (
+                {userAvatar ? (
                   <img
                     className="user-profile__image-user"
                     src={userAvatar}
@@ -176,7 +174,7 @@ const AccountContent = () => {
                   </svg>
                 )}
               </div>
-              <div className="user-profile__name">{user.displayName}</div>
+              <div className="user-profile__name">{user?.displayName}</div>
 
               <Link to="profile" className="user-profile__name-btn">
                 Sửa Hồ Sơ
@@ -217,7 +215,6 @@ const AccountContent = () => {
                     phone={phone}
                     gender={gender}
                     birthday={birthday}
-                    userAvatar={userAvatar}
                     fileImage={fileImage}
                     previewImage={previewImage}
                     setFileImage={setFileImage}

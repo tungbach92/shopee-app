@@ -1,10 +1,10 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import ProductList from "./ProductList";
 import Pagination from "./Pagination";
 import useModal from "../hooks/useModal";
 import VoucherModal from "./VoucherModal";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import noCartImg from "../img/no-cart.png";
 import AddCartModal from "./AddCartModal";
@@ -24,6 +24,9 @@ export default function CartProduct(props) {
   const [deleteVariation, setDeleteVariation] = useState();
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const [checked, setChecked] = useState([]);
+  const [loading, setLoading] = useState(false);
+  //TODO: take and use cartItemsLoading, setCartItemsFromFirebase out from context to HeaderCart and here
+  
   const {
     isVoucherShowing,
     toggleVoucher,
@@ -52,7 +55,7 @@ export default function CartProduct(props) {
     setCartItemsFromFirebase,
     setCheckoutItemsFromFirebase,
     setSearchInput,
-  } = useContext(ProductContext);
+  } = useProduct();
 
   // scrollToTop
   useEffect(() => {
@@ -936,7 +939,7 @@ export default function CartProduct(props) {
           </Grid2>
         </Grid2>
       )}
-      {cartItems.length === 0 && user && (
+      {cartItems.length === 0 && !cartItemsLoading && user && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">
@@ -949,7 +952,7 @@ export default function CartProduct(props) {
       )}
 
       {cartItemsLoading && (
-        <div className="grid cart-loading">
+        <div className="cart-loading">
           <ClipLoader color="var(--primary-color)" />
         </div>
       )}

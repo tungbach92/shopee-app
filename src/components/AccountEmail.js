@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ProductContext } from "../context";
+import React, { useEffect, useState } from "react";
+import { useProduct } from "../context";
 import { auth } from "../firebase";
 import useModal from "../hooks/useModal";
 import PopupModal from "./PopupModal";
 
 const AccountEmail = ({ setEmail, email }) => {
-  const { user } = useContext(ProductContext);
+  const { user } = useProduct();
   const [verifyPassword, setVerifyPassword] = useState();
   const [isWrongPassword, setIsWrongPassword] = useState(false);
   const [newEmail, setNewEmail] = useState("");

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { ProductContext } from "../context";
+import React, { useEffect } from "react";
+import { useProduct } from "../context";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
@@ -7,7 +7,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
 function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
   // const _isMounted = useRef(true);
-  const context = useContext(ProductContext);
+  const context = useProduct();
   let {
     setSearchItems,
     setCategoryItems,
@@ -21,7 +21,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     setCategorySearchItems,
     categorySearchItemsFiltered,
     setCategorySearchItemsFiltered,
-    loading,
+    productLoading,
     categoryItems,
   } = context;
 
@@ -97,7 +97,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
 
   if (isSearchPage && getRenderItems().length === 0) {
     return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
-  } else if (loading) {
+  } else if (productLoading) {
     return (
       <Box
         sx={{

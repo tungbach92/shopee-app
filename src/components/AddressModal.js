@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 
 const StyledTextField = styled(TextField, {
@@ -57,7 +57,7 @@ const AddressModal = ({
   handleWardChoose,
   shipInfoIndex,
 }) => {
-  const { shipInfos, updateShipInfoToFirebase } = useContext(ProductContext);
+  const { shipInfos, updateShipInfoToFirebase } = useProduct();
   const [errors, setErrors] = useState({});
 
   const [isNameValid, setIsNameValid] = useState(null);

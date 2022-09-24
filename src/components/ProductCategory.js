@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ProductContext } from "../context";
-import { useContext } from "react";
+import { useProduct } from "../context";
 import classNames from "classnames";
 import {
   Box,
@@ -34,7 +33,7 @@ const StyledTextField = styled(TextField)({
 });
 
 export default function ProductCategory({ isProductPage, isSearchPage }) {
-  const context = useContext(ProductContext);
+  const context = useProduct();
   const {
     category,
     handleClick,

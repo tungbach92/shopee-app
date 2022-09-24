@@ -3,6 +3,15 @@
 /* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
 const functions = require("firebase-functions");
+
+const admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL:
+    "https://shopee-demo-c6d2b-default-rtdb.asia-southeast1.firebasedatabase.app",
+});
+
 const express = require("express");
 const cors = require("cors");
 const stripe = require("stripe")(
@@ -19,7 +28,24 @@ app.use(cors({ origin: true }));
 app.use(express.json());
 
 // API routes
-// Create setup Intent => return client secret
+
+// Verify id token from client
+app.post("/verify-id-token-by-firebase", async (req, res) => {
+  const idToken = req.body.idToken;
+  const checkRevoked = true;
+  try {
+    const result = await admin.auth().verifyIdToken(idToken, checkRevoked);
+    res.send({ succeeded: true, idToken: result });
+  } catch (error) {
+    if (error.code == "auth/id-token-revoked") {
+      res.send({ revoked: true, error: error.code });
+      // Token has been revoked. Inform the user to reauthenticate or signOut() the user.
+    } else {
+      res.send({ invalid: true, error: error.code });
+      // Token is invalid.
+    }
+  }
+});
 
 app.post("/retrieve-customer-by-id", async (req, res) => {
   try {
@@ -68,6 +94,7 @@ app.post("/create-token-server-side", async (request, response) => {
   }
 });
 
+// Create setup Intent => return client secret
 app.post("/create-setup-intent", async (request, response) => {
   // Since we are using test cards, create a new Customer here
   // You would do this in your payment flow that saves cards
@@ -166,7 +193,7 @@ app.post("/update-customer-billing-address", async (request, response) => {
         },
       },
     });
-    response.send({ customer: customerResult });
+    response.send({ succeeded: true, customer: customerResult });
   } catch (error) {
     response.send({
       error: error.message,

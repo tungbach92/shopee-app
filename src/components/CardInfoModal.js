@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../axios";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { db } from "../firebase";
 import { styled } from "@mui/material";
 
@@ -30,7 +30,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
     paymentMethodList,
     getPaymentMethodList,
     shipInfos,
-  } = useContext(ProductContext);
+  } = useProduct();
 
   const [cardName, setCardName] = useState("");
   const [cardAddress, setCardAddress] = useState("");

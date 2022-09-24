@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import CartProduct from "../components/CartProduct";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { Navigate } from "react-router";
 import Header from "../components/Header/Header";
 
 export default function Cart() {
-  const { authorized } = useContext(ProductContext);
+  const { authorized } = useProduct();
 
   if (authorized !== null) {
     if (!authorized) {

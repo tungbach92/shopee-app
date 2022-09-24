@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
-import { ProductContext } from "../context";
+import React, { useEffect, useState, useCallback } from "react";
+import { useProduct } from "../context";
 import { Link } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import Pagination from "./Pagination";
 import MiniPageControl from "./MiniPageControl";
 import { ClipLoader } from "react-spinners";
+import useGetOrderItems from "../hooks/useGetOrderItems";
 
 const AccountOrder = () => {
-  const { orderItems, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =
-    useContext(ProductContext);
+  const { user, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =
+    useProduct();
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
@@ -20,6 +21,7 @@ const AccountOrder = () => {
     (pageIndex - 1) * orderPageSize,
     pageIndex * orderPageSize
   );
+  const [orderItems] = useGetOrderItems(user);
 
   const handleSearchInput = (e) => {
     const text = e.target.value;

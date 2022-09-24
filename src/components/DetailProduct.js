@@ -1,7 +1,7 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import protectImg from "../img/protect.png";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import useModal from "../hooks/useModal";
 import AddCartModal from "./AddCartModal";
 import ImageGallery from "react-image-gallery";
@@ -15,7 +15,7 @@ export default function DetailProduct() {
   const location = useLocation();
   const navigate = useNavigate();
   const scrolltoEl = useRef();
-  const { handleClick, items, bestSelling, user } = useContext(ProductContext);
+  const { handleClick, items, bestSelling, user } = useProduct();
 
   useEffect(() => {
     handleScrollTop();

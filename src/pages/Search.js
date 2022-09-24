@@ -1,12 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, {  useEffect } from "react";
 import Header from "../components/Header/Header";
-import { ProductContext } from "../context";
+import { useProduct } from "../context";
 import { useSearchParams } from "react-router-dom";
 import ProductContent from "../components/ProductContent";
 const Search = () => {
-  const { searchInput } = useContext(ProductContext);
+  const { searchInput } = useProduct();
   const [searchParams, setSearchParams] = useSearchParams();
-  const value = searchParams.get("keyword");
 
   useEffect(() => {
     setSearchParams({ keyword: searchInput }, { replace: true });
