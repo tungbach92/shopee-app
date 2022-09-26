@@ -1,11 +1,11 @@
 import React from "react";
 import Header from "../components/Header/Header";
-import DetailProduct from "../components/DetailProduct";
+import DetailContainer from "../components/Detail/DetailContainer";
 export default function Detail(props) {
   return (
     <>
       <Header></Header>
-      <DetailProduct></DetailProduct>
+      <DetailContainer></DetailContainer>
     </>
   );
 }

@@ -14,9 +14,7 @@ admin.initializeApp({
 
 const express = require("express");
 const cors = require("cors");
-const stripe = require("stripe")(
-  "sk_test_51JB5XCLveZMOamkEt6qU1zYlcBboclEZDyzfkxzsJuxzJuBsNgMi4KWSYU5cOoSmqsADJd9YjQQmoy6HGHFHL6cr00kkVQeWfV"
-);
+const stripe = require("stripe")(process.env.REACT_APP_STRIPE_SECRET_KEY_TEST);
 
 // API
 

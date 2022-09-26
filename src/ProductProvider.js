@@ -5,7 +5,7 @@ import visaImg from "./img/visa.png";
 import masterImg from "./img/master.png";
 import jcbImg from "./img/jcb.png";
 import expressImg from "./img/express.png";
-import _ from "lodash";
+import { isEqual } from "lodash";
 
 export const ProductContext = React.createContext();
 export function useProduct() {
@@ -33,10 +33,6 @@ export default class ProductProvider extends Component {
     checkoutItems: [],
     searchInput: "",
     searchHistory: [],
-    checked: [],
-    name: "",
-    phone: "",
-    address: "",
     voucher: {},
     voucherList: [
       { code: "FREE", discount: "100%" },
@@ -63,36 +59,52 @@ export default class ProductProvider extends Component {
     this.getDataFireBase();
     //onAuthStateChanged Observer for only user's signed-in signed out state.
     //onIdTokenChanged.check Observer trigger if signed-in signed out, firebase auto changes id token
-    this.unSubcribe = auth.onIdTokenChanged((authUser) => {
-      this.setUserLoading(true);
+    this.setUserLoading(true);
+    this.unsubscribeUserObserver = auth.onIdTokenChanged((authUser) => {
+      this.setUserLoading(false);
       if (authUser) {
         //user will log in or logged in
-        this.setState({ user: authUser }, () => {
-          this.checkFirebaseIdTokenAuthTime();
-          this.setUserLoading(false);
-          this.getShipInfos();
-          this.getCustomerIdFromFirebase();
-          this.setCartItemsFromFirebase();
-          this.setSearchHistoryFromFirebase();
-        });
+        this.setState({ user: authUser });
+        this.checkFirebaseIdTokenAuthTime();
+        this.getShipInfos();
+        this.getCustomerIdFromFirebase();
+        this.setCartItemsFromFirebase();
+        this.setSearchHistoryFromFirebase();
         this.setAuthorized(true);
         // cartItems = this.getCartItemsFromFirebase(authUser);
       } else {
         //user logged out
         this.setState({ user: null });
-        this.setUserLoading(false);
         this.setAuthorized(false);
       }
     });
   }
 
   componentWillUnmount() {
-    this.unSubcribe();
+    this.unsubscribeUserObserver();
+    this.unsubscribeProductObserver();
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.filterPrice !== prevState.filterPrice) {
+      this.filterCategoryItems();
+      this.filterSearchItems();
+    }
+
+    if (this.state.searchHistory !== prevState.searchHistory) {
+      this.saveSearchHistoryToFirebase(this.state.searchHistory);
+    }
+    if (this.state.cartItems !== prevState.cartItems) {
+      this.saveCartItemsToStorage();
+    }
+    if (this.state.checkoutItems !== prevState.checkoutItems) {
+      this.saveCheckoutItemsToStorage();
+    }
+  }
 
   checkFirebaseIdTokenAuthTime = async () => {
+    const { user } = this.state;
+    if (!user) return;
     try {
       //revoke id token if expired
       // const idToken = await auth.currentUser.getIdToken(
@@ -150,10 +162,7 @@ export default class ProductProvider extends Component {
   };
 
   setFilterPrice = (filterPrice) => {
-    this.setState({ filterPrice }, () => {
-      this.filterCategoryItems();
-      this.filterSearchItems();
-    });
+    this.setState({ filterPrice });
   };
 
   setFilter = (filter) => {
@@ -342,7 +351,8 @@ export default class ProductProvider extends Component {
           } else {
             this.setPaymentMethodList([]);
           }
-        });
+        })
+        .catch((err) => alert(err.message));
     }
   };
 
@@ -385,7 +395,7 @@ export default class ProductProvider extends Component {
           this.setState({ shipInfos });
         })
         .catch((error) => {
-          console.log(error);
+          alert(error.message);
         });
     }
   };
@@ -397,14 +407,17 @@ export default class ProductProvider extends Component {
         .doc(user?.uid)
         .collection("shipInfos")
         .doc("shipInfoDoc")
-        .onSnapshot((doc) => {
-          if (doc.exists) {
-            const shipInfos = doc.data().shipInfos;
-            this.setState({ shipInfos });
-          } else {
-            this.setState({ shipInfos: [] });
-          }
-        });
+        .onSnapshot(
+          (doc) => {
+            if (doc.exists) {
+              const shipInfos = doc.data().shipInfos;
+              this.setState({ shipInfos });
+            } else {
+              this.setState({ shipInfos: [] });
+            }
+          },
+          (err) => alert(err.message)
+        );
     }
   };
 
@@ -461,11 +474,11 @@ export default class ProductProvider extends Component {
   };
 
   setCheckoutItems = (checkoutItems) => {
-    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
+    this.setState({ checkoutItems });
   };
 
   setCartItems = (cartItems) => {
-    this.setState({ cartItems }, this.saveCartItemsToStorage);
+    this.setState({ cartItems });
   };
 
   setPageTotal = (pageTotal) => {
@@ -492,37 +505,26 @@ export default class ProductProvider extends Component {
     this.setState({ voucher });
   };
 
-  setChecked = (checked) => {
-    this.setState({ checked });
-  };
-
-  setCustomerInfo = (name, phone, address) => {
-    this.setState({ name, phone, address });
-  };
   /**
    * It goes to {@link componentDidMount}
    */
   getDataFireBase = async () => {
-    try {
-      let items = [];
-      this.setProductLoading(true);
-      db.collection("products").onSnapshot(
-        (querySnapshot) => {
-          items = querySnapshot.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          this.setState({ items });
-          this.setProductLoading(false);
-
-          // onError((err) => alert(err));
-        }
-        // (err) => alert(err)
-      );
-    } catch (error) {
-      alert(error);
-      this.setProductLoading(false);
-    }
+    let items = [];
+    this.setProductLoading(true);
+    this.unsubscribeProductObserver = db.collection("products").onSnapshot(
+      (querySnapshot) => {
+        items = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        this.setState({ items });
+        this.setProductLoading(false);
+      },
+      (error) => {
+        alert(error.message);
+        this.setProductLoading(false);
+      }
+    );
   };
 
   pageTotalCalc = (items, pageSize) => {
@@ -584,9 +586,7 @@ export default class ProductProvider extends Component {
     }
 
     if (name === "addToCartBtn") {
-      this.addToCartItems(id)(item)(() => {
-        this.saveCartItemsToStorage();
-      });
+      this.addToCartItems(id)(item);
     }
 
     if (name === "incrCartItem") {
@@ -613,9 +613,7 @@ export default class ProductProvider extends Component {
     if (text.length > 0) {
       searchHistory = [...searchHistory, text];
       let uniqueSearchHistory = [...new Set(searchHistory)];
-      this.setState({ searchHistory: uniqueSearchHistory }, () => {
-        this.saveSearchHistoryToStorage(uniqueSearchHistory);
-      });
+      this.setState({ searchHistory: uniqueSearchHistory });
     }
   };
 
@@ -624,28 +622,13 @@ export default class ProductProvider extends Component {
     text = text.trim();
     if (text.length > 0) {
       searchHistory = [...searchHistory].filter((item) => item !== text);
-      this.setState({ searchHistory }, () => {
-        this.saveSearchHistoryToStorage(searchHistory);
-      });
-      this.saveSearchHistoryToFirebase(searchHistory);
+      this.setState({ searchHistory });
     }
-  };
-
-  saveSearchHistoryToStorage = () => {
-    const { searchHistory } = this.state;
-    localStorage.setItem(
-      "searchHistory",
-      JSON.stringify(searchHistory === null ? [] : searchHistory)
-    );
-  };
-
-  getSearchHistoryFromStorage = () => {
-    let savedSearchHistory = localStorage.getItem("searchHistory");
-    return savedSearchHistory === null ? [] : JSON.parse(savedSearchHistory);
   };
 
   saveSearchHistoryToFirebase = async (searchHistory) => {
     const { user } = this.state;
+    if (!user) return;
     try {
       await db
         .collection("users")
@@ -662,28 +645,24 @@ export default class ProductProvider extends Component {
   setSearchHistoryFromFirebase = () => {
     let searchHistory = [];
     const { user } = this.state;
-    if (this.getSearchHistoryFromStorage().length > 0) {
-      searchHistory = this.getSearchHistoryFromStorage();
-      this.setState({ searchHistory });
-    } else {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("searchHistory")
-        .doc("searchHistoryItems")
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            searchHistory = doc.data().basket;
-          }
-          this.setState({ searchHistory });
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    }
+    if (!user) return;
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("searchHistory")
+      .doc("searchHistoryItems")
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          searchHistory = doc.data().basket;
+        }
+        this.setState({ searchHistory });
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
 
-  addToCartItems = (id) => (item) => (callback) => {
+  addToCartItems = (id) => (item) => {
     let { items, cartItems } = this.state;
     let cartItemsUpdated = [];
 
@@ -712,12 +691,9 @@ export default class ProductProvider extends Component {
       } else cartItemsUpdated = [...cartItems, item];
     }
 
-    this.setState(
-      {
-        cartItems: cartItemsUpdated,
-      },
-      callback
-    );
+    this.setState({
+      cartItems: cartItemsUpdated,
+    });
   };
 
   delCartItem = (id, variation) => {
@@ -731,11 +707,9 @@ export default class ProductProvider extends Component {
         cartItems: newCartItems,
       },
       () => {
-        this.saveCartItemsToStorage();
         if (cartItems.length === 0) {
           this.saveCartItemsToFirebase(cartItems);
         }
-        this.saveCheckoutItemsToStorage();
       }
     );
   };
@@ -748,7 +722,7 @@ export default class ProductProvider extends Component {
     forCompareChecked.forEach(
       (checkedItem) =>
         (cartItems = [...cartItems].filter(
-          (cartItem) => !_.isEqual(cartItem, checkedItem)
+          (cartItem) => !isEqual(cartItem, checkedItem)
         ))
     );
 
@@ -760,37 +734,38 @@ export default class ProductProvider extends Component {
         if (cartItems.length === 0) {
           this.saveCartItemsToFirebase(cartItems);
         }
-        this.saveCartItemsToStorage();
-        this.saveCheckoutItemsToStorage();
       }
     );
   };
 
   changeAmountCartItem = (id, variation, amount) => {
     const { cartItems } = this.state;
-    let item = cartItems.find(
+    const newCartItems = [...cartItems]
+    let item = newCartItems.find(
       (item) => item.id === id && item.variation === variation
     );
     item.amount = amount;
-    this.setCartItems(cartItems);
+    this.setCartItems(newCartItems);
   };
 
   incrCartItem = (id, variation) => {
     const { cartItems } = this.state;
-    const indexOfItem = cartItems.findIndex(
+    const newCartItems = [...cartItems]
+    const indexOfItem = newCartItems.findIndex(
       (item) => item.id === id && item.variation === variation
     );
-    cartItems[indexOfItem].amount++;
-    this.setCartItems(cartItems);
+    newCartItems[indexOfItem].amount++;
+    this.setCartItems(newCartItems);
   };
 
   decrCartItem = (id, variation) => {
     const { cartItems } = this.state;
-    let item = cartItems.find(
+    const newCartItems = [...cartItems]
+    let item = newCartItems.find(
       (item) => item.id === id && item.variation === variation
     );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
-    this.setCartItems(cartItems);
+    this.setCartItems(newCartItems);
   };
 
   setCheckoutItemsByChecked = (checked) => {
@@ -799,7 +774,7 @@ export default class ProductProvider extends Component {
       const { similarDisPlay, variationDisPlay, ...rest } = checkedItem;
       return rest;
     });
-    this.setState({ checkoutItems }, this.saveCheckoutItemsToStorage);
+    this.setState({ checkoutItems });
   };
 
   saveCheckoutItemsToStorage = () => {
@@ -949,7 +924,7 @@ export default class ProductProvider extends Component {
   changeCartItemsVariation = (variation, index) => {
     let { cartItems } = this.state;
     cartItems[index] = { ...cartItems[index], variation };
-    this.setState({ cartItems }, this.saveCartItemsToStorage);
+    this.setState({ cartItems });
   };
 
   changeSimilarDisPlayCartItems = (index) => {
@@ -975,14 +950,15 @@ export default class ProductProvider extends Component {
   };
 
   saveCartItemsToFirebase = async (cartItems) => {
+    const { user } = this.state;
+    if (!user) return;
     try {
-      const { user } = this.state;
       const created = Date.now();
       cartItems = cartItems.map((item) => {
         const { similarDisPlay, variationDisPlay, ...rest } = item;
         return rest;
       });
-      db.collection("users")
+      await db.collection("users")
         .doc(user?.uid)
         .collection("cart")
         .doc("cartItems")
@@ -996,9 +972,10 @@ export default class ProductProvider extends Component {
   };
 
   setCartItemsFromFirebase = () => {
-    let cartItems = [];
-    this.setState({ cartItemsLoading: false });
     const { user } = this.state;
+    if (!user) return;
+
+    let cartItems = [];
     if (this.getCartItemsFromStorage().length > 0) {
       cartItems = this.getCartItemsFromStorage();
       cartItems = cartItems.map((item) => ({
@@ -1034,8 +1011,9 @@ export default class ProductProvider extends Component {
   };
 
   saveCheckoutItemsToFirebase = async (checkoutItems) => {
+    const { user } = this.state;
+    if (!user) return;
     try {
-      const { user } = this.state;
       const created = Date.now();
       db.collection("users")
         .doc(user?.uid)
@@ -1074,27 +1052,23 @@ export default class ProductProvider extends Component {
     }
   };
 
-  handleLogout = async () => {
+  handleLogout = () => {
     const { user, cartItems, checkoutItems, searchHistory } = this.state;
     if (user) {
       this.saveCartItemsToFirebase(cartItems);
-      await this.saveSearchHistoryToFirebase(searchHistory);
+      this.setState({ searchHistory: [] });
+      this.saveSearchHistoryToFirebase(searchHistory);
       this.saveCheckoutItemsToFirebase(checkoutItems);
       this.setCartItems([]);
       this.setCheckoutItems([]);
       this.setSearchInput("");
-      this.setState({ searchHistory: [] }, this.saveSearchHistoryToStorage);
       this.setPaymentMethodList([]);
       this.setDefaultPaymentMethodID("");
       this.setShipInfos([]);
       this.setCustomerID("");
-      await auth.signOut();
+      auth.signOut();
     }
   };
-
-  signUp = () => {};
-
-  signIn = () => {};
 
   render() {
     const value = {
@@ -1108,9 +1082,7 @@ export default class ProductProvider extends Component {
       delCartItem: this.delCartItem,
       delCartItems: this.delCartItems,
       saveCartItemsToStorage: this.saveCartItemsToStorage,
-      saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
       setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
-      setCustomerInfo: this.setCustomerInfo,
       setVoucher: this.setVoucher,
       setShipPriceProvince: this.setShipPriceProvince,
       setCategoryItems: this.setCategoryItems,
@@ -1119,9 +1091,6 @@ export default class ProductProvider extends Component {
       setPageTotal: this.setPageTotal,
       setCartItems: this.setCartItems,
       calcCartNumb: this.calcCartNumb,
-      getCartItemsFromStorage: this.getCartItemsFromStorage,
-      setCartNumb: this.setCartNumb,
-      getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
       setCheckoutItems: this.setCheckoutItems,
       getItemsPriceTotal: this.getItemsPriceTotal,
       getItemsTotal: this.getItemsTotal,
@@ -1161,9 +1130,10 @@ export default class ProductProvider extends Component {
       getShipInfos: this.getShipInfos,
       handleLogout: this.handleLogout,
       deleteFromSearchHistory: this.deleteFromSearchHistory,
-      signIn: this.signIn,
-      signUp: this.signUp,
       setUserLoading: this.setUserLoading,
+      saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
+      getCartItemsFromStorage: this.getCartItemsFromStorage,
+      getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,
     };
     return (
       <ProductContext.Provider value={value}>

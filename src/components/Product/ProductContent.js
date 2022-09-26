@@ -2,8 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import ProductCategory from "./ProductCategory";
 import ProductFilter from "./ProductFilter";
-import ProductList from "./ProductList";
-import Pagination from "./Pagination";
+import ProductList from "../Product/ProductList";
+import Pagination from "../Pagination/Pagination";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { Box } from "@mui/material";
 

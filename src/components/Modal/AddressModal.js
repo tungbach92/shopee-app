@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 
 const StyledTextField = styled(TextField, {

@@ -1,6 +1,6 @@
 import React from "react";
-import CartProduct from "../components/CartProduct";
-import { useProduct } from "../context";
+import CartContainer from "../components/Cart/CartContainer";
+import { useProduct } from "../ProductProvider";
 import { Navigate } from "react-router";
 import Header from "../components/Header/Header";
 
@@ -14,7 +14,7 @@ export default function Cart() {
       return (
         <>
           <Header isCartPage={true}></Header>
-          <CartProduct isCartPage={true}></CartProduct>
+          <CartContainer isCartPage={true}></CartContainer>
         </>
       );
   } else return null;

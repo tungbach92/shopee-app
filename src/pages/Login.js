@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/Header/Header";
-import LoginContent from "../components/LoginContent";
+import LoginContainer from "../components/Login/LoginContainer";
 const Login = () => {
 
   return (
@@ -9,7 +9,7 @@ const Login = () => {
         headerText="Đăng nhập"
         isLoginPage={true}
       ></Header>
-      <LoginContent submitText="Đăng nhập" isLoginPage={true}></LoginContent>
+      <LoginContainer submitText="Đăng nhập" isLoginPage={true}></LoginContainer>
     </>
   );
 };

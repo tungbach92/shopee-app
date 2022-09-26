@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase";
-import { useProduct } from "../context";
+import { auth } from "../../firebase";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import PropTypes from "prop-types";
 
-function LoginContent({ isRegisterPage, isLoginPage, submitText }) {
-  const { signin, signUp } = useProduct(); // TODO: Signin signUp from ProductContext
+function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
   const navigate = useNavigate();
 
   const onSubmit = (values) => {
@@ -59,7 +57,6 @@ function LoginContent({ isRegisterPage, isLoginPage, submitText }) {
         } else {
           alert(errorMessage);
         }
-        console.log(error);
       });
   };
 
@@ -73,18 +70,12 @@ function LoginContent({ isRegisterPage, isLoginPage, submitText }) {
           const user = userCredential.user;
           const randomName = Math.random().toString(36).substring(2);
 
-          user
-            .updateProfile({
-              displayName: randomName,
-            })
-            .then(() => {
-              formik.setSubmitting(false);
-              navigate("/");
-            });
+          user.updateProfile({
+            displayName: randomName,
+          });
         }
       })
       .catch((error) => {
-        formik.setSubmitting(false);
         const errorCode = error.code;
         const errorMessage = error.message;
         if (errorCode === "auth/weak-password") {
@@ -92,7 +83,10 @@ function LoginContent({ isRegisterPage, isLoginPage, submitText }) {
         } else {
           alert(errorMessage);
         }
-        console.log(error);
+      })
+      .finally(() => {
+        formik.setSubmitting(false);
+        navigate("/");
       });
   };
 
@@ -194,15 +188,15 @@ function LoginContent({ isRegisterPage, isLoginPage, submitText }) {
   );
 }
 
-LoginContent.propTypes = {
+LoginContainer.propTypes = {
   isLoginPage: PropTypes.bool,
   isRegisterPage: PropTypes.bool,
   submitText: PropTypes.string,
 };
-LoginContent.defaultProps = {
+LoginContainer.defaultProps = {
   isLoginPage: false,
   isRegisterPage: false,
   submitText: "",
 };
 
-export default LoginContent;
+export default LoginContainer;

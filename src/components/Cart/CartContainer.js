@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import ProductList from "./ProductList";
-import Pagination from "./Pagination";
-import useModal from "../hooks/useModal";
-import VoucherModal from "./VoucherModal";
-import { useProduct } from "../context";
+import ProductList from "../Product/ProductList";
+import Pagination from "../Pagination/Pagination";
+import useModal from "../../hooks/useModal";
+import VoucherModal from "../Modal/VoucherModal";
+import { useProduct } from "../../ProductProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import noCartImg from "../img/no-cart.png";
-import AddCartModal from "./AddCartModal";
-import PopupModal from "../components/PopupModal";
+import noCartImg from "../../img/no-cart.png";
+import AddCartModal from "../Modal/AddCartModal";
+import PopupModal from "../../components/Modal/PopupModal";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
 
-export default function CartProduct(props) {
+export default function CartContainer(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const { isCartPage } = props;
@@ -25,8 +25,7 @@ export default function CartProduct(props) {
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const [checked, setChecked] = useState([]);
   const [loading, setLoading] = useState(false);
-  //TODO: take and use cartItemsLoading, setCartItemsFromFirebase out from context to HeaderCart and here
-  
+
   const {
     isVoucherShowing,
     toggleVoucher,
@@ -41,6 +40,7 @@ export default function CartProduct(props) {
     setVoucher,
     cartItems,
     cartItemsLoading,
+    saveCartItemsToFirebase,
     handleClick,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
@@ -124,12 +124,13 @@ export default function CartProduct(props) {
     changeCheckedItemVariation(id, oldVariation);
     changeVariationDisPlayCartItems(index);
   };
-  const handleCheckout = (event) => {
+  const handleCheckout = async (event) => {
     if (checked?.length === 0 || isVariationChoose === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     } else {
       setCheckoutItemsByChecked(checked);
+      await saveCartItemsToFirebase(cartItems);
       navigate("/checkout");
     }
   };

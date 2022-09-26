@@ -1,19 +1,15 @@
 import React, { useEffect } from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
 function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
-  // const _isMounted = useRef(true);
-  const context = useProduct();
   let {
     setSearchItems,
     setCategoryItems,
     setCategoryItemsFiltered,
-    getCheckoutItemsFromStorage,
-    setCheckoutItems,
     categoryItemsFiltered,
     similarItems,
     pageIndex,
@@ -22,8 +18,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     categorySearchItemsFiltered,
     setCategorySearchItemsFiltered,
     productLoading,
-    categoryItems,
-  } = context;
+  } = useProduct();
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const similarPageSize = 6;
@@ -45,23 +40,17 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
       setCategoryItems([]);
       setCategoryItemsFiltered([]);
     }
-
-    //get and set checkoutItems state
-    const checkoutItems = getCheckoutItemsFromStorage();
-    setCheckoutItems(checkoutItems);
   }, [
-    getCheckoutItemsFromStorage,
     isProductPage,
     isSearchPage,
     setCategoryItems,
     setCategoryItemsFiltered,
-    setCheckoutItems,
-    setCategorySearchItemsFiltered,
     setCategorySearchItems,
+    setCategorySearchItemsFiltered,
     setSearchItems,
   ]);
 
-  const getRenderItems = () => {
+  const getRenderItemsByPageAndPagination = () => {
     let renderItem = [];
     if (isSearchPage) {
       renderItem = categorySearchItemsFiltered.slice(
@@ -95,9 +84,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     return renderItem;
   };
 
-  if (isSearchPage && getRenderItems().length === 0) {
-    return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
-  } else if (productLoading) {
+  if (productLoading) {
     return (
       <Box
         sx={{
@@ -112,10 +99,13 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
         <ClipLoader color="var(--primary-color)" />
       </Box>
     );
-  } else if (
-    isProductPage &&
-    (categoryItems.length === 0 || categoryItemsFiltered.length === 0)
-  ) {
+  }
+
+  if (isSearchPage && getRenderItemsByPageAndPagination().length === 0) {
+    return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
+  }
+
+  if (isProductPage && getRenderItemsByPageAndPagination().length === 0) {
     return (
       <Box
         sx={{
@@ -131,9 +121,10 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
       </Box>
     );
   }
+
   return (
     <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
-      {getRenderItems().map((item) => (
+      {getRenderItemsByPageAndPagination().map((item) => (
         <ProductItem
           key={item.id}
           item={item}

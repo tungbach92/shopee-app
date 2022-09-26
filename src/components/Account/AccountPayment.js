@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useProduct } from "../context";
-import useModal from "../hooks/useModal";
-import PopupModal from "./PopupModal";
-import CardInfoModal from "./CardInfoModal";
+import { useProduct } from "../../ProductProvider";
+import useModal from "../../hooks/useModal";
+import PopupModal from "../Modal/PopupModal";
+import CardInfoModal from "../Modal/CardInfoModal";
 import { ClipLoader } from "react-spinners";
 const AccountPayment = () => {
   const {

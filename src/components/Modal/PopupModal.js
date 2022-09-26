@@ -97,17 +97,16 @@ export default function PopupModal(props) {
       } else if (isCheckoutPage && !Object.keys(shipUnit)?.length) {
         isBackBtnHidden = true;
         title = "Vui lòng chọn đơn vị vận chuyển.";
-      } else if (isCheckoutPage && paymentMethod?.length <= 0) {
+      } else if (isCheckoutPage && paymentMethod?.length === 0) {
         isBackBtnHidden = true;
         title = "Vui lòng chọn phương thức thanh toán.";
       } else if (
         isCheckoutPage &&
         isCardPayment &&
-        typeof defaultPaymentMethodID === "undefined"
+        defaultPaymentMethodID.length === 0
       ) {
         isBackBtnHidden = true;
-        title =
-          "Vui lòng điền thông tin hoặc chọn Thẻ Tín dụng/Ghi nợ ở mục Chọn thẻ";
+        title = "Vui lòng thêm thông tin Thẻ Tín dụng/Ghi nợ ";
       } else if (isCheckoutPage && succeeded) {
         isBackBtnHidden = true;
         title = "Đặt hàng thành công";
@@ -170,12 +169,12 @@ export default function PopupModal(props) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       } else if (!Object.keys(shipUnit)?.length) {
         window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
-      } else if (isCardInfoMustFilled) {
+      } else if (defaultPaymentMethodID.length === 0) {
         window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
-      } else if (paymentMethod?.length <= 0) {
+      } else if (paymentMethod?.length === 0) {
         window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
       } else if (succeeded) {
-        navigate("/user/purchase");
+        navigate("/user/account/purchase");
       }
     }
 
@@ -258,8 +257,8 @@ PopupModal.propTypes = {
   checked: PropTypes.arrayOf(PropTypes.object),
   isCardInfoMustFilled: PropTypes.bool,
   shipUnit: PropTypes.object,
-  isPopupShowing: PropTypes.bool,
-  togglePopup: PropTypes.func,
+  isPopupShowing: PropTypes.bool.isRequired,
+  togglePopup: PropTypes.func.isRequired,
   paymentMethod: PropTypes.string,
   defaultPaymentMethodID: PropTypes.string,
   isCardPayment: PropTypes.bool,
@@ -292,8 +291,6 @@ PopupModal.defaultProps = {
   checked: [],
   isCardInfoMustFilled: true,
   shipUnit: {},
-  isPopupShowing: false,
-  togglePopup: () => {},
   paymentMethod: "",
   defaultPaymentMethodID: undefined,
   isCardPayment: false,

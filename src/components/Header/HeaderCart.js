@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import noCartImg from "../../img/no-cart.png";
-import { useProduct } from "../../context";
+import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import useModal from "../../hooks/useModal";
-import PopupModal from "../PopupModal";
+import PopupModal from "../Modal/PopupModal";
 import PropTypes from "prop-types";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {

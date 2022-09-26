@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
-import MiniPageControl from "./MiniPageControl";
+import MiniPageControl from "../Pagination/MiniPageControl";
 import PropTypes from "prop-types";
 import { ArrowDownward, ArrowUpward, UnfoldMore } from "@mui/icons-material";
 import { Box, useMediaQuery } from "@mui/material";

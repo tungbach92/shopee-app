@@ -1,5 +1,5 @@
 import React from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 

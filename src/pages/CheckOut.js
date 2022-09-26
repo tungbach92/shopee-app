@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../components/Header/Header";
-import CheckoutProduct from "../components/CheckoutProduct";
-import { useProduct } from "../context";
+import CheckoutContainer from "../components/Checkout/CheckoutContainer";
+import { useProduct } from "../ProductProvider";
 import { Navigate } from "react-router";
 
 export default function Checkout() {
@@ -13,7 +13,7 @@ export default function Checkout() {
     return (
       <>
         <Header isCheckoutPage={true}></Header>
-        <CheckoutProduct isCheckoutPage={true}></CheckoutProduct>
+        <CheckoutContainer isCheckoutPage={true}></CheckoutContainer>
       </>
     );
   } else return null;

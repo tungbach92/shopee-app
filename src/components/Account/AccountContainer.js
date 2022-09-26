@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useProduct } from "../context";
-import { db, storage } from "../firebase";
+import { useProduct } from "../../ProductProvider";
+import { db, storage } from "../../firebase";
 import { Link, Route, Navigate, NavLink, Routes } from "react-router-dom";
 import AccountEmail from "./AccountEmail";
 import AccountPassword from "./AccountPassword";
@@ -8,8 +8,8 @@ import AccountAddress from "./AccountAddress";
 import AccountPayment from "./AccountPayment";
 import AccountOrder from "./AccountOrder";
 import AccountProfile from "./AccountProfile";
-import useModal from "../hooks/useModal";
-import PopupModal from "./PopupModal";
+import useModal from "../../hooks/useModal";
+import PopupModal from "../Modal/PopupModal";
 
 const AccountContent = () => {
   const { user } = useProduct();
@@ -65,9 +65,9 @@ const AccountContent = () => {
     birthday,
     previewImage,
   }) => {
-    setIsInfoUpdating(true);
     try {
       //upadating info
+      setIsInfoUpdating(true);
       await user.updateProfile({
         displayName: userName,
       });
@@ -186,7 +186,7 @@ const AccountContent = () => {
                 Hồ sơ
               </NavLink>
               <NavLink to="payment" className="user-profile__my-bank" replace>
-                Ngân hàng
+                Thẻ tín dụng/ghi nợ
               </NavLink>
               <NavLink to="address" className="user-profile__my-adress" replace>
                 Địa chỉ

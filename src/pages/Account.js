@@ -1,8 +1,8 @@
 //set up routing for Account feature
 import React from "react";
 import Header from "../components/Header/Header";
-import { useProduct } from "../context";
-import AccountContent from "../components/AccountContent";
+import { useProduct } from "../ProductProvider";
+import AccountContainer from "../components/Account/AccountContainer";
 import { Navigate } from "react-router";
 
 export default function Account() {
@@ -14,7 +14,7 @@ export default function Account() {
     return (
       <>
         <Header isAccountPage={true}></Header>
-        <AccountContent></AccountContent>
+        <AccountContainer></AccountContainer>
       </>
     );
   } else return null;

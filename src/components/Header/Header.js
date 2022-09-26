@@ -8,11 +8,10 @@ import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useProduct } from "../../context";
+import { useProduct } from "../../ProductProvider";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack, Close } from "@mui/icons-material";
-import useCheckPhotoURL from "../../hooks/useCheckPhotoURL";
 
 const Header = ({
   isProductPage,
@@ -26,7 +25,6 @@ const Header = ({
   const {
     user,
     userLoading,
-    setUserLoading,
     filterItemsBySearch,
     addToSearchHistory,
     searchHistory,
@@ -43,8 +41,6 @@ const Header = ({
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const location = useLocation();
   const userAvatar = user?.photoURL;
-
-  useCheckPhotoURL(user);
 
   const handleInputClick = (e) => {
     const text = e.target.value;
@@ -322,11 +318,9 @@ const Header = ({
                     Đơn mua
                   </Link>
                   <div
-                    onClick={async () => {
-                      setUserLoading(true);
-                      await handleLogout();
-                      setUserLoading(false);
-                      window.location.reload(false);
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/login");
                     }}
                     className="header__user-item"
                   >

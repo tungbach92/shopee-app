@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import ProvincesCitiesVN from "pc-vn";
-export default function Picker({
+export default function DetailCheckShipPrice({
   setAddress,
   isPickerShow,
   togglePicker,

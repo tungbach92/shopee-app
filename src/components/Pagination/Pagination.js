@@ -1,5 +1,5 @@
 import React from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
 import PropTypes from "prop-types";
@@ -37,7 +37,10 @@ const Pagination = ({
       setPageTotal(pageTotal);
     }
     if (isSearchPage) {
-      const searchPageTotal = pageTotalCalc(categorySearchItemsFiltered, searchPageSize);
+      const searchPageTotal = pageTotalCalc(
+        categorySearchItemsFiltered,
+        searchPageSize
+      );
       setPageIndex(searchPageIndex);
       setPageTotal(searchPageTotal);
     }

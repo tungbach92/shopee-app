@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import { Link } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
-import Pagination from "./Pagination";
-import MiniPageControl from "./MiniPageControl";
+import Pagination from "../Pagination/Pagination";
 import { ClipLoader } from "react-spinners";
-import useGetOrderItems from "../hooks/useGetOrderItems";
+import useGetOrderItems from "../../hooks/useGetOrderItems";
+import MiniPageControl from "../Pagination/MiniPageControl";
 
 const AccountOrder = () => {
   const { user, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =

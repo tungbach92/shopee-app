@@ -1,27 +1,24 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { UNSAFE_NavigationContext as NavigationContext } from "react-router-dom";
-import useModal from "../hooks/useModal";
-import ShipUnitsModal from "./ShipUnitsModal";
-import VoucherModal from "./VoucherModal";
-import PopupModal from "./PopupModal";
-import CardInfoModal from "./CardInfoModal";
-import ErrorModal from "./ErrorModal";
+import useModal from "../../hooks/useModal";
+import ShipUnitsModal from "../Modal/ShipUnitsModal";
+import VoucherModal from "../Modal/VoucherModal";
+import PopupModal from "../Modal/PopupModal";
+import CardInfoModal from "../Modal/CardInfoModal";
+import ErrorModal from "../Modal/ErrorModal";
 import { NumericFormat } from "react-number-format";
-import axios from "../axios";
+import axios from "../../axios";
 import { useStripe } from "@stripe/react-stripe-js";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import "firebase/firestore";
-import useAddress from "../hooks/useAddress";
-import AddressModal from "./AddressModal";
+import useAddress from "../../hooks/useAddress";
+import AddressModal from "../Modal/AddressModal";
 import { ClipLoader } from "react-spinners";
 
-export default function CheckoutProduct({ isCheckoutPage }) {
-  const stripe = useStripe();
-  const { navigator } = useContext(NavigationContext);
-  //
+export default function CheckoutContainer({ isCheckoutPage }) {
   const {
     shipPriceProvince,
     setShipPriceProvince,
@@ -50,6 +47,19 @@ export default function CheckoutProduct({ isCheckoutPage }) {
     updateCustomerBillingAddress,
     getShipInfos,
   } = useProduct();
+
+  const stripe = useStripe();
+  const { navigator } = useContext(NavigationContext);
+  const [shipUnit, setShipUnit] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
+  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
+  const [shipChecked, setShipChecked] = useState([]);
+  const [isCardPayment, setIsCardPayment] = useState(false);
+  const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [succeeded, setSucceeded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const shipUnitList = useMemo(() => {
     return [
@@ -80,17 +90,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
 
     setShipPriceProvince(shipPrice);
   }, [setShipPriceProvince, shipInfos]);
-
-  const [shipUnit, setShipUnit] = useState({});
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
-  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
-  const [shipChecked, setShipChecked] = useState([]);
-  const [isCardPayment, setIsCardPayment] = useState(false);
-  const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
-  const [processing, setProcessing] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const {
     name,
@@ -333,8 +332,12 @@ export default function CheckoutProduct({ isCheckoutPage }) {
       Object.keys(shipUnit).length > 0 &&
       paymentMethod.length > 0
     ) {
-      setProcessing(true);
+      if (isCardPayment && defaultPaymentMethodID.length === 0) {
+        togglePopup(!isPopupShowing);
+      }
+
       if (isCardPayment && defaultPaymentMethodID) {
+        setProcessing(true);
         let defaultshipInfo;
         shipInfos.forEach((item) => {
           if (item.isDefault) {
@@ -437,14 +440,6 @@ export default function CheckoutProduct({ isCheckoutPage }) {
             setProcessing(false);
           }
         });
-      }
-
-      if (
-        isCardPayment &&
-        (typeof defaultPaymentMethodID === "undefined" ||
-          defaultPaymentMethodID === null)
-      ) {
-        togglePopup(!isPopupShowing);
       }
 
       if (isDeliveryPayment) {

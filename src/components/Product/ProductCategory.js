@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import {
   Box,

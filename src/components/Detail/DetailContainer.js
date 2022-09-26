@@ -1,16 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import protectImg from "../img/protect.png";
+import protectImg from "../../img/protect.png";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useProduct } from "../context";
-import useModal from "../hooks/useModal";
-import AddCartModal from "./AddCartModal";
+import { useProduct } from "../../ProductProvider";
+import useModal from "../../hooks/useModal";
+import AddCartModal from "../Modal/AddCartModal";
 import ImageGallery from "react-image-gallery";
-import Picker from "./Picker";
+import DetailCheckShipPrice from "./DetailCheckShipPrice";
 import { NumericFormat } from "react-number-format";
 import { Box, Rating } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 
-export default function DetailProduct() {
+export default function DetailContainer() {
   const { productId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -394,7 +394,7 @@ export default function DetailProduct() {
                     </svg>
                   </div>
                   {isPickerShow && (
-                    <Picker
+                    <DetailCheckShipPrice
                       isPickerShow={isPickerShow}
                       togglePicker={togglePicker}
                       setAddress={setAddress}

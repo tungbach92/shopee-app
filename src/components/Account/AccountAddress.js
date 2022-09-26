@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useProduct } from "../context";
-import useModal from "../hooks/useModal";
-import useAddress from "../hooks/useAddress";
-import AddressModal from "./AddressModal";
-import PopupModal from "./PopupModal";
+import { useProduct } from "../../ProductProvider";
+import useModal from "../../hooks/useModal";
+import useAddress from "../../hooks/useAddress";
+import AddressModal from "../Modal/AddressModal";
+import PopupModal from "../Modal/PopupModal";
 import { ClipLoader } from "react-spinners";
 
 const AccountAddress = () => {

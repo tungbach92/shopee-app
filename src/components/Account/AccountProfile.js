@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FastField, Field, Form, Formik } from "formik";
-import InputField from "../custom-fields/InputField/InputField";
-import RadioGroupField from "../custom-fields/RadioGroupField/RadioGroupField";
+import InputField from "../../custom-fields/InputField/InputField";
+import RadioGroupField from "../../custom-fields/RadioGroupField/RadioGroupField";
 import { Link } from "react-router-dom";
-import ImageUploadField from "../custom-fields/ImageUploadField/ImageUploadField";
+import ImageUploadField from "../../custom-fields/ImageUploadField/ImageUploadField";
 import * as yup from "yup";
 
 const AccountProfile = ({
@@ -196,9 +196,9 @@ const AccountProfile = ({
   );
 };
 AccountProfile.propTypes = {
-  userName: PropTypes.string,
+  userName: PropTypes.string.isRequired,
   name: PropTypes.string,
-  email: PropTypes.string,
+  email: PropTypes.string.isRequired,
   phone: PropTypes.string,
   gender: PropTypes.string,
   birthday: PropTypes.string,
@@ -210,9 +210,7 @@ AccountProfile.propTypes = {
 };
 
 AccountProfile.defaultProps = {
-  userName: null,
   name: null,
-  email: null,
   phone: null,
   gender: null,
   birthday: null,

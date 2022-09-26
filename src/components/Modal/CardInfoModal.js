@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "../axios";
-import { useProduct } from "../context";
-import { db } from "../firebase";
+import axios from "../../axios";
+import { useProduct } from "../../ProductProvider";
+import { db } from "../../firebase";
 import { styled } from "@mui/material";
 
 const StyledInput = styled("input", {

@@ -1,10 +1,10 @@
 import classNames from "classnames";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useModal from "../hooks/useModal";
-import AddCartModal from "./AddCartModal";
+import useModal from "../../hooks/useModal";
+import AddCartModal from "../Modal/AddCartModal";
 import { NumericFormat } from "react-number-format";
-import { useProduct } from "../context";
+import { useProduct } from "../../ProductProvider";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
