@@ -301,32 +301,34 @@ const Header = ({
                     {user?.displayName}
                   </Box>
                 </div>
-                <div
-                  className="header__user-list"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <div className="header__user-arrow"></div>
-                  <Link to="/user/account" className="header__user-item">
-                    Tài khoản của tôi
-                  </Link>
-                  <Link
-                    to="/user/account/purchase"
-                    className="header__user-item"
-                  >
-                    Đơn mua
-                  </Link>
+                {!xsBreakpointMatches && (
                   <div
-                    onClick={() => {
-                      handleLogout();
-                      navigate("/login");
+                    className="header__user-list"
+                    onClick={(e) => {
+                      e.stopPropagation();
                     }}
-                    className="header__user-item"
                   >
-                    Đăng xuất
+                    <div className="header__user-arrow"></div>
+                    <Link to="/user/account" className="header__user-item">
+                      Tài khoản của tôi
+                    </Link>
+                    <Link
+                      to="/user/account/purchase"
+                      className="header__user-item"
+                    >
+                      Đơn mua
+                    </Link>
+                    <div
+                      onClick={() => {
+                        handleLogout();
+                        navigate("/login");
+                      }}
+                      className="header__user-item"
+                    >
+                      Đăng xuất
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </ul>
           </nav>
@@ -355,90 +357,8 @@ const Header = ({
               )}
             </div>
 
-            {!isCheckoutPage ? (
-              !isCartPage ? (
-                <>
-                  <div ref={wrapperRef} className="header__search-content">
-                    <div className="header__search-wrapper">
-                      <input
-                        type="text"
-                        onChange={handleInputChange}
-                        onClick={handleInputClick}
-                        // onBlur={handleSearchBlur}
-                        onKeyUp={inputOnKeyUp}
-                        className="header__search-input"
-                        placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
-                        value={searchInput}
-                      />
-                      <div
-                        onClick={() => handleSearchIconClick(searchInput)}
-                        className="header__search-icon"
-                      >
-                        <i className="bi bi-search"></i>
-                      </div>
-                      {isHistory && (
-                        <ul className="header__history-list">
-                          <li className="header__history-title">
-                            Lịch Sử Tìm Kiếm
-                          </li>
-                          {suggestions.map((item, index) => (
-                            <Stack
-                              sx={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                "&:hover": {
-                                  backgroundColor: "var(--lighter-grey-color)",
-                                },
-                              }}
-                              key={index}
-                            >
-                              <li
-                                onClick={() => handleSearchIconClick(item)}
-                                className="header__history-item"
-                              >
-                                <a href="# " className="header__history-link">
-                                  {item}
-                                </a>
-                              </li>
-                              <Box
-                                sx={{
-                                  height: "100%",
-                                  marginRight: "0.6rem",
-                                  "& :hover": { color: "var(--primary-color)" },
-                                  cursor: "pointer",
-                                  textAlign: "center",
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Close
-                                  onClick={() => handleHistoryDelete(item)}
-                                ></Close>
-                              </Box>
-                            </Stack>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-
-                    <ul className="header__search-list">
-                      {/* list of recommends */}
-                      {[].map((item) => (
-                        <li className="header__search-item">
-                          <a href="# " className="header__item-link">
-                            {item}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <HeaderCart
-                    isProductPage={isProductPage}
-                    isSearchPage={isSearchPage}
-                  ></HeaderCart>
-                </>
-              ) : (
+            {!isCheckoutPage && (
+              <>
                 <div
                   ref={wrapperRef}
                   className={classNames("header__search-content", {
@@ -451,6 +371,7 @@ const Header = ({
                       type="text"
                       onChange={handleInputChange}
                       onClick={handleInputClick}
+                      // onBlur={handleSearchBlur}
                       onKeyUp={inputOnKeyUp}
                       className="header__search-input"
                       placeholder="Tìm sản phẩm, thương hiệu, và tên shop"
@@ -507,9 +428,26 @@ const Header = ({
                       </ul>
                     )}
                   </div>
+
+                  <ul className="header__search-list">
+                    {/* list of recommends */}
+                    {[].map((item) => (
+                      <li className="header__search-item">
+                        <a href="# " className="header__item-link">
+                          {item}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              )
-            ) : null}
+                {!isCartPage && (
+                  <HeaderCart
+                    isProductPage={isProductPage}
+                    isSearchPage={isSearchPage}
+                  ></HeaderCart>
+                )}
+              </>
+            )}
           </div>
         )}
         {xsBreakpointMatches && !isProductPage && (
