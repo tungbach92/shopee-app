@@ -7,16 +7,16 @@ import Pagination from "../Pagination/Pagination";
 import { ClipLoader } from "react-spinners";
 import useGetOrderItems from "../../hooks/useGetOrderItems";
 import MiniPageControl from "../Pagination/MiniPageControl";
+import usePagination from "../../hooks/usePagination";
 
 const AccountOrder = () => {
-  const { user, setPageIndex, setPageTotal, pageIndex, pageTotalCalc } =
-    useProduct();
+  const { user } = useProduct();
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
-  const [isOrderPage, setIsOrderPage] = useState(false);
-  const orderPageIndex = 1;
-  const orderPageSize = 2;
+  const { pageIndex, setPageIndex, orderPageSize, pageTotal } = usePagination(
+    searchOrderItemsFiltered
+  );
   const currentOrderItems = [...searchOrderItemsFiltered].slice(
     (pageIndex - 1) * orderPageSize,
     pageIndex * orderPageSize
@@ -83,19 +83,6 @@ const AccountOrder = () => {
   useEffect(() => {
     handleFilterSearchOrderItems(filter);
   }, [filter, handleFilterSearchOrderItems]);
-
-  useEffect(() => {
-    const orderPageTotal = pageTotalCalc(
-      searchOrderItemsFiltered,
-      orderPageSize
-    );
-    setPageIndex(orderPageIndex);
-    setPageTotal(orderPageTotal);
-  }, [searchOrderItemsFiltered, pageTotalCalc, setPageIndex, setPageTotal]);
-
-  useEffect(() => {
-    setIsOrderPage(true);
-  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -170,6 +157,10 @@ const AccountOrder = () => {
         <div className="user-order__mini-page">
           <MiniPageControl
             totalItems={searchOrderItemsFiltered.length}
+            pageIndex={pageIndex}
+            setPageIndex={setPageIndex}
+            pageSize={orderPageSize}
+            pageTotal={pageTotal}
           ></MiniPageControl>
         </div>
         {currentOrderItems.map((item, index) => (
@@ -275,8 +266,11 @@ const AccountOrder = () => {
         )}
       </div>
       <Pagination
-        isOrderPage={isOrderPage}
-        searchOrderItemsFiltered={searchOrderItemsFiltered}
+        items={searchOrderItemsFiltered}
+        pageIndex={pageIndex}
+        setPageIndex={setPageIndex}
+        pageSize={orderPageSize}
+        pageTotal={pageTotal}
       ></Pagination>
     </>
   );

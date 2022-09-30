@@ -1,11 +1,14 @@
 import React from "react";
-import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 
-const MiniPageControl = ({ totalItems }) => {
-  const { pageIndex, pageSize, pageTotal, setPageIndex } =
-    useProduct();
+const MiniPageControl = ({
+  totalItems,
+  pageIndex,
+  pageSize,
+  pageTotal,
+  setPageIndex,
+}) => {
   return (
     <>
       <div className="app__page-number">

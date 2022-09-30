@@ -13,17 +13,19 @@ import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
+import usePagination from "../../hooks/usePagination";
 
-export default function CartContainer(props) {
+export default function CartContainer() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isCartPage } = props;
   const [variation, setVariation] = useState("");
   const [isVariationChoose, setIsVariationChoose] = useState(false);
   const [deleteID, setDeleteID] = useState(null);
   const [deleteVariation, setDeleteVariation] = useState();
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const [checked, setChecked] = useState([]);
+  const { pageIndex, setPageIndex, similarPageSize, pageTotal } =
+    usePagination(cartItems);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -570,7 +572,7 @@ export default function CartContainer(props) {
                   >
                     Xóa
                   </span>
-                  <span
+                  {/* <span
                     data-name="similar"
                     onClick={handlePopup.bind(this, index)}
                     className={classNames("cart-product__action-find", {
@@ -591,13 +593,13 @@ export default function CartContainer(props) {
                   {cartItems[index].similarDisPlay && (
                     <div className="grid cart-product__similar-list">
                       <ProductList
-                        similarDisPlay={cartItems[index].similarDisPlay}
+                        items={cartItems}
+
                       ></ProductList>
                       <Pagination
-                        similarDisPlay={cartItems[index].similarDisPlay}
                       ></Pagination>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))}
@@ -966,7 +968,7 @@ export default function CartContainer(props) {
       )}
       {isPopupShowing && (
         <PopupModal
-          isCartPage={isCartPage}
+          isCartPage={true}
           isVariationChoose={isVariationChoose}
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}

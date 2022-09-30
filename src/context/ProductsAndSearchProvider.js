@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import useGetItemsFromFirebase from "../hooks/useGetItemsFromFirebase";
 
 const ProductsContext = React.createContext();

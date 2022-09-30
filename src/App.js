@@ -53,7 +53,14 @@ function App() {
               </ProductsAndSearchProvider>
             }
           ></Route>
-          <Route path="/cart" element={<Cart />}></Route>
+          <Route
+            path="/cart"
+            element={
+              <ProductsAndSearchProvider>
+                <Cart />
+              </ProductsAndSearchProvider>
+            }
+          ></Route>
           <Route
             path="/product/:metaTitle/:productId"
             element={<Detail />}

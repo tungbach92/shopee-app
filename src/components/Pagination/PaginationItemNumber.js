@@ -1,10 +1,11 @@
 import React from "react";
-import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 
-export default function PaginationItemNumber() {
-  const context = useProduct();
-  let { pageIndex, setPageIndex, pageTotal } = context;
+export default function PaginationItemNumber({
+  pageIndex,
+  setPageIndex,
+  pageTotal,
+}) {
   const numOfPageShowing = 5;
   const numberOfPageHiddingFromStart = 3;
   const numberOfPageHiddingFromEnd = 3;

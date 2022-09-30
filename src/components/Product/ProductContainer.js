@@ -10,8 +10,9 @@ import { useState } from "react";
 import * as categoryType from "../../constants/category";
 import * as sortType from "../../constants/sort";
 import ProductProvider from "../../ProductProvider";
+import usePagination from "../../hooks/usePagination";
 
-const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
+const ProductContainer = ({ items }) => {
   const [categoryItems, setCategoryItems] = useState(items);
   const [filteredItems, setFilteredItems] = useState(items);
   const [category, setCategory] = useState(categoryType.ALL_PRODUCT);
@@ -19,6 +20,9 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
   const [sortPrice, setSortPrice] = useState(sortType.DEFAULT_PRICE);
   const [startPrice, setStartPrice] = useState("");
   const [endPrice, setEndPrice] = useState("");
+  const { pageIndex, setPageIndex, pageSize, pageTotal } =
+    usePagination(filteredItems);
+
   const newestDays = 30;
   const oneDayinMs = 24 * 3600 * 1000;
   const currentTimeinMs = new Date().valueOf();
@@ -155,17 +159,27 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
             handleCategoryItemsBySort={handleCategoryItemsBySort}
             categoryItems={categoryItems}
             filteredItems={filteredItems}
+            pageIndex={pageIndex}
+            setPageIndex={setPageIndex}
+            pageSize={pageSize}
+            pageTotal={pageTotal}
           ></ProductFilter>
         </ProductProvider>
         <ProductProvider>
-          <ProductList items={filteredItems}></ProductList>
+          <ProductList
+            items={filteredItems}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+          ></ProductList>
         </ProductProvider>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <ProductProvider>
             <Pagination
               items={filteredItems}
-              isProductPage={isProductPage}
-              isSearchPage={isSearchPage}
+              pageIndex={pageIndex}
+              setPageIndex={setPageIndex}
+              pageSize={pageSize}
+              pageTotal={pageTotal}
             ></Pagination>
           </ProductProvider>
         </Box>

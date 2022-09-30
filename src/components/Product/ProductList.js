@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { useProduct } from "../../ProductProvider";
 import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
 import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
-function ProductList({ items, isProductPage, similarDisPlay, isSearchPage }) {
-  let { pageIndex, pageSize } = useProduct();
+function ProductList({ items, pageIndex, pageSize }) {
   const { itemsLoading } = useProductsAndSearch();
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
@@ -20,17 +18,6 @@ function ProductList({ items, isProductPage, similarDisPlay, isSearchPage }) {
 
   const getRenderItemsByPageAndPagination = () => {
     let renderItem = [];
-
-    if (similarDisPlay) {
-      renderItem = items.slice(
-        (pageIndex - 1) * similarPageSize,
-        pageIndex * similarPageSize
-      );
-      if (xsBreakpointMatches) {
-        renderItem = items;
-      }
-    }
-
     renderItem = items.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     if (xsBreakpointMatches) {
       renderItem = items;
@@ -78,7 +65,6 @@ function ProductList({ items, isProductPage, similarDisPlay, isSearchPage }) {
         <ProductItem
           key={item.id}
           item={item}
-          similarDisPlay={similarDisPlay}
         ></ProductItem>
       ))}
     </Grid2>

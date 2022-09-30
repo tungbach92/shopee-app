@@ -1,39 +1,16 @@
 import React from "react";
-import { useProduct } from "../../ProductProvider";
 import PaginationItemNumber from "./PaginationItemNumber";
 import classNames from "classnames";
 import PropTypes from "prop-types";
-import { useEffect } from "react";
 
 const Pagination = ({
   items,
-  isProductPage,
-  isSearchPage,
-  similarDisPlay,
-  isOrderPage,
-  searchOrderItemsFiltered,
+  pageIndex,
+  setPageIndex,
+  pageSize,
+  pageTotal,
 }) => {
-  let {
-    pageIndex,
-    setPageIndex,
-    pageTotal,
-    pageSize,
-    similarItems,
-    setPageTotal,
-    pageTotalCalc,
-  } = useProduct();
-  const productPageIndex = 1;
-  const similarPageIndex = 1;
-  const searchPageIndex = 1;
-  const similarPageSize = 6;
-  const searchPageSize = pageSize;
-
-  if (
-    (isProductPage && items.length <= pageSize) ||
-    (isSearchPage && items.length <= pageSize) ||
-    (isOrderPage && items.length <= pageSize) ||
-    (similarDisPlay && similarItems.length <= pageSize)
-  ) {
+  if (items.length <= pageSize) {
     return null;
   } else
     return (
@@ -50,7 +27,11 @@ const Pagination = ({
             <i className="pagination-item__icon bi bi-chevron-left"></i>
           </div>
         </li>
-        <PaginationItemNumber></PaginationItemNumber>
+        <PaginationItemNumber
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          pageTotal={pageTotal}
+        ></PaginationItemNumber>
         <li
           onClick={
             pageIndex >= pageTotal
@@ -70,19 +51,7 @@ const Pagination = ({
 };
 
 Pagination.propTypes = {
-  isProductPage: PropTypes.bool,
-  isSearchPage: PropTypes.bool,
-  similarDisPlay: PropTypes.bool,
-  isOrderPage: PropTypes.bool,
-  searchOrderItemsFiltered: PropTypes.arrayOf(PropTypes.object),
-};
-
-Pagination.defaultProps = {
-  isProductPage: false,
-  isSearchPage: false,
-  similarDisPlay: false,
-  isOrderPage: false,
-  searchOrderItemsFiltered: [],
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default Pagination;

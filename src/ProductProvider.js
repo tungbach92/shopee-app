@@ -156,10 +156,6 @@ export default class ProductProvider extends Component {
     this.setState({ filter });
   };
 
-  setPageSize = (pageSize) => {
-    this.setState({ pageSize });
-  };
-
   setOrderPageIndex = (orderPageIndex) => {
     this.setState({ orderPageIndex });
   };
@@ -531,7 +527,6 @@ export default class ProductProvider extends Component {
   };
 
   handleClick = (event, item) => {
-    const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     const id = event.currentTarget.dataset.id;
     const variation = event.currentTarget.dataset.variation;
@@ -1002,7 +997,6 @@ export default class ProductProvider extends Component {
       setOrderPageTotal: this.setOrderPageTotal,
       setOrderPageIndex: this.setOrderPageIndex,
       pageTotalCalc: this.pageTotalCalc,
-      setPageSize: this.setPageSize,
       setFilter: this.setFilter,
       setFilterPrice: this.setFilterPrice,
       setCategory: this.setCategory,

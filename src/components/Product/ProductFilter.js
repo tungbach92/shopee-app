@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ProductProvider, { useProduct } from "../../ProductProvider";
+import React, {  useState } from "react";
 import classNames from "classnames";
 import MiniPageControl from "../Pagination/MiniPageControl";
 import PropTypes from "prop-types";
@@ -15,6 +14,10 @@ const ProductFilter = ({
   handleCategoryItemsBySort,
   filteredItems,
   categoryItems,
+  pageIndex,
+  setPageIndex,
+  pageSize,
+  pageTotal,
 }) => {
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
@@ -22,8 +25,9 @@ const ProductFilter = ({
     setIsFilterPriceDescForXsResponsive,
   ] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  let totalItems = categoryItems.length;
-  const filterDisabled = totalItems === 0;
+  let totalCategoryItems = categoryItems.length;
+  let totalFilteredItems = filteredItems.length;
+  const filterDisabled = totalCategoryItems === 0;
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
@@ -98,7 +102,7 @@ const ProductFilter = ({
         <div
           data-name="filterPrice"
           onClick={() =>
-            totalItems > 1 &&
+            totalCategoryItems > 1 &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
@@ -186,7 +190,13 @@ const ProductFilter = ({
         </div>
       </div>
       <div className="app__filter-page">
-        <MiniPageControl totalItems={totalItems}></MiniPageControl>
+        <MiniPageControl
+          totalItems={totalFilteredItems}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          pageSize={pageSize}
+          pageTotal={pageTotal}
+        ></MiniPageControl>
       </div>
     </Box>
   );
