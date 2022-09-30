@@ -12,6 +12,7 @@ import * as sortType from "../../constants/sort";
 import ProductProvider from "../../ProductProvider";
 
 const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
+  const [categoryItems, setCategoryItems] = useState(items);
   const [filteredItems, setFilteredItems] = useState(items);
   const [category, setCategory] = useState(categoryType.ALL_PRODUCT);
   const [sort, setSort] = useState(sortType.ALL);
@@ -25,6 +26,7 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
 
   useEffect(() => {
     setFilteredItems(items);
+    setCategoryItems(items);
   }, [items]);
 
   const handleItemsByCategory = (category) => {
@@ -32,28 +34,24 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
     if (category !== categoryType.ALL_PRODUCT) {
       categoryItems = items.filter((item) => item.category === category);
     }
+    setCategoryItems(categoryItems);
     setFilteredItems(categoryItems);
     setSort(sortType.ALL);
     setSortPrice(sortType.DEFAULT_PRICE);
   };
 
   const handleCategoryItemsBySort = (sort) => {
-    //filter by filter
-    // if (sort === "all") {
-    //   sortedCategoryItems = [...categoryItems];
-    // }
-
-    let sortItems = [...filteredItems];
+    let sortItems = [...categoryItems];
     // Best Selling sort
     if (sort === sortType.BEST_SELLING) {
-      sortItems = filteredItems.filter(
+      sortItems = categoryItems.filter(
         (item) => item.soldAmount >= bestSelling
       );
     }
 
     // Date sort
     if (sort === sortType.DATE) {
-      sortItems = filteredItems.filter(
+      sortItems = categoryItems.filter(
         (item) =>
           Math.floor(new Date(item.date).valueOf() / oneDayinMs) >
           Math.floor(currentTimeinMs / oneDayinMs) - newestDays
@@ -62,13 +60,13 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
 
     // priceAsc sort
     if (sort === sortType.PRICE_ASC) {
-      sortItems = sortItems.sort(
+      sortItems = [...filteredItems].sort(
         (a, b) => parseFloat(a.price) - parseFloat(b.price)
       );
     }
     // priceDesc sort
     if (sort === sortType.PRICE_DESC) {
-      sortItems = sortItems.sort(
+      sortItems = [...filteredItems].sort(
         (a, b) => parseFloat(b.price) - parseFloat(a.price)
       );
     }
@@ -76,27 +74,27 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
   };
 
   const handleRating = (ratingValue) => {
-    const ratingItems = filteredItems.filter(
+    const ratingItems = categoryItems.filter(
       (item) => item.rating >= ratingValue
     );
     setFilteredItems(ratingItems);
   };
 
   const handleFilerPriceRange = () => {
-    let filterItems = [...filteredItems];
+    let filterItems = [...categoryItems];
     if (startPrice.length > 0 && endPrice.length === 0) {
-      filterItems = filteredItems.filter(
+      filterItems = categoryItems.filter(
         (item) => item.price >= Number(startPrice)
       );
     }
     if (startPrice.length > 0 && endPrice.length > 0) {
-      filterItems = filteredItems.filter(
+      filterItems = categoryItems.filter(
         (item) =>
           item.price >= Number(startPrice) && item.price <= Number(endPrice)
       );
     }
     if (startPrice.length === 0 && endPrice.length > 0) {
-      filterItems = filteredItems.filter(
+      filterItems = categoryItems.filter(
         (item) => item.price <= Number(endPrice)
       );
     }
@@ -107,6 +105,7 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
     setCategory(categoryType.ALL_PRODUCT);
     setSort(sortType.ALL);
     setSortPrice(sortType.DEFAULT_PRICE);
+    setCategoryItems(items);
     setFilteredItems(items);
   };
 
@@ -135,7 +134,7 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
         <ProductCategory
           category={category}
           setCategory={setCategory}
-          items={filteredItems}
+          filteredItems={filteredItems}
           handleItemsByCategory={handleItemsByCategory}
           handleRating={handleRating}
           handleFilerPriceRange={handleFilerPriceRange}
@@ -144,8 +143,6 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
           endPrice={endPrice}
           setEndPrice={setEndPrice}
           handleResetAll={handleResetAll}
-          isProductPage={isProductPage}
-          isSearchPage={isSearchPage}
         ></ProductCategory>
       </Grid2>
       <Grid2 xs sm={10}>
@@ -156,17 +153,12 @@ const ProductContainer = ({ items, isProductPage, isSearchPage }) => {
             sortPrice={sortPrice}
             setSortPrice={setSortPrice}
             handleCategoryItemsBySort={handleCategoryItemsBySort}
-            items={filteredItems}
-            isProductPage={isProductPage}
-            isSearchPage={isSearchPage}
+            categoryItems={categoryItems}
+            filteredItems={filteredItems}
           ></ProductFilter>
         </ProductProvider>
         <ProductProvider>
-          <ProductList
-            items={filteredItems}
-            isProductPage={isProductPage}
-            isSearchPage={isSearchPage}
-          ></ProductList>
+          <ProductList items={filteredItems}></ProductList>
         </ProductProvider>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <ProductProvider>

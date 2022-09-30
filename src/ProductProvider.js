@@ -37,7 +37,6 @@ export default class ProductProvider extends Component {
     paymentMethodList: null,
     defaultPaymentMethodID: "",
 
-    searchInput: "",
     searchHistory: [],
 
     user: null,

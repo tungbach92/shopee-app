@@ -13,7 +13,8 @@ const ProductFilter = ({
   sortPrice,
   setSortPrice,
   handleCategoryItemsBySort,
-  items,
+  filteredItems,
+  categoryItems,
 }) => {
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
@@ -21,28 +22,8 @@ const ProductFilter = ({
     setIsFilterPriceDescForXsResponsive,
   ] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  let totalItems = items.length;
+  let totalItems = categoryItems.length;
   const filterDisabled = totalItems === 0;
-
-  // useEffect(() => {
-  //   setFilter(defaultFilter);
-  //   setFilterPrice(defaultFilterPrice);
-  //   if (isProductPage && categoryItems.length === 0) {
-  //     setFilterPrice(defaultFilterPrice);
-  //   }
-  //   if (isSearchPage && categorySearchItems.length === 0) {
-  //     setFilterPrice(defaultFilterPrice);
-  //   }
-  // }, [
-  //   categoryItems.length,
-  //   isProductPage,
-  //   isSearchPage,
-  //   searchItems,
-  //   setFilter,
-  //   setFilterPrice,
-  //   setCategorySearchItemsFiltered,
-  //   categorySearchItems.length,
-  // ]);
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
@@ -125,7 +106,9 @@ const ProductFilter = ({
           tabIndex="0"
           onBlur={() => setIsFilterPriceShow(false)}
           className={
-            totalItems > 1 ? "select-input" : " select-input--disabled"
+            filteredItems.length > 1
+              ? "select-input"
+              : " select-input--disabled"
           }
         >
           <span

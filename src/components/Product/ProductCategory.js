@@ -35,7 +35,7 @@ const StyledTextField = styled(TextField)({
 export default function ProductCategory({
   category,
   setCategory,
-  items,
+  filteredItems,
   handleItemsByCategory,
   handleRating,
   handleFilerPriceRange,
@@ -51,7 +51,7 @@ export default function ProductCategory({
   const threeRating = 3;
   const twoRating = 2;
   const oneRating = 1;
-  const filterDisabled = items.length === 0;
+  const filterDisabled = filteredItems.length === 0;
 
   const handleClick = (value) => {
     handleItemsByCategory(value);
