@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 
 const Pagination = ({
+  items,
   isProductPage,
   isSearchPage,
   similarDisPlay,
@@ -13,12 +14,10 @@ const Pagination = ({
   searchOrderItemsFiltered,
 }) => {
   let {
-    categoryItemsFiltered,
     pageIndex,
     setPageIndex,
     pageTotal,
     pageSize,
-    categorySearchItemsFiltered,
     similarItems,
     setPageTotal,
     pageTotalCalc,
@@ -29,44 +28,10 @@ const Pagination = ({
   const similarPageSize = 6;
   const searchPageSize = pageSize;
 
-  //pagination value depend on page
-  useEffect(() => {
-    if (isProductPage) {
-      const pageTotal = pageTotalCalc(categoryItemsFiltered, pageSize);
-      setPageIndex(productPageIndex);
-      setPageTotal(pageTotal);
-    }
-    if (isSearchPage) {
-      const searchPageTotal = pageTotalCalc(
-        categorySearchItemsFiltered,
-        searchPageSize
-      );
-      setPageIndex(searchPageIndex);
-      setPageTotal(searchPageTotal);
-    }
-    if (similarDisPlay) {
-      const similarPageTotal = pageTotalCalc(similarItems, similarPageSize);
-      setPageIndex(similarPageIndex);
-      setPageTotal(similarPageTotal);
-    }
-  }, [
-    categoryItemsFiltered,
-    isProductPage,
-    isSearchPage,
-    pageSize,
-    pageTotalCalc,
-    categorySearchItemsFiltered,
-    searchPageSize,
-    setPageIndex,
-    setPageTotal,
-    similarDisPlay,
-    similarItems,
-  ]);
-
   if (
-    (isProductPage && categoryItemsFiltered.length <= pageSize) ||
-    (isSearchPage && categorySearchItemsFiltered.length <= pageSize) ||
-    (isOrderPage && searchOrderItemsFiltered.length <= pageSize) ||
+    (isProductPage && items.length <= pageSize) ||
+    (isSearchPage && items.length <= pageSize) ||
+    (isOrderPage && items.length <= pageSize) ||
     (similarDisPlay && similarItems.length <= pageSize)
   ) {
     return null;

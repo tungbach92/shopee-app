@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Header from "../components/Header/Header";
-import ProductContent from "../components/Product/ProductContent";
-import { useProduct } from "../ProductProvider";
+import ProductContainer from "../components/Product/ProductContainer";
+import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
+import ProductProvider from "../ProductProvider";
 
 export default function Product() {
-  const { setSearchInput } = useProduct();
-
-  useEffect(() => {
-    setSearchInput("");
-  }, [setSearchInput]);
+  // const { setSearchInput } = useProduct();
+  const { items } = useProductsAndSearch();
 
   return (
     <>
-      <Header isProductPage={true}></Header>
-      <ProductContent isProductPage={true}></ProductContent>
+      <ProductProvider>
+        <Header></Header>
+      </ProductProvider>
+      <ProductContainer items={items}></ProductContainer>
     </>
   );
 }

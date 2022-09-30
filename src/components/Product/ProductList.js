@@ -5,86 +5,40 @@ import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
-function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
-  let {
-    setSearchItems,
-    setCategoryItems,
-    setCategoryItemsFiltered,
-    categoryItemsFiltered,
-    similarItems,
-    pageIndex,
-    pageSize,
-    setCategorySearchItems,
-    categorySearchItemsFiltered,
-    setCategorySearchItemsFiltered,
-    productLoading,
-  } = useProduct();
+import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
+function ProductList({ items, isProductPage, similarDisPlay, isSearchPage }) {
+  let { pageIndex, pageSize } = useProduct();
+  const { itemsLoading } = useProductsAndSearch();
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const similarPageSize = 6;
-  const searchPageSize = pageSize;
 
   // scrollToTop
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (isProductPage) {
-      setSearchItems([]);
-      setCategorySearchItems([]);
-      setCategorySearchItemsFiltered([]);
-    }
-
-    if (isSearchPage) {
-      setCategoryItems([]);
-      setCategoryItemsFiltered([]);
-    }
-  }, [
-    isProductPage,
-    isSearchPage,
-    setCategoryItems,
-    setCategoryItemsFiltered,
-    setCategorySearchItems,
-    setCategorySearchItemsFiltered,
-    setSearchItems,
-  ]);
-
   const getRenderItemsByPageAndPagination = () => {
     let renderItem = [];
-    if (isSearchPage) {
-      renderItem = categorySearchItemsFiltered.slice(
-        (pageIndex - 1) * searchPageSize,
-        pageIndex * searchPageSize
-      );
-      if (xsBreakpointMatches) {
-        renderItem = categorySearchItemsFiltered;
-      }
-    }
 
     if (similarDisPlay) {
-      renderItem = similarItems.slice(
+      renderItem = items.slice(
         (pageIndex - 1) * similarPageSize,
         pageIndex * similarPageSize
       );
       if (xsBreakpointMatches) {
-        renderItem = similarItems;
+        renderItem = items;
       }
     }
 
-    if (isProductPage) {
-      renderItem = categoryItemsFiltered.slice(
-        (pageIndex - 1) * pageSize,
-        pageIndex * pageSize
-      );
-      if (xsBreakpointMatches) {
-        renderItem = categoryItemsFiltered;
-      }
+    renderItem = items.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
+    if (xsBreakpointMatches) {
+      renderItem = items;
     }
     return renderItem;
   };
 
-  if (productLoading) {
+  if (itemsLoading) {
     return (
       <Box
         sx={{
@@ -101,11 +55,7 @@ function ProductList({ isProductPage, similarDisPlay, isSearchPage }) {
     );
   }
 
-  if (isSearchPage && getRenderItemsByPageAndPagination().length === 0) {
-    return <div className="app__no-product">Không tìm thấy kết quả nào</div>;
-  }
-
-  if (isProductPage && getRenderItemsByPageAndPagination().length === 0) {
+  if (getRenderItemsByPageAndPagination().length === 0) {
     return (
       <Box
         sx={{

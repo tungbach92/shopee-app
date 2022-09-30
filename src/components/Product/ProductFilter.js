@@ -1,70 +1,73 @@
 import React, { useEffect, useState } from "react";
-import { useProduct } from "../../ProductProvider";
+import ProductProvider, { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import MiniPageControl from "../Pagination/MiniPageControl";
 import PropTypes from "prop-types";
 import { ArrowDownward, ArrowUpward, UnfoldMore } from "@mui/icons-material";
 import { Box, useMediaQuery } from "@mui/material";
+import * as sortType from "../../constants/sort";
 
-const ProductFilter = ({ isSearchPage, isProductPage }) => {
-  let {
-    filter,
-    filterPrice,
-    handleClick,
-    categoryItems,
-    searchItems,
-    categorySearchItems,
-    categorySearchItemsFiltered,
-    setFilter,
-    setFilterPrice,
-    setCategorySearchItemsFiltered,
-    categoryItemsFiltered,
-  } = useProduct();
+const ProductFilter = ({
+  sort,
+  setSort,
+  sortPrice,
+  setSortPrice,
+  handleCategoryItemsBySort,
+  items,
+}) => {
   const [isFilterPriceShow, setIsFilterPriceShow] = useState(false);
   const [
     isFilterPriceDescForXsResponsive,
     setIsFilterPriceDescForXsResponsive,
   ] = useState(false);
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  const defaultFilterPrice = "default";
-  const defaultFilter = "all";
+  let totalItems = items.length;
+  const filterDisabled = totalItems === 0;
 
-  let totalItems = 0;
-  if (isSearchPage) {
-    totalItems = searchItems.length;
-  } else {
-    totalItems = categoryItems.length;
-  }
-
-  useEffect(() => {
-    setFilter(defaultFilter);
-    setFilterPrice(defaultFilterPrice);
-    if (isProductPage && categoryItems.length === 0) {
-      setFilterPrice(defaultFilterPrice);
-    }
-    if (isSearchPage && categorySearchItems.length === 0) {
-      setFilterPrice(defaultFilterPrice);
-    }
-  }, [
-    categoryItems.length,
-    isProductPage,
-    isSearchPage,
-    searchItems,
-    setFilter,
-    setFilterPrice,
-    setCategorySearchItemsFiltered,
-    categorySearchItems.length,
-  ]);
+  // useEffect(() => {
+  //   setFilter(defaultFilter);
+  //   setFilterPrice(defaultFilterPrice);
+  //   if (isProductPage && categoryItems.length === 0) {
+  //     setFilterPrice(defaultFilterPrice);
+  //   }
+  //   if (isSearchPage && categorySearchItems.length === 0) {
+  //     setFilterPrice(defaultFilterPrice);
+  //   }
+  // }, [
+  //   categoryItems.length,
+  //   isProductPage,
+  //   isSearchPage,
+  //   searchItems,
+  //   setFilter,
+  //   setFilterPrice,
+  //   setCategorySearchItemsFiltered,
+  //   categorySearchItems.length,
+  // ]);
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
-      setFilterPrice("priceAsc");
+      setSortPrice(sortType.PRICE_ASC);
+      handleCategoryItemsBySort(sortType.PRICE_ASC);
+
       setIsFilterPriceDescForXsResponsive(true);
     }
     if (isFilterPriceDescForXsResponsive) {
-      setFilterPrice("priceDesc");
+      setSortPrice(sortType.PRICE_DESC);
+      handleCategoryItemsBySort(sortType.PRICE_DESC);
+
       setIsFilterPriceDescForXsResponsive(false);
     }
+  };
+
+  const handleSortChange = (sort) => {
+    handleCategoryItemsBySort(sort);
+    setSort(sort);
+    setSortPrice(sortType.DEFAULT_PRICE);
+  };
+
+  const handleSortPriceChange = (sortPrice) => {
+    handleCategoryItemsBySort(sortPrice);
+    setSortPrice(sortPrice);
   };
 
   return (
@@ -75,50 +78,46 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
         <button
           data-name="filter"
           data-value="all"
-          onClick={totalItems === 0 ? undefined : handleClick}
-          className={classNames("btn app__filter-item app__filter-popular", {
-            "btn--active": filter === "all",
-          })}
-          disabled={
-            (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && categorySearchItems.length === 0)
+          onClick={() =>
+            filterDisabled ? undefined : handleSortChange(sortType.ALL)
           }
+          className={classNames("btn app__filter-item app__filter-popular", {
+            "btn--active": sort === "all",
+          })}
+          disabled={filterDisabled}
         >
           Tất cả
         </button>
         <button
           data-name="filter"
           data-value="date"
-          onClick={totalItems === 0 ? undefined : handleClick}
-          className={classNames("btn app__filter-item app__filter-newest", {
-            "btn--active": filter === "date",
-          })}
-          disabled={
-            (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && categorySearchItems.length === 0)
+          onClick={() =>
+            filterDisabled ? undefined : handleSortChange(sortType.DATE)
           }
+          className={classNames("btn app__filter-item app__filter-newest", {
+            "btn--active": sort === "date",
+          })}
+          disabled={filterDisabled}
         >
           Mới nhất
         </button>
         <button
           data-name="filter"
           data-value="bestSelling"
-          onClick={totalItems === 0 ? undefined : handleClick}
-          className={classNames("btn app__filter-item app__filter-bestSell", {
-            "btn--active": filter === "bestSelling",
-          })}
-          disabled={
-            (isProductPage && categoryItems.length === 0) ||
-            (isSearchPage && categorySearchItems.length === 0)
+          onClick={() =>
+            filterDisabled ? undefined : handleSortChange(sortType.BEST_SELLING)
           }
+          className={classNames("btn app__filter-item app__filter-bestSell", {
+            "btn--active": sort === "bestSelling",
+          })}
+          disabled={filterDisabled}
         >
           Bán chạy
         </button>
         <div
           data-name="filterPrice"
           onClick={() =>
-            ((isProductPage && categoryItemsFiltered.length > 1) ||
-              (isSearchPage && categorySearchItemsFiltered.length > 1)) &&
+            totalItems > 1 &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))
@@ -126,36 +125,33 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
           tabIndex="0"
           onBlur={() => setIsFilterPriceShow(false)}
           className={
-            (isProductPage && categoryItemsFiltered.length > 1) ||
-            (isSearchPage && categorySearchItemsFiltered.length > 1)
-              ? "select-input"
-              : " select-input--disabled"
+            totalItems > 1 ? "select-input" : " select-input--disabled"
           }
         >
           <span
             className={classNames("app__input-lable", {
-              "app__input-lable--active": filterPrice !== "default",
+              "app__input-lable--active": sortPrice !== "default",
             })}
           >
             {!xsBreakpointMatches
-              ? filterPrice === "priceAsc"
+              ? sortPrice === "priceAsc"
                 ? "Giá: Thấp đến cao"
-                : filterPrice === "priceDesc"
+                : sortPrice === "priceDesc"
                 ? "Giá: Cao đến thấp"
                 : "Giá"
               : "Giá"}
           </span>
-          {filterPrice === "default" && (
+          {sortPrice === "default" && (
             <UnfoldMore
               sx={{ display: { sm: "none", xs: "inline" } }}
             ></UnfoldMore>
           )}
-          {xsBreakpointMatches && filterPrice === "priceDesc" && (
+          {xsBreakpointMatches && sortPrice === "priceDesc" && (
             <ArrowDownward
               sx={{ color: "var(--primary-color)" }}
             ></ArrowDownward>
           )}
-          {xsBreakpointMatches && filterPrice === "priceAsc" && (
+          {xsBreakpointMatches && sortPrice === "priceAsc" && (
             <ArrowUpward sx={{ color: "var(--primary-color)" }}></ArrowUpward>
           )}
           <i className="app__input-icon bi bi-chevron-down"></i>
@@ -167,41 +163,36 @@ const ProductFilter = ({ isSearchPage, isProductPage }) => {
                 Giá<i className="app__input-item-icon bi bi-check"></i>
               </li>
               <li
-                data-name="filterPrice"
-                data-value="priceAsc"
                 onClick={(e) => {
-                  handleClick(e);
-
+                  handleSortPriceChange(sortType.PRICE_ASC);
                   setIsFilterPriceShow(!isFilterPriceShow);
                 }}
                 className={classNames("app__input-item", "app__price-asc", {
-                  "app__input-item--active": filterPrice === "priceAsc",
+                  "app__input-item--active": sortPrice === sortType.PRICE_ASC,
                 })}
               >
                 Giá: Thấp đến Cao
                 <i
                   className={
-                    filterPrice === "priceAsc"
+                    sortPrice === sortType.PRICE_ASC
                       ? "app__input-item-icon bi bi-check"
                       : undefined
                   }
                 ></i>
               </li>
               <li
-                data-name="filterPrice"
-                data-value="priceDesc"
                 onClick={(e) => {
-                  handleClick(e);
+                  handleSortPriceChange(sortType.PRICE_DESC);
                   setIsFilterPriceShow(!isFilterPriceShow);
                 }}
                 className={classNames("app__input-item", "app__price-desc", {
-                  "app__input-item--active": filterPrice === "priceDesc",
+                  "app__input-item--active": sortPrice === sortType.PRICE_DESC,
                 })}
               >
                 Giá: Cao đến Thấp
                 <i
                   className={
-                    filterPrice === "priceDesc"
+                    sortPrice === sortType.PRICE_DESC
                       ? "app__input-item-icon bi bi-check"
                       : undefined
                   }

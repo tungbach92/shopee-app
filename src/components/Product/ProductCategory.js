@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useProduct } from "../../ProductProvider";
+import React from "react";
 import classNames from "classnames";
+import * as categoryType from "../../constants/category";
 import {
   Box,
   Button,
@@ -32,171 +32,30 @@ const StyledTextField = styled(TextField)({
   },
 });
 
-export default function ProductCategory({ isProductPage, isSearchPage }) {
-  const context = useProduct();
-  const {
-    category,
-    handleClick,
-    categoryItems,
-    categoryItemsFiltered,
-    categorySearchItems,
-    categorySearchItemsFiltered,
-    setCategoryItems,
-    setCategoryItemsFiltered,
-    setCategorySearchItems,
-    setCategorySearchItemsFiltered,
-    setCategory,
-    setFilter,
-    setFilterPrice,
-    items,
-    searchItems,
-  } = context;
-  const [startPrice, setStartPrice] = useState("");
-  const [endPrice, setEndPrice] = useState("");
+export default function ProductCategory({
+  category,
+  setCategory,
+  items,
+  handleItemsByCategory,
+  handleRating,
+  handleFilerPriceRange,
+  startPrice,
+  setStartPrice,
+  endPrice,
+  setEndPrice,
+  handleResetAll,
+}) {
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const fiveRating = 5;
   const fourRating = 4;
   const threeRating = 3;
   const twoRating = 2;
   const oneRating = 1;
-  const defaultCategory = "allProduct";
-  const defaultFilter = "all";
-  const defaultFilterPrice = "default";
+  const filterDisabled = items.length === 0;
 
-  const filterDisabled =
-    (isProductPage &&
-      (categoryItems.length === 0 || categoryItemsFiltered.length === 0)) ||
-    (isSearchPage &&
-      (categorySearchItems.length === 0 ||
-        categorySearchItemsFiltered.length === 0));
-
-  useEffect(() => {
-    setCategory(defaultCategory);
-
-    if (isProductPage) {
-      const categoryItems = items.filter(
-        (item) => item.category !== defaultCategory
-      );
-      const categoryItemsFiltered = [...categoryItems];
-      setCategoryItems(categoryItems);
-      setCategoryItemsFiltered(categoryItemsFiltered);
-    }
-
-    if (isSearchPage) {
-      const categorySearchItems = searchItems.filter(
-        (item) => item.category !== defaultCategory
-      );
-      const categorySearchItemsFiltered = [...categorySearchItems];
-      setCategorySearchItems(categorySearchItems);
-      setCategorySearchItemsFiltered(categorySearchItemsFiltered);
-    }
-  }, [
-    isProductPage,
-    isSearchPage,
-    items,
-    searchItems,
-    setCategory,
-    setCategoryItems,
-    setCategoryItemsFiltered,
-    setCategorySearchItems,
-    setCategorySearchItemsFiltered,
-  ]);
-
-  const handleResetAll = () => {
-    setCategory(defaultCategory);
-    setFilter(defaultFilter);
-    setFilterPrice(defaultFilterPrice);
-    //set categoryItemsFiltered by default value
-    if (isProductPage) {
-      const categoryItems = items.filter(
-        (item) => item.category !== defaultCategory
-      );
-      const categoryItemsFiltered = [...categoryItems];
-      setCategoryItems(categoryItems);
-      setCategoryItemsFiltered(categoryItemsFiltered);
-    }
-    if (isSearchPage) {
-      const categorySearchItems = searchItems.filter(
-        (item) => item.category !== defaultCategory
-      );
-      const categorySearchItemsFiltered = [...categorySearchItems];
-      setCategorySearchItems(categorySearchItems);
-      setCategorySearchItemsFiltered(categorySearchItemsFiltered);
-    }
-  };
-
-  const handleRating = (ratingValue) => {
-    if (isProductPage) {
-      let ratingCategoryItems = [...categoryItems];
-      ratingCategoryItems = ratingCategoryItems.filter(
-        (item) => item.rating >= ratingValue
-      );
-      setCategoryItems(ratingCategoryItems);
-      setCategoryItemsFiltered(ratingCategoryItems);
-    }
-
-    if (isSearchPage) {
-      let ratingCategorySearchItems = [...categorySearchItems];
-      ratingCategorySearchItems = ratingCategorySearchItems.filter(
-        (item) => item.rating >= ratingValue
-      );
-      setCategorySearchItems(ratingCategorySearchItems);
-      setCategorySearchItemsFiltered(ratingCategorySearchItems);
-    }
-  };
-
-  const handleFilerPriceRange = () => {
-    if (isProductPage) {
-      let priceRangeCategoryItems = [...categoryItems];
-      if (startPrice.length > 0 && endPrice.length === 0) {
-        priceRangeCategoryItems = priceRangeCategoryItems.filter(
-          (item) => item.price >= Number(startPrice)
-        );
-        setCategoryItems(priceRangeCategoryItems);
-        setCategoryItemsFiltered(priceRangeCategoryItems);
-      }
-      if (startPrice.length > 0 && endPrice.length > 0) {
-        priceRangeCategoryItems = priceRangeCategoryItems.filter(
-          (item) =>
-            item.price >= Number(startPrice) && item.price <= Number(endPrice)
-        );
-        setCategoryItems(priceRangeCategoryItems);
-        setCategoryItemsFiltered(priceRangeCategoryItems);
-      }
-      if (startPrice.length === 0 && endPrice.length > 0) {
-        priceRangeCategoryItems = priceRangeCategoryItems.filter(
-          (item) => item.price <= Number(endPrice)
-        );
-        setCategoryItems(priceRangeCategoryItems);
-        setCategoryItemsFiltered(priceRangeCategoryItems);
-      }
-    }
-
-    if (isSearchPage) {
-      let priceRangeCategorySearchItems = [...categoryItems];
-      if (startPrice.length > 0 && endPrice.length === 0) {
-        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
-          (item) => item.price >= Number(startPrice)
-        );
-        setCategorySearchItems(priceRangeCategorySearchItems);
-        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
-      }
-      if (startPrice.length > 0 && endPrice.length > 0) {
-        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
-          (item) =>
-            item.price >= Number(startPrice) && item.price <= Number(endPrice)
-        );
-        setCategorySearchItems(priceRangeCategorySearchItems);
-        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
-      }
-      if (startPrice.length === 0 && endPrice.length > 0) {
-        priceRangeCategorySearchItems = priceRangeCategorySearchItems.filter(
-          (item) => item.price <= Number(endPrice)
-        );
-        setCategorySearchItems(priceRangeCategorySearchItems);
-        setCategorySearchItemsFiltered(priceRangeCategorySearchItems);
-      }
-    }
+  const handleClick = (value) => {
+    handleItemsByCategory(value);
+    setCategory(value);
   };
 
   return (
@@ -207,10 +66,9 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
       <ul className="app__category-list">
         <li
           data-name="category"
-          data-value="allProduct"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.ALL_PRODUCT)}
           className={classNames("app__category-item", "app__category-default", {
-            "app__category-item--active": category === "allProduct",
+            "app__category-item--active": category === categoryType.ALL_PRODUCT,
           })}
         >
           <Box
@@ -218,7 +76,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "allProduct" && "app__item-icon",
+                sm: category === categoryType.ALL_PRODUCT && "app__item-icon",
               },
             }}
           ></Box>
@@ -226,10 +84,9 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         </li>
         <li
           data-name="category"
-          data-value="shirt"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.SHIRT)}
           className={classNames("app__category-item", "app__category-shirt", {
-            "app__category-item--active": category === "shirt",
+            "app__category-item--active": category === categoryType.SHIRT,
           })}
         >
           <Box
@@ -237,7 +94,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "shirt" && "app__item-icon",
+                sm: category === categoryType.SHIRT && "app__item-icon",
               },
             }}
           ></Box>
@@ -245,12 +102,11 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         </li>
         <li
           data-name="category"
-          data-value="pant"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.PANT)}
           className={classNames(
             "app__category-item",
             "app__category-discount",
-            { "app__category-item--active": category === "pant" }
+            { "app__category-item--active": category === categoryType.PANT }
           )}
         >
           <Box
@@ -258,7 +114,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "pant" && "app__item-icon",
+                sm: category === categoryType.PANT && "app__item-icon",
               },
             }}
           ></Box>
@@ -266,10 +122,9 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         </li>
         <li
           data-name="category"
-          data-value="shoe"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.SHOE)}
           className={classNames("app__category-item", "app__category-shoe", {
-            "app__category-item--active": category === "shoe",
+            "app__category-item--active": category === categoryType.SHOE,
           })}
         >
           <Box
@@ -277,7 +132,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "shoe" && "app__item-icon",
+                sm: category === categoryType.SHOE && "app__item-icon",
               },
             }}
           ></Box>
@@ -285,10 +140,9 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         </li>
         <li
           data-name="category"
-          data-value="bag"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.BAG)}
           className={classNames("app__category-item", "app__category-bag", {
-            "app__category-item--active": category === "bag",
+            "app__category-item--active": category === categoryType.BAG,
           })}
         >
           <Box
@@ -296,7 +150,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "bag" && "app__item-icon",
+                sm: category === categoryType.BAG && "app__item-icon",
               },
             }}
           ></Box>
@@ -304,10 +158,9 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         </li>
         <li
           data-name="category"
-          data-value="set"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.SET)}
           className={classNames("app__category-item", "app__category-set", {
-            "app__category-item--active": category === "set",
+            "app__category-item--active": category === categoryType.SET,
           })}
         >
           <Box
@@ -315,7 +168,7 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "set" && "app__item-icon",
+                sm: category === categoryType.SET && "app__item-icon",
               },
             }}
           ></Box>
@@ -324,11 +177,14 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
         <li
           data-name="category"
           data-value="accessories"
-          onClick={handleClick}
+          onClick={() => handleClick(categoryType.ACCESSORIES)}
           className={classNames(
             "app__category-item",
             "app__category-accessories",
-            { "app__category-item--active": category === "accessories" }
+            {
+              "app__category-item--active":
+                category === categoryType.ACCESSORIES,
+            }
           )}
         >
           <Box
@@ -336,7 +192,8 @@ export default function ProductCategory({ isProductPage, isSearchPage }) {
             sx={{
               className: {
                 xs: "",
-                sm: category === "accessories" ? "app__item-icon" : "",
+                sm:
+                  category === categoryType.ACCESSORIES ? "app__item-icon" : "",
               },
             }}
           ></Box>

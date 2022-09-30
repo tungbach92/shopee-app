@@ -1,20 +1,30 @@
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header/Header";
-import { useProduct } from "../ProductProvider";
 import { useSearchParams } from "react-router-dom";
-import ProductContent from "../components/Product/ProductContent";
+import ProductContainer from "../components/Product/ProductContainer";
+import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
+import ProductProvider from "../ProductProvider";
 const Search = () => {
-  const { searchInput } = useProduct();
+  // const { searchInput } = useProduct();
+  const { searchItems, setSearchInput } = useProductsAndSearch();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // useEffect(() => {
+  //   setSearchParams({ keyword: searchInput }, { replace: true });
+  // }, [searchInput, setSearchParams]);
+
   useEffect(() => {
-    setSearchParams({ keyword: searchInput }, { replace: true });
-  }, [searchInput, setSearchParams]);
+    return () => {
+      setSearchInput("");
+    };
+  }, [setSearchInput]);
 
   return (
     <>
-      <Header isSearchPage={true}></Header>
-      <ProductContent isSearchPage={true}></ProductContent>
+      <ProductProvider>
+        <Header></Header>
+      </ProductProvider>
+      <ProductContainer items={searchItems}></ProductContainer>
     </>
   );
 };

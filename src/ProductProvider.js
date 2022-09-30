@@ -16,47 +16,41 @@ export default class ProductProvider extends Component {
   state = {
     items: [],
     similarItems: [],
-    categoryItems: [], // category
-    categoryItemsFiltered: [], // items sort
-    searchItems: [], // search
-    categorySearchItems: [],
-    categorySearchItemsFiltered: [],
+
     defaultPageIndex: 1,
-    bestSelling: 1000,
-    category: "allProduct",
-    filter: "all",
-    filterPrice: "default",
     pageIndex: 1,
     pageSize: 10,
     pageTotal: 0,
+
     cartItems: [],
-    checkoutItems: [],
-    searchInput: "",
-    searchHistory: [],
+    cartItemsLoading: false,
     voucher: {},
     voucherList: [
       { code: "FREE", discount: "100%" },
       { code: "SALE50", discount: "50%" },
       { code: "SALE100000", discount: "100000" },
     ],
+
+    checkoutItems: [],
     shipPriceProvince: [0, 0],
-    user: null,
     shipInfos: null,
     paymentMethodList: null,
     defaultPaymentMethodID: "",
-    customerID: "",
-    productLoading: false,
+
+    searchInput: "",
+    searchHistory: [],
+
+    user: null,
     userLoading: false,
-    cartItemsLoading: false,
+    customerID: "",
     authorized: null,
   }; // json server->fetch data to here and pass to value of Provider component
-  newestDays = 30;
   oneDayinMs = 24 * 3600 * 1000;
   sessionExpinSec = this.oneDayinMs / 1000;
   currentTimeinMs = new Date().valueOf();
 
   componentDidMount() {
-    this.getDataFireBase();
+    // this.getDataFireBase();
     //onAuthStateChanged Observer for only user's signed-in signed out state.
     //onIdTokenChanged.check Observer trigger if signed-in signed out, firebase auto changes id token
     this.setUserLoading(true);
@@ -82,15 +76,9 @@ export default class ProductProvider extends Component {
 
   componentWillUnmount() {
     this.unsubscribeUserObserver();
-    this.unsubscribeProductObserver();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.filterPrice !== prevState.filterPrice) {
-      this.filterCategoryItems();
-      this.filterSearchItems();
-    }
-
     if (this.state.searchHistory !== prevState.searchHistory) {
       this.saveSearchHistoryToFirebase(this.state.searchHistory);
     }
@@ -543,47 +531,32 @@ export default class ProductProvider extends Component {
     return cartNumb;
   };
 
-  filterItemsBySearch = (text) => {
-    text = text.trim().toLowerCase();
-    if (text.length > 0) {
-      const { items } = this.state;
-      const searchItems = [...items].filter((item) =>
-        item.name.toLowerCase().includes(text)
-      );
-      this.setState({
-        searchItems,
-        filter: "",
-        filterPrice: "default",
-      });
-    }
-  };
-
   handleClick = (event, item) => {
     const value = event.currentTarget.dataset.value;
     const name = event.currentTarget.dataset.name;
     const id = event.currentTarget.dataset.id;
     const variation = event.currentTarget.dataset.variation;
 
-    if (name === "category") {
-      this.setState(
-        { [name]: value, filter: "all", filterPrice: "default" },
-        () => {
-          this.filterItemsByCategory();
-          this.filterSearchItemsByCategory();
-        }
-      );
-      // set category filter filterPrice state, and categoryItemsFiltered categoryItem pageIndex after state mutate
-      // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
-    }
-    if (name === "filter") {
-      this.setState({ [name]: value, filterPrice: "default" }, () => {
-        this.filterCategoryItems();
-        this.filterSearchItems();
-      });
-    }
-    if (name === "filterPrice") {
-      this.setFilterPrice(value);
-    }
+    // if (name === "category") {
+    //   this.setState(
+    //     { [name]: value, filter: "all", filterPrice: "default" },
+    //     () => {
+    //       this.filterItemsByCategory();
+    //       this.filterSearchItemsByCategory();
+    //     }
+    //   );
+    //   // set category filter filterPrice state, and categoryItemsFiltered categoryItem pageIndex after state mutate
+    //   // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
+    // }
+    // if (name === "filter") {
+    //   this.setState({ [name]: value, filterPrice: "default" }, () => {
+    //     this.filterCategoryItems();
+    //     this.filterSearchItems();
+    //   });
+    // }
+    // if (name === "filterPrice") {
+    //   this.setFilterPrice(value);
+    // }
 
     if (name === "addToCartBtn") {
       this.addToCartItems(id)(item);
@@ -740,7 +713,7 @@ export default class ProductProvider extends Component {
 
   changeAmountCartItem = (id, variation, amount) => {
     const { cartItems } = this.state;
-    const newCartItems = [...cartItems]
+    const newCartItems = [...cartItems];
     let item = newCartItems.find(
       (item) => item.id === id && item.variation === variation
     );
@@ -750,7 +723,7 @@ export default class ProductProvider extends Component {
 
   incrCartItem = (id, variation) => {
     const { cartItems } = this.state;
-    const newCartItems = [...cartItems]
+    const newCartItems = [...cartItems];
     const indexOfItem = newCartItems.findIndex(
       (item) => item.id === id && item.variation === variation
     );
@@ -760,7 +733,7 @@ export default class ProductProvider extends Component {
 
   decrCartItem = (id, variation) => {
     const { cartItems } = this.state;
-    const newCartItems = [...cartItems]
+    const newCartItems = [...cartItems];
     let item = newCartItems.find(
       (item) => item.id === id && item.variation === variation
     );
@@ -805,36 +778,6 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  filterItemsByCategory = () => {
-    //get categoryItemsFiltered by category using items
-    const { items, category } = this.state;
-    let tempItems = [...items];
-    //filter by category
-    if (category !== "allProduct") {
-      tempItems = tempItems.filter((item) => item.category === category);
-    }
-    //change state
-    this.setState({
-      categoryItems: tempItems,
-      categoryItemsFiltered: tempItems,
-    });
-  };
-
-  filterSearchItemsByCategory = () => {
-    //get categoryItemsFiltered by category using items
-    const { searchItems, category } = this.state;
-    let tempItems = [...searchItems];
-    //filter by category
-    if (category !== "allProduct") {
-      tempItems = tempItems.filter((item) => item.category === category);
-    }
-    //change state
-    this.setState({
-      categorySearchItems: tempItems,
-      categorySearchItemsFiltered: tempItems,
-    });
-  };
-
   filterItemsBySimilar = () => {
     const { items, category } = this.state;
     let tempItems = [...items];
@@ -845,65 +788,6 @@ export default class ProductProvider extends Component {
     //change state
     this.setState({
       similarItems: tempItems,
-    });
-  };
-
-  filterCategoryItems = () => {
-    //get categoryItemsFiltered by filter using categoryItems
-    let { categoryItems } = this.state;
-    this.filterCommonItems(categoryItems, "categoryItemsFiltered");
-  };
-
-  filterSearchItems = () => {
-    //get categoryItemsFiltered by filter using searchItems
-    let { categorySearchItems } = this.state;
-    this.filterCommonItems(categorySearchItems, "categorySearchItemsFiltered");
-  };
-
-  filterCommonItems = (commonItems, name) => {
-    //get categoryItemsFiltered by filter using searchItems
-    let { filter, filterPrice } = this.state;
-    let filterCommonItems = [...commonItems];
-    //filter by filter
-    if (filter === "all") {
-      filterCommonItems = [...commonItems];
-    }
-
-    // Best Selling Filter
-    if (filter === "bestSelling") {
-      filterCommonItems = filterCommonItems.filter(
-        (item) => item.soldAmount >= this.state.bestSelling
-      );
-    }
-
-    // Date Filter
-    if (filter === "date") {
-      filterCommonItems = filterCommonItems.filter(
-        (item) =>
-          Math.floor(new Date(item.date).valueOf() / this.oneDayinMs) >
-          Math.floor(this.currentTimeinMs / this.oneDayinMs) - this.newestDays
-      );
-    }
-
-    //price filter
-    if (filterPrice !== "default") {
-      // priceAscFilter
-      if (filterPrice === "priceAsc" && filterCommonItems.length !== 1) {
-        filterCommonItems = filterCommonItems.sort(
-          (a, b) => parseFloat(a.price) - parseFloat(b.price)
-        );
-      }
-      // priceDescFilter
-      if (filterPrice === "priceDesc" && filterCommonItems.length !== 1) {
-        filterCommonItems = filterCommonItems.sort(
-          (a, b) => parseFloat(b.price) - parseFloat(a.price)
-        );
-      }
-    }
-
-    //change state
-    this.setState({
-      [name]: filterCommonItems,
     });
   };
 
@@ -958,7 +842,8 @@ export default class ProductProvider extends Component {
         const { similarDisPlay, variationDisPlay, ...rest } = item;
         return rest;
       });
-      await db.collection("users")
+      await db
+        .collection("users")
         .doc(user?.uid)
         .collection("cart")
         .doc("cartItems")
@@ -1074,7 +959,6 @@ export default class ProductProvider extends Component {
     const value = {
       ...this.state,
       handleClick: this.handleClick,
-      filterItemsBySearch: this.filterItemsBySearch,
       addToSearchHistory: this.addToSearchHistory,
       changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
       changeCartItemsVariation: this.changeCartItemsVariation,

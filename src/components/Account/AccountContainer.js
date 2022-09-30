@@ -11,7 +11,7 @@ import AccountProfile from "./AccountProfile";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
 
-const AccountContent = () => {
+const AccountContainer = () => {
   const { user } = useProduct();
   const [userName, setUserName] = useState("");
   const [name, setName] = useState("");
@@ -271,4 +271,4 @@ const AccountContent = () => {
   );
 };
 
-export default AccountContent;
+export default AccountContainer;

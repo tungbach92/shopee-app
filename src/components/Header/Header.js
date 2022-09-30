@@ -12,6 +12,7 @@ import { useProduct } from "../../ProductProvider";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack, Close } from "@mui/icons-material";
+import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
 
 const Header = ({
   isProductPage,
@@ -25,15 +26,14 @@ const Header = ({
   const {
     user,
     userLoading,
-    filterItemsBySearch,
     addToSearchHistory,
     searchHistory,
-    searchInput,
-    setSearchInput,
     handleLogout,
     deleteFromSearchHistory,
   } = useProduct();
 
+  const { searchInput, setSearchInput, handleSearchInputChange } =
+    useProductsAndSearch();
   const wrapperRef = useRef();
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
@@ -78,13 +78,11 @@ const Header = ({
   };
 
   const handleSearchIconClick = (text) => {
-    filterItemsBySearch(text);
+    navigate("/search"); // navigate to search 1 time
     addToSearchHistory(text);
     setSearchInput(text);
+    handleSearchInputChange(text);
     setIsHistory(false);
-    if (!isSearchPage) {
-      navigate("/search");
-    }
   };
 
   const inputOnKeyUp = (event) => {

@@ -10,6 +10,7 @@ import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
 import { useProduct } from "./ProductProvider";
 import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
+import ProductsAndSearchProvider from "./context/ProductsAndSearchProvider";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -24,8 +25,8 @@ const Error = React.lazy(() => import("./pages/Error"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {
-  const { user } = useProduct();
-  useCheckPhotoURL(user);
+  // const { user } = useProduct();
+  // useCheckPhotoURL(user);
   return (
     <>
       <Suspense
@@ -36,7 +37,22 @@ function App() {
         }
       >
         <Routes>
-          <Route path="/" element={<Product />}></Route>
+          <Route
+            path="/"
+            element={
+              <ProductsAndSearchProvider>
+                <Product />
+              </ProductsAndSearchProvider>
+            }
+          ></Route>
+          <Route
+            path="/search"
+            element={
+              <ProductsAndSearchProvider>
+                <Search />
+              </ProductsAndSearchProvider>
+            }
+          ></Route>
           <Route path="/cart" element={<Cart />}></Route>
           <Route
             path="/product/:metaTitle/:productId"
@@ -64,7 +80,6 @@ function App() {
           ></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
-          <Route path="/search" element={<Search />}></Route>
           {/* <Route path="/admin" element={<Admin />}></Route> */}
           <Route path="*" element={<Error />} />
         </Routes>
