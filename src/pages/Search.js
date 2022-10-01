@@ -20,6 +20,7 @@ const Search = () => {
     };
   }, [setSearchInput]);
 
+  //TODO: use hooks or HOC, render children to wrap Header with UserProvider
   return (
     <>
       <ProductProvider>

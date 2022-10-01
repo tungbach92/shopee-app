@@ -17,6 +17,7 @@ import "firebase/firestore";
 import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
 import { ClipLoader } from "react-spinners";
+import useGetShipInfos from "../../hooks/useGetShipInfos";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const {
@@ -33,9 +34,6 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     getSaved,
     getItemsPriceFinal,
     user,
-    shipInfos,
-    setShipInfos,
-    updateShipInfoToFirebase,
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
     saveCheckoutItemsToFirebase,
@@ -45,9 +43,9 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     defaultPaymentMethodID,
     updateDefaultPaymentMethodIDToStripe,
     updateCustomerBillingAddress,
-    getShipInfos,
+    // getShipInfos,
   } = useProduct();
-
+  const { shipInfos, setShipInfos } = useGetShipInfos();
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
   const [shipUnit, setShipUnit] = useState({});
@@ -308,13 +306,12 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   };
 
   const handleShipInfoCancel = () => {
-    getShipInfos();
+    // getShipInfos();
     setIsShipInfoChoosing(!isShipInfoChoosing);
   };
 
   const handleShipInfoApply = () => {
     setIsShipInfoChoosing(!isShipInfoChoosing);
-    updateShipInfoToFirebase(shipInfos);
     updateCustomerBillingAddress(shipInfos);
   };
 

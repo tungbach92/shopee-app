@@ -5,14 +5,11 @@ import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
 import PopupModal from "../Modal/PopupModal";
 import { ClipLoader } from "react-spinners";
+import useGetShipInfos from "../../hooks/useGetShipInfos";
+import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
 
 const AccountAddress = () => {
-  const {
-    shipInfos,
-    setShipInfos,
-    updateShipInfoToFirebase,
-    updateCustomerBillingAddress,
-  } = useProduct();
+  const { shipInfos, setShipInfos } = useGetShipInfos();
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();
@@ -43,9 +40,8 @@ const AccountAddress = () => {
       (shipInfo) => (shipInfo = { ...shipInfo, isDefault: false })
     );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
-    updateShipInfoToFirebase(tempShipInfos);
-    updateCustomerBillingAddress(tempShipInfos);
     setShipInfos(tempShipInfos);
+    updateCustomerBillingAddress(tempShipInfos); //! need params
   };
 
   const handleAddressAddClick = () => {
@@ -87,7 +83,6 @@ const AccountAddress = () => {
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
     );
     setShipInfos(tempShipInfos);
-    updateShipInfoToFirebase(tempShipInfos);
   };
 
   return (

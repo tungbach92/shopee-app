@@ -3,8 +3,8 @@ import ProductItem from "./ProductItem";
 import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { ClipLoader } from "react-spinners";
 import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
+import { ClipLoading } from "../ClipLoading";
 function ProductList({ items, pageIndex, pageSize }) {
   const { itemsLoading } = useProductsAndSearch();
 
@@ -26,20 +26,7 @@ function ProductList({ items, pageIndex, pageSize }) {
   };
 
   if (itemsLoading) {
-    return (
-      <Box
-        sx={{
-          flex: 1,
-          textAlign: "center",
-          padding: "14.5rem",
-          fontSize: "1.6rem",
-          color: "var(--primary-color)",
-          fontWeight: "600",
-        }}
-      >
-        <ClipLoader color="var(--primary-color)" />
-      </Box>
-    );
+    return <ClipLoading></ClipLoading>;
   }
 
   if (getRenderItemsByPageAndPagination().length === 0) {
@@ -62,10 +49,7 @@ function ProductList({ items, pageIndex, pageSize }) {
   return (
     <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
       {getRenderItemsByPageAndPagination().map((item) => (
-        <ProductItem
-          key={item.id}
-          item={item}
-        ></ProductItem>
+        <ProductItem key={item.id} item={item}></ProductItem>
       ))}
     </Grid2>
   );

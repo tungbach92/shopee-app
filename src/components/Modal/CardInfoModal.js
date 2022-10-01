@@ -6,6 +6,7 @@ import axios from "../../axios";
 import { useProduct } from "../../ProductProvider";
 import { db } from "../../firebase";
 import { styled } from "@mui/material";
+import useGetShipInfos from "../../hooks/useGetShipInfos";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -29,8 +30,8 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
     updateCustomerIdToFirebase,
     paymentMethodList,
     getPaymentMethodList,
-    shipInfos,
   } = useProduct();
+  const { shipInfos } = useGetShipInfos();
 
   const [cardName, setCardName] = useState("");
   const [cardAddress, setCardAddress] = useState("");

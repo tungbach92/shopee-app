@@ -31,8 +31,7 @@ export default class ProductProvider extends Component {
     defaultPaymentMethodID: "",
     checkoutItems: [],
     shipPriceProvince: [0, 0],
-    shipInfos: null,
-
+    // shipInfos: null,
     searchHistory: [],
 
     user: null,
@@ -54,7 +53,7 @@ export default class ProductProvider extends Component {
         //user will log in or logged in
         this.setState({ user: authUser });
         this.checkFirebaseIdTokenAuthTime();
-        this.getShipInfos();
+        // this.getShipInfos();
         this.getCustomerIdFromFirebase();
         this.setCartItemsFromFirebase();
         // this.setSearchHistoryFromFirebase();
@@ -83,7 +82,7 @@ export default class ProductProvider extends Component {
       this.saveCheckoutItemsToStorage();
     }
   }
-
+ // TODO: Called many times, this should be in provider or hook?
   checkFirebaseIdTokenAuthTime = async () => {
     const { user } = this.state;
     if (!user) return;
@@ -123,32 +122,8 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setCategorySearchItems = (categorySearchItems) => {
-    this.setState({ categorySearchItems });
-  };
-
-  setAuthorized = (authorized) => {
-    this.setState({ authorized });
-  };
-
   setProductLoading = (productLoading) => {
     this.setState({ productLoading });
-  };
-
-  setUserLoading = (userLoading) => {
-    this.setState({ userLoading });
-  };
-
-  setCategory = (category) => {
-    this.setState({ category });
-  };
-
-  setFilterPrice = (filterPrice) => {
-    this.setState({ filterPrice });
-  };
-
-  setFilter = (filter) => {
-    this.setState({ filter });
   };
 
   setOrderPageIndex = (orderPageIndex) => {
@@ -378,27 +353,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  getShipInfos = () => {
-    const user = this.state.user;
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .onSnapshot(
-          (doc) => {
-            if (doc.exists) {
-              const shipInfos = doc.data().shipInfos;
-              this.setState({ shipInfos });
-            } else {
-              this.setState({ shipInfos: [] });
-            }
-          },
-          (err) => alert(err.message)
-        );
-    }
-  };
-
   setSearchInput = (searchInput) => {
     this.setState({ searchInput });
   };
@@ -526,26 +480,6 @@ export default class ProductProvider extends Component {
     const id = event.currentTarget.dataset.id;
     const variation = event.currentTarget.dataset.variation;
 
-    // if (name === "category") {
-    //   this.setState(
-    //     { [name]: value, filter: "all", filterPrice: "default" },
-    //     () => {
-    //       this.filterItemsByCategory();
-    //       this.filterSearchItemsByCategory();
-    //     }
-    //   );
-    //   // set category filter filterPrice state, and categoryItemsFiltered categoryItem pageIndex after state mutate
-    //   // co the viet vao day duoi dang dinh nghi callback func nhung can reused lai o ngoai
-    // }
-    // if (name === "filter") {
-    //   this.setState({ [name]: value, filterPrice: "default" }, () => {
-    //     this.filterCategoryItems();
-    //     this.filterSearchItems();
-    //   });
-    // }
-    // if (name === "filterPrice") {
-    //   this.setFilterPrice(value);
-    // }
 
     if (name === "addToCartBtn") {
       this.addToCartItems(id)(item);
@@ -569,61 +503,7 @@ export default class ProductProvider extends Component {
     }
   };
 
-  // addToSearchHistory = (text) => {
-  //   let { searchHistory } = this.state;
-  //   text = text.trim();
-  //   if (text.length > 0) {
-  //     searchHistory = [...searchHistory, text];
-  //     let uniqueSearchHistory = [...new Set(searchHistory)];
-  //     this.setState({ searchHistory: uniqueSearchHistory });
-  //   }
-  // };
-
-  // deleteFromSearchHistory = (text) => {
-  //   let { searchHistory } = this.state;
-  //   text = text.trim();
-  //   if (text.length > 0) {
-  //     searchHistory = [...searchHistory].filter((item) => item !== text);
-  //     this.setState({ searchHistory });
-  //   }
-  // };
-
-  // saveSearchHistoryToFirebase = async (searchHistory) => {
-  //   const { user } = this.state;
-  //   if (!user) return;
-  //   try {
-  //     await db
-  //       .collection("users")
-  //       .doc(user?.uid)
-  //       .collection("searchHistory")
-  //       .doc("searchHistoryItems")
-  //       .set({
-  //         basket: searchHistory,
-  //       });
-  //   } catch (error) {
-  //     alert(error);
-  //   }
-  // };
-  // setSearchHistoryFromFirebase = () => {
-  //   let searchHistory = [];
-  //   const { user } = this.state;
-  //   if (!user) return;
-  //   db.collection("users")
-  //     .doc(user?.uid)
-  //     .collection("searchHistory")
-  //     .doc("searchHistoryItems")
-  //     .get()
-  //     .then((doc) => {
-  //       if (doc.exists) {
-  //         searchHistory = doc.data().basket;
-  //       }
-  //       this.setState({ searchHistory });
-  //     })
-  //     .catch((err) => {
-  //       alert(err);
-  //     });
-  // };
-
+  
   addToCartItems = (id) => (item) => {
     let { items, cartItems } = this.state;
     let cartItemsUpdated = [];
@@ -927,7 +807,7 @@ export default class ProductProvider extends Component {
   };
 
   handleLogout = () => {
-    const { user, cartItems, checkoutItems, searchHistory } = this.state;
+    const { user, cartItems, checkoutItems } = this.state;
     if (user) {
       this.saveCartItemsToFirebase(cartItems);
       // this.setState({ searchHistory: [] });
@@ -948,7 +828,6 @@ export default class ProductProvider extends Component {
     const value = {
       ...this.state,
       handleClick: this.handleClick,
-      addToSearchHistory: this.addToSearchHistory,
       changeVariationDisPlayCartItems: this.changeVariationDisPlayCartItems,
       changeCartItemsVariation: this.changeCartItemsVariation,
       changeSimilarDisPlayCartItems: this.changeSimilarDisPlayCartItems,
@@ -999,7 +878,6 @@ export default class ProductProvider extends Component {
       setCustomerID: this.setCustomerID,
       setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
       setAuthorized: this.setAuthorized,
-      getShipInfos: this.getShipInfos,
       handleLogout: this.handleLogout,
       setUserLoading: this.setUserLoading,
       saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,

@@ -6,17 +6,21 @@ import { useNavigate } from "react-router";
 import { useUser } from "../context/UserProvider";
 import ProductsAndSearchProvider from "../context/ProductsAndSearchProvider";
 import ProductProvider from "../ProductProvider";
+import { ClipLoading } from "../components/ClipLoading";
 
 export default function Account() {
-  const { user } = useUser();
+  const { user, userLoading } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !userLoading) {
       navigate("/login");
     }
-  }, [navigate, user]);
+  }, [navigate, user, userLoading]);
 
+  if (userLoading) {
+    <ClipLoading></ClipLoading>;
+  }
   return (
     <>
       <ProductsAndSearchProvider>

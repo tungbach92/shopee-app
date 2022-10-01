@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useProduct } from "../../ProductProvider";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
+import useGetShipInfos from "../../hooks/useGetShipInfos";
 
 //TODO: propTypes
 const StyledTextField = styled(TextField, {
@@ -58,7 +59,7 @@ const AddressModal = ({
   handleWardChoose,
   shipInfoIndex,
 }) => {
-  const { shipInfos, updateShipInfoToFirebase } = useProduct();
+  const { shipInfos, setShipInfos } = useGetShipInfos();
   const [errors, setErrors] = useState({});
 
   const [isNameValid, setIsNameValid] = useState(null);
@@ -203,7 +204,7 @@ const AddressModal = ({
         } else return shipInfo;
       });
 
-      updateShipInfoToFirebase(tempShipInfos);
+      setShipInfos(tempShipInfos);
     } catch (error) {
       console.log(error);
     }
@@ -228,7 +229,7 @@ const AddressModal = ({
       };
 
       tempShipInfos = [...tempShipInfos, shipInfo];
-      updateShipInfoToFirebase(tempShipInfos);
+      setShipInfos(tempShipInfos);
     } catch (err) {
       console.log(err);
     }
