@@ -1,20 +1,55 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import PropTypes from "prop-types";
+import { useUser } from "../../context/UserProvider";
 
 function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
+  const { signIn, register } = useUser();
   const navigate = useNavigate();
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     if (isRegisterPage) {
-      handleRegister(values);
+      try {
+        const userCredential = await register(values);
+        if (userCredential) {
+          const user = userCredential.user;
+          const randomName = Math.random().toString(36).substring(2);
+
+          await user.updateProfile({
+            displayName: randomName,
+          });
+        }
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === "auth/weak-password") {
+          alert("Mật khẩu quá ngắn.");
+        } else {
+          alert(errorMessage);
+        }
+      } finally {
+        formik.setSubmitting(false);
+        navigate("/");
+      }
     }
     if (isLoginPage) {
-      handleLogin(values);
+      try {
+        await signIn(values);
+        navigate("/");
+      } catch (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode === "auth/wrong-password") {
+          alert("Mật khẩu không đúng!.");
+        } else {
+          alert(errorMessage);
+        }
+      } finally {
+        formik.setSubmitting(false);
+      }
     }
   };
 
@@ -39,56 +74,6 @@ function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
     }),
     onSubmit: onSubmit,
   });
-
-  const handleLogin = (values) => {
-    const { email, password } = values;
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        formik.setSubmitting(false);
-        navigate("/");
-      })
-      .catch((error) => {
-        formik.setSubmitting(false);
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode === "auth/wrong-password") {
-          alert("Mật khẩu không đúng!.");
-        } else {
-          alert(errorMessage);
-        }
-      });
-  };
-
-  const handleRegister = (values) => {
-    const { email, password } = values;
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        if (userCredential) {
-          //create account success
-          const user = userCredential.user;
-          const randomName = Math.random().toString(36).substring(2);
-
-          user.updateProfile({
-            displayName: randomName,
-          });
-        }
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === "auth/weak-password") {
-          alert("Mật khẩu quá ngắn.");
-        } else {
-          alert(errorMessage);
-        }
-      })
-      .finally(() => {
-        formik.setSubmitting(false);
-        navigate("/");
-      });
-  };
 
   return (
     <div className="main main--login">

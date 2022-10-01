@@ -8,9 +8,10 @@ import { ClipLoader } from "react-spinners";
 import useGetOrderItems from "../../hooks/useGetOrderItems";
 import MiniPageControl from "../Pagination/MiniPageControl";
 import usePagination from "../../hooks/usePagination";
+import { useUser } from "../../context/UserProvider";
 
 const AccountOrder = () => {
-  const { user } = useProduct();
+  const { user } = useUser();
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);

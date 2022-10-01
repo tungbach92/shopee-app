@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../components/Header/Header";
 import ProductContainer from "../components/Product/ProductContainer";
 import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
+import UserProvider from "../context/UserProvider";
 import ProductProvider from "../ProductProvider";
 
 export default function Product() {
@@ -11,7 +12,7 @@ export default function Product() {
   return (
     <>
       <ProductProvider>
-        <Header></Header>
+          <Header></Header>
       </ProductProvider>
       <ProductContainer items={items}></ProductContainer>
     </>

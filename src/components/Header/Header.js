@@ -8,11 +8,11 @@ import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useProduct } from "../../ProductProvider";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack, Close } from "@mui/icons-material";
 import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
+import { useUser } from "../../context/UserProvider";
 
 const Header = ({
   isProductPage,
@@ -23,17 +23,18 @@ const Header = ({
   isRegisterPage,
   headerText,
 }) => {
-  const {
-    user,
-    userLoading,
-    addToSearchHistory,
-    searchHistory,
-    handleLogout,
-    deleteFromSearchHistory,
-  } = useProduct();
+  const { user, userLoading, signOut } = useUser();
 
-  const { searchInput, setSearchInput, handleSearchInputChange } =
-    useProductsAndSearch();
+  const {
+    searchInput,
+    setSearchInput,
+    handleSearchInputChange,
+    searchHistory,
+    deleteFromSearchHistory,
+    addToSearchHistory,
+    saveSearchHistoryToFirebase,
+  } = useProductsAndSearch();
+
   const wrapperRef = useRef();
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
@@ -91,6 +92,11 @@ const Header = ({
       event.currentTarget.blur();
       handleSearchIconClick(event.target.value);
     }
+  };
+  const handleLogout = async () => {
+    await saveSearchHistoryToFirebase();
+    await signOut();
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -316,13 +322,7 @@ const Header = ({
                     >
                       Đơn mua
                     </Link>
-                    <div
-                      onClick={() => {
-                        handleLogout();
-                        navigate("/login");
-                      }}
-                      className="header__user-item"
-                    >
+                    <div onClick={handleLogout} className="header__user-item">
                       Đăng xuất
                     </div>
                   </div>

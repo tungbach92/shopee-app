@@ -1,21 +1,30 @@
 //set up routing for Account feature
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../components/Header/Header";
-import { useProduct } from "../ProductProvider";
 import AccountContainer from "../components/Account/AccountContainer";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
+import { useUser } from "../context/UserProvider";
+import ProductsAndSearchProvider from "../context/ProductsAndSearchProvider";
+import ProductProvider from "../ProductProvider";
 
 export default function Account() {
-  const { authorized } = useProduct();
-  if (authorized !== null) {
-    if (!authorized) {
-      return <Navigate to="/login"></Navigate>;
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
     }
-    return (
-      <>
-        <Header isAccountPage={true}></Header>
-        <AccountContainer></AccountContainer>
-      </>
-    );
-  } else return null;
+  }, [navigate, user]);
+
+  return (
+    <>
+      <ProductsAndSearchProvider>
+        <ProductProvider>
+          <Header isAccountPage={true}></Header>
+        </ProductProvider>
+      </ProductsAndSearchProvider>
+      <AccountContainer></AccountContainer>
+    </>
+  );
 }

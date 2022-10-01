@@ -5,6 +5,7 @@ import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
 import PasswordResetModal from "../Modal/PasswordResetModal";
 import { styled } from "@mui/material";
+import { useUser } from "../../context/UserProvider";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -13,7 +14,7 @@ const StyledInput = styled("input", {
 }));
 
 function AccountPassword({ setEmail, email }) {
-  const { user } = useProduct();
+  const { user } = useUser();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

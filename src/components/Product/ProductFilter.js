@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import MiniPageControl from "../Pagination/MiniPageControl";
 import PropTypes from "prop-types";
@@ -27,7 +27,7 @@ const ProductFilter = ({
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   let totalCategoryItems = categoryItems.length;
   let totalFilteredItems = filteredItems.length;
-  const filterDisabled = totalCategoryItems === 0;
+  const filterDisabled = totalCategoryItems === 0 || totalFilteredItems === 0;
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
@@ -102,7 +102,7 @@ const ProductFilter = ({
         <div
           data-name="filterPrice"
           onClick={() =>
-            totalCategoryItems > 1 &&
+            totalFilteredItems > 1 &&
             (xsBreakpointMatches
               ? handleFilterPriceClickForXsResponsive()
               : setIsFilterPriceShow(!isFilterPriceShow))

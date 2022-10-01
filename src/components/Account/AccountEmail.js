@@ -3,9 +3,10 @@ import { useProduct } from "../../ProductProvider";
 import { auth } from "../../firebase";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
+import { useUser } from "../../context/UserProvider";
 
 const AccountEmail = ({ setEmail, email }) => {
-  const { user } = useProduct();
+  const { user } = useUser();
   const [verifyPassword, setVerifyPassword] = useState();
   const [isWrongPassword, setIsWrongPassword] = useState(false);
   const [newEmail, setNewEmail] = useState("");

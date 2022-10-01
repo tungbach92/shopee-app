@@ -78,27 +78,27 @@ const ProductContainer = ({ items }) => {
   };
 
   const handleRating = (ratingValue) => {
-    const ratingItems = categoryItems.filter(
+    const ratingItems = filteredItems.filter(
       (item) => item.rating >= ratingValue
     );
     setFilteredItems(ratingItems);
   };
 
   const handleFilerPriceRange = () => {
-    let filterItems = [...categoryItems];
+    let filterItems = [...filteredItems];
     if (startPrice.length > 0 && endPrice.length === 0) {
-      filterItems = categoryItems.filter(
+      filterItems = filteredItems.filter(
         (item) => item.price >= Number(startPrice)
       );
     }
     if (startPrice.length > 0 && endPrice.length > 0) {
-      filterItems = categoryItems.filter(
+      filterItems = filteredItems.filter(
         (item) =>
           item.price >= Number(startPrice) && item.price <= Number(endPrice)
       );
     }
     if (startPrice.length === 0 && endPrice.length > 0) {
-      filterItems = categoryItems.filter(
+      filterItems = filteredItems.filter(
         (item) => item.price <= Number(endPrice)
       );
     }

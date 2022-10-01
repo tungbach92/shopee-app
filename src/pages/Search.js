@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import ProductContainer from "../components/Product/ProductContainer";
 import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
 import ProductProvider from "../ProductProvider";
+import UserProvider from "../context/UserProvider";
 const Search = () => {
   // const { searchInput } = useProduct();
   const { searchItems, setSearchInput } = useProductsAndSearch();
@@ -22,7 +23,9 @@ const Search = () => {
   return (
     <>
       <ProductProvider>
-        <Header></Header>
+        <UserProvider>
+          <Header></Header>
+        </UserProvider>
       </ProductProvider>
       <ProductContainer items={searchItems}></ProductContainer>
     </>

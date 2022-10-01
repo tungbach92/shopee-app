@@ -11,6 +11,7 @@ import { ClipLoader } from "react-spinners";
 import { useProduct } from "./ProductProvider";
 import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
 import ProductsAndSearchProvider from "./context/ProductsAndSearchProvider";
+import UserProvider from "./context/UserProvider";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -41,7 +42,9 @@ function App() {
             path="/"
             element={
               <ProductsAndSearchProvider>
-                <Product />
+                <UserProvider>
+                  <Product />
+                </UserProvider>
               </ProductsAndSearchProvider>
             }
           ></Route>
@@ -73,7 +76,9 @@ function App() {
             path="/user/account/*"
             element={
               <Elements stripe={stripePromise}>
-                <Account />
+                <UserProvider>
+                  <Account />
+                </UserProvider>
               </Elements>
             }
           ></Route>
@@ -85,8 +90,22 @@ function App() {
               </Elements>
             }
           ></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
+          <Route
+            path="/login"
+            element={
+              <UserProvider>
+                <Login />
+              </UserProvider>
+            }
+          ></Route>
+          <Route
+            path="/register"
+            element={
+              <UserProvider>
+                <Register />
+              </UserProvider>
+            }
+          ></Route>
           {/* <Route path="/admin" element={<Admin />}></Route> */}
           <Route path="*" element={<Error />} />
         </Routes>

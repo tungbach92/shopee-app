@@ -10,9 +10,10 @@ import AccountOrder from "./AccountOrder";
 import AccountProfile from "./AccountProfile";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
+import { useUser } from "../../context/UserProvider";
 
 const AccountContainer = () => {
-  const { user } = useProduct();
+  const { user } = useUser();
   const [userName, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
