@@ -2,37 +2,35 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import useGetUserByObserver from "./useGetUserByObserver";
 
-const useGetShipInfos = () => {
+const useGetShipInfos = (user) => {
   const [shipInfos, setShipInfos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useGetUserByObserver();
 
   useEffect(() => {
-    if (user) {
-      const shipInfosObserver = db
-        .collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .onSnapshot(
-          (doc) => {
-            if (doc.exists) {
-              const shipInfos = doc.data().shipInfos;
-              setShipInfos(shipInfos);
-            } else {
-              setShipInfos([]);
-            }
-            setLoading(false);
-          },
-          (err) => {
-            alert(err.message);
-            setLoading(false);
-          },
-          () => {
-            console.log("stop listen");
+    const shipInfosObserver = db
+      .collection("users")
+      .doc(user?.uid)
+      .collection("shipInfos")
+      .doc("shipInfoDoc")
+      .onSnapshot(
+        (doc) => {
+          if (doc.exists) {
+            const shipInfos = doc.data().shipInfos;
+            setShipInfos(shipInfos);
+          } else {
+            setShipInfos([]);
           }
-        );
-    }
+          setLoading(false);
+        },
+        (err) => {
+          alert(err.message);
+          setLoading(false);
+        },
+        () => {
+          console.log("stop listen");
+        }
+      );
+    return shipInfosObserver;
   }, [user]);
 
   const updateShipInfoToFirebase = (shipInfos) => {

@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import { useProduct } from "../../ProductProvider";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
+import { useUser } from "../../context/UserProvider";
+import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 
 //TODO: propTypes
 const StyledTextField = styled(TextField, {
@@ -59,7 +61,8 @@ const AddressModal = ({
   handleWardChoose,
   shipInfoIndex,
 }) => {
-  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
+  const { user } = useGetUserByObserver();
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
   const [errors, setErrors] = useState({});
 
   const [isNameValid, setIsNameValid] = useState(null);

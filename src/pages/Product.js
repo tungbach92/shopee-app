@@ -12,7 +12,7 @@ export default function Product() {
   return (
     <>
       <ProductProvider>
-          <Header></Header>
+        <Header isProductPage={true}></Header>
       </ProductProvider>
       <ProductContainer items={items}></ProductContainer>
     </>

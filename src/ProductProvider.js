@@ -26,21 +26,10 @@ export default class ProductProvider extends Component {
       { code: "SALE100000", discount: "100000" },
     ],
 
-    customerID: "",
-    paymentMethodList: null,
-    defaultPaymentMethodID: "",
     checkoutItems: [],
     shipPriceProvince: [0, 0],
     // shipInfos: null,
-    searchHistory: [],
-
-    user: null,
-    userLoading: false,
-    authorized: null,
   }; // json server->fetch data to here and pass to value of Provider component
-  oneDayinMs = 24 * 3600 * 1000;
-  sessionExpinSec = this.oneDayinMs / 1000;
-  currentTimeinMs = new Date().valueOf();
 
   // componentDidMount() {
   //   // this.getDataFireBase();
@@ -845,7 +834,6 @@ export default class ProductProvider extends Component {
       saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
       setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
       setSearchItems: this.setSearchItems,
-      setCategorySearchItems: this.setCategorySearchItems,
       setCategorySearchItemsFiltered: this.setCategorySearchItemsFiltered,
       setSearchInput: this.setSearchInput,
       setShipInfos: this.setShipInfos,
@@ -861,15 +849,10 @@ export default class ProductProvider extends Component {
       setOrderPageTotal: this.setOrderPageTotal,
       setOrderPageIndex: this.setOrderPageIndex,
       pageTotalCalc: this.pageTotalCalc,
-      setFilter: this.setFilter,
-      setFilterPrice: this.setFilterPrice,
-      setCategory: this.setCategory,
       setProductLoading: this.setProductLoading,
       setCustomerID: this.setCustomerID,
       setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
-      setAuthorized: this.setAuthorized,
       handleLogout: this.handleLogout,
-      setUserLoading: this.setUserLoading,
       saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
       getCartItemsFromStorage: this.getCartItemsFromStorage,
       getCheckoutItemsFromStorage: this.getCheckoutItemsFromStorage,

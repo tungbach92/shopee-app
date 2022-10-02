@@ -3,10 +3,14 @@ import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "../../axios";
-import { useProduct } from "../../ProductProvider";
 import { db } from "../../firebase";
 import { styled } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
+import getCustomerID from "../../services/getCustomerID";
+import useGetUserByObserver from "../../hooks/useGetUserByObserver";
+import { updateCustomerIDToFirebase } from "../../services/updateCustomerIDToFirebase";
+import usePaymentMethodList from "../../hooks/usePaymentMethodList";
+import { getPaymentMethodList } from "../../services/getPaymentMethodList";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -24,14 +28,9 @@ const StyledCardElement = styled(CardElement, {
 export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const stripe = useStripe();
   const elements = useElements();
-  const {
-    user,
-    customerID,
-    updateCustomerIdToFirebase,
-    paymentMethodList,
-    getPaymentMethodList,
-  } = useProduct();
-  const { shipInfos } = useGetShipInfos();
+  const { user } = useGetUserByObserver();
+  const { paymentMethodList, setPaymentMethodList } = usePaymentMethodList(user);
+  const { shipInfos } = useGetShipInfos(user);
 
   const [cardName, setCardName] = useState("");
   const [cardAddress, setCardAddress] = useState("");
@@ -119,6 +118,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       return;
     }
 
+    const customerID = await getCustomerID(user);
     if (!isCardDuplicate) {
       //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
       const response = await axios({
@@ -133,7 +133,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
 
       // set and add new customerID to firebase if it's the first time doing purchase
       if (!customerID) {
-        updateCustomerIdToFirebase(response.data.customerID);
+        updateCustomerIDToFirebase(user, response.data.customerID);
       }
 
       //When the SetupIntent succeeds
@@ -174,7 +174,8 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         // console.log("create payment method success", paymentMethodID);
         // setPaymentMethodID(paymentMethodID);
 
-        getPaymentMethodList();
+        const paymentMethodList = await getPaymentMethodList(user);
+        setPaymentMethodList(paymentMethodList);
         setProcessing(false);
         toggleCardInfo(!isCardInfoShowing);
         window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });

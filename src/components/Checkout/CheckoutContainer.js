@@ -18,6 +18,12 @@ import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
 import { ClipLoader } from "react-spinners";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
+import getCustomerID from "../../services/getCustomerID";
+import usePaymentMethodList from "../../hooks/usePaymentMethodList";
+import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
+import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
+import useGetUserByObserver from "../../hooks/useGetUserByObserver";
+import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const {
@@ -33,19 +39,17 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     getShipPrice,
     getSaved,
     getItemsPriceFinal,
-    user,
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
     saveCheckoutItemsToFirebase,
-    paymentMethodList,
-    getCardImgByBrand,
-    customerID,
-    defaultPaymentMethodID,
-    updateDefaultPaymentMethodIDToStripe,
     updateCustomerBillingAddress,
     // getShipInfos,
   } = useProduct();
-  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
+  const { user } = useGetUserByObserver();
+  const { paymentMethodList } = usePaymentMethodList(user);
+  const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
+    useDefaultPaymentMethodID(user);
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
   const [shipUnit, setShipUnit] = useState({});
@@ -197,8 +201,9 @@ export default function CheckoutContainer({ isCheckoutPage }) {
 
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
-    updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
-    updateCustomerBillingAddress(shipInfos);
+    // const defaultPaymentMethodID = await updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
+    // setDefaultPaymentMethodID(defaultPaymentMethodID);
+    updateCustomerBillingAddress(user, shipInfos);
     setCartItems([]);
     setCheckoutItems([]);
     saveCartItemsToFirebase([]);
@@ -280,8 +285,12 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     setIsPaymentMethod(!isPaymentMethod);
   };
 
-  const handlePaymentDefaultChange = (paymentMethodID) => {
-    updateDefaultPaymentMethodIDToStripe(paymentMethodID);
+  const handlePaymentDefaultChange = async (paymentMethodID) => {
+    const defaultPaymentMethodID = await updateDefaultPaymentMethodIDToStripe(
+      user,
+      paymentMethodID
+    );
+    setDefaultPaymentMethodID(defaultPaymentMethodID);
   };
 
   const handleShipInfoAddClick = () => {
@@ -310,9 +319,9 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     setIsShipInfoChoosing(!isShipInfoChoosing);
   };
 
-  const handleShipInfoApply = () => {
+  const handleShipInfoApply = async () => {
+    await updateCustomerBillingAddress(user, shipInfos);
     setIsShipInfoChoosing(!isShipInfoChoosing);
-    updateCustomerBillingAddress(shipInfos);
   };
 
   const handleShipUnitModal = (e) => {
@@ -323,7 +332,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     toggleVoucher(!isVoucherShowing);
   };
 
-  const handleOrder = () => {
+  const handleOrder = async () => {
     if (
       isCardInfoShowing === false &&
       Object.keys(shipUnit).length > 0 &&
@@ -342,6 +351,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
           }
         });
         // Thanh toán off-season vơi thẻ được lưu ( setupIntent PaymentMethod ID)
+        const customerID = await getCustomerID(user);
         axios({
           method: "POST",
           url: `/charge-card-off-session?total=${getItemsPriceFinal(

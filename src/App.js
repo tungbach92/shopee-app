@@ -52,7 +52,9 @@ function App() {
             path="/search"
             element={
               <ProductsAndSearchProvider>
-                <Search />
+                <UserProvider>
+                  <Search />
+                </UserProvider>
               </ProductsAndSearchProvider>
             }
           ></Route>

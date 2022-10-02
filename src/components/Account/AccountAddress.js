@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useProduct } from "../../ProductProvider";
 import useModal from "../../hooks/useModal";
 import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
@@ -7,12 +6,9 @@ import PopupModal from "../Modal/PopupModal";
 import { ClipLoader } from "react-spinners";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
 import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
+import { useUser } from "../../context/UserProvider";
 
 const AccountAddress = () => {
-  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
-  const { isAddressAddShowing, toggleAddressAdd } = useModal();
-  const [shipInfoIndex, setShipInfoIndex] = useState(null);
-  const { isPopupShowing, togglePopup } = useModal();
   const {
     name,
     setName,
@@ -33,15 +29,19 @@ const AccountAddress = () => {
     handleProvinceChoose,
     handleWardChoose,
   } = useAddress();
-
-  const handleDefaultClick = (index) => {
+  const { user } = useUser();
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
+  const { isAddressAddShowing, toggleAddressAdd } = useModal();
+  const [shipInfoIndex, setShipInfoIndex] = useState(null);
+  const { isPopupShowing, togglePopup } = useModal();
+  const handleDefaultClick = async (index) => {
     let tempShipInfos = [...shipInfos];
     tempShipInfos = tempShipInfos.map(
       (shipInfo) => (shipInfo = { ...shipInfo, isDefault: false })
     );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
     updateShipInfoToFirebase(tempShipInfos);
-    updateCustomerBillingAddress(tempShipInfos); //! need params
+    await updateCustomerBillingAddress(user, tempShipInfos);
   };
 
   const handleAddressAddClick = () => {
