@@ -7,7 +7,6 @@ import { NumericFormat } from "react-number-format";
 import { useProduct } from "../../ProductProvider";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { useUser } from "../../context/UserProvider";
 
 const ProductItem = function ({ item, similarDisPlay }) {

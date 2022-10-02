@@ -8,30 +8,31 @@ const useGetShipInfos = () => {
   const { user } = useGetUserByObserver();
 
   useEffect(() => {
-    const shipInfosObserver = db
-      .collection("users")
-      .doc(user?.uid)
-      .collection("shipInfos")
-      .doc("shipInfoDoc")
-      .onSnapshot(
-        (doc) => {
-          if (doc.exists) {
-            const shipInfos = doc.data().shipInfos;
-            setShipInfos(shipInfos);
-          } else {
-            setShipInfos([]);
+    if (user) {
+      const shipInfosObserver = db
+        .collection("users")
+        .doc(user?.uid)
+        .collection("shipInfos")
+        .doc("shipInfoDoc")
+        .onSnapshot(
+          (doc) => {
+            if (doc.exists) {
+              const shipInfos = doc.data().shipInfos;
+              setShipInfos(shipInfos);
+            } else {
+              setShipInfos([]);
+            }
+            setLoading(false);
+          },
+          (err) => {
+            alert(err.message);
+            setLoading(false);
+          },
+          () => {
+            console.log("stop listen");
           }
-          setLoading(false);
-        },
-        (err) => {
-          alert(err.message);
-          setLoading(false);
-        },
-        () => {
-          console.log("stop listen");
-        }
-      );
-    return shipInfosObserver;
+        );
+    }
   }, [user]);
 
   const updateShipInfoToFirebase = (shipInfos) => {
@@ -71,6 +72,11 @@ const useGetShipInfos = () => {
     }
   };
 
-  return { shipInfos, setShipInfos, updateShipInfoToFirebase };
+  return {
+    shipInfos,
+    setShipInfos,
+    shipInfosLoading: loading,
+    updateShipInfoToFirebase,
+  };
 };
 export default useGetShipInfos;

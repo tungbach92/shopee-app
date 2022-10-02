@@ -157,6 +157,7 @@ function AccountPassword({ setEmail, email }) {
           </div>
           <PasswordResetModal
             setEmail={setEmail}
+            user={user}
             email={email}
             isPasswordResetShowing={isPasswordResetShowing}
             togglePasswordReset={togglePasswordReset}

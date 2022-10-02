@@ -2,6 +2,7 @@ import React from "react";
 import Header from "../components/Header/Header";
 import LoginContainer from "../components/Login/LoginContainer";
 import ProductsAndSearchProvider from "../context/ProductsAndSearchProvider";
+import UserProvider from "../context/UserProvider";
 const Login = () => {
   return (
     <>

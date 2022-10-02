@@ -9,7 +9,6 @@ export function useProductsAndSearch() {
   return useContext(ProductsContext);
 }
 const ProductsAndSearchProvider = ({ children }) => {
-  const { user } = useGetUserByObserver();
   const { items, itemsLoading } = useGetItemsFromFirebase();
   const [searchInput, setSearchInput] = useState("");
   const [searchItems, setSearchIems] = useState([]);
@@ -47,7 +46,7 @@ const ProductsAndSearchProvider = ({ children }) => {
     }
   };
 
-  const saveSearchHistoryToFirebase = async () => {
+  const saveSearchHistoryToFirebase = async (user) => {
     if (!user) return;
     try {
       await db
@@ -63,7 +62,7 @@ const ProductsAndSearchProvider = ({ children }) => {
     }
   };
 
-  const setSearchHistoryFromFirebase = useCallback(() => {
+  const setSearchHistoryFromFirebase = useCallback((user) => {
     let searchHistory = [];
     if (!user) return;
     db.collection("users")
@@ -80,7 +79,7 @@ const ProductsAndSearchProvider = ({ children }) => {
       .catch((err) => {
         alert(err);
       });
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     setSearchHistoryFromFirebase();

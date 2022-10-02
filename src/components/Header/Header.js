@@ -94,7 +94,7 @@ const Header = ({
     }
   };
   const handleLogout = async () => {
-    await saveSearchHistoryToFirebase();
+    await saveSearchHistoryToFirebase(user);
     await signOut();
     navigate("/login");
   };
