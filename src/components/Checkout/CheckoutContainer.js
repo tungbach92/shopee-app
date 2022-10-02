@@ -45,7 +45,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     updateCustomerBillingAddress,
     // getShipInfos,
   } = useProduct();
-  const { shipInfos, setShipInfos } = useGetShipInfos();
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
   const [shipUnit, setShipUnit] = useState({});
@@ -302,7 +302,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
         ? (shipInfo = { ...shipInfo, isDefault: true })
         : (shipInfo = { ...shipInfo, isDefault: false })
     );
-    setShipInfos(tempShipInfos);
+    updateShipInfoToFirebase(tempShipInfos);
   };
 
   const handleShipInfoCancel = () => {

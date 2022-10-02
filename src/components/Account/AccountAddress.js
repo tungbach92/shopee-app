@@ -9,7 +9,7 @@ import useGetShipInfos from "../../hooks/useGetShipInfos";
 import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
 
 const AccountAddress = () => {
-  const { shipInfos, setShipInfos } = useGetShipInfos();
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();
@@ -40,7 +40,7 @@ const AccountAddress = () => {
       (shipInfo) => (shipInfo = { ...shipInfo, isDefault: false })
     );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
-    setShipInfos(tempShipInfos);
+    updateShipInfoToFirebase(tempShipInfos);
     updateCustomerBillingAddress(tempShipInfos); //! need params
   };
 
@@ -82,7 +82,7 @@ const AccountAddress = () => {
     tempShipInfos = tempShipInfos.filter(
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
     );
-    setShipInfos(tempShipInfos);
+    updateShipInfoToFirebase(tempShipInfos);
   };
 
   return (

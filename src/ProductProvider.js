@@ -42,34 +42,26 @@ export default class ProductProvider extends Component {
   sessionExpinSec = this.oneDayinMs / 1000;
   currentTimeinMs = new Date().valueOf();
 
-  componentDidMount() {
-    // this.getDataFireBase();
-    //onAuthStateChanged Observer for only user's signed-in signed out state.
-    //onIdTokenChanged.check Observer trigger if signed-in signed out, firebase auto changes id token
-    this.setUserLoading(true);
-    this.unsubscribeUserObserver = auth.onIdTokenChanged((authUser) => {
-      this.setUserLoading(false);
-      if (authUser) {
-        //user will log in or logged in
-        this.setState({ user: authUser });
-        this.checkFirebaseIdTokenAuthTime();
-        // this.getShipInfos();
-        this.getCustomerIdFromFirebase();
-        this.setCartItemsFromFirebase();
-        // this.setSearchHistoryFromFirebase();
-        this.setAuthorized(true);
-        // cartItems = this.getCartItemsFromFirebase(authUser);
-      } else {
-        //user logged out
-        this.setState({ user: null });
-        this.setAuthorized(false);
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeUserObserver();
-  }
+  // componentDidMount() {
+  //   // this.getDataFireBase();
+  //   //onAuthStateChanged Observer for only user's signed-in signed out state.
+  //   //onIdTokenChanged.check Observer trigger if signed-in signed out, firebase auto changes id token
+  //   auth.onIdTokenChanged((authUser) => {
+  //     if (authUser) {
+  //       //user will log in or logged in
+  //       this.setState({ user: authUser });
+  //       this.checkFirebaseIdTokenAuthTime();
+  //       // this.getShipInfos();
+  //       this.getCustomerIdFromFirebase();
+  //       this.setCartItemsFromFirebase();
+  //       // this.setSearchHistoryFromFirebase();
+  //       // cartItems = this.getCartItemsFromFirebase(authUser);
+  //     } else {
+  //       //user logged out
+  //       this.setState({ user: null });
+  //     }
+  //   });
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     // if (this.state.searchHistory !== prevState.searchHistory) {
@@ -82,7 +74,7 @@ export default class ProductProvider extends Component {
       this.saveCheckoutItemsToStorage();
     }
   }
- // TODO: Called many times, this should be in provider or hook?
+  // TODO: Called many times, this should be in provider or hook?
   checkFirebaseIdTokenAuthTime = async () => {
     const { user } = this.state;
     if (!user) return;
@@ -480,7 +472,6 @@ export default class ProductProvider extends Component {
     const id = event.currentTarget.dataset.id;
     const variation = event.currentTarget.dataset.variation;
 
-
     if (name === "addToCartBtn") {
       this.addToCartItems(id)(item);
     }
@@ -503,7 +494,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  
   addToCartItems = (id) => (item) => {
     let { items, cartItems } = this.state;
     let cartItemsUpdated = [];

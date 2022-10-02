@@ -59,7 +59,7 @@ const AddressModal = ({
   handleWardChoose,
   shipInfoIndex,
 }) => {
-  const { shipInfos, setShipInfos } = useGetShipInfos();
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos();
   const [errors, setErrors] = useState({});
 
   const [isNameValid, setIsNameValid] = useState(null);
@@ -204,7 +204,7 @@ const AddressModal = ({
         } else return shipInfo;
       });
 
-      setShipInfos(tempShipInfos);
+      updateShipInfoToFirebase(tempShipInfos);
     } catch (error) {
       console.log(error);
     }
@@ -229,7 +229,7 @@ const AddressModal = ({
       };
 
       tempShipInfos = [...tempShipInfos, shipInfo];
-      setShipInfos(tempShipInfos);
+      updateShipInfoToFirebase(tempShipInfos);
     } catch (err) {
       console.log(err);
     }
