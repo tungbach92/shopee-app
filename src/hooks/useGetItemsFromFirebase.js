@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { db } from "../firebase";
 
 const useGetItemsFromFirebase = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setLoading(true);
     const unsubscribeProductObserver = db.collection("products").onSnapshot(
       (querySnapshot) => {

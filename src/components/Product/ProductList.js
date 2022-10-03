@@ -25,29 +25,23 @@ function ProductList({ items, pageIndex, pageSize }) {
     return renderItem;
   };
 
-  if (itemsLoading) {
-    return <ClipLoading></ClipLoading>;
-  }
-
-  if (getRenderItemsByPageAndPagination().length === 0) {
-    return (
-      <Box
-        sx={{
-          flex: 1,
-          textAlign: "center",
-          padding: "14.5rem",
-          fontSize: "1.6rem",
-          color: "var(--primary-color)",
-          fontWeight: "600",
-        }}
-      >
-        Không có sản phẩm...
-      </Box>
-    );
-  }
-
   return (
     <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
+      {itemsLoading && <ClipLoading></ClipLoading>}
+      {getRenderItemsByPageAndPagination().length === 0 && !itemsLoading && (
+        <Box
+          sx={{
+            flex: 1,
+            textAlign: "center",
+            padding: "14.5rem",
+            fontSize: "1.6rem",
+            color: "var(--primary-color)",
+            fontWeight: "600",
+          }}
+        >
+          Không có sản phẩm...
+        </Box>
+      )}
       {getRenderItemsByPageAndPagination().map((item) => (
         <ProductItem key={item.id} item={item}></ProductItem>
       ))}

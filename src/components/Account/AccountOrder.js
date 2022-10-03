@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useProduct } from "../../ProductProvider";
 import { Link } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
@@ -22,7 +21,7 @@ const AccountOrder = () => {
     (pageIndex - 1) * orderPageSize,
     pageIndex * orderPageSize
   );
-  const [orderItems] = useGetOrderItems(user);
+  const { orderItems, orderItemsLoading } = useGetOrderItems(user);
 
   const handleSearchInput = (e) => {
     const text = e.target.value;
@@ -147,7 +146,7 @@ const AccountOrder = () => {
           </g>
         </svg>
         <input
-          disabled={orderItems?.length === 0}
+          disabled={orderItems.length === 0}
           type="text"
           className="user-order__search"
           onChange={handleSearchInput}
@@ -256,11 +255,11 @@ const AccountOrder = () => {
             </div>
           </div>
         ))}
-        {orderItems?.length <= 0 && (
+        {orderItems.length === 0 && !orderItemsLoading && (
           <div className="user-order__order-empty">Chưa có đơn hàng.</div>
         )}
 
-        {orderItems === null && (
+        {orderItemsLoading && (
           <div className="user-order__order-loading">
             <ClipLoader color="var(--primary-color)" />
           </div>

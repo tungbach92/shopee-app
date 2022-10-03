@@ -30,7 +30,8 @@ const AccountAddress = () => {
     handleWardChoose,
   } = useAddress();
   const { user } = useUser();
-  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
+  const { shipInfos, shipInfosLoading, updateShipInfoToFirebase } =
+    useGetShipInfos(user);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();
@@ -178,12 +179,12 @@ const AccountAddress = () => {
             </div>
           </div>
         ))}
-        {shipInfos?.length === 0 && (
+        {shipInfos.length === 0 && !shipInfosLoading && (
           <div className="address-profile__address--empty">
             Vui lòng thêm địa chỉ
           </div>
         )}
-        {shipInfos === null && (
+        {shipInfosLoading && (
           <div className="address-profile__address--loading">
             <ClipLoader color="var(--primary-color)" />
           </div>

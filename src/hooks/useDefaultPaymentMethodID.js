@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { getDefaultPaymentMethodID } from "../services/getDefaultPaymentMethodID";
 
 const useDefaultPaymentMethodID = (user) => {
   const [defaultPaymentMethodID, setDefaultPaymentMethodID] = useState("");
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
       const defaultPaymentMethodID = await getDefaultPaymentMethodID(user);
       setDefaultPaymentMethodID(defaultPaymentMethodID);

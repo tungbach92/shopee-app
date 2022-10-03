@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { db } from "../firebase";
-import useGetUserByObserver from "./useGetUserByObserver";
 
 const useGetShipInfos = (user) => {
   const [shipInfos, setShipInfos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const shipInfosObserver = db
       .collection("users")
       .doc(user?.uid)
@@ -59,7 +58,7 @@ const useGetShipInfos = (user) => {
             });
         })
         .then(() => {
-          setShipInfos(shipInfos);
+          // setShipInfos(shipInfos); // observer auto get shipInfos
         })
         .catch((error) => {
           alert(error.message);
