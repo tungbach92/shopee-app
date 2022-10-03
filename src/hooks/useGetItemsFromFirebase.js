@@ -17,7 +17,7 @@ const useGetItemsFromFirebase = () => {
         setLoading(false);
       },
       (error) => {
-        alert(error.message);
+        alert("Lỗi lấy sản phẩm:" + error.message);
         setLoading(false);
       }
     );

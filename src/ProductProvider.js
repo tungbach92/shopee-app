@@ -103,248 +103,6 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setProductLoading = (productLoading) => {
-    this.setState({ productLoading });
-  };
-
-  setOrderPageIndex = (orderPageIndex) => {
-    this.setState({ orderPageIndex });
-  };
-
-  setOrderPageTotal = (orderPageTotal) => {
-    this.setState({ orderPageTotal });
-  };
-
-  getCardImgByBrand = (brand) => {
-    if (brand === "visa") {
-      return visaImg;
-    }
-    if (brand === "american Express") {
-      return expressImg;
-    }
-    if (brand === "mastercard") {
-      return masterImg;
-    }
-    if (brand === "jcb") {
-      return jcbImg;
-    }
-  };
-
-  setDefaultPaymentMethodID = (defaultPaymentMethodID) => {
-    this.setState({ defaultPaymentMethodID });
-  };
-
-  getDefaultPaymentMethodID = () => {
-    const customerID = this.state.customerID;
-    if (customerID) {
-      axios({
-        method: "POST",
-        url: "/retrieve-customer-by-id",
-        data: { customerID: customerID },
-      }).then((res) => {
-        let defaultPaymentMethodID =
-          res.data.customer.invoice_settings.default_payment_method;
-        defaultPaymentMethodID = defaultPaymentMethodID
-          ? defaultPaymentMethodID
-          : res.data.customer.default_source;
-        this.setState({ defaultPaymentMethodID });
-      });
-    }
-  };
-
-  updateDefaultPaymentMethodIDToStripe = (paymentMethodID) => {
-    const customerID = this.state.customerID;
-    if (customerID) {
-      axios({
-        method: "POST",
-        url: "/update-customer-payment-method",
-        data: {
-          customerID: customerID,
-          paymentMethodID: paymentMethodID,
-        },
-      }).then((res) => {
-        let defaultPaymentMethodID =
-          res.data.customer.invoice_settings.default_payment_method;
-        // defaultPaymentMethodID = defaultPaymentMethodID
-        //   ? defaultPaymentMethodID
-        //   : res.data.customer.default_source;
-        this.setState({ defaultPaymentMethodID });
-      });
-    }
-  };
-
-  setPaymentMethodList = (paymentMethodList) => {
-    this.setState({ paymentMethodList }, () => {
-      if (paymentMethodList.length === 1) {
-        this.setDefaultPaymentMethodID(paymentMethodList[0].id);
-      }
-    });
-  };
-
-  getPaymentMethodList = () => {
-    const customerID = this.state.customerID;
-    if (customerID) {
-      axios({
-        method: "POST",
-        url: "/get-payment-method-list",
-        data: { customerID: customerID },
-      }).then((res) => {
-        const paymentMethodList = res.data.paymentMethodList;
-        this.setPaymentMethodList(paymentMethodList);
-      });
-    }
-  };
-
-  detachPaymentMethod = (paymentMethodID) => {
-    const customerID = this.state.customerID;
-    if (customerID) {
-      axios({
-        method: "POST",
-        url: "/detach-payment-method",
-        data: { paymentMethodID: paymentMethodID, customerID: customerID },
-      }).then((res) => {
-        // console.log(res.data.paymentMethod);
-        this.getPaymentMethodList();
-      });
-    }
-  };
-
-  setCustomerID = (customerID) => {
-    this.setState({ customerID });
-  };
-
-  updateCustomerIdToFirebase = (customerID) => {
-    const user = this.state.user;
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .set({
-          customerID: customerID,
-        })
-        .then(() => {
-          this.setState({ customerID });
-        });
-    }
-  };
-
-  updateCustomerBillingAddress = async (tempShipInfos) => {
-    const { customerID, paymentMethodList, defaultPaymentMethodID } =
-      this.state;
-    if (customerID && paymentMethodList && defaultPaymentMethodID) {
-      let defaultshipInfo;
-      let cardName = "";
-
-      paymentMethodList.forEach((item) => {
-        if (item.id === defaultPaymentMethodID) {
-          cardName = item.billing_details.name;
-        }
-      });
-
-      tempShipInfos.forEach((item) => {
-        if (item.isDefault) {
-          defaultshipInfo = { ...item };
-        }
-      });
-
-      axios({
-        method: "POST",
-        url: "/update-customer-billing-address",
-        data: {
-          customerID: customerID,
-          userName: cardName.length > 0 ? cardName : defaultshipInfo.name,
-          shipName: defaultshipInfo.name,
-          phone: defaultshipInfo.phone,
-          province: defaultshipInfo.province.name,
-          district: defaultshipInfo.district.name,
-          ward: defaultshipInfo.ward.name,
-          street: defaultshipInfo.street,
-        },
-      })
-        .then((res) => {})
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
-  };
-
-  getCustomerIdFromFirebase = () => {
-    const user = this.state.user;
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const customerID = doc.data().customerID;
-            if (customerID) {
-              this.setState({ customerID }, () => {
-                this.getPaymentMethodList();
-                this.getDefaultPaymentMethodID();
-              });
-            }
-          } else {
-            this.setPaymentMethodList([]);
-          }
-        })
-        .catch((err) => alert(err.message));
-    }
-  };
-
-  setShipInfos = (shipInfos) => {
-    this.setState({ shipInfos }, () => {
-      if (shipInfos.length === 1) {
-        shipInfos[0].isDefault = true;
-      }
-    });
-  };
-
-  updateShipInfoToFirebase = (shipInfos) => {
-    const user = this.state.user;
-    if (user) {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("shipInfos")
-        .doc("shipInfoDoc")
-        .get()
-        .then((doc) => {
-          if (!doc.exists) {
-            db.collection("users")
-              .doc(user?.uid)
-              .collection("shipInfos")
-              .doc("shipInfoDoc")
-              .set({ shipInfos: [] })
-              .then(() => {});
-          }
-        })
-        .then(() => {
-          db.collection("users")
-            .doc(user?.uid)
-            .collection("shipInfos")
-            .doc("shipInfoDoc")
-            .update({
-              shipInfos: shipInfos,
-            });
-        })
-        .then(() => {
-          this.setState({ shipInfos });
-        })
-        .catch((error) => {
-          alert(error.message);
-        });
-    }
-  };
-
-  setSearchInput = (searchInput) => {
-    this.setState({ searchInput });
-  };
-  setCategorySearchItemsFiltered = (categorySearchItemsFiltered) => {
-    this.setState({ categorySearchItemsFiltered });
-  };
-
-  setSearchItems = (searchItems) => {
-    this.setState({ searchItems });
-  };
-
   getItemsPriceTotal = (items) => {
     const result = items?.reduce(
       (checkoutPriceTotal, item) =>
@@ -386,28 +144,8 @@ export default class ProductProvider extends Component {
     return result;
   };
 
-  setCheckoutItems = (checkoutItems) => {
-    this.setState({ checkoutItems });
-  };
-
   setCartItems = (cartItems) => {
     this.setState({ cartItems });
-  };
-
-  setPageTotal = (pageTotal) => {
-    this.setState({ pageTotal });
-  };
-
-  setPageIndex = (pageIndex) => {
-    this.setState({ pageIndex });
-  };
-
-  setCategoryItems = (categoryItems) => {
-    this.setState({ categoryItems });
-  };
-
-  setCategoryItemsFiltered = (categoryItemsFiltered) => {
-    this.setState({ categoryItemsFiltered });
   };
 
   setShipPriceProvince = (shipPriceProvince) => {
@@ -416,36 +154,6 @@ export default class ProductProvider extends Component {
 
   setVoucher = (voucher) => {
     this.setState({ voucher });
-  };
-
-  /**
-   * It goes to {@link componentDidMount}
-   */
-  getDataFireBase = async () => {
-    let items = [];
-    this.setProductLoading(true);
-    this.unsubscribeProductObserver = db.collection("products").onSnapshot(
-      (querySnapshot) => {
-        items = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        this.setState({ items });
-        this.setProductLoading(false);
-      },
-      (error) => {
-        alert(error.message);
-        this.setProductLoading(false);
-      }
-    );
-  };
-
-  pageTotalCalc = (items, pageSize) => {
-    const pageTotal =
-      Math.ceil(items.length / pageSize) < 1
-        ? 1
-        : Math.ceil(items.length / pageSize);
-    return pageTotal;
   };
 
   calcCartNumb = (items) => {
@@ -626,19 +334,6 @@ export default class ProductProvider extends Component {
     return savedCartItems === null ? [] : JSON.parse(savedCartItems);
   };
 
-  filterItemsBySimilar = () => {
-    const { items, category } = this.state;
-    let tempItems = [...items];
-    //filter by category
-    if (category !== "allProduct") {
-      tempItems = tempItems.filter((item) => item.category === category);
-    }
-    //change state
-    this.setState({
-      similarItems: tempItems,
-    });
-  };
-
   changeVariationDisPlayCartItems = (index) => {
     let { cartItems } = this.state;
 
@@ -816,42 +511,22 @@ export default class ProductProvider extends Component {
       setCheckoutItemsByChecked: this.setCheckoutItemsByChecked,
       setVoucher: this.setVoucher,
       setShipPriceProvince: this.setShipPriceProvince,
-      setCategoryItems: this.setCategoryItems,
-      setCategoryItemsFiltered: this.setCategoryItemsFiltered,
-      setPageIndex: this.setPageIndex,
-      setPageTotal: this.setPageTotal,
       setCartItems: this.setCartItems,
       calcCartNumb: this.calcCartNumb,
-      setCheckoutItems: this.setCheckoutItems,
       getItemsPriceTotal: this.getItemsPriceTotal,
       getItemsTotal: this.getItemsTotal,
       getShipPrice: this.getShipPrice,
       getSaved: this.getSaved,
       getItemsPriceFinal: this.getItemsPriceFinal,
-      getDataFireBase: this.getDataFireBase,
+
       saveCartItemsToFirebase: this.saveCartItemsToFirebase,
       setCartItemsFromFirebase: this.setCartItemsFromFirebase,
       saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
       setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
-      setSearchItems: this.setSearchItems,
-      setCategorySearchItemsFiltered: this.setCategorySearchItemsFiltered,
-      setSearchInput: this.setSearchInput,
-      setShipInfos: this.setShipInfos,
-      updateShipInfoToFirebase: this.updateShipInfoToFirebase,
-      updateCustomerIdToFirebase: this.updateCustomerIdToFirebase,
-      setPaymentMethodList: this.setPaymentMethodList,
-      getPaymentMethodList: this.getPaymentMethodList,
-      updateDefaultPaymentMethodIDToStripe:
-        this.updateDefaultPaymentMethodIDToStripe,
-      getCardImgByBrand: this.getCardImgByBrand,
-      detachPaymentMethod: this.detachPaymentMethod,
-      updateCustomerBillingAddress: this.updateCustomerBillingAddress,
+
       setOrderPageTotal: this.setOrderPageTotal,
       setOrderPageIndex: this.setOrderPageIndex,
-      pageTotalCalc: this.pageTotalCalc,
-      setProductLoading: this.setProductLoading,
-      setCustomerID: this.setCustomerID,
-      setDefaultPaymentMethodID: this.setDefaultPaymentMethodID,
+
       handleLogout: this.handleLogout,
       saveCheckoutItemsToStorage: this.saveCheckoutItemsToStorage,
       getCartItemsFromStorage: this.getCartItemsFromStorage,

@@ -24,6 +24,7 @@ import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
 import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
+import { useCustomerID } from "../../hooks/useCustomerID";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const {
@@ -46,9 +47,13 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     // getShipInfos,
   } = useProduct();
   const { user } = useGetUserByObserver();
-  const { paymentMethodList } = usePaymentMethodList(user);
+  const { customerID } = useCustomerID(user);
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
-    useDefaultPaymentMethodID(user);
+    useDefaultPaymentMethodID(customerID);
+  const { paymentMethodList, setPaymentMethodList } = usePaymentMethodList(
+    user,
+    setDefaultPaymentMethodID
+  );
   const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
   const stripe = useStripe();
   const { navigator } = useContext(NavigationContext);
@@ -1007,6 +1012,8 @@ export default function CheckoutContainer({ isCheckoutPage }) {
                   </button>
                   {isCardInfoShowing && (
                     <CardInfoModal
+                      paymentMethodList={paymentMethodList}
+                      setPaymentMethodList={setPaymentMethodList}
                       isCardInfoShowing={isCardInfoShowing}
                       toggleCardInfo={toggleCardInfo}
                     ></CardInfoModal>

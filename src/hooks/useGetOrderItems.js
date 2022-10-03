@@ -30,7 +30,7 @@ const useGetOrderItems = (user) => {
           setLoading(false);
         },
         (err) => {
-          alert(err);
+          alert("Lỗi lấy đơn hàng:" + err.message);
           setLoading(false);
         }
       );

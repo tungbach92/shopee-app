@@ -1,14 +1,17 @@
 import { useLayoutEffect, useState } from "react";
 import { getDefaultPaymentMethodID } from "../services/getDefaultPaymentMethodID";
 
-const useDefaultPaymentMethodID = (user) => {
+const useDefaultPaymentMethodID = (customerID) => {
   const [defaultPaymentMethodID, setDefaultPaymentMethodID] = useState("");
+
   useLayoutEffect(() => {
     (async () => {
-      const defaultPaymentMethodID = await getDefaultPaymentMethodID(user);
+      const defaultPaymentMethodID = await getDefaultPaymentMethodID(
+        customerID
+      );
       setDefaultPaymentMethodID(defaultPaymentMethodID);
     })();
-  }, [setDefaultPaymentMethodID, user]);
+  }, [customerID]);
   return { defaultPaymentMethodID, setDefaultPaymentMethodID };
 };
 

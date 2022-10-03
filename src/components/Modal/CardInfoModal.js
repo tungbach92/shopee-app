@@ -6,11 +6,10 @@ import axios from "../../axios";
 import { db } from "../../firebase";
 import { styled } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
-import getCustomerID from "../../services/getCustomerID";
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { updateCustomerIDToFirebase } from "../../services/updateCustomerIDToFirebase";
-import usePaymentMethodList from "../../hooks/usePaymentMethodList";
 import { getPaymentMethodList } from "../../services/getPaymentMethodList";
+import { useCustomerID } from "../../hooks/useCustomerID";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -25,14 +24,17 @@ const StyledCardElement = styled(CardElement, {
   fontSize: "1.3rem",
 }));
 
-export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
+export default function CardInfoModal({
+  paymentMethodList,
+  setPaymentMethodList,
+  isCardInfoShowing,
+  toggleCardInfo,
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useGetUserByObserver();
-  const { paymentMethodList, setPaymentMethodList } =
-    usePaymentMethodList(user);
+  const { customerID } = useCustomerID(user);
   const { shipInfos } = useGetShipInfos(user);
-
   const [cardName, setCardName] = useState("");
   const [cardAddress, setCardAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -119,7 +121,6 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       return;
     }
 
-    const customerID = await getCustomerID(user);
     if (!isCardDuplicate) {
       //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
       const response = await axios({
@@ -150,10 +151,10 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
             card: cardEl,
             billing_details: {
               address: {
-                state: defaultshipInfo.province.name,
-                city: defaultshipInfo.district.name,
-                line1: defaultshipInfo.ward.name,
-                line2: defaultshipInfo.street,
+                state: defaultshipInfo?.province.name || "",
+                city: defaultshipInfo?.district.name || "",
+                line1: defaultshipInfo?.ward.name || "",
+                line2: defaultshipInfo?.street || "",
                 country: "VN",
                 postal_code: 10000,
               },
@@ -177,7 +178,6 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
         setPaymentMethodList(paymentMethodList);
         setProcessing(false);
         toggleCardInfo(!isCardInfoShowing);
-        window.scrollTo({ top: 1000, left: 0, behavior: "smooth" });
         alert("Lưu thông tin thẻ thành công!");
       } else {
         alert(setUpIntentResult.error.message);

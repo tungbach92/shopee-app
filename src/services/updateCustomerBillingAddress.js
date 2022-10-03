@@ -5,7 +5,7 @@ import { getPaymentMethodList } from "./getPaymentMethodList";
 
 export const updateCustomerBillingAddress = async (user, shipInfos) => {
   const customerID = await getCustomerID(user);
-  const defaultPaymentMethodID = await getDefaultPaymentMethodID(user);
+  const defaultPaymentMethodID = await getDefaultPaymentMethodID(customerID);
   const paymentMethodList = await getPaymentMethodList(user);
   if (customerID && paymentMethodList && defaultPaymentMethodID) {
     let defaultshipInfo;

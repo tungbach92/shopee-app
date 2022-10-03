@@ -30,6 +30,7 @@ const AccountAddress = () => {
     handleWardChoose,
   } = useAddress();
   const { user } = useUser();
+  //TODO: payment and check out context
   const { shipInfos, shipInfosLoading, updateShipInfoToFirebase } =
     useGetShipInfos(user);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
@@ -42,7 +43,7 @@ const AccountAddress = () => {
     );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
     updateShipInfoToFirebase(tempShipInfos);
-    await updateCustomerBillingAddress(user, tempShipInfos);
+    await updateCustomerBillingAddress(user, tempShipInfos); // TODO: refactor when have new context
   };
 
   const handleAddressAddClick = () => {

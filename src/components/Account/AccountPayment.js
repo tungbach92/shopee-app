@@ -8,14 +8,20 @@ import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
 import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { detachPaymentMethodID } from "../../services/detachPaymentMethodID";
-import { getPaymentMethodList } from "../../services/getPaymentMethodList";
 import { useUser } from "../../context/UserProvider";
+import { useCustomerID } from "../../hooks/useCustomerID";
 const AccountPayment = () => {
   const { user } = useUser();
+  //TODO: payment and check out context
+  const { customerID } = useCustomerID(user);
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
-    useDefaultPaymentMethodID(user);
-  const { paymentMethodList, setPaymentMethodList, paymentMethodListLoading } =
-    usePaymentMethodList(user);
+    useDefaultPaymentMethodID(customerID);
+  const {
+    paymentMethodList,
+    deletePaymentMethod,
+    setPaymentMethodList,
+    paymentMethodListLoading,
+  } = usePaymentMethodList(user, setDefaultPaymentMethodID);
   const [paymentMethodID, setPaymentMethodID] = useState();
   const { isPopupShowing, togglePopup, isCardInfoShowing, toggleCardInfo } =
     useModal();
@@ -30,9 +36,8 @@ const AccountPayment = () => {
   };
 
   const handlePaymentDeleteTrue = async (id) => {
-    await detachPaymentMethodID(user, id);
-    const paymentMethodList = await getPaymentMethodList(user);
-    setPaymentMethodList(paymentMethodList);
+    const paymentMethod = await detachPaymentMethodID(customerID, id);
+    deletePaymentMethod(paymentMethod.id);
   };
 
   const handleDefaultClick = async (paymentMethodID) => {
@@ -56,6 +61,8 @@ const AccountPayment = () => {
             </button>
             {isCardInfoShowing && (
               <CardInfoModal
+                paymentMethodList={paymentMethodList}
+                setPaymentMethodList={setPaymentMethodList}
                 isCardInfoShowing={isCardInfoShowing}
                 toggleCardInfo={toggleCardInfo}
               ></CardInfoModal>

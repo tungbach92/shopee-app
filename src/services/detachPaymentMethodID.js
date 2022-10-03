@@ -1,18 +1,19 @@
 import axios from "../axios";
-import getCustomerID from "./getCustomerID";
 
-export const detachPaymentMethodID = async (user, paymentMethodID) => {
-  const customerID = await getCustomerID(user);
+export const detachPaymentMethodID = async (customerID, paymentMethodID) => {
+  let paymentMethod;
   if (!customerID || !paymentMethodID) {
-    return;
+    return paymentMethod;
   }
   try {
-    await axios({
+    const result = await axios({
       method: "POST",
       url: "/detach-payment-method",
       data: { paymentMethodID: paymentMethodID, customerID: customerID },
     });
+    paymentMethod = result.data.paymentMethod;
   } catch (error) {
     alert(error.message);
   }
+  return paymentMethod;
 };

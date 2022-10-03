@@ -1,10 +1,8 @@
 import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useProduct } from "../../ProductProvider";
 import { Autocomplete, Button, styled, TextField } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
 import { useUser } from "../../context/UserProvider";
-import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 
 //TODO: propTypes
 const StyledTextField = styled(TextField, {
@@ -61,7 +59,7 @@ const AddressModal = ({
   handleWardChoose,
   shipInfoIndex,
 }) => {
-  const { user } = useGetUserByObserver();
+  const { user } = useUser();
   const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
   const [errors, setErrors] = useState({});
 
@@ -209,7 +207,7 @@ const AddressModal = ({
 
       updateShipInfoToFirebase(tempShipInfos);
     } catch (error) {
-      console.log(error);
+      alert(error);
     }
   };
 
@@ -223,7 +221,7 @@ const AddressModal = ({
         name: name,
         phone: phone,
         fullAddress: fullAddress,
-        isDefault: tempShipInfos.length === 0 ? true : false, // set defaul true when only have 1 shipinfo
+        isDefault: tempShipInfos.length === 1 ? true : false, // set defaul true when only have 1 shipinfo
         created: created,
         street: street,
         ward: ward,
@@ -234,7 +232,7 @@ const AddressModal = ({
       tempShipInfos = [...tempShipInfos, shipInfo];
       updateShipInfoToFirebase(tempShipInfos);
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 

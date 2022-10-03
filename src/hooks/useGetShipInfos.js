@@ -22,11 +22,8 @@ const useGetShipInfos = (user) => {
           setLoading(false);
         },
         (err) => {
-          alert(err.message);
+          alert("Lỗi lấy địa chỉ ship:" + err.message);
           setLoading(false);
-        },
-        () => {
-          console.log("stop listen");
         }
       );
     return shipInfosObserver;

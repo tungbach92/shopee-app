@@ -1,11 +1,16 @@
 import { useLayoutEffect, useState } from "react";
 import { getPaymentMethodList } from "../services/getPaymentMethodList";
-import useDefaultPaymentMethodID from "./useDefaultPaymentMethodID";
 
-const usePaymentMethodList = (user) => {
-  const { setDefaultPaymentMethodID } = useDefaultPaymentMethodID(user);
+const usePaymentMethodList = (user, setDefaultPaymentMethodID) => {
   const [paymentMethodList, setPaymentMethodList] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const deletePaymentMethod = (id) => {
+    const newPaymentMethodList = paymentMethodList.filter(
+      (item) => item.id !== id
+    );
+    setPaymentMethodList(newPaymentMethodList);
+  };
   useLayoutEffect(() => {
     (async () => {
       setLoading(true);
@@ -20,6 +25,7 @@ const usePaymentMethodList = (user) => {
   return {
     paymentMethodList,
     setPaymentMethodList,
+    deletePaymentMethod,
     paymentMethodListLoading: loading,
   };
 };
