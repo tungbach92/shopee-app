@@ -29,7 +29,8 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useGetUserByObserver();
-  const { paymentMethodList, setPaymentMethodList } = usePaymentMethodList(user);
+  const { paymentMethodList, setPaymentMethodList } =
+    usePaymentMethodList(user);
   const { shipInfos } = useGetShipInfos(user);
 
   const [cardName, setCardName] = useState("");
@@ -132,9 +133,7 @@ export default function CardInfoModal({ isCardInfoShowing, toggleCardInfo }) {
       });
 
       // set and add new customerID to firebase if it's the first time doing purchase
-      if (!customerID) {
-        updateCustomerIDToFirebase(user, response.data.customerID);
-      }
+      await updateCustomerIDToFirebase(user, response.data.customerID);
 
       //When the SetupIntent succeeds
       // The resulting PaymentMethod ID (in result.setupIntent.payment_method) will be saved to the provided Customer.

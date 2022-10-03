@@ -2,12 +2,11 @@ import React, { useEffect } from "react";
 import Header from "../components/Header/Header";
 import { useSearchParams } from "react-router-dom";
 import ProductContainer from "../components/Product/ProductContainer";
-import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
 import ProductProvider from "../ProductProvider";
 import UserProvider from "../context/UserProvider";
+import { useSearchContext } from "../context/SearchProvider";
 const Search = () => {
-  // const { searchInput } = useProduct();
-  const { searchItems, setSearchInput } = useProductsAndSearch();
+  const { searchItems, setSearchInput } = useSearchContext();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // useEffect(() => {
@@ -24,9 +23,7 @@ const Search = () => {
   return (
     <>
       <ProductProvider>
-        <UserProvider>
           <Header></Header>
-        </UserProvider>
       </ProductProvider>
       <ProductContainer items={searchItems}></ProductContainer>
     </>

@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "../components/Header/Header";
 import ProductContainer from "../components/Product/ProductContainer";
-import { useProductsAndSearch } from "../context/ProductsAndSearchProvider";
+import { useProductsContext } from "../context/ProductsProvider";
 import UserProvider from "../context/UserProvider";
 import ProductProvider from "../ProductProvider";
 
 export default function Product() {
   // const { setSearchInput } = useProduct();
-  const { items } = useProductsAndSearch();
+  const { items } = useProductsContext();
 
   return (
     <>

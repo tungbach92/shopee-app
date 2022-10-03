@@ -8,7 +8,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
 import { useUser } from "../../context/UserProvider";
 import HeaderSearch from "./HeaderSearch";
 import classNames from "classnames";

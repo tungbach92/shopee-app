@@ -1,13 +1,13 @@
 import React from "react";
 import Header from "../components/Header/Header";
 import LoginContainer from "../components/Login/LoginContainer";
-import ProductsAndSearchProvider from "../context/ProductsAndSearchProvider";
+import SearchProvider from "../context/SearchProvider";
 const Register = () => {
   return (
     <>
-      <ProductsAndSearchProvider>
+      <SearchProvider>
         <Header isRegisterPage={true} headerText="Đăng ký"></Header>
-      </ProductsAndSearchProvider>
+      </SearchProvider>
       <LoginContainer
         isRegisterPage={true}
         submitText="Đăng ký"

@@ -4,9 +4,9 @@ import Header from "../components/Header/Header";
 import AccountContainer from "../components/Account/AccountContainer";
 import { useNavigate } from "react-router";
 import { useUser } from "../context/UserProvider";
-import ProductsAndSearchProvider from "../context/ProductsAndSearchProvider";
 import ProductProvider from "../ProductProvider";
 import { ClipLoading } from "../components/ClipLoading";
+import SearchProvider from "../context/SearchProvider";
 
 export default function Account() {
   const { user, userLoading } = useUser();
@@ -23,11 +23,11 @@ export default function Account() {
   }
   return (
     <>
-      <ProductsAndSearchProvider>
-        <ProductProvider>
+      <ProductProvider>
+        <SearchProvider>
           <Header isAccountPage={true}></Header>
-        </ProductProvider>
-      </ProductsAndSearchProvider>
+        </SearchProvider>
+      </ProductProvider>
       <AccountContainer></AccountContainer>
     </>
   );

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import shopeeLogo from "../../img/shoppe-logo.png";
 import HeaderCart from "./HeaderCart";
 import { Close } from "@mui/icons-material";
-import { useProductsAndSearch } from "../../context/ProductsAndSearchProvider";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import getSearchHistoryFromFirebase from "../../services/getSearchHistoryFromFirebase";
@@ -11,6 +10,7 @@ import { useUser } from "../../context/UserProvider";
 import { Box, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 import { db } from "../../firebase";
+import { useSearchContext } from "../../context/SearchProvider";
 
 const HeaderSearch = ({
   isCartPage,
@@ -20,7 +20,7 @@ const HeaderSearch = ({
   xsBreakpointMatches,
 }) => {
   const { searchInput, setSearchInput, handleSearchInputChange } =
-    useProductsAndSearch();
+    useSearchContext();
   const { user } = useUser();
 
   const wrapperRef = useRef();

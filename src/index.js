@@ -2,17 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App.js";
 import reportWebVitals from "./reportWebVitals";
-import ProductProvider from "./ProductProvider";
 import { BrowserRouter as Router } from "react-router-dom";
 import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
+import ProductsProvider from "./context/ProductsProvider.js";
+import UserProvider from "./context/UserProvider.js";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-        <Router>
-          <App />
-        </Router>
+      <Router>
+        <ProductsProvider>
+          <UserProvider>
+            <App />
+          </UserProvider>
+        </ProductsProvider>
+      </Router>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

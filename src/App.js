@@ -8,10 +8,9 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
-import { useProduct } from "./ProductProvider";
 import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
-import ProductsAndSearchProvider from "./context/ProductsAndSearchProvider";
 import UserProvider from "./context/UserProvider";
+import SearchProvider from "./context/SearchProvider";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -41,34 +40,34 @@ function App() {
           <Route
             path="/"
             element={
-              <ProductsAndSearchProvider>
-                <UserProvider>
-                  <Product />
-                </UserProvider>
-              </ProductsAndSearchProvider>
+              <SearchProvider>
+                <Product />
+              </SearchProvider>
             }
           ></Route>
           <Route
             path="/search"
             element={
-              <ProductsAndSearchProvider>
-                <UserProvider>
-                  <Search />
-                </UserProvider>
-              </ProductsAndSearchProvider>
+              <SearchProvider>
+                <Search />
+              </SearchProvider>
             }
           ></Route>
           <Route
             path="/cart"
             element={
-              <ProductsAndSearchProvider>
+              <SearchProvider>
                 <Cart />
-              </ProductsAndSearchProvider>
+              </SearchProvider>
             }
           ></Route>
           <Route
             path="/product/:metaTitle/:productId"
-            element={<Detail />}
+            element={
+              <SearchProvider>
+                <Detail />
+              </SearchProvider>
+            }
           ></Route>
           <Route
             path="/user"
@@ -78,9 +77,9 @@ function App() {
             path="/user/account/*"
             element={
               <Elements stripe={stripePromise}>
-                <UserProvider>
+                <SearchProvider>
                   <Account />
-                </UserProvider>
+                </SearchProvider>
               </Elements>
             }
           ></Route>
@@ -92,24 +91,17 @@ function App() {
               </Elements>
             }
           ></Route>
-          <Route
-            path="/login"
-            element={
-              <UserProvider>
-                <Login />
-              </UserProvider>
-            }
-          ></Route>
-          <Route
-            path="/register"
-            element={
-              <UserProvider>
-                <Register />
-              </UserProvider>
-            }
-          ></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
           {/* <Route path="/admin" element={<Admin />}></Route> */}
-          <Route path="*" element={<Error />} />
+          <Route
+            path="*"
+            element={
+              <SearchProvider>
+                <Error />
+              </SearchProvider>
+            }
+          />
         </Routes>
       </Suspense>
       <Footer></Footer>
