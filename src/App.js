@@ -9,10 +9,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
 import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
-import UserProvider from "./context/UserProvider";
-import SearchProvider from "./context/SearchProvider";
 import ProductsProviderLayout from "./context/ProductsProviderLayout";
 import SearchProviderLayout from "./context/SearchProviderLayout";
+import PrivateRoute from "./routes/PrivateRoute";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -29,6 +28,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   // const { user } = useProduct();
   // useCheckPhotoURL(user);
+
   return (
     <>
       <Suspense
@@ -43,30 +43,33 @@ function App() {
             <Route element={<SearchProviderLayout />}>
               <Route path="/" element={<Product />}></Route>
               <Route path="/search" element={<Search />}></Route>
-              <Route path="/cart" element={<Cart />}></Route>
+
               <Route
                 path="/product/:metaTitle/:productId"
                 element={<Detail />}
               ></Route>
-              <Route
-                path="/user/account/*"
-                element={
-                  <Elements stripe={stripePromise}>
-                    <Account />
-                  </Elements>
-                }
-              ></Route>
+              <Route element={<PrivateRoute />}>
+                <Route
+                  path="/user/account/*"
+                  element={
+                    <Elements stripe={stripePromise}>
+                      <Account />
+                    </Elements>
+                  }
+                ></Route>
+                <Route path="/cart" element={<Cart />}></Route>
+                <Route
+                  path="/checkout"
+                  element={
+                    <Elements stripe={stripePromise}>
+                      <Checkout />
+                    </Elements>
+                  }
+                ></Route>
+              </Route>
               <Route
                 path="/user"
                 element={<Navigate to="/user/account/" replace></Navigate>}
-              ></Route>
-              <Route
-                path="/checkout"
-                element={
-                  <Elements stripe={stripePromise}>
-                    <Checkout />
-                  </Elements>
-                }
               ></Route>
               <Route path="*" element={<Error />} />
             </Route>

@@ -38,7 +38,6 @@ function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
     if (isLoginPage) {
       try {
         await signIn(values);
-        navigate("/");
       } catch (error) {
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -49,6 +48,7 @@ function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
         }
       } finally {
         formik.setSubmitting(false);
+        navigate("/");
       }
     }
   };
