@@ -24,9 +24,7 @@ export default function Account() {
   return (
     <>
       <ProductProvider>
-        <SearchProvider>
           <Header isAccountPage={true}></Header>
-        </SearchProvider>
       </ProductProvider>
       <AccountContainer></AccountContainer>
     </>

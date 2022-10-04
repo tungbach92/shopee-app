@@ -5,18 +5,15 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
-import ProductsProvider from "./context/ProductsProvider.js";
 import UserProvider from "./context/UserProvider.js";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Router>
-        <ProductsProvider>
-          <UserProvider>
-            <App />
-          </UserProvider>
-        </ProductsProvider>
+        <UserProvider>
+          <App />
+        </UserProvider>
       </Router>
     </ThemeProvider>
   </React.StrictMode>,

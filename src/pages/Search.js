@@ -3,7 +3,6 @@ import Header from "../components/Header/Header";
 import { useSearchParams } from "react-router-dom";
 import ProductContainer from "../components/Product/ProductContainer";
 import ProductProvider from "../ProductProvider";
-import UserProvider from "../context/UserProvider";
 import { useSearchContext } from "../context/SearchProvider";
 const Search = () => {
   const { searchItems, setSearchInput } = useSearchContext();

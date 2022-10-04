@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useProductsContext } from "./ProductsProvider";
 const SearchContext = React.createContext();
 export const useSearchContext = () => {
@@ -7,17 +7,18 @@ export const useSearchContext = () => {
 
 const SearchProvider = ({ children }) => {
   const { items } = useProductsContext();
-  const [searchItems, setSearchIems] = useState([]);
+  const [searchItems, setSearchItems] = useState([]);
   const [searchInput, setSearchInput] = useState("");
 
   const handleSearchInputChange = (input) => {
     if (input.length === 0) {
+      setSearchItems([]);
       return;
     }
     const searchItems = items.filter((item) =>
       item.name.toLowerCase().includes(input.trim().toLowerCase())
     );
-    setSearchIems(searchItems);
+    setSearchItems(searchItems);
   };
 
   const value = {

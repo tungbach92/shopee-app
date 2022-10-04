@@ -11,6 +11,8 @@ import { ClipLoader } from "react-spinners";
 import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
 import UserProvider from "./context/UserProvider";
 import SearchProvider from "./context/SearchProvider";
+import ProductsProviderLayout from "./context/ProductsProviderLayout";
+import SearchProviderLayout from "./context/SearchProviderLayout";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -37,71 +39,41 @@ function App() {
         }
       >
         <Routes>
-          <Route
-            path="/"
-            element={
-              <SearchProvider>
-                <Product />
-              </SearchProvider>
-            }
-          ></Route>
-          <Route
-            path="/search"
-            element={
-              <SearchProvider>
-                <Search />
-              </SearchProvider>
-            }
-          ></Route>
-          <Route
-            path="/cart"
-            element={
-              <SearchProvider>
-                <Cart />
-              </SearchProvider>
-            }
-          ></Route>
-          <Route
-            path="/product/:metaTitle/:productId"
-            element={
-              <SearchProvider>
-                <Detail />
-              </SearchProvider>
-            }
-          ></Route>
-          <Route
-            path="/user"
-            element={<Navigate to="/user/account/" replace></Navigate>}
-          ></Route>
-          <Route
-            path="/user/account/*"
-            element={
-              <Elements stripe={stripePromise}>
-                <SearchProvider>
-                  <Account />
-                </SearchProvider>
-              </Elements>
-            }
-          ></Route>
-          <Route
-            path="/checkout"
-            element={
-              <Elements stripe={stripePromise}>
-                <Checkout />
-              </Elements>
-            }
-          ></Route>
+          <Route element={<ProductsProviderLayout />}>
+            <Route element={<SearchProviderLayout />}>
+              <Route path="/" element={<Product />}></Route>
+              <Route path="/search" element={<Search />}></Route>
+              <Route path="/cart" element={<Cart />}></Route>
+              <Route
+                path="/product/:metaTitle/:productId"
+                element={<Detail />}
+              ></Route>
+              <Route
+                path="/user/account/*"
+                element={
+                  <Elements stripe={stripePromise}>
+                    <Account />
+                  </Elements>
+                }
+              ></Route>
+              <Route
+                path="/user"
+                element={<Navigate to="/user/account/" replace></Navigate>}
+              ></Route>
+              <Route
+                path="/checkout"
+                element={
+                  <Elements stripe={stripePromise}>
+                    <Checkout />
+                  </Elements>
+                }
+              ></Route>
+              <Route path="*" element={<Error />} />
+            </Route>
+          </Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           {/* <Route path="/admin" element={<Admin />}></Route> */}
-          <Route
-            path="*"
-            element={
-              <SearchProvider>
-                <Error />
-              </SearchProvider>
-            }
-          />
         </Routes>
       </Suspense>
       <Footer></Footer>

@@ -93,11 +93,14 @@ const HeaderSearch = ({
     const mathSuggestions = [...suggestions].filter((item) => item !== text);
     setSuggestions(mathSuggestions);
   };
+  
+  const handleSuggestionClick = (text) => {
+    setSearchInput(text);
+    handleSearchIconClick(text);
+  };
 
   const handleSearchIconClick = async (text) => {
     addToSearchHistory(text);
-
-    setSearchInput(text);
     handleSearchInputChange(text);
     setIsHistory(false);
     navigate("/search"); // navigate to search 1 time
@@ -207,7 +210,7 @@ const HeaderSearch = ({
                       key={index}
                     >
                       <li
-                        onClick={() => handleSearchIconClick(item)}
+                        onClick={() => handleSuggestionClick(item)}
                         className="header__history-item"
                       >
                         <a href="# " className="header__history-link">
