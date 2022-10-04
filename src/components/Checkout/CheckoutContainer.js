@@ -25,20 +25,18 @@ import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefau
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { useCustomerID } from "../../hooks/useCustomerID";
+import useVoucher from "../../hooks/useVoucher";
+import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
+import { getSavedPrice } from "../../services/getSavedPrice";
+import { useCartContext } from "../../context/CartProvider";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const {
     shipPriceProvince,
     setShipPriceProvince,
-    voucherList,
-    voucher,
-    setVoucher,
     checkoutItems,
     setCheckoutItems,
-    setCartItems,
-    getItemsPriceTotal,
     getShipPrice,
-    getSaved,
     getItemsPriceFinal,
     setCheckoutItemsFromFirebase,
     saveCartItemsToFirebase,
@@ -46,6 +44,8 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     updateCustomerBillingAddress,
     // getShipInfos,
   } = useProduct();
+  const { resetCartItems } = useCartContext();
+  const { voucher, resetVoucher } = useVoucher();
   const { user } = useGetUserByObserver();
   const { customerID } = useCustomerID(user);
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
@@ -209,7 +209,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     // const defaultPaymentMethodID = await updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
     // setDefaultPaymentMethodID(defaultPaymentMethodID);
     updateCustomerBillingAddress(user, shipInfos);
-    setCartItems([]);
+    resetCartItems();
     setCheckoutItems([]);
     saveCartItemsToFirebase([]);
     saveCheckoutItemsToFirebase([]);
@@ -469,7 +469,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   };
 
   const handleVoucherDelete = () => {
-    setVoucher({});
+    resetVoucher();
   };
 
   return (
@@ -906,9 +906,6 @@ export default function CheckoutContainer({ isCheckoutPage }) {
               <VoucherModal
                 isVoucherShowing={isVoucherShowing}
                 toggleVoucher={toggleVoucher}
-                voucherList={voucherList}
-                voucher={voucher}
-                setVoucher={setVoucher}
               ></VoucherModal>
             )}
           </div>
@@ -1082,7 +1079,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
             <span className="checkout-product__discount-label">Tiết kiệm:</span>
             <span className="checkout-product__discount">
               <NumericFormat
-                value={getSaved(voucher, checkoutItems)}
+                value={getSavedPrice(voucher, checkoutItems)}
                 thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>

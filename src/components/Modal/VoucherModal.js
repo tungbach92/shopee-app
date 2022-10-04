@@ -1,11 +1,11 @@
-import React, { useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-export default function VoucherModal(props) {
+import useVoucher from "../../hooks/useVoucher";
+export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
+  const { voucher, updateVoucher } = useVoucher();
   const [isInvalidVoucher, setIsInvalidVoucher] = useState(true);
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();
-  const { isVoucherShowing, toggleVoucher, setVoucher, voucherList } =
-    props;
 
   const handleClick = (e) => {
     toggleVoucher(!isVoucherShowing);
@@ -28,16 +28,18 @@ export default function VoucherModal(props) {
     inputEl.current.value = text;
 
     if (text.length > 0) {
-      const voucher = voucherList.find((item) => item.code === text);
-      if (voucher) {
-        setVoucher(voucher);
-        setIsInvalidVoucher(false);
-      } else {
-        setIsInvalidVoucher(true);
-      }
+      updateVoucher(text);
       setIsVoucherNotifyShowing(true);
     }
   };
+
+  useEffect(() => {
+    if (voucher) {
+      setIsInvalidVoucher(false);
+    } else {
+      setIsInvalidVoucher(true);
+    }
+  }, [voucher]);
 
   return ReactDOM.createPortal(
     <div className="cart-product__modal">

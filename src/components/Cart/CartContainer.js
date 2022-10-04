@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
-import ProductList from "../Product/ProductList";
-import Pagination from "../Pagination/Pagination";
 import useModal from "../../hooks/useModal";
 import VoucherModal from "../Modal/VoucherModal";
-import { useProduct } from "../../ProductProvider";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import noCartImg from "../../img/no-cart.png";
 import AddCartModal from "../Modal/AddCartModal";
@@ -13,9 +10,29 @@ import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
-import usePagination from "../../hooks/usePagination";
+import useVoucher from "../../hooks/useVoucher";
+import { useCartContext } from "../../context/CartProvider";
+import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
+import { getSavedPrice } from "../../services/getSavedPrice";
+import { useCheckoutContext } from "../../context/CheckoutProvider";
 
 export default function CartContainer() {
+  const {
+    cartItems,
+    cartItemsLoading,
+    saveCartItemsToFirebase,
+    changeVariationDisPlayCartItems,
+    changeCartItemsVariation,
+    changeSimilarDisPlayCartItems,
+    delCartItem,
+    delCartItems,
+    decrCartItem,
+    incrCartItem,
+    changeAmountCartItem,
+  } = useCartContext();
+  const { setCheckoutItemsByChecked } = useCheckoutContext();
+
+  const { voucher, resetVoucher } = useVoucher();
   const navigate = useNavigate();
   const location = useLocation();
   const [variation, setVariation] = useState("");
@@ -24,9 +41,6 @@ export default function CartContainer() {
   const [deleteVariation, setDeleteVariation] = useState();
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
   const [checked, setChecked] = useState([]);
-  const { pageIndex, setPageIndex, similarPageSize, pageTotal } =
-    usePagination(cartItems);
-  const [loading, setLoading] = useState(false);
 
   const {
     isVoucherShowing,
@@ -36,34 +50,11 @@ export default function CartContainer() {
     isPopupShowing,
     togglePopup,
   } = useModal();
-  const {
-    voucherList,
-    voucher,
-    setVoucher,
-    cartItems,
-    cartItemsLoading,
-    saveCartItemsToFirebase,
-    handleClick,
-    changeVariationDisPlayCartItems,
-    changeCartItemsVariation,
-    changeSimilarDisPlayCartItems,
-    delCartItem,
-    delCartItems,
-    setCheckoutItemsByChecked,
-    getItemsPriceTotal,
-    getItemsTotal,
-    getSaved,
-    user,
-    setCartItemsFromFirebase,
-    setCheckoutItemsFromFirebase,
-    setSearchInput,
-  } = useProduct();
 
   // scrollToTop
   useEffect(() => {
     window.scrollTo(0, 0);
-    setSearchInput("");
-  }, [setSearchInput]);
+  }, []);
 
   useEffect(() => {
     if (location.state?.from.pathname) {
@@ -72,12 +63,13 @@ export default function CartContainer() {
     navigate("", { replace: true });
   }, [toggleIsAddCardPopup, navigate, location.state?.from.pathname]);
 
-  useEffect(() => {
-    if (user) {
-      setCartItemsFromFirebase(); // called at header cart
-      setCheckoutItemsFromFirebase();
-    }
-  }, [setCartItemsFromFirebase, setCheckoutItemsFromFirebase, user]);
+  //! what for ????
+  // useEffect(() => {
+  //   if (user) {
+  //     getCartItemsFromFirebase(); // called at header cart
+  //     setCheckoutItemsFromFirebase();
+  //   }
+  // }, [setCheckoutItemsFromFirebase, user]);
 
   useEffect(() => {
     if (checked?.length > 0) {
@@ -88,12 +80,20 @@ export default function CartContainer() {
     }
   }, [checked]);
 
+  const getItemsTotal = (items) => {
+    const result = items?.reduce(
+      (checkoutItemTotal, item) => checkoutItemTotal + item.amount,
+      0
+    );
+    return result ? result : 0;
+  };
+
   const handleVariationClick = (event) => {
     const variation = event.currentTarget.innerText;
     setVariation(variation);
   };
 
-  const handleVariationBack = (index, event) => {
+  const handleVariationBack = (index) => {
     setVariation("");
     changeVariationDisPlayCartItems(index);
   };
@@ -124,7 +124,6 @@ export default function CartContainer() {
   const handleVariationApply = (index, id, oldVariation) => {
     changeCartItemsVariation(variation, index);
     changeCheckedItemVariation(id, oldVariation);
-    changeVariationDisPlayCartItems(index);
   };
   const handleCheckout = async (event) => {
     if (checked?.length === 0 || isVariationChoose === false) {
@@ -189,7 +188,7 @@ export default function CartContainer() {
   };
 
   const handleVoucherDelete = () => {
-    setVoucher({});
+    resetVoucher();
   };
 
   const handleCheck = (item) => {
@@ -474,12 +473,9 @@ export default function CartContainer() {
                       </button>
                       {item.variationList.length > 0 && (
                         <button
-                          onClick={handleVariationApply.bind(
-                            this,
-                            index,
-                            item.id,
-                            item.variation
-                          )}
+                          onClick={() =>
+                            handleVariationApply(index, item.id, item.variation)
+                          }
                           className="btn cart-product__notify-ok"
                         >
                           Xác nhận
@@ -506,11 +502,8 @@ export default function CartContainer() {
                 <div className="grid__col cart-product__amount">
                   <div className="cart-product__amount-wrapper">
                     <button
-                      data-id={item.id}
-                      data-name="decrCartItem"
-                      data-variation={item.variation}
-                      onClick={(e) => {
-                        handleClick(e);
+                      onClick={() => {
+                        decrCartItem(item.id, item.variation);
                         changeCheckedItemAmount(
                           item.id,
                           item.variation,
@@ -530,7 +523,13 @@ export default function CartContainer() {
                       className="cart-product__amount-numb"
                       value={item.amount}
                       onChange={(e) => {
-                        handleClick(e);
+                        e.target.value = e.target.value
+                          .replace(/[^0-9.]/g, "")
+                          .replace(/(\..*)\./g, "$1");
+                        const value = Number(e.target.value);
+                        if (value > 0) {
+                          changeAmountCartItem(item.id, item.variation, value);
+                        }
                         changeCheckedItemAmount(
                           item.id,
                           item.variation,
@@ -539,11 +538,8 @@ export default function CartContainer() {
                       }}
                     />
                     <button
-                      data-id={item.id}
-                      data-name="incrCartItem"
-                      data-variation={item.variation}
-                      onClick={(e) => {
-                        handleClick(e);
+                      onClick={() => {
+                        incrCartItem(item.id, item.variation);
                         changeCheckedItemAmount(
                           item.id,
                           item.variation,
@@ -822,9 +818,6 @@ export default function CartContainer() {
                   <VoucherModal
                     isVoucherShowing={isVoucherShowing}
                     toggleVoucher={toggleVoucher}
-                    voucherList={voucherList}
-                    voucher={voucher}
-                    setVoucher={setVoucher}
                   ></VoucherModal>
                 )}
               </div>
@@ -923,7 +916,7 @@ export default function CartContainer() {
                     </span>
                     <span className="cart-product__saved-value">
                       <NumericFormat
-                        value={getSaved(voucher, checked)}
+                        value={getSavedPrice(voucher, checked)}
                         thousandSeparator={true}
                         displayType="text"
                         prefix={"₫"}
@@ -942,7 +935,7 @@ export default function CartContainer() {
           </Grid2>
         </Grid2>
       )}
-      {cartItems.length === 0 && !cartItemsLoading && user && (
+      {cartItems.length === 0 && !cartItemsLoading && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">

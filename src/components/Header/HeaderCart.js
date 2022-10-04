@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import noCartImg from "../../img/no-cart.png";
-import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
@@ -8,9 +7,10 @@ import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
 import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
+import { useCartContext } from "../../context/CartProvider";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
-  const { cartItems, delCartItem } = useProduct();
+  const { cartItems, cartItemsLoading, delCartItem } = useCartContext();
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
   const navigate = useNavigate();
@@ -34,7 +34,9 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
         <div className="header__cart-icon-link">
           <i className="header__cart-icon bi bi-cart">
             {/* <!-- No cart: empty --> */}
-            <div className="header__cart-numb">{cartItems?.length}</div>
+            <div className="header__cart-numb">
+              {!cartItemsLoading && cartItems.length}
+            </div>
           </i>
         </div>
         {!xsBreakpointMatches && (

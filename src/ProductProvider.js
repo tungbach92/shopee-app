@@ -42,7 +42,7 @@ export default class ProductProvider extends Component {
   //       this.checkFirebaseIdTokenAuthTime();
   //       // this.getShipInfos();
   //       this.getCustomerIdFromFirebase();
-  //       this.setCartItemsFromFirebase();
+  //       this.getCartItemsFromFirebase();
   //       // this.setSearchHistoryFromFirebase();
   //       // cartItems = this.getCartItemsFromFirebase(authUser);
   //     } else {
@@ -103,38 +103,10 @@ export default class ProductProvider extends Component {
     }
   };
 
-  getItemsPriceTotal = (items) => {
-    const result = items?.reduce(
-      (checkoutPriceTotal, item) =>
-        checkoutPriceTotal + item.price * item.amount,
-      0
-    );
-    return result ? result : 0;
-  };
-
-  getItemsTotal = (items) => {
-    const result = items?.reduce(
-      (checkoutItemTotal, item) => checkoutItemTotal + item.amount,
-      0
-    );
-    return result ? result : 0;
-  };
 
   getShipPrice = (shipUnit) =>
     Number(shipUnit?.price) ? Number(shipUnit?.price) : 0;
 
-  getSaved = (voucher, checkoutItems) => {
-    if (Object.keys(voucher).length > 0) {
-      let result = voucher.discount.includes("%")
-        ? (this.getItemsPriceTotal(checkoutItems) *
-            Number(voucher.discount.slice(0, -1))) /
-          100
-        : voucher.discount;
-      return result;
-    } else {
-      return 0;
-    }
-  };
 
   getItemsPriceFinal = (items, shipUnit, voucher) => {
     let result =
@@ -399,7 +371,7 @@ export default class ProductProvider extends Component {
     }
   };
 
-  setCartItemsFromFirebase = () => {
+  getCartItemsFromFirebase = () => {
     const { user } = this.state;
     if (!user) return;
 
@@ -520,7 +492,7 @@ export default class ProductProvider extends Component {
       getItemsPriceFinal: this.getItemsPriceFinal,
 
       saveCartItemsToFirebase: this.saveCartItemsToFirebase,
-      setCartItemsFromFirebase: this.setCartItemsFromFirebase,
+      getCartItemsFromFirebase: this.getCartItemsFromFirebase,
       saveCheckoutItemsToFirebase: this.saveCheckoutItemsToFirebase,
       setCheckoutItemsFromFirebase: this.setCheckoutItemsFromFirebase,
 

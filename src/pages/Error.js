@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "../components/Header/Header";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material";
 
@@ -14,7 +13,6 @@ const StyledBox = styled(Box)({
 export default function Error() {
   return (
     <>
-      <Header></Header>
       <StyledBox>Error 404 - Không tìm thấy trang</StyledBox>
     </>
   );

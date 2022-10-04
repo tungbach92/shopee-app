@@ -11,6 +11,7 @@ import { ArrowBack } from "@mui/icons-material";
 import { useUser } from "../../context/UserProvider";
 import HeaderSearch from "./HeaderSearch";
 import classNames from "classnames";
+import { useCartContext } from "../../context/CartProvider";
 
 const Header = ({
   isProductPage,

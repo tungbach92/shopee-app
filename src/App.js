@@ -12,6 +12,8 @@ import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
 import ProductsProviderLayout from "./context/ProductsProviderLayout";
 import SearchProviderLayout from "./context/SearchProviderLayout";
 import PrivateRoute from "./routes/PrivateRoute";
+import CartProviderLayout from "./context/CartProviderLayout";
+import { CheckoutProviderLayout } from "./context/CheckoutProviderLayout";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -28,7 +30,6 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   // const { user } = useProduct();
   // useCheckPhotoURL(user);
-
   return (
     <>
       <Suspense
@@ -41,41 +42,44 @@ function App() {
         <Routes>
           <Route element={<ProductsProviderLayout />}>
             <Route element={<SearchProviderLayout />}>
-              <Route path="/" element={<Product />}></Route>
-              <Route path="/search" element={<Search />}></Route>
-
-              <Route
-                path="/product/:metaTitle/:productId"
-                element={<Detail />}
-              ></Route>
-              <Route element={<PrivateRoute />}>
+              <Route element={<CartProviderLayout />}>
+                <Route path="/" element={<Product />}></Route>
+                <Route path="/search" element={<Search />}></Route>
                 <Route
-                  path="/user/account/*"
-                  element={
-                    <Elements stripe={stripePromise}>
-                      <Account />
-                    </Elements>
-                  }
+                  path="/product/:metaTitle/:productId"
+                  element={<Detail />}
                 ></Route>
-                <Route path="/cart" element={<Cart />}></Route>
+                <Route element={<PrivateRoute />}>
+                  <Route
+                    path="/user/account/*"
+                    element={
+                      <Elements stripe={stripePromise}>
+                        <Account />
+                      </Elements>
+                    }
+                  ></Route>
+                  <Route element={<CheckoutProviderLayout />}>
+                    <Route path="/cart" element={<Cart />}></Route>
+                    <Route
+                      path="/checkout"
+                      element={
+                        <Elements stripe={stripePromise}>
+                          <Checkout />
+                        </Elements>
+                      }
+                    ></Route>
+                  </Route>
+                </Route>
                 <Route
-                  path="/checkout"
-                  element={
-                    <Elements stripe={stripePromise}>
-                      <Checkout />
-                    </Elements>
-                  }
+                  path="/user"
+                  element={<Navigate to="/user/account/" replace></Navigate>}
                 ></Route>
               </Route>
-              <Route
-                path="/user"
-                element={<Navigate to="/user/account/" replace></Navigate>}
-              ></Route>
-              <Route path="*" element={<Error />} />
             </Route>
           </Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="*" element={<Error />} />
           {/* <Route path="/admin" element={<Admin />}></Route> */}
         </Routes>
       </Suspense>
