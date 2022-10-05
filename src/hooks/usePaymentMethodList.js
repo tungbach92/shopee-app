@@ -12,15 +12,22 @@ const usePaymentMethodList = (user, setDefaultPaymentMethodID) => {
     setPaymentMethodList(newPaymentMethodList);
   };
   useLayoutEffect(() => {
+    let isMounted = true;
     (async () => {
       setLoading(true);
       const paymentMethodList = await getPaymentMethodList(user);
+      if (!isMounted) {
+        return;
+      }
       setPaymentMethodList(paymentMethodList);
       if (paymentMethodList.length === 1) {
         setDefaultPaymentMethodID(paymentMethodList[0].id);
       }
       setLoading(false);
     })();
+    return () => {
+      isMounted = false;
+    };
   }, [setDefaultPaymentMethodID, user]);
   return {
     paymentMethodList,

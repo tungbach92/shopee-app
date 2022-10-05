@@ -1,6 +1,8 @@
 import axios from "../axios";
+import getCustomerID from "./getCustomerID";
 
-export const getDefaultPaymentMethodID = async (customerID) => {
+export const getDefaultPaymentMethodID = async (user) => {
+  const customerID = await getCustomerID(user);
   let defaultPaymentMethodID = "";
   if (!customerID) {
     return defaultPaymentMethodID;

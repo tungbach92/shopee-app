@@ -9,6 +9,7 @@ const useGetOrderItems = (user) => {
   };
 
   useLayoutEffect(() => {
+    let isMounted = true;
     const observer = db
       .collection("users")
       .doc(user?.uid)
@@ -17,6 +18,9 @@ const useGetOrderItems = (user) => {
       //using onsnapshot for get all updated documents in the collection
       .onSnapshot(
         (snapshot) => {
+          if (!isMounted) {
+            return;
+          }
           if (snapshot.empty) {
             setOrderItems([]);
           } else {
@@ -34,7 +38,10 @@ const useGetOrderItems = (user) => {
           setLoading(false);
         }
       );
-    return observer;
+    return () => {
+      isMounted = false;
+      observer();
+    };
   }, [user]);
   return { orderItems, resetOrderItems, orderItemsLoading: loading };
 };

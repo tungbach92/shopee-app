@@ -5,6 +5,7 @@ import { isEqual } from "lodash";
 import { db } from "../firebase";
 import { useUser } from "./UserProvider";
 import { getCartItemsFromFirebase } from "../services/getCartItemsFromFirebase";
+import useVoucher from "../hooks/useVoucher";
 
 const CartContext = React.createContext();
 export const useCartContext = () => {
@@ -16,6 +17,7 @@ const CartProvider = ({ children }) => {
   const { user } = useUser();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { voucher, updateVoucher, resetVoucher } = useVoucher();
 
   useEffect(() => {
     (async () => {
@@ -143,6 +145,28 @@ const CartProvider = ({ children }) => {
     setCartItems([...newCartItems]);
   };
 
+  //TODO: choose when to save cart to firebase
+  const saveCartItemsToFirebase = async (cartItems) => {
+    try {
+      const created = Date.now();
+      cartItems = cartItems.map((item) => {
+        const { similarDisPlay, variationDisPlay, ...rest } = item;
+        return rest;
+      });
+      await db
+        .collection("users")
+        .doc(user?.uid)
+        .collection("cart")
+        .doc("cartItems")
+        .set({
+          basket: cartItems,
+          created: created,
+        });
+    } catch (error) {
+      alert("lỗi lưu giỏ hàng:" + error.message);
+    }
+  };
+
   //   const changeSimilarDisPlayCartItems = (index) => {
   //     const { cartItems } = this.state;
   //     const newCartItems = [...cartItems];
@@ -165,27 +189,6 @@ const CartProvider = ({ children }) => {
   //     );
   //   };
 
-  const saveCartItemsToFirebase = async (cartItems) => {
-    try {
-      const created = Date.now();
-      cartItems = cartItems.map((item) => {
-        const { similarDisPlay, variationDisPlay, ...rest } = item;
-        return rest;
-      });
-      await db
-        .collection("users")
-        .doc(user?.uid)
-        .collection("cart")
-        .doc("cartItems")
-        .set({
-          basket: cartItems,
-          created: created,
-        });
-    } catch (error) {
-      alert("lỗi lưu giỏ hàng:" + error.message);
-    }
-  };
-
   const value = {
     cartItems,
     cartItemsLoading: loading,
@@ -200,6 +203,9 @@ const CartProvider = ({ children }) => {
     saveCartItemsToFirebase,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
+    voucher,
+    updateVoucher,
+    resetVoucher,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

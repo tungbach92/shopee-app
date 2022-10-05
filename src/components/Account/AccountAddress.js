@@ -81,10 +81,10 @@ const AccountAddress = () => {
 
   const handleDeleteTrue = (index) => {
     let tempShipInfos = [...shipInfos];
+    updateShipInfoToFirebase(tempShipInfos); //TODO: await loading
     tempShipInfos = tempShipInfos.filter(
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
     );
-    updateShipInfoToFirebase(tempShipInfos);
   };
 
   return (

@@ -1,7 +1,9 @@
+import { getItemsPriceTotal } from "./getItemsPriceTotal";
+
 export const getSavedPrice = (voucher, checkoutItems) => {
   if (Object.keys(voucher).length > 0) {
     let result = voucher.discount.includes("%")
-      ? (this.getItemsPriceTotal(checkoutItems) *
+      ? (getItemsPriceTotal(checkoutItems) *
           Number(voucher.discount.slice(0, -1))) /
         100
       : voucher.discount;

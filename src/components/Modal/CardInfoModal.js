@@ -10,6 +10,7 @@ import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { updateCustomerIDToFirebase } from "../../services/updateCustomerIDToFirebase";
 import { getPaymentMethodList } from "../../services/getPaymentMethodList";
 import { useCustomerID } from "../../hooks/useCustomerID";
+import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -194,6 +195,8 @@ export default function CardInfoModal({
       e.preventDefault();
     }
   };
+
+  useNavigateAndRefreshBlocker(processing);
 
   useEffect(() => {
     if (user) {

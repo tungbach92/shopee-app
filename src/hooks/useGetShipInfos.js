@@ -6,6 +6,7 @@ const useGetShipInfos = (user) => {
   const [loading, setLoading] = useState(true);
 
   useLayoutEffect(() => {
+    let isMounted = true;
     const shipInfosObserver = db
       .collection("users")
       .doc(user?.uid)
@@ -13,6 +14,9 @@ const useGetShipInfos = (user) => {
       .doc("shipInfoDoc")
       .onSnapshot(
         (doc) => {
+          if (!isMounted) {
+            return;
+          }
           if (doc.exists) {
             const shipInfos = doc.data().shipInfos;
             setShipInfos(shipInfos);
@@ -26,7 +30,10 @@ const useGetShipInfos = (user) => {
           setLoading(false);
         }
       );
-    return shipInfosObserver;
+    return () => {
+      isMounted = false;
+      shipInfosObserver();
+    };
   }, [user]);
 
   const updateShipInfoToFirebase = (shipInfos) => {

@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
-import { UNSAFE_NavigationContext as NavigationContext } from "react-router-dom";
 import useModal from "../../hooks/useModal";
 import ShipUnitsModal from "../Modal/ShipUnitsModal";
 import VoucherModal from "../Modal/VoucherModal";
@@ -24,11 +23,10 @@ import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
 import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
-import { useCustomerID } from "../../hooks/useCustomerID";
-import useVoucher from "../../hooks/useVoucher";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getSavedPrice } from "../../services/getSavedPrice";
 import { useCartContext } from "../../context/CartProvider";
+import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const {
@@ -44,59 +42,6 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     updateCustomerBillingAddress,
     // getShipInfos,
   } = useProduct();
-  const { resetCartItems } = useCartContext();
-  const { voucher, resetVoucher } = useVoucher();
-  const { user } = useGetUserByObserver();
-  const { customerID } = useCustomerID(user);
-  const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
-    useDefaultPaymentMethodID(customerID);
-  const { paymentMethodList, setPaymentMethodList } = usePaymentMethodList(
-    user,
-    setDefaultPaymentMethodID
-  );
-  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
-  const stripe = useStripe();
-  const { navigator } = useContext(NavigationContext);
-  const [shipUnit, setShipUnit] = useState({});
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
-  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
-  const [shipChecked, setShipChecked] = useState([]);
-  const [isCardPayment, setIsCardPayment] = useState(false);
-  const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
-  const [processing, setProcessing] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const shipUnitList = useMemo(() => {
-    return [
-      {
-        id: 0,
-        name: "Giao Hàng Tiết Kiệm",
-        price: shipPriceProvince[0],
-        date: "4~5 ngày",
-        method: "Cho phép Thanh toán khi nhận hàng",
-      },
-      {
-        id: 1,
-        name: "JT Express",
-        price: shipPriceProvince[1],
-        date: "2~3 ngày",
-        method: "Cho phép Thanh toán khi nhận hàng",
-      },
-    ];
-  }, [shipPriceProvince]);
-
-  useEffect(() => {
-    let shipPrice = [];
-    shipInfos?.forEach((item) => {
-      if (item.isDefault) {
-        shipPrice = item.province.shipPrice;
-      }
-    });
-
-    setShipPriceProvince(shipPrice);
-  }, [setShipPriceProvince, shipInfos]);
 
   const {
     name,
@@ -131,6 +76,59 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     isAddressAddShowing,
     toggleAddressAdd,
   } = useModal();
+
+  const { voucher, resetVoucher, resetCartItems } = useCartContext();
+  const { user } = useGetUserByObserver();
+  const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
+    useDefaultPaymentMethodID(user);
+  const { paymentMethodList, setPaymentMethodList } = usePaymentMethodList(
+    user,
+    setDefaultPaymentMethodID
+  );
+  const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
+  const stripe = useStripe();
+  const [shipUnit, setShipUnit] = useState({});
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [isShipInfoChoosing, setIsShipInfoChoosing] = useState(false);
+  const [isPaymentMethod, setIsPaymentMethod] = useState(false);
+  const [shipChecked, setShipChecked] = useState([]);
+  const [isCardPayment, setIsCardPayment] = useState(false);
+  const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [succeeded, setSucceeded] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const shipUnitList = useMemo(() => {
+    return [
+      {
+        id: 0,
+        name: "Giao Hàng Tiết Kiệm",
+        price: shipPriceProvince[0],
+        date: "4~5 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+      {
+        id: 1,
+        name: "JT Express",
+        price: shipPriceProvince[1],
+        date: "2~3 ngày",
+        method: "Cho phép Thanh toán khi nhận hàng",
+      },
+    ];
+  }, [shipPriceProvince]);
+
+  useNavigateAndRefreshBlocker(processing);
+
+  useEffect(() => {
+    let shipPrice = [];
+    shipInfos?.forEach((item) => {
+      if (item.isDefault) {
+        shipPrice = item.province.shipPrice;
+      }
+    });
+
+    setShipPriceProvince(shipPrice);
+  }, [setShipPriceProvince, shipInfos]);
 
   useEffect(() => {
     const setCheckout = async () => {
@@ -241,36 +239,6 @@ export default function CheckoutContainer({ isCheckoutPage }) {
 
     setCheckedAndShipUnit();
   }, [shipUnit, shipUnitList]);
-
-  useEffect(() => {
-    if (!processing) return;
-
-    const blocker = (tx) => {
-      if (
-        window.confirm(
-          "Việc này có thể khiến quá trình thanh toán bị gián đoạn. Bạn vẫn muốn rời khỏi trang web?"
-        )
-      )
-        tx.retry();
-    };
-
-    const unblock = navigator.block((tx) => {
-      const autoUnblockingTx = {
-        ...tx,
-        retry() {
-          // Automatically unblock the transition so it can play all the way
-          // through before retrying it. TODO: Figure out how to re-enable
-          // this block if the transition is cancelled for some reason.
-          unblock();
-          tx.retry();
-        },
-      };
-
-      blocker(autoUnblockingTx);
-    });
-
-    return unblock;
-  }, [navigator, processing]);
 
   const handlePaymentMethodSelect = (e) => {
     const paymentMethod = e.target.innerText;

@@ -6,8 +6,12 @@ const useGetUserByObserver = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const unsubscribeUserObserver = auth.onIdTokenChanged(
       (authUser) => {
+        if (!isMounted) {
+          return;
+        }
         if (authUser) {
           //user will log in or logged in
           setUser(authUser);
@@ -23,7 +27,10 @@ const useGetUserByObserver = () => {
         setLoading(false);
       }
     );
-    return unsubscribeUserObserver;
+    return () => {
+      isMounted = false;
+      unsubscribeUserObserver();
+    };
   }, []);
 
   return { user, userLoading: loading };

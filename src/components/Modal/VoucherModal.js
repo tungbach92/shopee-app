@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import useVoucher from "../../hooks/useVoucher";
+import { useCartContext } from "../../context/CartProvider";
 export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
-  const { voucher, updateVoucher } = useVoucher();
+  const { voucher, updateVoucher } = useCartContext();
   const [isInvalidVoucher, setIsInvalidVoucher] = useState(true);
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();

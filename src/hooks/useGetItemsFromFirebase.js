@@ -6,9 +6,13 @@ const useGetItemsFromFirebase = () => {
   const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
+    let isMounted = true;
     setLoading(true);
     const unsubscribeProductObserver = db.collection("products").onSnapshot(
       (querySnapshot) => {
+        if (!isMounted) {
+          return;
+        }
         const items = querySnapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
@@ -22,6 +26,7 @@ const useGetItemsFromFirebase = () => {
       }
     );
     return () => {
+      isMounted = false;
       unsubscribeProductObserver();
     };
   }, []);

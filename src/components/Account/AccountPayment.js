@@ -9,13 +9,16 @@ import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefau
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { detachPaymentMethodID } from "../../services/detachPaymentMethodID";
 import { useUser } from "../../context/UserProvider";
-import { useCustomerID } from "../../hooks/useCustomerID";
+import getCustomerID from "../../services/getCustomerID";
+import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 const AccountPayment = () => {
   const { user } = useUser();
   //TODO: payment and check out context
-  const { customerID } = useCustomerID(user);
-  const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
-    useDefaultPaymentMethodID(customerID);
+  const {
+    defaultPaymentMethodID,
+    setDefaultPaymentMethodID,
+    defaultPaymentMethodIDLoading,
+  } = useDefaultPaymentMethodID(user);
   const {
     paymentMethodList,
     deletePaymentMethod,
@@ -23,8 +26,17 @@ const AccountPayment = () => {
     paymentMethodListLoading,
   } = usePaymentMethodList(user, setDefaultPaymentMethodID);
   const [paymentMethodID, setPaymentMethodID] = useState();
+  const [deletePaymentLoading, setDeletePaymentLoading] = useState(false);
+  const [defaultPMIDUpdateLoading, setDefaultPMIDUpdateLoading] =
+    useState(false);
   const { isPopupShowing, togglePopup, isCardInfoShowing, toggleCardInfo } =
     useModal();
+
+  useNavigateAndRefreshBlocker(
+    defaultPaymentMethodIDLoading ||
+      deletePaymentLoading ||
+      defaultPMIDUpdateLoading
+  );
 
   const handleAddCardClick = () => {
     toggleCardInfo(!isCardInfoShowing);
@@ -36,15 +48,20 @@ const AccountPayment = () => {
   };
 
   const handlePaymentDeleteTrue = async (id) => {
+    setDeletePaymentLoading(true);
+    const customerID = await getCustomerID(user);
     const paymentMethod = await detachPaymentMethodID(customerID, id);
+    setDeletePaymentLoading(false);
     deletePaymentMethod(paymentMethod.id);
   };
 
   const handleDefaultClick = async (paymentMethodID) => {
+    setDefaultPMIDUpdateLoading(true);
     if (paymentMethodID === defaultPaymentMethodID) {
       return;
     }
     await updateDefaultPaymentMethodIDToStripe(user, paymentMethodID);
+    setDefaultPMIDUpdateLoading(false);
     setDefaultPaymentMethodID(paymentMethodID);
   };
   return (

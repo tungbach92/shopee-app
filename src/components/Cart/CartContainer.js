@@ -10,7 +10,6 @@ import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
-import useVoucher from "../../hooks/useVoucher";
 import { useCartContext } from "../../context/CartProvider";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getSavedPrice } from "../../services/getSavedPrice";
@@ -29,10 +28,11 @@ export default function CartContainer() {
     decrCartItem,
     incrCartItem,
     changeAmountCartItem,
+    voucher,
+    resetVoucher,
   } = useCartContext();
   const { setCheckoutItemsByChecked } = useCheckoutContext();
 
-  const { voucher, resetVoucher } = useVoucher();
   const navigate = useNavigate();
   const location = useLocation();
   const [variation, setVariation] = useState("");
@@ -60,16 +60,8 @@ export default function CartContainer() {
     if (location.state?.from.pathname) {
       toggleIsAddCardPopup(true);
     }
-    navigate("", { replace: true });
-  }, [toggleIsAddCardPopup, navigate, location.state?.from.pathname]);
-
-  //! what for ????
-  // useEffect(() => {
-  //   if (user) {
-  //     getCartItemsFromFirebase(); // called at header cart
-  //     setCheckoutItemsFromFirebase();
-  //   }
-  // }, [setCheckoutItemsFromFirebase, user]);
+    // navigate("", { replace: true });
+  }, [toggleIsAddCardPopup, location.state?.from.pathname]);
 
   useEffect(() => {
     if (checked?.length > 0) {
