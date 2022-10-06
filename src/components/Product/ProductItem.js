@@ -1,31 +1,24 @@
 import classNames from "classnames";
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useModal from "../../hooks/useModal";
 import AddCartModal from "../Modal/AddCartModal";
 import { NumericFormat } from "react-number-format";
-import { useProduct } from "../../ProductProvider";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { useUser } from "../../context/UserProvider";
+import { useCartContext } from "../../context/CartProvider";
 
 const ProductItem = function ({ item, similarDisPlay }) {
-  const { user } = useUser();
-  const { cartItems, handleClick } = useProduct();
+  const { cartItems, addToCartItems } = useCartContext();
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
-  const navigate = useNavigate();
   let isInCart = false;
   isInCart = cartItems?.some((item) => item.id === id);
 
-  const handleAddCart = (e) => {
-    if (user) {
-      handleClick(e);
-      toggleIsAddCardPopup(!isAddCartPopup);
-    } else {
-      navigate("/login");
-    }
+  const handleAddCart = (id) => {
+    addToCartItems(id);
+    toggleIsAddCardPopup(!isAddCartPopup);
   };
   return (
     <Grid2
@@ -37,9 +30,7 @@ const ProductItem = function ({ item, similarDisPlay }) {
       <div className="app__product-item">
         <button
           disabled={isInCart}
-          data-name="addToCartBtn"
-          data-id={id}
-          onClick={handleAddCart}
+          onClick={() => handleAddCart(id)}
           className={classNames("btn app__product-cart-btn", {
             "app__product-cart-btn--disabled": isInCart,
           })}

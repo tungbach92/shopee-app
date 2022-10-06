@@ -14,6 +14,7 @@ import { useCartContext } from "../../context/CartProvider";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getSavedPrice } from "../../services/getSavedPrice";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
+import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 
 export default function CartContainer() {
   const {
@@ -31,7 +32,7 @@ export default function CartContainer() {
     voucher,
     resetVoucher,
   } = useCartContext();
-  const { setCheckoutItemsByChecked } = useCheckoutContext();
+  const { checkoutDispatch } = useCheckoutContext();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,9 +65,9 @@ export default function CartContainer() {
   }, [toggleIsAddCardPopup, location.state?.from.pathname]);
 
   useEffect(() => {
-    if (checked?.length > 0) {
+    if (checked.length > 0) {
       const isVariationChoose = checked.every(
-        (item) => item.variation.length > 0 || item.variationList.length === 0
+        (item) => item.variation?.length > 0 || item.variationList.length === 0
       );
       setIsVariationChoose(isVariationChoose);
     }
@@ -122,7 +123,15 @@ export default function CartContainer() {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     } else {
-      setCheckoutItemsByChecked(checked);
+      const checkoutItems = checked.map((checkedItem) => {
+        // return checkedItem without uneccessary field
+        const { similarDisPlay, variationDisPlay, ...rest } = checkedItem;
+        return rest;
+      });
+      checkoutDispatch({
+        type: CHECKOUT_ACTIONTYPES.ADD_CHECKOUT,
+        payload: checkoutItems,
+      });
       await saveCartItemsToFirebase(cartItems);
       navigate("/checkout");
     }
@@ -373,7 +382,7 @@ export default function CartContainer() {
                   // checked={!!checked[index + 1]}
                   checked={isCheck(item)}
                   // onChange={selectOne.bind(this, index)}
-                  onChange={(e) => handleCheck(item)}
+                  onChange={() => handleCheck(item)}
                   className="grid__col cart-product__checkbox"
                 />
                 <Link

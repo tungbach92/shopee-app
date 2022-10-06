@@ -27,53 +27,60 @@ const CartProvider = ({ children }) => {
     })();
   }, [user]);
 
+  useEffect(() => {
+    const saveCartItemsToStorage = () => {
+      const savedCartItems = cartItems.map((item) => ({
+        ...item,
+        similarDisPlay: undefined,
+        variationDisPlay: undefined,
+      }));
+      localStorage.setItem("cartProduct", JSON.stringify(savedCartItems));
+    };
+    saveCartItemsToStorage();
+  }, [cartItems]);
+
   const resetCartItems = () => {
     setCartItems([]);
   };
 
-  const addToCartItems = (id) => (item) => {
+  const addToCartItems = (id, variation = "", amount = 1) => {
     let cartItemsUpdated = [];
-
-    if (!item) {
-      let item = items.find((item) => item.id === id);
-      item = {
-        ...item,
-        amount: 1,
-        variation: "",
+    const isExistId = cartItems.some((cartItem) => cartItem.id === id);
+    const isExistVariation = cartItems.some(
+      (cartItem) => cartItem.variation === variation && cartItem.id === id
+    );
+    if (!isExistId && !isExistVariation) {
+      let newItem = items.find((each) => each.id === id);
+      newItem = {
+        ...newItem,
+        amount,
+        variation,
         variationDisPlay: false,
         similarDisPlay: false,
       };
-      cartItemsUpdated = [...cartItems, item];
+      cartItemsUpdated = [...cartItems, newItem];
     } else {
-      let isExistId = cartItems.some((cartItem) => cartItem.id === item.id);
-      let isExistVariation = cartItems.some(
-        (cartItem) =>
-          cartItem.variation === item.variation && cartItem.id === item.id
+      cartItemsUpdated = cartItems.map((cartItem) =>
+        cartItem.id === id && cartItem.variation === variation
+          ? { ...cartItem, amount: cartItem.amount + amount }
+          : cartItem
       );
-      if (isExistId && isExistVariation) {
-        cartItemsUpdated = cartItems.map((cartItem) =>
-          cartItem.id === item.id && cartItem.variation === item.variation
-            ? { ...cartItem, amount: cartItem.amount + item.amount }
-            : cartItem
-        );
-      } else cartItemsUpdated = [...cartItems, item];
     }
-
     setCartItems(cartItemsUpdated);
   };
 
-  const delCartItem = (id, variation) => {
+  const delCartItem = async (id, variation) => {
     // cartItems = cartItems.filter((item) => item.id !== id);
     const newCartItems = [...cartItems].filter(
       (cartItem) => cartItem.id !== id || cartItem.variation !== variation
     );
     setCartItems(newCartItems);
-    // if (cartItems.length === 0) {
-    //     this.saveCartItemsToFirebase(cartItems);
-    // }
+    if (newCartItems.length === 0) {
+      await saveCartItemsToFirebase(newCartItems);
+    }
   };
 
-  const delCartItems = (checked) => {
+  const delCartItems = async (checked) => {
     let newCartItems = [];
     const forCompareChecked = checked.map((checkedItem) => {
       return { ...checkedItem, variationDisPlay: false, similarDisPlay: false };
@@ -86,9 +93,9 @@ const CartProvider = ({ children }) => {
     );
 
     setCartItems(newCartItems);
-    // if (cartItems.length === 0) {
-    //   this.saveCartItemsToFirebase(cartItems);
-    // }
+    if (newCartItems.length === 0) {
+      await saveCartItemsToFirebase(newCartItems);
+    }
   };
 
   const changeAmountCartItem = (id, variation, amount) => {
@@ -116,15 +123,6 @@ const CartProvider = ({ children }) => {
     );
     item.amount <= 1 ? (item.amount = 1) : item.amount--;
     setCartItems(newCartItems);
-  };
-
-  const saveCartItemsToStorage = () => {
-    const savedCartItems = cartItems.map((item) => ({
-      ...item,
-      similarDisPlay: undefined,
-      variationDisPlay: undefined,
-    }));
-    localStorage.setItem("cartProduct", JSON.stringify(savedCartItems));
   };
 
   const changeVariationDisPlayCartItems = (index) => {
@@ -199,7 +197,6 @@ const CartProvider = ({ children }) => {
     changeAmountCartItem,
     incrCartItem,
     decrCartItem,
-    saveCartItemsToStorage,
     saveCartItemsToFirebase,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useProduct } from "../../ProductProvider";
 import classNames from "classnames";
 import { Link } from "react-router-dom";
 import useModal from "../../hooks/useModal";
@@ -27,22 +26,13 @@ import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getSavedPrice } from "../../services/getSavedPrice";
 import { useCartContext } from "../../context/CartProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
+import { useCheckoutContext } from "../../context/CheckoutProvider";
+import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
-  const {
-    shipPriceProvince,
-    setShipPriceProvince,
-    checkoutItems,
-    setCheckoutItems,
-    getShipPrice,
-    getItemsPriceFinal,
-    setCheckoutItemsFromFirebase,
-    saveCartItemsToFirebase,
-    saveCheckoutItemsToFirebase,
-    updateCustomerBillingAddress,
-    // getShipInfos,
-  } = useProduct();
-
+  const { saveCartItemsToFirebase } = useCartContext();
+  const { checkoutState, checkoutDispatch } = useCheckoutContext();
+  const { checkoutItems, loading } = checkoutState;
   const {
     name,
     setName,
@@ -96,7 +86,16 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   const [isDeliveryPayment, setIsDeliveryPayment] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const shipPriceProvince = useMemo(() => {
+    let shipPrice = [0, 0];
+    shipInfos?.forEach((item) => {
+      if (item.isDefault) {
+        shipPrice = item.province.shipPrice;
+      }
+    });
+    return shipPrice;
+  }, [shipInfos]);
 
   const shipUnitList = useMemo(() => {
     return [
@@ -119,28 +118,36 @@ export default function CheckoutContainer({ isCheckoutPage }) {
 
   useNavigateAndRefreshBlocker(processing);
 
-  useEffect(() => {
-    let shipPrice = [];
-    shipInfos?.forEach((item) => {
-      if (item.isDefault) {
-        shipPrice = item.province.shipPrice;
-      }
-    });
+  // useEffect(() => {
+  //   let shipPrice = [];
+  //   shipInfos?.forEach((item) => {
+  //     if (item.isDefault) {
+  //       shipPrice = item.province.shipPrice;
+  //     }
+  //   });
 
-    setShipPriceProvince(shipPrice);
-  }, [setShipPriceProvince, shipInfos]);
-
-  useEffect(() => {
-    const setCheckout = async () => {
-      setLoading(true);
-      await setCheckoutItemsFromFirebase();
-      setLoading(false);
-    };
-    setCheckout();
-  }, [setCheckoutItemsFromFirebase]);
+  //   setShipPriceProvince(shipPrice);
+  // }, [setShipPriceProvince, shipInfos]);
+  // useEffect(() => {
+  //   const setCheckout = async () => {
+  //     setLoading(true);
+  //     await setCheckoutItemsFromFirebase();
+  //     setLoading(false);
+  //   };
+  //   setCheckout();
+  // }, [setCheckoutItemsFromFirebase]);
 
   //Get and set province and set districts and district depend on province
+  const getShipPrice = (shipUnit) =>
+    Number(shipUnit?.price) ? Number(shipUnit?.price) : 0;
 
+  const getItemsPriceFinal = (items, shipUnit, voucher) => {
+    let result =
+      getItemsPriceTotal(items) +
+      getShipPrice(shipUnit) -
+      getSavedPrice(voucher, items);
+    return result;
+  };
   const handleChangeShipInfoClick = () => {
     setIsShipInfoChoosing(!isShipInfoChoosing);
   };
@@ -202,20 +209,30 @@ export default function CheckoutContainer({ isCheckoutPage }) {
       });
   };
 
+  const saveCheckoutItemsToFirebase = async (checkoutItems) => {
+    try {
+      const created = Date.now();
+      db.collection("users")
+        .doc(user?.uid)
+        .collection("checkout")
+        .doc("checkoutItems")
+        .set({
+          basket: checkoutItems,
+          created: created,
+        });
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
-    // const defaultPaymentMethodID = await updateDefaultPaymentMethodIDToStripe(defaultPaymentMethodID);
-    // setDefaultPaymentMethodID(defaultPaymentMethodID);
+    updateSoldAmount();
     updateCustomerBillingAddress(user, shipInfos);
     resetCartItems();
-    setCheckoutItems([]);
+    checkoutDispatch({});
     saveCartItemsToFirebase([]);
     saveCheckoutItemsToFirebase([]);
-    setShipPriceProvince([0, 0]);
-    // if (isCardPayment && typeof defaultPaymentMethodID !== "undefined") { // update only with credit cards
-    //   updateSoldAmount();
-    // }
-    updateSoldAmount();
     setSucceeded(true);
     setProcessing(false);
     togglePopup(!isPopupShowing);

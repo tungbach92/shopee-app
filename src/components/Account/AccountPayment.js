@@ -17,7 +17,6 @@ const AccountPayment = () => {
   const {
     defaultPaymentMethodID,
     setDefaultPaymentMethodID,
-    defaultPaymentMethodIDLoading,
   } = useDefaultPaymentMethodID(user);
   const {
     paymentMethodList,
@@ -33,9 +32,7 @@ const AccountPayment = () => {
     useModal();
 
   useNavigateAndRefreshBlocker(
-    defaultPaymentMethodIDLoading ||
-      deletePaymentLoading ||
-      defaultPMIDUpdateLoading
+    deletePaymentLoading || defaultPMIDUpdateLoading
   );
 
   const handleAddCardClick = () => {

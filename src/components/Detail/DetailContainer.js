@@ -135,9 +135,9 @@ export default function DetailContainer() {
     }
   };
 
-  const handleAddCart = (e) => {
+  const handleAddCart = (id, variation, amount) => {
     if (user) {
-      handleClick(e, item);
+      handleClick(item);
       toggleIsAddCardPopup(!isAddCartPopup);
     } else {
       navigate("/login");
@@ -477,9 +477,9 @@ export default function DetailContainer() {
               </div>
               <div className="detail-product__btn-wrapper">
                 <button
-                  onClick={handleAddCart}
-                  data-id={item?.id}
-                  data-name="addToCartBtn"
+                  onClick={() =>
+                    handleAddCart(item.id, item.variation, item.amount)
+                  }
                   className="btn detail-product__btn-cart"
                 >
                   <svg

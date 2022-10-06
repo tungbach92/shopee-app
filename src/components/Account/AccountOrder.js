@@ -11,6 +11,7 @@ import { useUser } from "../../context/UserProvider";
 
 const AccountOrder = () => {
   const { user } = useUser();
+  const { orderItems, orderItemsLoading } = useGetOrderItems(user);
   const [searchOrderItems, setSearchOrderItems] = useState([]);
   const [filter, setFilter] = useState("all");
   const [searchOrderItemsFiltered, setSearchOrderItemsFiltered] = useState([]);
@@ -21,7 +22,6 @@ const AccountOrder = () => {
     (pageIndex - 1) * orderPageSize,
     pageIndex * orderPageSize
   );
-  const { orderItems, orderItemsLoading } = useGetOrderItems(user);
 
   const handleSearchInput = (e) => {
     const text = e.target.value;

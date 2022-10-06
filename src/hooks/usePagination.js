@@ -1,5 +1,6 @@
 import { useLayoutEffect } from "react";
 import { useMemo, useState } from "react";
+import PropTypes from "prop-types";
 
 const usePagination = (items) => {
   const defaultPageIndex = 1;
@@ -19,7 +20,7 @@ const usePagination = (items) => {
         : Math.ceil(numOfItems / pageSize);
     };
     return getPageTotal(items.length);
-  }, [items.length, pageSize]);
+  }, [items, pageSize]);
 
   return {
     pageIndex,
@@ -30,4 +31,9 @@ const usePagination = (items) => {
     pageTotal,
   };
 };
+
+usePagination.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
+
 export default usePagination;
