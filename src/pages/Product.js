@@ -2,8 +2,6 @@ import React from "react";
 import Header from "../components/Header/Header";
 import ProductContainer from "../components/Product/ProductContainer";
 import { useProductsContext } from "../context/ProductsProvider";
-import UserProvider from "../context/UserProvider";
-import ProductProvider from "../ProductProvider";
 
 export default function Product() {
   // const { setSearchInput } = useProduct();
@@ -11,9 +9,7 @@ export default function Product() {
 
   return (
     <>
-      <ProductProvider>
-        <Header isProductPage={true}></Header>
-      </ProductProvider>
+      <Header isProductPage={true}></Header>
       <ProductContainer items={items}></ProductContainer>
     </>
   );

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useProduct } from "../../ProductProvider";
 import { auth } from "../../firebase";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";

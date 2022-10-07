@@ -9,7 +9,6 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import * as categoryType from "../../constants/category";
 import * as sortType from "../../constants/sort";
-import ProductProvider from "../../ProductProvider";
 import usePagination from "../../hooks/usePagination";
 import { useProductsContext } from "../../context/ProductsProvider";
 
@@ -151,7 +150,6 @@ const ProductContainer = ({ items }) => {
         ></ProductCategory>
       </Grid2>
       <Grid2 xs sm={10}>
-        <ProductProvider>
           <ProductFilter
             sort={sort}
             setSort={setSort}
@@ -165,16 +163,12 @@ const ProductContainer = ({ items }) => {
             pageSize={pageSize}
             pageTotal={pageTotal}
           ></ProductFilter>
-        </ProductProvider>
-        <ProductProvider>
           <ProductList
             items={filteredItems}
             pageIndex={pageIndex}
             pageSize={pageSize}
           ></ProductList>
-        </ProductProvider>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <ProductProvider>
             <Pagination
               items={filteredItems}
               pageIndex={pageIndex}
@@ -182,7 +176,6 @@ const ProductContainer = ({ items }) => {
               pageSize={pageSize}
               pageTotal={pageTotal}
             ></Pagination>
-          </ProductProvider>
         </Box>
       </Grid2>
     </Grid2>

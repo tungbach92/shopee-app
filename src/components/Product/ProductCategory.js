@@ -201,7 +201,7 @@ export default function ProductCategory({
         </li>
       </ul>
 
-      {/* TODO: Responsive price range and rating */}
+      {/* //TODO: Responsive price range and rating */}
       {!xsBreakpointMatches && (
         <>
           <Box

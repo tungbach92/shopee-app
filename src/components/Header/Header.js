@@ -182,7 +182,6 @@ const Header = ({
                     <ClipLoader color="white" />
                   </div>
                 )} */}
-                {/* // TODO display loading during get user */}
                 <div className="header__nav-login-link">
                   {user && userAvatar ? (
                     <img

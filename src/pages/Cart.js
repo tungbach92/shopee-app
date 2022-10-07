@@ -1,14 +1,11 @@
 import React from "react";
 import CartContainer from "../components/Cart/CartContainer";
 import Header from "../components/Header/Header";
-import ProductProvider from "../ProductProvider";
 
 export default function Cart() {
   return (
     <>
-      <ProductProvider>
-        <Header isCartPage={true}></Header>
-      </ProductProvider>
+      <Header isCartPage={true}></Header>
       <CartContainer isCartPage={true}></CartContainer>
     </>
   );

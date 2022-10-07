@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import Header from "../components/Header/Header";
-import { useSearchParams } from "react-router-dom";
 import ProductContainer from "../components/Product/ProductContainer";
-import ProductProvider from "../ProductProvider";
 import { useSearchContext } from "../context/SearchProvider";
 const Search = () => {
   const { searchItems, setSearchInput } = useSearchContext();
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
 
   // useEffect(() => {
   //   setSearchParams({ keyword: searchInput }, { replace: true });
@@ -18,12 +16,9 @@ const Search = () => {
     };
   }, [setSearchInput]);
 
-  //TODO: use hooks or HOC, render children to wrap Header with UserProvider
   return (
     <>
-      <ProductProvider>
-          <Header></Header>
-      </ProductProvider>
+      <Header></Header>
       <ProductContainer items={searchItems}></ProductContainer>
     </>
   );

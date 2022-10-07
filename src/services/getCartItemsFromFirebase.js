@@ -8,7 +8,7 @@ const getCartItemsFromStorage = () => {
 export const getCartItemsFromFirebase = async (user) => {
   let cartItems = [];
 
-  if (getCartItemsFromStorage().length > 0) {
+  if (!user) {
     cartItems = getCartItemsFromStorage();
     cartItems = cartItems.map((item) => ({
       ...item,

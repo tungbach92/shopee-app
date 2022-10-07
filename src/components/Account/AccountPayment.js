@@ -13,7 +13,6 @@ import getCustomerID from "../../services/getCustomerID";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 const AccountPayment = () => {
   const { user } = useUser();
-  //TODO: payment and check out context
   const {
     defaultPaymentMethodID,
     setDefaultPaymentMethodID,

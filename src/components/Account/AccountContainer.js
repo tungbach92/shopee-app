@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useProduct } from "../../ProductProvider";
 import { db, storage } from "../../firebase";
 import { Link, Route, Navigate, NavLink, Routes } from "react-router-dom";
 import AccountEmail from "./AccountEmail";
