@@ -27,7 +27,7 @@ const ProductFilter = ({
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   let totalCategoryItems = categoryItems.length;
   let totalFilteredItems = filteredItems.length;
-  const filterDisabled = totalCategoryItems === 0 || totalFilteredItems === 0;
+  const filterDisabled = totalCategoryItems === 0;
 
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {

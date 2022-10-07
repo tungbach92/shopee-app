@@ -23,13 +23,18 @@ const Header = ({
   headerText,
 }) => {
   const { user, userLoading, signOut } = useUser();
+  const { cartItems, resetCartItems, saveCartItemsToFirebase } =
+    useCartContext();
   const navigate = useNavigate();
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const location = useLocation();
   const userAvatar = user?.photoURL;
 
   const handleLogout = async () => {
+    await saveCartItemsToFirebase(cartItems);
+    resetCartItems();
     await signOut();
+    // resetCheckout()
     navigate("/login");
   };
 

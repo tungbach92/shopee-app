@@ -8,7 +8,7 @@ export const useUser = () => {
 };
 
 const UserProvider = ({ children }) => {
-  const { user, userLoading, authorized } = useGetUserByObserver();
+  const { user, userLoading } = useGetUserByObserver();
 
   const signOut = () => {
     return auth.signOut();
@@ -21,7 +21,7 @@ const UserProvider = ({ children }) => {
     return auth.createUserWithEmailAndPassword(email, password);
   };
 
-  const value = { user, userLoading, authorized, signIn, signOut, register };
+  const value = { user, userLoading, signIn, signOut, register };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 

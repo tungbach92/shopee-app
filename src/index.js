@@ -6,13 +6,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
 import UserProvider from "./context/UserProvider.js";
+import CartProvider from "./context/CartProvider.js";
+import ProductsProvider from "./context/ProductsProvider.js";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Router>
         <UserProvider>
-          <App />
+          <ProductsProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </ProductsProvider>
         </UserProvider>
       </Router>
     </ThemeProvider>

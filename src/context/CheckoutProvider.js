@@ -29,11 +29,8 @@ const checkoutReducer = (state = INITIAL_STATE, action) => {
 const CheckoutProvider = ({ children }) => {
   const { user } = useUser();
   const [state, dispatch] = useReducer(checkoutReducer, INITIAL_STATE);
+  const { checkoutItems } = state;
 
-  const getCheckoutItemsFromStorage = () => {
-    let savedCheckoutItems = localStorage.getItem("checkoutProduct");
-    return savedCheckoutItems === null ? [] : JSON.parse(savedCheckoutItems);
-  };
 
   useEffect(() => {
     dispatch({ type: ACTIONTYPES.FETCH_PENDING });
@@ -56,6 +53,18 @@ const CheckoutProvider = ({ children }) => {
         });
     }
   }, [user]);
+
+  const saveCheckoutItemsToStorage = () => {
+    localStorage.setItem(
+      "checkoutProduct",
+      JSON.stringify(checkoutItems === null ? [] : checkoutItems)
+    );
+  };
+
+  const getCheckoutItemsFromStorage = () => {
+    let savedCheckoutItems = localStorage.getItem("checkoutProduct");
+    return savedCheckoutItems === null ? [] : JSON.parse(savedCheckoutItems);
+  };
 
   const value = {
     checkoutState: state,

@@ -40,45 +40,43 @@ function App() {
         }
       >
         <Routes>
-          <Route element={<ProductsProviderLayout />}>
-            <Route element={<SearchProviderLayout />}>
-              <Route element={<CartProviderLayout />}>
-                <Route path="/" element={<Product />}></Route>
-                <Route path="/search" element={<Search />}></Route>
+          <Route element={<SearchProviderLayout />}>
+            <Route path="/" element={<Product />}></Route>
+            <Route path="/search" element={<Search />}></Route>
+            <Route
+              path="/product/:metaTitle/:productId"
+              element={<Detail />}
+            ></Route>
+            <Route element={<PrivateRoute />}>
+              <Route
+                path="/user/account/*"
+                element={
+                  <Elements stripe={stripePromise}>
+                    <Account />
+                  </Elements>
+                }
+              ></Route>
+              <Route element={<CheckoutProviderLayout />}>
+                <Route path="/cart" element={<Cart />}></Route>
                 <Route
-                  path="/product/:metaTitle/:productId"
-                  element={<Detail />}
-                ></Route>
-                <Route element={<PrivateRoute />}>
-                  <Route
-                    path="/user/account/*"
-                    element={
-                      <Elements stripe={stripePromise}>
-                        <Account />
-                      </Elements>
-                    }
-                  ></Route>
-                  <Route element={<CheckoutProviderLayout />}>
-                    <Route path="/cart" element={<Cart />}></Route>
-                    <Route
-                      path="/checkout"
-                      element={
-                        <Elements stripe={stripePromise}>
-                          <Checkout />
-                        </Elements>
-                      }
-                    ></Route>
-                  </Route>
-                </Route>
-                <Route
-                  path="/user"
-                  element={<Navigate to="/user/account/" replace></Navigate>}
+                  path="/checkout"
+                  element={
+                    <Elements stripe={stripePromise}>
+                      <Checkout />
+                    </Elements>
+                  }
                 ></Route>
               </Route>
             </Route>
+            <Route
+              path="/user"
+              element={<Navigate to="/user/account/" replace></Navigate>}
+            ></Route>
           </Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
+          </Route>
           <Route path="*" element={<Error />} />
           {/* <Route path="/admin" element={<Admin />}></Route> */}
         </Routes>

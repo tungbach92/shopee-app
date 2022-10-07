@@ -5,11 +5,8 @@ import HeaderCart from "./HeaderCart";
 import { Close } from "@mui/icons-material";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import getSearchHistoryFromFirebase from "../../services/getSearchHistoryFromFirebase";
-import { useUser } from "../../context/UserProvider";
 import { Box, Stack } from "@mui/material";
 import PropTypes from "prop-types";
-import { db } from "../../firebase";
 import { useSearchContext } from "../../context/SearchProvider";
 
 const HeaderSearch = ({
@@ -19,26 +16,20 @@ const HeaderSearch = ({
   isCheckoutPage,
   xsBreakpointMatches,
 }) => {
-  const { searchInput, setSearchInput, handleSearchInputChange } =
-    useSearchContext();
-  const { user } = useUser();
-
+  const {
+    searchInput,
+    setSearchInput,
+    handleSearchInputChange,
+    changeSuggestionsByInputText,
+    addToSearchHistory,
+    deleteFromSearchHistory,
+    deleteFromSuggestions,
+    suggestions,
+  } = useSearchContext();
   const wrapperRef = useRef();
   const navigate = useNavigate();
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [isHistory, setIsHistory] = useState(false);
 
-  const changeSuggestionsByInputText = (text) => {
-    const mathSuggestions = searchHistory.filter((item) => {
-      return item.trim().toLowerCase().includes(text.trim().toLowerCase());
-    });
-    if (text === "") {
-      setSuggestions(searchHistory);
-    } else {
-      setSuggestions(mathSuggestions);
-    }
-  };
+  const [isHistory, setIsHistory] = useState(false);
 
   const handleInputClick = (e) => {
     const text = e.target.value;
@@ -54,46 +45,6 @@ const HeaderSearch = ({
     changeSuggestionsByInputText(text);
   };
 
-  const addToSearchHistory = (text) => {
-    text = text.trim();
-    if (text.length > 0) {
-      const newSearchHistory = [...searchHistory, text];
-      const uniqueNewSearchHistory = [...new Set(newSearchHistory)];
-      saveSearchHistoryToFirebase(user, uniqueNewSearchHistory);
-      setSearchHistory(uniqueNewSearchHistory);
-    }
-  };
-  const deleteFromSearchHistory = (text) => {
-    text = text.trim();
-    if (text.length > 0) {
-      const newSearchHistory = [...searchHistory].filter(
-        (item) => item !== text
-      );
-      setSearchHistory(newSearchHistory);
-    }
-  };
-
-  const saveSearchHistoryToFirebase = async (user, searchHistory) => {
-    if (!user) return;
-    try {
-      await db
-        .collection("users")
-        .doc(user?.uid)
-        .collection("searchHistory")
-        .doc("searchHistoryItems")
-        .set({
-          basket: searchHistory,
-        });
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  const deleteFromSuggestions = (text) => {
-    const mathSuggestions = [...suggestions].filter((item) => item !== text);
-    setSuggestions(mathSuggestions);
-  };
-  
   const handleSuggestionClick = (text) => {
     setSearchInput(text);
     handleSearchIconClick(text);
@@ -118,15 +69,6 @@ const HeaderSearch = ({
       handleSearchIconClick(event.target.value);
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      if (user) {
-        const searchHistory = await getSearchHistoryFromFirebase(user);
-        setSearchHistory(searchHistory);
-      }
-    })();
-  }, [setSearchHistory, user]);
 
   useEffect(() => {
     if (xsBreakpointMatches) {

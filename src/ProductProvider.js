@@ -45,12 +45,6 @@ export default class ProductProvider extends Component {
     // if (this.state.searchHistory !== prevState.searchHistory) {
     //   this.saveSearchHistoryToFirebase(this.state.searchHistory);
     // }
-    if (this.state.cartItems !== prevState.cartItems) {
-      this.saveCartItemsToStorage();
-    }
-    if (this.state.checkoutItems !== prevState.checkoutItems) {
-      this.saveCheckoutItemsToStorage();
-    }
   }
   // TODO: Called many times, this should be in provider or hook?
   checkFirebaseIdTokenAuthTime = async () => {
@@ -89,62 +83,6 @@ export default class ProductProvider extends Component {
       }
     } catch (error) {
       alert(error.message);
-    }
-  };
-
-
-  saveCheckoutItemsToStorage = () => {
-    const { checkoutItems } = this.state;
-    localStorage.setItem(
-      "checkoutProduct",
-      JSON.stringify(checkoutItems === null ? [] : checkoutItems)
-    );
-  };
-
-  getCheckoutItemsFromStorage = () => {
-    let savedCheckoutItems = localStorage.getItem("checkoutProduct");
-    return savedCheckoutItems === null ? [] : JSON.parse(savedCheckoutItems);
-  };
-
-  setCheckoutItemsFromFirebase = async () => {
-    let checkoutItems = [];
-    const { user } = this.state;
-    if (this.getCheckoutItemsFromStorage().length > 0) {
-      checkoutItems = this.getCheckoutItemsFromStorage();
-      this.setCheckoutItems(checkoutItems);
-    } else {
-      db.collection("users")
-        .doc(user?.uid)
-        .collection("checkout")
-        .doc("checkoutItems")
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            checkoutItems = doc.data().basket;
-          }
-          this.setCheckoutItems(checkoutItems);
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    }
-  };
-
-  handleLogout = () => {
-    const { user, cartItems, checkoutItems } = this.state;
-    if (user) {
-      this.saveCartItemsToFirebase(cartItems);
-      // this.setState({ searchHistory: [] });
-      // this.saveSearchHistoryToFirebase(searchHistory);
-      this.saveCheckoutItemsToFirebase(checkoutItems);
-      this.setCartItems([]);
-      this.setCheckoutItems([]);
-      this.setSearchInput("");
-      this.setPaymentMethodList([]);
-      this.setDefaultPaymentMethodID("");
-      this.setShipInfos([]);
-      this.setCustomerID("");
-      auth.signOut();
     }
   };
 

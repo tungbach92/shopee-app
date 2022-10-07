@@ -1,6 +1,7 @@
 import { db } from "../firebase";
 
 const getSearchHistoryFromFirebase = async (user) => {
+  if (!user) return;
   let searchHistory = [];
   try {
     const doc = await db
