@@ -12,7 +12,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { ClipLoader } from "react-spinners";
 import { useCartContext } from "../../context/CartProvider";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
-import { getSavedPrice } from "../../services/getSavedPrice";
+import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 
@@ -58,11 +58,11 @@ export default function CartContainer() {
   }, []);
 
   useEffect(() => {
-    if (location.state?.from.pathname) {
+    if (location.state) {
       toggleIsAddCardPopup(true);
     }
-    // navigate("", { replace: true });
-  }, [toggleIsAddCardPopup, location.state?.from.pathname]);
+    navigate(location.pathname, { replace: true });
+  }, [toggleIsAddCardPopup, location.state, location.pathname, navigate]);
 
   useEffect(() => {
     if (checked.length > 0) {
@@ -786,7 +786,7 @@ export default function CartContainer() {
                     Shopee Voucher
                   </span>
                 </div>
-                {Object.keys(voucher).length > 0 && (
+                {voucher && (
                   <span className="cart-product__voucher-discount">
                     -
                     {voucher.discount.includes("%") ? (
@@ -801,7 +801,7 @@ export default function CartContainer() {
                     )}
                   </span>
                 )}
-                {Object.keys(voucher).length > 0 && (
+                {voucher && (
                   <span
                     onClick={handleVoucherDelete}
                     className="cart-product__voucher-del"
@@ -813,7 +813,7 @@ export default function CartContainer() {
                   onClick={handleVoucherModal}
                   className="cart-product__shopee-action"
                 >
-                  {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
+                  {voucher ? "Thay đổi" : "Nhập mã"}
                 </div>
                 {isVoucherShowing && (
                   <VoucherModal
@@ -917,7 +917,7 @@ export default function CartContainer() {
                     </span>
                     <span className="cart-product__saved-value">
                       <NumericFormat
-                        value={getSavedPrice(voucher, checked)}
+                        value={getVoucherDiscount(voucher, checked)}
                         thousandSeparator={true}
                         displayType="text"
                         prefix={"₫"}

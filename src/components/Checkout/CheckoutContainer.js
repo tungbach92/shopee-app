@@ -23,7 +23,7 @@ import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefau
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
-import { getSavedPrice } from "../../services/getSavedPrice";
+import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCartContext } from "../../context/CartProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
@@ -145,7 +145,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     let result =
       getItemsPriceTotal(items) +
       getShipPrice(shipUnit) -
-      getSavedPrice(voucher, items);
+      getVoucherDiscount(voucher, items);
     return result;
   };
   const handleChangeShipInfoClick = () => {
@@ -740,7 +740,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
         </div>
         <div className="checkout-product__checkout-wrapper">
           <div className="checkout-product__voucher-wrapper">
-            {Object.keys(voucher).length ? (
+            {voucher ? (
               <svg
                 fill="none"
                 viewBox="0 0 23 22"
@@ -868,12 +868,12 @@ export default function CheckoutContainer({ isCheckoutPage }) {
             <span className="checkout-product__voucher-label">
               Shopee Voucher
             </span>
-            {Object.keys(voucher).length > 0 && (
+            {voucher && (
               <span className="checkout-product__voucher-discount">
                 -{voucher.discount}
               </span>
             )}
-            {Object.keys(voucher).length > 0 && (
+            {voucher && (
               <span
                 onClick={handleVoucherDelete}
                 className="checkout-product__voucher-del"
@@ -885,7 +885,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
               onClick={handleVoucherModal}
               className="checkout-product__voucher-action"
             >
-              {Object.keys(voucher).length > 0 ? "Thay đổi" : "Nhập mã"}
+              {voucher ? "Thay đổi" : "Nhập mã"}
             </span>
             {isVoucherShowing && (
               <VoucherModal
@@ -1064,7 +1064,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
             <span className="checkout-product__discount-label">Tiết kiệm:</span>
             <span className="checkout-product__discount">
               <NumericFormat
-                value={getSavedPrice(voucher, checkoutItems)}
+                value={getVoucherDiscount(voucher, checkoutItems)}
                 thousandSeparator={true}
                 displayType="text"
               ></NumericFormat>

@@ -49,7 +49,13 @@ const CartProvider = ({ children }) => {
     const isExistVariation = cartItems.some(
       (cartItem) => cartItem.variation === variation && cartItem.id === id
     );
-    if (!isExistId && !isExistVariation) {
+    if (isExistId && isExistVariation) {
+      cartItemsUpdated = cartItems.map((cartItem) =>
+        cartItem.id === id && cartItem.variation === variation
+          ? { ...cartItem, amount: cartItem.amount + amount }
+          : cartItem
+      );
+    } else {
       let newItem = items.find((each) => each.id === id);
       newItem = {
         ...newItem,
@@ -59,12 +65,6 @@ const CartProvider = ({ children }) => {
         similarDisPlay: false,
       };
       cartItemsUpdated = [...cartItems, newItem];
-    } else {
-      cartItemsUpdated = cartItems.map((cartItem) =>
-        cartItem.id === id && cartItem.variation === variation
-          ? { ...cartItem, amount: cartItem.amount + amount }
-          : cartItem
-      );
     }
     setCartItems(cartItemsUpdated);
   };

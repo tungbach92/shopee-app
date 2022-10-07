@@ -6,7 +6,7 @@ const voucherList = [
   { code: "SALE100000", discount: "100000" },
 ];
 const useVoucher = () => {
-  const [voucher, setVoucher] = useState({});
+  const [voucher, setVoucher] = useState();
 
   const updateVoucher = (text) => {
     const voucher = voucherList.find((item) => item.code === text);
@@ -16,9 +16,9 @@ const useVoucher = () => {
   };
 
   const resetVoucher = () => {
-    setVoucher({});
+    setVoucher(null);
   };
-  
+
   return { voucher, updateVoucher, resetVoucher };
 };
 

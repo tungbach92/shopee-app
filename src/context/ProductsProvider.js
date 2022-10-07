@@ -7,10 +7,12 @@ export function useProductsContext() {
 }
 const ProductsProvider = ({ children }) => {
   const { items, itemsLoading } = useGetItemsFromFirebase();
+  const bestSelling = 1000;
 
   const value = {
     items,
     itemsLoading,
+    bestSelling,
   };
   return (
     <ProductsContext.Provider value={value}>

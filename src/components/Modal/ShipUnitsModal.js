@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactDOM from "react-dom";
 export default function ShipUnitsModal(props) {
   const {
@@ -10,8 +10,9 @@ export default function ShipUnitsModal(props) {
     isShipUnits,
     toggleShipUnits,
   } = props;
+  const inputRef = useRef();
 
-  const handleClick = () => {
+  const handleBack = () => {
     toggleShipUnits(!isShipUnits);
     //setCheckedByShipUnit
     let checked = [];
@@ -25,8 +26,7 @@ export default function ShipUnitsModal(props) {
     setShipChecked(checked);
   };
 
-  const handleShipUnitClick = (item, e) => {
-    console.log(e);
+  const handleShipUnitChange = (item, e) => {
     let checked = [];
     shipUnitList.forEach((shipUnititem) => {
       if (shipUnititem.id === item.id) {
@@ -38,17 +38,19 @@ export default function ShipUnitsModal(props) {
     setShipChecked(checked);
   };
 
-  const handleShipUnitSubmit = (e) => {
-    let selectedShipUnit = {};
+  const handleApply = (e) => {
+    let selectedShipUnit;
     shipUnitList.forEach((item) => {
       if (shipChecked[item.id]) {
         selectedShipUnit = item;
       }
     });
-    if (selectedShipUnit !== null) {
+    if (selectedShipUnit) {
       setShipUnit(selectedShipUnit);
-      toggleShipUnits(!isShipUnits);
+    } else {
+      setShipUnit({});
     }
+    toggleShipUnits(!isShipUnits);
   };
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
@@ -64,12 +66,13 @@ export default function ShipUnitsModal(props) {
             <div key={index} className="cart-product__shipunit-wrapper">
               <li className="cart-product__shipunit-item">
                 <input
-                  onChange={handleShipUnitClick.bind(this, item)}
+                  ref={inputRef}
+                  name={item.name}
                   type="checkbox"
+                  value={item}
+                  checked={shipChecked[item.id]}
+                  onChange={handleShipUnitChange.bind(this, item)}
                   className="cart-product__shipunit-checkbox"
-                  name="giaohangtietkiem"
-                  value={item.name}
-                  checked={!!shipChecked[index]}
                 />
                 <label className="cart-product__shipunit-name">
                   {item.name}
@@ -87,13 +90,13 @@ export default function ShipUnitsModal(props) {
         </ul>
         <div className="cart-product__modal-footer">
           <button
-            onClick={handleClick}
+            onClick={handleBack}
             className="btn cart-product__modal-close"
           >
             Trở lại
           </button>
           <button
-            onClick={handleShipUnitSubmit}
+            onClick={handleApply}
             className="btn cart-product__modal-apply"
           >
             OK

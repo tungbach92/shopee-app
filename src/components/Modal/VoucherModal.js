@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useCartContext } from "../../context/CartProvider";
+//TODO: use formik form
 export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
   const { voucher, updateVoucher } = useCartContext();
-  const [isInvalidVoucher, setIsInvalidVoucher] = useState(true);
+  const [isValidVoucher, setIsValidVoucher] = useState(false);
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();
 
-  const handleClick = (e) => {
+  const handleBack = () => {
     toggleVoucher(!isVoucherShowing);
   };
 
@@ -35,9 +36,9 @@ export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
 
   useEffect(() => {
     if (voucher) {
-      setIsInvalidVoucher(false);
+      setIsValidVoucher(true);
     } else {
-      setIsInvalidVoucher(true);
+      setIsValidVoucher(false);
     }
   }, [voucher]);
 
@@ -73,9 +74,9 @@ export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
           <div className="cart-product__input-wrapper">
             {isVoucherNotifyShowing && (
               <span className="cart-product__voucher-notify">
-                {isInvalidVoucher
-                  ? "Rất tiếc! Không thể tìm thấy mã voucher này.Xin vui lòng kiểm tra lại."
-                  : "Thành công"}
+                {isValidVoucher
+                  ? "Thành công"
+                  : "Rất tiếc! Không thể tìm thấy mã voucher này.Xin vui lòng kiểm tra lại."}
               </span>
             )}
             <input
@@ -107,7 +108,7 @@ export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
         </ul> */}
         <div className="cart-product__modal-footer">
           <button
-            onClick={handleClick}
+            onClick={handleBack}
             className="btn cart-product__modal-apply"
           >
             Trở lại

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import protectImg from "../../img/protect.png";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useProduct } from "../../ProductProvider";
+import { Link, useLocation, useParams } from "react-router-dom";
 import useModal from "../../hooks/useModal";
 import AddCartModal from "../Modal/AddCartModal";
 import ImageGallery from "react-image-gallery";
@@ -9,13 +8,15 @@ import DetailCheckShipPrice from "./DetailCheckShipPrice";
 import { NumericFormat } from "react-number-format";
 import { Box, Rating } from "@mui/material";
 import { ClipLoader } from "react-spinners";
+import { useProductsContext } from "../../context/ProductsProvider";
+import { useCartContext } from "../../context/CartProvider";
 
 export default function DetailContainer() {
   const { productId } = useParams();
   const location = useLocation();
-  const navigate = useNavigate();
   const scrolltoEl = useRef();
-  const { handleClick, items, bestSelling, user } = useProduct();
+  const { items, bestSelling } = useProductsContext();
+  const { addToCartItems } = useCartContext();
 
   useEffect(() => {
     handleScrollTop();
@@ -129,19 +130,13 @@ export default function DetailContainer() {
     setItem(newItem);
   };
 
-  const handleBuyNow = (e) => {
-    if (user) {
-      handleClick(e, item);
-    }
+  const handleBuyNow = () => {
+    addToCartItems(item.id, item.variation, item.amount);
   };
 
-  const handleAddCart = (id, variation, amount) => {
-    if (user) {
-      handleClick(item);
-      toggleIsAddCardPopup(!isAddCartPopup);
-    } else {
-      navigate("/login");
-    }
+  const handleAddCart = () => {
+    addToCartItems(item.id, item.variation, item.amount);
+    toggleIsAddCardPopup(!isAddCartPopup);
   };
 
   const handleScrollTop = (e) => {
@@ -477,9 +472,7 @@ export default function DetailContainer() {
               </div>
               <div className="detail-product__btn-wrapper">
                 <button
-                  onClick={() =>
-                    handleAddCart(item.id, item.variation, item.amount)
-                  }
+                  onClick={handleAddCart}
                   className="btn detail-product__btn-cart"
                 >
                   <svg
@@ -538,13 +531,10 @@ export default function DetailContainer() {
                 )}
 
                 <Link
-                  to={{
-                    pathname: "/cart",
-                    state: { from: location },
-                  }}
+                  to="/cart"
+                  state={location}
+                  replace
                   onClick={handleBuyNow}
-                  data-id={item?.id}
-                  data-name="addToCartBtn"
                   className="detail-product__btn-checkout"
                 >
                   Mua ngay

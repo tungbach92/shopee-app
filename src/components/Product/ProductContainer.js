@@ -11,8 +11,10 @@ import * as categoryType from "../../constants/category";
 import * as sortType from "../../constants/sort";
 import ProductProvider from "../../ProductProvider";
 import usePagination from "../../hooks/usePagination";
+import { useProductsContext } from "../../context/ProductsProvider";
 
 const ProductContainer = ({ items }) => {
+  const { bestSelling } = useProductsContext();
   const [categoryItems, setCategoryItems] = useState(items);
   const [filteredItems, setFilteredItems] = useState(items);
   const [category, setCategory] = useState(categoryType.ALL_PRODUCT);
@@ -26,7 +28,6 @@ const ProductContainer = ({ items }) => {
   const newestDays = 30;
   const oneDayinMs = 24 * 3600 * 1000;
   const currentTimeinMs = new Date().valueOf();
-  const bestSelling = 1000;
 
   useEffect(() => {
     setFilteredItems(items);
