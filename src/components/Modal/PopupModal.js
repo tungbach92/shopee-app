@@ -178,10 +178,10 @@ export default function PopupModal(props) {
     }
 
     //AccountPage user info, ship info, card info
-    if (isAccountPage && !shipInfoIndex && !paymentMethodID) {
+    if (isAccountPage && shipInfoIndex === null && !paymentMethodID) {
       navigate("/user");
     }
-    if (isAccountPage && shipInfoIndex) {
+    if (isAccountPage && shipInfoIndex !== null) {
       handleDeleteTrue(shipInfoIndex);
       setShipInfoIndex();
     }

@@ -4,7 +4,6 @@ import { Autocomplete, Button, styled, TextField } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
 import { useUser } from "../../context/UserProvider";
 
-//TODO: propTypes
 const StyledTextField = styled(TextField, {
   shouldForwardProp: (props) => props !== "isValid",
 })(({ isValid }) => ({
@@ -63,12 +62,12 @@ const AddressModal = ({
   const { shipInfos, updateShipInfoToFirebase } = useGetShipInfos(user);
   const [errors, setErrors] = useState({});
 
-  const [isNameValid, setIsNameValid] = useState(null);
-  const [isPhoneValid, setIsPhoneValid] = useState(null);
-  const [isStreetValid, setIsStreetValid] = useState(null);
-  const [isProvinceValid, setIsProvinceValid] = useState(null);
-  const [isDistrictValid, setIsDistrictValid] = useState(null);
-  const [isWardsValid, setIsWardsValid] = useState(null);
+  const [isNameValid, setIsNameValid] = useState(true);
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
+  const [isStreetValid, setIsStreetValid] = useState(true);
+  const [isProvinceValid, setIsProvinceValid] = useState(true);
+  const [isDistrictValid, setIsDistrictValid] = useState(true);
+  const [isWardsValid, setIsWardsValid] = useState(true);
   const buttonRef = useRef();
 
   const validateName = () => {
@@ -145,7 +144,7 @@ const AddressModal = ({
     }
     setErrors((prev) => ({ ...prev, street: error }));
   };
-
+  //TODO use formik
   const handleBack = () => {
     toggleAddressAdd(false);
     setIsNameValid(null);
@@ -167,23 +166,24 @@ const AddressModal = ({
     validateStreet();
 
     if (
-      isNameValid &&
-      isPhoneValid &&
-      isProvinceValid &&
-      isDistrictValid &&
-      isWardsValid &&
-      isStreetValid
+      !isNameValid ||
+      !isPhoneValid ||
+      !isProvinceValid ||
+      !isDistrictValid ||
+      !isWardsValid ||
+      !isStreetValid
     ) {
-      toggleAddressAdd(!isAddressAddShowing);
-      if (shipInfoIndex) {
-        updateShipInfo();
-      } else {
-        addNewShipInfo();
-      }
+      return false;
     }
+    if (shipInfoIndex !== null) {
+      updateShipInfo();
+    } else {
+      addNewShipInfo();
+    }
+    toggleAddressAdd(!isAddressAddShowing);
   };
 
-  const updateShipInfo = () => {
+  const updateShipInfo = async () => {
     try {
       let tempShipInfos = [...shipInfos];
       const created = Date.now();
@@ -205,13 +205,13 @@ const AddressModal = ({
         } else return shipInfo;
       });
 
-      updateShipInfoToFirebase(tempShipInfos);
+      await updateShipInfoToFirebase(tempShipInfos);
     } catch (error) {
       alert(error);
     }
   };
 
-  const addNewShipInfo = () => {
+  const addNewShipInfo = async () => {
     try {
       let tempShipInfos = shipInfos ? [...shipInfos] : [];
       const created = Date.now();
@@ -221,7 +221,7 @@ const AddressModal = ({
         name: name,
         phone: phone,
         fullAddress: fullAddress,
-        isDefault: tempShipInfos.length === 1 ? true : false, // set defaul true when only have 1 shipinfo
+        isDefault: tempShipInfos.length === 0 ? true : false, // set defaul true when only have 1 shipinfo
         created: created,
         street: street,
         ward: ward,
@@ -230,7 +230,7 @@ const AddressModal = ({
       };
 
       tempShipInfos = [...tempShipInfos, shipInfo];
-      updateShipInfoToFirebase(tempShipInfos);
+      await updateShipInfoToFirebase(tempShipInfos);
     } catch (err) {
       alert(err);
     }

@@ -4,6 +4,7 @@ import { db } from "../firebase";
 const useGetShipInfos = (user) => {
   const [shipInfos, setShipInfos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updateLoading, setUpdateLoading] = useState(false);
 
   useLayoutEffect(() => {
     let isMounted = true;
@@ -36,40 +37,36 @@ const useGetShipInfos = (user) => {
     };
   }, [user]);
 
-  const updateShipInfoToFirebase = (shipInfos) => {
-    if (user) {
-      db.collection("users")
+  const updateShipInfoToFirebase = async (shipInfos) => {
+    try {
+      setUpdateLoading(true);
+      const doc = await db
+        .collection("users")
         .doc(user?.uid)
         .collection("shipInfos")
         .doc("shipInfoDoc")
-        .get()
-        .then((doc) => {
-          if (!doc.exists) {
-            db.collection("users")
-              .doc(user?.uid)
-              .collection("shipInfos")
-              .doc("shipInfoDoc")
-              .set({ shipInfos: [] });
-          }
-        })
-        .then(() => {
-          db.collection("users")
-            .doc(user?.uid)
-            .collection("shipInfos")
-            .doc("shipInfoDoc")
-            .update({
-              shipInfos: shipInfos,
-            });
-        })
-        .then(() => {
-          // setShipInfos(shipInfos); // observer auto get shipInfos
-        })
-        .catch((error) => {
-          alert(error.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+        .get();
+      if (!doc.exists) {
+        await db
+          .collection("users")
+          .doc(user?.uid)
+          .collection("shipInfos")
+          .doc("shipInfoDoc")
+          .set({ shipInfos: [] });
+      } else {
+        await db
+          .collection("users")
+          .doc(user?.uid)
+          .collection("shipInfos")
+          .doc("shipInfoDoc")
+          .update({
+            shipInfos: shipInfos,
+          });
+      }
+    } catch (error) {
+      alert("Lôi cập nhật địa chỉ ship:" + error.message);
+    } finally {
+      setUpdateLoading(false);
     }
   };
 
@@ -77,6 +74,7 @@ const useGetShipInfos = (user) => {
     shipInfos,
     setShipInfos,
     shipInfosLoading: loading,
+    shipInfosUpdateLoading: updateLoading,
     updateShipInfoToFirebase,
   };
 };

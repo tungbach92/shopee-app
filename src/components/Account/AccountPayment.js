@@ -13,10 +13,8 @@ import getCustomerID from "../../services/getCustomerID";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 const AccountPayment = () => {
   const { user } = useUser();
-  const {
-    defaultPaymentMethodID,
-    setDefaultPaymentMethodID,
-  } = useDefaultPaymentMethodID(user);
+  const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
+    useDefaultPaymentMethodID(user);
   const {
     paymentMethodList,
     deletePaymentMethod,
@@ -76,6 +74,7 @@ const AccountPayment = () => {
               <CardInfoModal
                 paymentMethodList={paymentMethodList}
                 setPaymentMethodList={setPaymentMethodList}
+                setDefaultPaymentMethodID={setDefaultPaymentMethodID}
                 isCardInfoShowing={isCardInfoShowing}
                 toggleCardInfo={toggleCardInfo}
               ></CardInfoModal>
@@ -111,14 +110,16 @@ const AccountPayment = () => {
                 **** **** **** {item.card.last4}
               </div>
               <div className="payment-profile__btn-container">
-                {item.id !== defaultPaymentMethodID && (
-                  <div
-                    onClick={() => handlePaymentDeleteClick(item.id)}
-                    className="payment-profile__card-delete"
-                  >
-                    Xóa
-                  </div>
-                )}
+                {item.id !== defaultPaymentMethodID &&
+                  !defaultPMIDUpdateLoading &&
+                  !deletePaymentLoading && (
+                    <div
+                      onClick={() => handlePaymentDeleteClick(item.id)}
+                      className="payment-profile__card-delete"
+                    >
+                      Xóa
+                    </div>
+                  )}
 
                 {isPopupShowing && (
                   <PopupModal
@@ -131,7 +132,11 @@ const AccountPayment = () => {
                   ></PopupModal>
                 )}
                 <button
-                  disabled={item.id === defaultPaymentMethodID}
+                  disabled={
+                    item.id === defaultPaymentMethodID ||
+                    defaultPMIDUpdateLoading ||
+                    deletePaymentLoading
+                  }
                   onClick={() => handleDefaultClick(item.id)}
                   className="btn payment-profile__default-btn"
                 >

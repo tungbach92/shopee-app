@@ -23,7 +23,6 @@ export const useCheckFirebaseIdTokenAuthTime = async (user, signOut) => {
         if (result.data.revoked) {
           // never be called cause idToken auto refresh after 1 hour by fỉrebase sdk unless manual refresh
           alert("Id Token refreshed. Vui lòng đăng nhập lại!");
-          //TODO: sign out with clear cart
           await signOut();
         }
         if (result.data.invalid) {

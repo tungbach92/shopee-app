@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import validCardCheck from "card-validator";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "../../axios";
 import { db } from "../../firebase";
 import { styled } from "@mui/material";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
@@ -11,6 +10,9 @@ import { updateCustomerIDToFirebase } from "../../services/updateCustomerIDToFir
 import { getPaymentMethodList } from "../../services/getPaymentMethodList";
 import { useCustomerID } from "../../hooks/useCustomerID";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
+import { checkCardPaymentExist } from "../../services/checkCardPaymentExist";
+import { createSetupIntentAndCustomerIDInStripe } from "../../services/createSetupIntentAndCustomerIDInStripe";
+import { checkConfirmCardSetupToStripe } from "../../services/checkConfirmCardSetupToStripe";
 
 const StyledInput = styled("input", {
   shouldForwardProp: (props) => props !== "isValid",
@@ -28,6 +30,7 @@ const StyledCardElement = styled(CardElement, {
 export default function CardInfoModal({
   paymentMethodList,
   setPaymentMethodList,
+  setDefaultPaymentMethodID,
   isCardInfoShowing,
   toggleCardInfo,
 }) {
@@ -43,7 +46,7 @@ export default function CardInfoModal({
   const [numberIsValid, setNumberIsValid] = useState(null);
   const [errorNumberMsg, setErrorNumberMsg] = useState("");
   const [errorNameMsg, setErrorNameMsg] = useState("");
-  const [processing, setProcessing] = useState(false);
+  const [addCardLoading, setAddCardLoading] = useState(false);
 
   const handleClick = () => {
     toggleCardInfo(!isCardInfoShowing);
@@ -56,20 +59,20 @@ export default function CardInfoModal({
   const validateCardName = () => {
     setNameIsValid(true);
     let nameValidation = validCardCheck.cardholderName(cardName);
-    if (cardName) {
-      if (!nameValidation.isValid) {
-        setNameIsValid(false);
-        setErrorNameMsg(
-          "Tên thẻ phải là các ký tự alphabet và có thể chứa các ký hiệu apostrophe('), minus(-) and dot(.)."
-        );
-      } else {
-        setNameIsValid(true);
-        setErrorNameMsg("");
-      }
-    } else {
+    if (!cardName) {
       setNameIsValid(false);
       setErrorNameMsg("Vui lòng nhập tên thẻ.");
+      return;
     }
+    if (nameValidation.isValid) {
+      setNameIsValid(true);
+      setErrorNameMsg("");
+      return;
+    }
+    setNameIsValid(false);
+    setErrorNameMsg(
+      "Tên thẻ phải là các ký tự alphabet và có thể chứa các ký hiệu apostrophe('), minus(-) and dot(.)."
+    );
   };
   //! validateCardNumber not work because no way to retrieve card number from CardElement
   // const validateCardNumber = () => {
@@ -87,106 +90,63 @@ export default function CardInfoModal({
     if (!numberIsValid && !errorNumberMsg) {
       setErrorNumberMsg("Vui lòng nhập số thẻ.");
     }
-
     if (!nameIsValid || !numberIsValid) {
       return;
     }
 
-    setProcessing(true);
+    setAddCardLoading(true);
     if (!stripe || !elements) {
-      setProcessing(false);
-      alert("There is no stripe and elements hook");
+      setAddCardLoading(false);
+      alert("Lỗi lấy dữ liệu từ stripe. Vui lòng thử lại!");
       return;
     }
 
+    //Check card exists
     const cardEl = elements.getElement(CardElement);
-    //TODO: refactor this with try catch
-    let isCardDuplicate;
-    try {
-      const tokenClientSide = await stripe.createToken(cardEl);
-      //create card object to retrieve fingerprint since can't get it from client side token(even with sk)
-      const tokenServerSideRes = await axios({
-        method: "POST",
-        url: "/create-token-server-side",
-        data: { tokenClientSideID: tokenClientSide.token.id },
-      });
-      const tokenServerSide = tokenServerSideRes.data.tokenResult;
-      isCardDuplicate = paymentMethodList.some(
-        (item) =>
-          item.card.fingerprint === tokenServerSide.card.fingerprint &&
-          item.card.exp_month === tokenServerSide.card.exp_month &&
-          item.card.exp_year === tokenServerSide.card.exp_year
-      );
-    } catch (error) {
-      console.log(error);
+    const isCardDuplicate = await checkCardPaymentExist(
+      stripe,
+      cardEl,
+      paymentMethodList
+    );
+    if (isCardDuplicate) {
+      setAddCardLoading(false);
+      alert("Thẻ này trùng với thẻ đang được sử dụng!");
       return;
     }
 
-    if (!isCardDuplicate) {
-      //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
-      const response = await axios({
-        method: "POST",
-        url: "/create-setup-intent",
-        data: {
-          name: cardName,
-          email: user.email,
-          customerID: customerID,
-        },
-      });
+    //Create a setupIntent(plus creat customer), use conirmpaymentIntent to create paymentIntent and continue payment flow
+    const { setUpIntentSecret, customerID: newCustomerID } =
+      await createSetupIntentAndCustomerIDInStripe(cardName, user, customerID);
+    // set and add new customerID to firebase if it's the first time doing purchase
+    if (customerID.length === 0) {
+      await updateCustomerIDToFirebase(user, newCustomerID);
+    }
+    if (!setUpIntentSecret) return;
 
-      // set and add new customerID to firebase if it's the first time doing purchase
-      await updateCustomerIDToFirebase(user, response.data.customerID);
+    //When the SetupIntent succeeds
+    const result = await checkConfirmCardSetupToStripe(
+      stripe,
+      shipInfos,
+      setUpIntentSecret,
+      cardEl,
+      cardName,
+      user,
+      phone
+    );
+    // The resulting PaymentMethod ID (in result.setupIntent.payment_method) will be saved to the provided Customer.
 
-      //When the SetupIntent succeeds
-      // The resulting PaymentMethod ID (in result.setupIntent.payment_method) will be saved to the provided Customer.
-      let defaultshipInfo;
-      shipInfos.forEach((item) => {
-        if (item.isDefault) {
-          defaultshipInfo = { ...item };
-        }
-      });
-      const setUpIntentResult = await stripe.confirmCardSetup(
-        response.data.setUpIntentSecret,
-        {
-          payment_method: {
-            card: cardEl,
-            billing_details: {
-              address: {
-                state: defaultshipInfo?.province.name || "",
-                city: defaultshipInfo?.district.name || "",
-                line1: defaultshipInfo?.ward.name || "",
-                line2: defaultshipInfo?.street || "",
-                country: "VN",
-                postal_code: 10000,
-              },
-              name: cardName,
-              email: user.email,
-              phone: phone,
-            },
-          },
-        }
-      );
-      if (
-        setUpIntentResult.setupIntent &&
-        setUpIntentResult.setupIntent.status === "succeeded"
-      ) {
-        //set default paymentMethodID after card input
-        // const paymentMethodID = setUpIntentResult.setupIntent.payment_method;
-        // console.log("create payment method success", paymentMethodID);
-        // setPaymentMethodID(paymentMethodID);
-
-        const paymentMethodList = await getPaymentMethodList(user);
-        setPaymentMethodList(paymentMethodList);
-        setProcessing(false);
-        toggleCardInfo(!isCardInfoShowing);
-        alert("Lưu thông tin thẻ thành công!");
-      } else {
-        alert(setUpIntentResult.error.message);
-        setProcessing(false);
+    if (result.setupIntent && result.setupIntent.status === "succeeded") {
+      const paymentMethodList = await getPaymentMethodList(user);
+      setPaymentMethodList(paymentMethodList);
+      if (paymentMethodList.length === 1) {
+        setDefaultPaymentMethodID(paymentMethodList[0].id);
       }
+      setAddCardLoading(false);
+      toggleCardInfo(!isCardInfoShowing);
+      alert("Lưu thông tin thẻ thành công!");
     } else {
-      setProcessing(false);
-      alert("Thẻ này trùng với thẻ đang được sử dụng!");
+      alert(result.error.message);
+      setAddCardLoading(false);
     }
   };
 
@@ -196,7 +156,7 @@ export default function CardInfoModal({
     }
   };
 
-  useNavigateAndRefreshBlocker(processing);
+  useNavigateAndRefreshBlocker(addCardLoading);
 
   useEffect(() => {
     if (user) {
@@ -292,18 +252,18 @@ export default function CardInfoModal({
           </div>
           <div className="cart-product__modal-footer">
             <button
-              disabled={processing}
+              disabled={addCardLoading}
               onClick={handleClick}
               className="btn cart-product__modal-close"
             >
               Trở lại
             </button>
             <button
-              disabled={processing} //fix
+              disabled={addCardLoading} //fix
               type="submit"
               className="btn cart-product__modal-apply"
             >
-              {processing ? "Xử lý..." : "Xác nhận"}
+              {addCardLoading ? "Xử lý..." : "Xác nhận"}
             </button>
           </div>
         </form>

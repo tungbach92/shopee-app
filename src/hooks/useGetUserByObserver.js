@@ -14,6 +14,8 @@ const useGetUserByObserver = () => {
         }
         if (authUser) {
           //user will log in or logged in
+          // authUser.updateProfile({ photoURL: null }).then(() => {
+          // });
           setUser(authUser);
           // cartItems = this.getCartItemsFromFirebase(authUser);
         } else {

@@ -5,8 +5,9 @@ import AddressModal from "../Modal/AddressModal";
 import PopupModal from "../Modal/PopupModal";
 import { ClipLoader } from "react-spinners";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
-import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
+import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
 import { useUser } from "../../context/UserProvider";
+import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 
 const AccountAddress = () => {
   const {
@@ -30,20 +31,26 @@ const AccountAddress = () => {
     handleWardChoose,
   } = useAddress();
   const { user } = useUser();
-  //TODO: payment and check out context
-  const { shipInfos, shipInfosLoading, updateShipInfoToFirebase } =
-    useGetShipInfos(user);
+  const {
+    shipInfos,
+    shipInfosLoading,
+    shipInfosUpdateLoading,
+    updateShipInfoToFirebase,
+  } = useGetShipInfos(user);
   const { isAddressAddShowing, toggleAddressAdd } = useModal();
   const [shipInfoIndex, setShipInfoIndex] = useState(null);
   const { isPopupShowing, togglePopup } = useModal();
+
+  useNavigateAndRefreshBlocker(shipInfosUpdateLoading);
+
   const handleDefaultClick = async (index) => {
     let tempShipInfos = [...shipInfos];
     tempShipInfos = tempShipInfos.map(
       (shipInfo) => (shipInfo = { ...shipInfo, isDefault: false })
     );
     tempShipInfos[index] = { ...tempShipInfos[index], isDefault: true };
-    updateShipInfoToFirebase(tempShipInfos);
-    await updateCustomerBillingAddress(user, tempShipInfos); // TODO: refactor when have new context
+    await updateShipInfoToFirebase(tempShipInfos);
+    await updateCustomerBillingAddressStripe(user, tempShipInfos); // TODO: refactor??
   };
 
   const handleAddressAddClick = () => {
@@ -79,12 +86,12 @@ const AccountAddress = () => {
     togglePopup(!isPopupShowing);
   };
 
-  const handleDeleteTrue = (index) => {
+  const handleDeleteTrue = async (index) => {
     let tempShipInfos = [...shipInfos];
-    updateShipInfoToFirebase(tempShipInfos); //TODO: await loading
     tempShipInfos = tempShipInfos.filter(
       (shipInfo) => tempShipInfos.indexOf(shipInfo) !== index
     );
+    await updateShipInfoToFirebase(tempShipInfos);
   };
 
   return (
@@ -126,66 +133,75 @@ const AccountAddress = () => {
         </div>
       </div>
       <div className="address-profile__address-container">
-        {shipInfos?.map((shipInfo, index) => (
-          <div key={index} className="address-profile__address-content">
-            <div className="address-profile__user-container">
-              <label className="address-profile__name-label">Họ Và Tên</label>
-              <span className="address-profile__name-text">
-                {shipInfo.name}
-                {shipInfo.isDefault && (
-                  <span className="address-profile__default-badge">
-                    Mặc định
-                  </span>
-                )}
-              </span>
-              <label className="address-profile__phone-label">
-                Số Điện Thoại
-              </label>
-              <span className="address-profile__phone-text">
-                {shipInfo.phone}
-              </span>
-              <label className="address-profile__address-label">Địa Chỉ</label>
-              <span className="address-profile__address-text">
-                {shipInfo.fullAddress}
-              </span>
-            </div>
-            <div className="address-profile__btn-container">
-              <div>
-                <span
-                  onClick={() => handleEditClick(index)}
-                  className="address-profile__edit-btn"
-                >
-                  Sửa
+        {shipInfos.length > 0 &&
+          !shipInfosLoading &&
+          !shipInfosUpdateLoading &&
+          shipInfos?.map((shipInfo, index) => (
+            <div key={index} className="address-profile__address-content">
+              <div className="address-profile__user-container">
+                <label className="address-profile__name-label">Họ Và Tên</label>
+                <span className="address-profile__name-text">
+                  {shipInfo.name}
+                  {shipInfo.isDefault && (
+                    <span className="address-profile__default-badge">
+                      Mặc định
+                    </span>
+                  )}
                 </span>
-                {shipInfo.isDefault === false && (
-                  <span
-                    onClick={() => handleDeleteClick(index)}
-                    className="address-profile__delete-btn"
-                  >
-                    Xóa
-                  </span>
-                )}
+                <label className="address-profile__phone-label">
+                  Số Điện Thoại
+                </label>
+                <span className="address-profile__phone-text">
+                  {shipInfo.phone}
+                </span>
+                <label className="address-profile__address-label">
+                  Địa Chỉ
+                </label>
+                <span className="address-profile__address-text">
+                  {shipInfo.fullAddress}
+                </span>
               </div>
-              <button
-                disabled={shipInfo.isDefault}
-                onClick={
-                  shipInfo.isDefault
-                    ? undefined
-                    : () => handleDefaultClick(index)
-                }
-                className="btn address-profile__btn-default"
-              >
-                Thiết lập mặc định
-              </button>
+              <div className="address-profile__btn-container">
+                {!shipInfosUpdateLoading && (
+                  <div>
+                    <span
+                      onClick={() => handleEditClick(index)}
+                      className="address-profile__edit-btn"
+                    >
+                      Sửa
+                    </span>
+                    {shipInfo.isDefault === false && (
+                      <span
+                        onClick={() => handleDeleteClick(index)}
+                        className="address-profile__delete-btn"
+                      >
+                        Xóa
+                      </span>
+                    )}
+                  </div>
+                )}
+                <button
+                  disabled={shipInfo.isDefault || shipInfosUpdateLoading}
+                  onClick={
+                    shipInfo.isDefault
+                      ? undefined
+                      : () => handleDefaultClick(index)
+                  }
+                  className="btn address-profile__btn-default"
+                >
+                  Thiết lập mặc định
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-        {shipInfos.length === 0 && !shipInfosLoading && (
-          <div className="address-profile__address--empty">
-            Vui lòng thêm địa chỉ
-          </div>
-        )}
-        {shipInfosLoading && (
+          ))}
+        {shipInfos.length === 0 &&
+          !shipInfosLoading &&
+          !shipInfosUpdateLoading && (
+            <div className="address-profile__address--empty">
+              Vui lòng thêm địa chỉ
+            </div>
+          )}
+        {(shipInfosLoading || shipInfosUpdateLoading) && (
           <div className="address-profile__address--loading">
             <ClipLoader color="var(--primary-color)" />
           </div>

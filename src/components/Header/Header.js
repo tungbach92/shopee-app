@@ -176,7 +176,7 @@ const Header = ({
                   </div>
                 )} */}
                 <div className="header__nav-login-link">
-                  {user && userAvatar ? (
+                  {user && userAvatar && !userLoading ? (
                     <img
                       src={userAvatar}
                       alt=""

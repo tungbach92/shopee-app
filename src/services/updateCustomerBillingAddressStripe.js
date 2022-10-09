@@ -3,7 +3,7 @@ import getCustomerID from "./getCustomerID";
 import { getDefaultPaymentMethodID } from "./getDefaultPaymentMethodID";
 import { getPaymentMethodList } from "./getPaymentMethodList";
 
-export const updateCustomerBillingAddress = async (user, shipInfos) => {
+export const updateCustomerBillingAddressStripe = async (user, shipInfos) => {
   const customerID = await getCustomerID(user);
   const defaultPaymentMethodID = await getDefaultPaymentMethodID(customerID);
   const paymentMethodList = await getPaymentMethodList(user);

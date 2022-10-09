@@ -116,7 +116,6 @@ app.post("/create-setup-intent", async (request, response) => {
       customerID: intent.customer,
     });
   } catch (error) {
-    console.log(error.message);
     response.send({
       error: error.message,
     });

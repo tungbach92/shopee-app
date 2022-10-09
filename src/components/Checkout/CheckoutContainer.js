@@ -27,7 +27,7 @@ import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCartContext } from "../../context/CartProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
-import { updateCustomerBillingAddress } from "../../services/updateCustomerBillingAddress";
+import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const { saveCartItemsToFirebase } = useCartContext();
@@ -228,7 +228,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   const handleOrderSucceeded = ({ id, amount, created }) => {
     saveOrdersToFirebase(id, amount, created);
     updateSoldAmount();
-    updateCustomerBillingAddress(user, shipInfos);
+    updateCustomerBillingAddressStripe(user, shipInfos);
     resetCartItems();
     checkoutDispatch({});
     saveCartItemsToFirebase([]);
@@ -293,7 +293,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     setWard(undefined);
   };
 
-  const handleShipInfoDefaultChange = (e) => {
+  const handleShipInfoDefaultChange = async (e) => {
     const index = e.target.value;
     let tempShipInfos = [...shipInfos];
     tempShipInfos = tempShipInfos.map((shipInfo) =>
@@ -301,7 +301,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
         ? (shipInfo = { ...shipInfo, isDefault: true })
         : (shipInfo = { ...shipInfo, isDefault: false })
     );
-    updateShipInfoToFirebase(tempShipInfos);
+    await updateShipInfoToFirebase(tempShipInfos);
   };
 
   const handleShipInfoCancel = () => {
@@ -310,7 +310,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   };
 
   const handleShipInfoApply = async () => {
-    await updateCustomerBillingAddress(user, shipInfos);
+    await updateCustomerBillingAddressStripe(user, shipInfos);
     setIsShipInfoChoosing(!isShipInfoChoosing);
   };
 
@@ -996,6 +996,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
                     <CardInfoModal
                       paymentMethodList={paymentMethodList}
                       setPaymentMethodList={setPaymentMethodList}
+                      setDefaultPaymentMethodID={setDefaultPaymentMethodID}
                       isCardInfoShowing={isCardInfoShowing}
                       toggleCardInfo={toggleCardInfo}
                     ></CardInfoModal>
