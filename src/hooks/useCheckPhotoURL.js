@@ -7,12 +7,19 @@ const useCheckPhotoURL = (user) => {
       const path = `users/${user.uid}/avatar`;
       const storageRef = storage.ref(path);
 
-      storageRef.getDownloadURL().catch((error) => {
-        // 404
-        user.updateProfile({
-          photoURL: null,
+      storageRef
+        .getDownloadURL()
+        .then((photoURL) => {
+          user.updateProfile({
+            photoURL,
+          });
+        })
+        .catch((error) => {
+          // 404
+          user.updateProfile({
+            photoURL: null,
+          });
         });
-      });
     }
   }, [user]);
 };

@@ -11,7 +11,6 @@ import { ArrowBack } from "@mui/icons-material";
 import { useUser } from "../../context/UserProvider";
 import HeaderSearch from "./HeaderSearch";
 import classNames from "classnames";
-import { useCartContext } from "../../context/CartProvider";
 
 const Header = ({
   isProductPage,
@@ -23,19 +22,13 @@ const Header = ({
   headerText,
 }) => {
   const { user, userLoading, signOut } = useUser();
-  const { cartItems, resetCartItems, saveCartItemsToFirebase } =
-    useCartContext();
   const navigate = useNavigate();
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const location = useLocation();
   const userAvatar = user?.photoURL;
 
   const handleLogout = async () => {
-    await saveCartItemsToFirebase(cartItems);
-    resetCartItems();
     await signOut();
-    // resetCheckout()
-    navigate("/login");
   };
 
   return (

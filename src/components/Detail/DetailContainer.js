@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import protectImg from "../../img/protect.png";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import useModal from "../../hooks/useModal";
 import AddCartModal from "../Modal/AddCartModal";
 import ImageGallery from "react-image-gallery";
@@ -10,11 +10,14 @@ import { Box, Rating } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import { useProductsContext } from "../../context/ProductsProvider";
 import { useCartContext } from "../../context/CartProvider";
+import { useUser } from "../../context/UserProvider";
 
 export default function DetailContainer() {
+  const { user } = useUser();
   const { productId } = useParams();
   const location = useLocation();
   const scrolltoEl = useRef();
+  const navigate = useNavigate();
   const { items, bestSelling } = useProductsContext();
   const { addToCartItems } = useCartContext();
 
@@ -131,10 +134,18 @@ export default function DetailContainer() {
   };
 
   const handleBuyNow = () => {
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
+    }
     addToCartItems(item.id, item.variation, item.amount);
   };
 
   const handleAddCart = () => {
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
+    }
     addToCartItems(item.id, item.variation, item.amount);
     toggleIsAddCardPopup(!isAddCartPopup);
   };

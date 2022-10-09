@@ -8,11 +8,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
 import { ClipLoader } from "react-spinners";
-import useCheckPhotoURL from "./hooks/useCheckPhotoURL";
-import ProductsProviderLayout from "./context/ProductsProviderLayout";
 import SearchProviderLayout from "./context/SearchProviderLayout";
 import PrivateRoute from "./routes/PrivateRoute";
-import CartProviderLayout from "./context/CartProviderLayout";
 import { CheckoutProviderLayout } from "./context/CheckoutProviderLayout";
 
 //Lazy load page
@@ -28,8 +25,6 @@ const Error = React.lazy(() => import("./pages/Error"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 
 function App() {
-  // const { user } = useProduct();
-  // useCheckPhotoURL(user);
   return (
     <>
       <Suspense

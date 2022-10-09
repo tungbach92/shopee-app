@@ -8,8 +8,10 @@ import PopupModal from "../Modal/PopupModal";
 import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
 import { useCartContext } from "../../context/CartProvider";
+import { useUser } from "../../context/UserProvider";
 
 const HeaderCart = ({ isProductPage, isSearchPage }) => {
+  const { user } = useUser();
   const { cartItems, cartItemsLoading, delCartItem } = useCartContext();
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
@@ -34,12 +36,14 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
         <div className="header__cart-icon-link">
           <i className="header__cart-icon bi bi-cart">
             {/* <!-- No cart: empty --> */}
-            <div className="header__cart-numb">
-              {!cartItemsLoading && cartItems.length}
-            </div>
+            {user && (
+              <div className="header__cart-numb">
+                {!cartItemsLoading && cartItems.length}
+              </div>
+            )}
           </i>
         </div>
-        {!xsBreakpointMatches && (
+        {!xsBreakpointMatches && user && (
           <div
             className={classNames("header__cart-list", {
               "header__cart-list--empty": cartItems?.length === 0,

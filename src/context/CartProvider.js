@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useContext } from "react";
 import { useProductsContext } from "./ProductsProvider";
-import { isEqual } from "lodash";
-import { db } from "../firebase";
+import { isEqual, differenceWith } from "lodash";
 import { useUser } from "./UserProvider";
 import { getCartItemsFromFirebase } from "../services/getCartItemsFromFirebase";
 import useVoucher from "../hooks/useVoucher";
@@ -21,14 +20,16 @@ const CartProvider = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      const cartItems = await getCartItemsFromFirebase(user);
-      setCartItems(cartItems);
+      if (!user) return;
+      const saveCartItems = await getCartItemsFromFirebase(user);
+      setCartItems(saveCartItems);
       setLoading(false);
     })();
   }, [user]);
 
   useEffect(() => {
     const saveCartItemsToStorage = () => {
+      if (!user) return;
       const savedCartItems = cartItems.map((item) => ({
         ...item,
         similarDisPlay: undefined,
@@ -37,11 +38,11 @@ const CartProvider = ({ children }) => {
       localStorage.setItem("cartProduct", JSON.stringify(savedCartItems));
     };
     saveCartItemsToStorage();
-  }, [cartItems]);
+  }, [cartItems, user]);
 
-  const resetCartItems = () => {
+  const resetCartItems = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
 
   const addToCartItems = (id, variation = "", amount = 1) => {
     let cartItemsUpdated = [];
@@ -75,9 +76,9 @@ const CartProvider = ({ children }) => {
       (cartItem) => cartItem.id !== id || cartItem.variation !== variation
     );
     setCartItems(newCartItems);
-    if (newCartItems.length === 0) {
-      await saveCartItemsToFirebase(newCartItems);
-    }
+    // if (newCartItems.length === 0) {
+    //   await saveCartItemsToFirebase(newCartItems);
+    // }
   };
 
   const delCartItems = async (checked) => {
@@ -85,17 +86,17 @@ const CartProvider = ({ children }) => {
     const forCompareChecked = checked.map((checkedItem) => {
       return { ...checkedItem, variationDisPlay: false, similarDisPlay: false };
     });
-    forCompareChecked.forEach(
-      (checkedItem) =>
-        (newCartItems = cartItems.filter(
-          (cartItem) => !isEqual(cartItem, checkedItem)
-        ))
-    );
-
+    // forCompareChecked.forEach(
+    //   (checkedItem) =>
+    //     (newCartItems = cartItems.filter(
+    //       (cartItem) => !isEqual(cartItem, checkedItem)
+    //     ))
+    // );
+    newCartItems = differenceWith(cartItems, forCompareChecked, isEqual);
     setCartItems(newCartItems);
-    if (newCartItems.length === 0) {
-      await saveCartItemsToFirebase(newCartItems);
-    }
+    // if (newCartItems.length === 0) {
+    //   await saveCartItemsToFirebase(newCartItems);
+    // }
   };
 
   const changeAmountCartItem = (id, variation, amount) => {
@@ -143,28 +144,6 @@ const CartProvider = ({ children }) => {
     setCartItems([...newCartItems]);
   };
 
-  //TODO: choose when to save cart to firebase
-  const saveCartItemsToFirebase = async (cartItems) => {
-    try {
-      const created = Date.now();
-      cartItems = cartItems.map((item) => {
-        const { similarDisPlay, variationDisPlay, ...rest } = item;
-        return rest;
-      });
-      await db
-        .collection("users")
-        .doc(user?.uid)
-        .collection("cart")
-        .doc("cartItems")
-        .set({
-          basket: cartItems,
-          created: created,
-        });
-    } catch (error) {
-      alert("lỗi lưu giỏ hàng:" + error.message);
-    }
-  };
-
   //   const changeSimilarDisPlayCartItems = (index) => {
   //     const { cartItems } = this.state;
   //     const newCartItems = [...cartItems];
@@ -197,7 +176,6 @@ const CartProvider = ({ children }) => {
     changeAmountCartItem,
     incrCartItem,
     decrCartItem,
-    saveCartItemsToFirebase,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
     voucher,

@@ -2,15 +2,15 @@ import { db } from "../firebase";
 
 const getCartItemsFromStorage = () => {
   let savedCartItems = localStorage.getItem("cartProduct");
-  return savedCartItems === null ? [] : JSON.parse(savedCartItems);
+  return savedCartItems ? JSON.parse(savedCartItems) : savedCartItems;
 };
 
 export const getCartItemsFromFirebase = async (user) => {
   let cartItems = [];
 
-  if (!user) {
-    cartItems = getCartItemsFromStorage();
-    cartItems = cartItems.map((item) => ({
+  const savedCartItems = getCartItemsFromStorage();
+  if (savedCartItems) {
+    cartItems = savedCartItems.map((item) => ({
       ...item,
       similarDisPlay: false,
       variationDisPlay: false,

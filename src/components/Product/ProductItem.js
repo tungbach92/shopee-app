@@ -1,22 +1,29 @@
 import classNames from "classnames";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useModal from "../../hooks/useModal";
 import AddCartModal from "../Modal/AddCartModal";
 import { NumericFormat } from "react-number-format";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { useCartContext } from "../../context/CartProvider";
+import { useUser } from "../../context/UserProvider";
 
 const ProductItem = function ({ item, similarDisPlay }) {
+  const { user } = useUser();
   const { cartItems, addToCartItems } = useCartContext();
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
+  const navigate = useNavigate();
   let isInCart = false;
   isInCart = cartItems?.some((item) => item.id === id);
 
   const handleAddCart = (id) => {
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
+    }
     addToCartItems(id);
     toggleIsAddCardPopup(!isAddCartPopup);
   };
