@@ -10,7 +10,7 @@ import { useMediaQuery } from "@mui/material";
 import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
 
-const HeaderCart = ({ isProductPage, isSearchPage }) => {
+const HeaderCart = () => {
   const { user } = useUser();
   const { cartItems, cartItemsLoading, delCartItem } = useCartContext();
   const [deleteID, setDeleteID] = useState();
@@ -94,8 +94,6 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
       </div>
       {isPopupShowing && (
         <PopupModal
-          isProductPage={isProductPage}
-          isSearchPage={isSearchPage}
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}
           deleteID={deleteID}
@@ -107,14 +105,5 @@ const HeaderCart = ({ isProductPage, isSearchPage }) => {
   );
 };
 
-HeaderCart.propTypes = {
-  isSearchPage: PropTypes.bool,
-  isProductPage: PropTypes.bool,
-};
-
-HeaderCart.defaultProps = {
-  isSearchPage: false,
-  isProductPage: false,
-};
 
 export default HeaderCart;

@@ -11,8 +11,6 @@ import { useSearchContext } from "../../context/SearchProvider";
 
 const HeaderSearch = ({
   isCartPage,
-  isSearchPage,
-  isProductPage,
   isCheckoutPage,
   xsBreakpointMatches,
 }) => {
@@ -193,8 +191,6 @@ const HeaderSearch = ({
           </div>
           {!isCartPage && (
             <HeaderCart
-              isProductPage={isProductPage}
-              isSearchPage={isSearchPage}
             ></HeaderCart>
           )}
         </>
@@ -203,17 +199,13 @@ const HeaderSearch = ({
   );
 };
 HeaderSearch.propTypes = {
-  isProductPage: PropTypes.bool,
   isCartPage: PropTypes.bool,
   isCheckoutPage: PropTypes.bool,
-  isSearchPage: PropTypes.bool,
   xsBreakpointMatches: PropTypes.bool.isRequired,
 };
 HeaderSearch.defaultProps = {
-  isProductPage: false,
   isCartPage: false,
   isCheckoutPage: false,
-  isSearchPage: false,
 };
 
 export default HeaderSearch;

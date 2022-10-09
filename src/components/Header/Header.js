@@ -16,7 +16,6 @@ const Header = ({
   isProductPage,
   isCartPage,
   isCheckoutPage,
-  isSearchPage,
   isLoginPage,
   isRegisterPage,
   headerText,
@@ -248,8 +247,6 @@ const Header = ({
           <HeaderSearch
             isCartPage={isCartPage}
             isCheckoutPage={isCheckoutPage}
-            isSearchPage={isSearchPage}
-            isProductPage={isProductPage}
             xsBreakpointMatches={xsBreakpointMatches}
           ></HeaderSearch>
         )}
@@ -295,7 +292,6 @@ Header.propTypes = {
   isProductPage: PropTypes.bool,
   isCartPage: PropTypes.bool,
   isCheckoutPage: PropTypes.bool,
-  isSearchPage: PropTypes.bool,
   isLoginPage: PropTypes.bool,
   isRegisterPage: PropTypes.bool,
   headerText: PropTypes.string,
@@ -304,7 +300,6 @@ Header.defaultProps = {
   isProductPage: false,
   isCartPage: false,
   isCheckoutPage: false,
-  isSearchPage: false,
   isLoginPage: false,
   isRegisterPage: false,
   headerText: "",

@@ -10,7 +10,6 @@ export default function PopupModal(props) {
 
   const {
     isCheckoutPage,
-    isProductPage,
     isAccountPage,
     isUserUpdateFailed,
     isImageUploadFailed,
@@ -24,7 +23,6 @@ export default function PopupModal(props) {
     paymentMethodID,
     setPaymentMethodID,
     handlePaymentDeleteTrue,
-    isSearchPage,
     isCartPage,
     deleteID,
     setDeleteID,
@@ -77,7 +75,7 @@ export default function PopupModal(props) {
       }
 
       if (
-        (isCartPage || isSearchPage || isProductPage) &&
+        (isCartPage) &&
         (deleteID !== null || isDeleteSelected)
       ) {
         isBackBtnHidden = false;
@@ -127,8 +125,6 @@ export default function PopupModal(props) {
     isCheckoutPage,
     isDeleteSelected,
     isImageUploadFailed,
-    isProductPage,
-    isSearchPage,
     isUpdateEmailSuccess,
     isUpdatePasswordSuccess,
     isUserUpdateFailed,
@@ -232,7 +228,6 @@ export default function PopupModal(props) {
 }
 
 PopupModal.propTypes = {
-  isProductPage: PropTypes.bool,
   isAccountPage: PropTypes.bool,
   isUserUpdateFailed: PropTypes.bool,
   isImageUploadFailed: PropTypes.bool,
@@ -244,7 +239,6 @@ PopupModal.propTypes = {
   paymentMethodID: PropTypes.string,
   setPaymentMethodID: PropTypes.func,
   handlePaymentDeleteTrue: PropTypes.func,
-  isSearchPage: PropTypes.bool,
   isCartPage: PropTypes.bool,
   deleteID: PropTypes.string,
   setDeleteID: PropTypes.func,
@@ -265,7 +259,6 @@ PopupModal.propTypes = {
 };
 
 PopupModal.defaultProps = {
-  isProductPage: false,
   isAccountPage: false,
   isUserUpdateFailed: false,
   isImageUploadFailed: false,
@@ -277,7 +270,6 @@ PopupModal.defaultProps = {
   paymentMethodID: "",
   setPaymentMethodID: () => {},
   handlePaymentDeleteTrue: () => {},
-  isSearchPage: false,
   isCartPage: false,
   deleteID: null,
   setDeleteID: () => {},

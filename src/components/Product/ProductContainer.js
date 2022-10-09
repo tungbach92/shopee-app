@@ -183,14 +183,10 @@ const ProductContainer = ({ items }) => {
 };
 
 ProductContainer.propTypes = {
-  isProductPage: PropTypes.bool,
-  isSearchPage: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 ProductContainer.defaultProps = {
-  isProductPage: false,
-  isSearchPage: false,
 };
 
 export default ProductContainer;

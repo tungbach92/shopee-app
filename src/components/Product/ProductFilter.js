@@ -202,14 +202,5 @@ const ProductFilter = ({
   );
 };
 
-ProductFilter.propTypes = {
-  isSearchPage: PropTypes.bool,
-  isProductPage: PropTypes.bool,
-};
-
-ProductFilter.defaultProps = {
-  isSearchPage: false,
-  isProductPage: false,
-};
 
 export default ProductFilter;

@@ -49,16 +49,6 @@ function ProductList({ items, pageIndex, pageSize }) {
   );
 }
 
-ProductList.propTypes = {
-  isSearchPage: PropTypes.bool,
-  isProductPage: PropTypes.bool,
-  similarDisPlay: PropTypes.bool,
-};
 
-ProductList.defaultProps = {
-  isSearchPage: false,
-  isProductPage: false,
-  similarDisPlay: false,
-};
 
 export default ProductList;
