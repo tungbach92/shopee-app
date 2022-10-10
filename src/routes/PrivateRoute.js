@@ -4,7 +4,6 @@ import { ClipLoading } from "../components/ClipLoading";
 import { useUser } from "../context/UserProvider";
 
 const PrivateRoute = () => {
-  //TODO: auth with token
   const { user, userLoading } = useUser();
   const navigate = useNavigate();
   const location = useLocation();

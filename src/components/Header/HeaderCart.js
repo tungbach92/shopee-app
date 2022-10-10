@@ -56,8 +56,8 @@ const HeaderCart = () => {
             <div className="header__cart-list-container">
               <div className="header__cart-title">Sản phẩm mới thêm</div>
               <div className="header__cart-list-item">
-                {cartItems?.map((item) => (
-                  <div key={item.id} className="header__cart-item">
+                {cartItems?.map((item, index) => (
+                  <div key={index} className="header__cart-item">
                     <div className="header__cart-link">
                       <img
                         className="header__cart-img"
@@ -104,6 +104,5 @@ const HeaderCart = () => {
     </div>
   );
 };
-
 
 export default HeaderCart;
