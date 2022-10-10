@@ -5,7 +5,7 @@ const currentTimeinMs = new Date().valueOf();
 const sessionExpinHour = 24;
 const sessionExpinSec = sessionExpinHour * 3600;
 
-export const useCheckFirebaseIdTokenAuthTime = async (user, signOut) => {
+export const useCheckFirebaseIdTokenAuthTime = (user, signOut) => {
   useEffect(() => {
     const checkFirebaseIdTokenAuthTime = async () => {
       if (!user) return;

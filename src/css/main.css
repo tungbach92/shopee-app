@@ -272,10 +272,6 @@ header {
   position: relative;
 }
 
-.header__nav-item-right--loading {
-  position: relative;
-}
-
 .header__nav-item-right--user:hover .header__user-list {
   display: block;
 }
@@ -311,15 +307,6 @@ header {
   align-items: center;
   padding: 0 0.6rem;
   position: relative;
-}
-
-.header__nav-loading {
-  display: inline-flex;
-  height: 100%;
-  align-items: center;
-  padding: 0 0.6rem;
-  position: relative;
-  color: var(--white-color);
 }
 
 .header__nav-reg::before {
@@ -1249,14 +1236,7 @@ header {
   font-weight: 400;
   font-size: 1.1rem;
 }
-.app__no-product {
-  flex: 1;
-  text-align: center;
-  padding: 14.5rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
-}
+
 .main {
   background-color: #f5f5f5;
 }
@@ -2433,14 +2413,6 @@ header {
   align-items: center;
 }
 
-.cart-loading {
-  text-align: center;
-  padding: 14.5rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
 .cart-empty__img {
   width: 16rem;
 }
@@ -2752,15 +2724,6 @@ header {
 .checkout-product__additon-price {
   margin-left: 2.6rem;
   color: var(--primary-color);
-}
-
-.checkout-product__item-loading {
-  background: var(--white-color);
-  text-align: center;
-  padding: 6rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
 }
 
 .checkout-product__first-addition {
@@ -3867,14 +3830,6 @@ header {
   color: var(--primary-color);
 }
 
-.user-order__order-loading {
-  text-align: center;
-  padding: 14.5rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
-}
-
 .user-profile {
   background-color: #f5f5f5;
 }
@@ -3984,14 +3939,6 @@ header {
   text-align: center;
   font-size: 1.4rem;
   color: var(--primary-color);
-}
-
-.address-profile__address--loading {
-  text-align: center;
-  padding: 14.5rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
 }
 
 .user-profile__title {
@@ -4548,14 +4495,6 @@ header {
   text-align: center;
   font-size: 1.4rem;
   color: var(--primary-color);
-}
-
-.payment-profile__payment-loading {
-  text-align: center;
-  padding: 14.5rem;
-  font-size: 1.6rem;
-  color: var(--primary-color);
-  font-weight: 600;
 }
 
 .payment-profile__card-logo {

@@ -7,10 +7,10 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
-import { ClipLoader } from "react-spinners";
 import SearchProviderLayout from "./context/SearchProviderLayout";
 import PrivateRoute from "./routes/PrivateRoute";
 import { CheckoutProviderLayout } from "./context/CheckoutProviderLayout";
+import { ClipLoading } from "./components/ClipLoading";
 
 //Lazy load page
 const Product = React.lazy(() => import("./pages/Product"));
@@ -29,9 +29,7 @@ function App() {
     <>
       <Suspense
         fallback={
-          <div className="app__no-product">
-            <ClipLoader color="var(--primary-color)" />
-          </div>
+          <ClipLoading></ClipLoading>
         }
       >
         <Routes>

@@ -169,11 +169,6 @@ const Header = ({
                   </div>
                 )}
 
-                {/* {userLoading && (
-                  <div className="header__nav-loading">
-                    <ClipLoader color="white" />
-                  </div>
-                )} */}
                 <div className="header__nav-login-link">
                   {user && isPhotoExist && !userLoading && !checkingPhotoURL ? (
                     <img

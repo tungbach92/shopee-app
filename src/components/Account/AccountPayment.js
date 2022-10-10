@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
 import CardInfoModal from "../Modal/CardInfoModal";
-import { ClipLoader } from "react-spinners";
 import usePaymentMethodList from "../../hooks/usePaymentMethodList";
 import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
 import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
@@ -11,6 +10,7 @@ import { detachPaymentMethodID } from "../../services/detachPaymentMethodID";
 import { useUser } from "../../context/UserProvider";
 import getCustomerID from "../../services/getCustomerID";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
+import { ClipLoading } from "../ClipLoading";
 const AccountPayment = () => {
   const { user } = useUser();
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
@@ -84,9 +84,7 @@ const AccountPayment = () => {
       </div>
       <div className="payment-profile__payment-container">
         {paymentMethodListLoading ? (
-          <div className="payment-profile__payment-loading">
-            <ClipLoader color="var(--primary-color)" />
-          </div>
+          <ClipLoading></ClipLoading>
         ) : paymentMethodList.length === 0 && !paymentMethodListLoading ? (
           <div className="payment-profile__payment-empty">
             Bạn chưa liên kết thẻ

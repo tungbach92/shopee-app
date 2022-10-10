@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import Pagination from "../Pagination/Pagination";
-import { ClipLoader } from "react-spinners";
 import useGetOrderItems from "../../hooks/useGetOrderItems";
 import MiniPageControl from "../Pagination/MiniPageControl";
 import usePagination from "../../hooks/usePagination";
 import { useUser } from "../../context/UserProvider";
+import { ClipLoading } from "../ClipLoading";
 
 const AccountOrder = () => {
   const { user } = useUser();
@@ -259,11 +259,7 @@ const AccountOrder = () => {
           <div className="user-order__order-empty">Chưa có đơn hàng.</div>
         )}
 
-        {orderItemsLoading && (
-          <div className="user-order__order-loading">
-            <ClipLoader color="var(--primary-color)" />
-          </div>
-        )}
+        {orderItemsLoading && <ClipLoading></ClipLoading>}
       </div>
       <Pagination
         items={searchOrderItemsFiltered}

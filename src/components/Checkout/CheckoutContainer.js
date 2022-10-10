@@ -14,7 +14,6 @@ import { db } from "../../firebase";
 import "firebase/firestore";
 import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
-import { ClipLoader } from "react-spinners";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
 import getCustomerID from "../../services/getCustomerID";
 import usePaymentMethodList from "../../hooks/usePaymentMethodList";
@@ -28,6 +27,7 @@ import { useCartContext } from "../../context/CartProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
+import { ClipLoading } from "../ClipLoading";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const { saveCartItemsToFirebase } = useCartContext();
@@ -665,11 +665,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
               </div>
             </div>
           ))}
-          {loading && (
-            <div className="checkout-product__item-loading">
-              <ClipLoader color="var(--primary-color)" />
-            </div>
-          )}
+          {loading && <ClipLoading></ClipLoading>}
           {checkoutItems?.length === 0 && !loading && <ErrorModal></ErrorModal>}
         </ul>
         <div className="checkout-product__first-addition">

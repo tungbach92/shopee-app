@@ -7,10 +7,10 @@ import ImageGallery from "react-image-gallery";
 import DetailCheckShipPrice from "./DetailCheckShipPrice";
 import { NumericFormat } from "react-number-format";
 import { Box, Rating } from "@mui/material";
-import { ClipLoader } from "react-spinners";
 import { useProductsContext } from "../../context/ProductsProvider";
 import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
+import { ClipLoading } from "../ClipLoading";
 
 export default function DetailContainer() {
   const { user } = useUser();
@@ -159,19 +159,7 @@ export default function DetailContainer() {
   // };
 
   if (!item) {
-    return (
-      <Box
-        sx={{
-          textAlign: "center",
-          padding: "14.5rem",
-          fontSize: "1.6rem",
-          color: "var(--primary-color)",
-          fontWeight: "600",
-        }}
-      >
-        <ClipLoader color="var(--primary-color)" />
-      </Box>
-    );
+    return <ClipLoading></ClipLoading>;
   } else
     return (
       <div className="main">

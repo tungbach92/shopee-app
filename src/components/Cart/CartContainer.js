@@ -9,12 +9,12 @@ import PopupModal from "../../components/Modal/PopupModal";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { ClipLoader } from "react-spinners";
 import { useCartContext } from "../../context/CartProvider";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
+import { ClipLoading } from "../ClipLoading";
 
 export default function CartContainer() {
   const {
@@ -948,11 +948,7 @@ export default function CartContainer() {
         </div>
       )}
 
-      {cartItemsLoading && (
-        <div className="cart-loading">
-          <ClipLoader color="var(--primary-color)" />
-        </div>
-      )}
+      {cartItemsLoading && <ClipLoading></ClipLoading>}
 
       {isAddCartPopup && (
         <AddCartModal

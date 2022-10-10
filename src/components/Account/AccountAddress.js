@@ -3,11 +3,11 @@ import useModal from "../../hooks/useModal";
 import useAddress from "../../hooks/useAddress";
 import AddressModal from "../Modal/AddressModal";
 import PopupModal from "../Modal/PopupModal";
-import { ClipLoader } from "react-spinners";
 import useGetShipInfos from "../../hooks/useGetShipInfos";
 import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
 import { useUser } from "../../context/UserProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
+import { ClipLoading } from "../ClipLoading";
 
 const AccountAddress = () => {
   const {
@@ -202,9 +202,7 @@ const AccountAddress = () => {
             </div>
           )}
         {(shipInfosLoading || shipInfosUpdateLoading) && (
-          <div className="address-profile__address--loading">
-            <ClipLoader color="var(--primary-color)" />
-          </div>
+          <ClipLoading></ClipLoading>
         )}
       </div>
       {isPopupShowing && (
