@@ -14,6 +14,8 @@ export const useUser = () => {
 
 const UserProvider = ({ children }) => {
   const { user, userLoading } = useGetUserByObserver();
+  const { checkingPhotoURL, isPhotoExist, setIsPhotoExist } =
+    useCheckPhotoURL(user);
   const navigate = useNavigate();
 
   const getCartItemsFromStorage = () => {
@@ -29,7 +31,6 @@ const UserProvider = ({ children }) => {
     navigate("/login", { replace: true });
   }, [navigate, user]);
 
-  useCheckPhotoURL(user);
   useCheckFirebaseIdTokenAuthTime(user, signOut);
 
   const signIn = ({ email, password }) => {
@@ -40,7 +41,16 @@ const UserProvider = ({ children }) => {
     return auth.createUserWithEmailAndPassword(email, password);
   };
 
-  const value = { user, userLoading, signIn, signOut, register };
+  const value = {
+    user,
+    userLoading,
+    checkingPhotoURL,
+    isPhotoExist,
+    setIsPhotoExist,
+    signIn,
+    signOut,
+    register,
+  };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 

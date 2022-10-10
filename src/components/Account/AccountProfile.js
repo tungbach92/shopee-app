@@ -6,6 +6,7 @@ import RadioGroupField from "../../custom-fields/RadioGroupField/RadioGroupField
 import { Link } from "react-router-dom";
 import ImageUploadField from "../../custom-fields/ImageUploadField/ImageUploadField";
 import * as yup from "yup";
+import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 
 const AccountProfile = ({
   userName,
@@ -40,6 +41,8 @@ const AccountProfile = ({
     previewImage: yup.string().nullable(),
   });
 
+  useNavigateAndRefreshBlocker(isInfoUpdating);
+  
   return (
     <>
       <div className="user-profile__title-container">

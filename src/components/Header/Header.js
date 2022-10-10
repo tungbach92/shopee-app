@@ -20,11 +20,11 @@ const Header = ({
   isRegisterPage,
   headerText,
 }) => {
-  const { user, userLoading, signOut } = useUser();
+  const { user, userLoading, isPhotoExist, checkingPhotoURL, signOut } =
+    useUser();
   const navigate = useNavigate();
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const location = useLocation();
-  const userAvatar = user?.photoURL;
 
   const handleLogout = async () => {
     await signOut();
@@ -175,9 +175,9 @@ const Header = ({
                   </div>
                 )} */}
                 <div className="header__nav-login-link">
-                  {user && userAvatar && !userLoading ? (
+                  {user && isPhotoExist && !userLoading && !checkingPhotoURL ? (
                     <img
-                      src={userAvatar}
+                      src={user.photoURL}
                       alt=""
                       className="header__nav-avatar"
                     />

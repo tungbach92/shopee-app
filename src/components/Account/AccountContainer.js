@@ -12,7 +12,7 @@ import PopupModal from "../Modal/PopupModal";
 import { useUser } from "../../context/UserProvider";
 
 const AccountContainer = () => {
-  const { user } = useUser();
+  const { user, setIsPhotoExist } = useUser();
   const [userName, setUserName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -120,6 +120,7 @@ const AccountContainer = () => {
           uploadTask.snapshot.ref
             .getDownloadURL()
             .then((downloadURL) => {
+              setIsPhotoExist(true);
               user.updateProfile({
                 photoURL: downloadURL,
               });

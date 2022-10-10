@@ -1,27 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { storage } from "../firebase";
 
 const useCheckPhotoURL = (user) => {
+  const [isPhotoExist, setIsPhotoExist] = useState(true);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (user) {
-      const path = `users/${user.uid}/avatar`;
-      const storageRef = storage.ref(path);
-
-      storageRef
-        .getDownloadURL()
-        .then((photoURL) => {
-          user.updateProfile({
-            photoURL,
-          });
-        })
-        .catch((error) => {
-          // 404
-          user.updateProfile({
-            photoURL: null,
-          });
-        });
+    if (!user) {
+      return;
     }
+    setLoading(true);
+    const path = `users/${user.uid}/avatar`;
+    const storageRef = storage.ref(path);
+
+    storageRef
+      .getDownloadURL()
+      .then((photoURL) => {
+        setIsPhotoExist(true);
+        user.updateProfile({
+          photoURL,
+        });
+      })
+      .catch((error) => {
+        // 404
+        setIsPhotoExist(false);
+        user.updateProfile({
+          photoURL: null,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [user]);
+  return { checkingPhotoURL: loading, isPhotoExist, setIsPhotoExist };
 };
 
 export default useCheckPhotoURL;

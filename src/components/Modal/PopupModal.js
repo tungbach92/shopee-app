@@ -57,6 +57,11 @@ export default function PopupModal(props) {
         isBackBtnHidden = true;
         title = "Cập nhật thông tin người dùng thành công";
       }
+      if (isAccountPage && isUserUpdateFailed && isImageUploadFailed) {
+        isBackBtnHidden = true;
+        title =
+          "Có lỗi xảy ra khi cập nhật thông tin và tải ảnh người dùng lên hệ thống.";
+      }
       if (isAccountPage && isUserUpdateFailed) {
         isBackBtnHidden = true;
         title = "Có lỗi xảy ra khi cập nhật thông tin người dùng lên hệ thống.";
@@ -74,10 +79,7 @@ export default function PopupModal(props) {
         title = "Bạn chắc chắn muốn xóa thẻ này ?";
       }
 
-      if (
-        (isCartPage) &&
-        (deleteID !== null || isDeleteSelected)
-      ) {
+      if (isCartPage && (deleteID !== null || isDeleteSelected)) {
         isBackBtnHidden = false;
         title = "Bạn chắc chắn muốn xóa (các) sản phẩm này khỏi giỏ hàng ?";
       } else if (isCartPage && checked?.length === 0) {
