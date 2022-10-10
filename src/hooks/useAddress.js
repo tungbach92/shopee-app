@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import ProvincesCitiesVN from "pc-vn";
 
 const useAddress = () => {
+  //TODO: change to 1 state address, update multiple state with cb func
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
