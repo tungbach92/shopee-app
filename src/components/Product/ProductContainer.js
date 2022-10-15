@@ -24,7 +24,7 @@ const ProductContainer = ({ items }) => {
   const { pageIndex, setPageIndex, pageSize, pageTotal } =
     usePagination(filteredItems);
 
-  const newestDays = 30;
+  const newestDays = 180;
   const oneDayinMs = 24 * 3600 * 1000;
   const currentTimeinMs = new Date().valueOf();
 
