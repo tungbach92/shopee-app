@@ -4,7 +4,7 @@ export const saveCartItemsToFirebase = async (user, cartItems) => {
   if (!user) return;
   try {
     const created = Date.now();
-    cartItems = cartItems.map((item) => {
+    const savedCartItems = cartItems.map((item) => {
       const { similarDisPlay, variationDisPlay, ...rest } = item;
       return rest;
     });
@@ -14,7 +14,7 @@ export const saveCartItemsToFirebase = async (user, cartItems) => {
       .collection("cart")
       .doc("cartItems")
       .set({
-        basket: cartItems,
+        basket: savedCartItems,
         created: created,
       });
   } catch (error) {

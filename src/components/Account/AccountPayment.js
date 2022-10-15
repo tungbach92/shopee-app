@@ -4,13 +4,13 @@ import PopupModal from "../Modal/PopupModal";
 import CardInfoModal from "../Modal/CardInfoModal";
 import usePaymentMethodList from "../../hooks/usePaymentMethodList";
 import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
-import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { detachPaymentMethodID } from "../../services/detachPaymentMethodID";
 import { useUser } from "../../context/UserProvider";
 import getCustomerID from "../../services/getCustomerID";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 import { ClipLoading } from "../ClipLoading";
+import { useUpdateDefaultPaymentMethodIDToStripe } from "../../hooks/useUpdateDefaultPaymentMethodIDToStripe";
 const AccountPayment = () => {
   const { user } = useUser();
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
@@ -21,15 +21,15 @@ const AccountPayment = () => {
     setPaymentMethodList,
     paymentMethodListLoading,
   } = usePaymentMethodList(user, setDefaultPaymentMethodID);
+  const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
+    useUpdateDefaultPaymentMethodIDToStripe();
   const [paymentMethodID, setPaymentMethodID] = useState();
   const [deletePaymentLoading, setDeletePaymentLoading] = useState(false);
-  const [defaultPMIDUpdateLoading, setDefaultPMIDUpdateLoading] =
-    useState(false);
   const { isPopupShowing, togglePopup, isCardInfoShowing, toggleCardInfo } =
     useModal();
 
   useNavigateAndRefreshBlocker(
-    deletePaymentLoading || defaultPMIDUpdateLoading
+    deletePaymentLoading || updateDefaultPaymentMethodIDLoading
   );
 
   const handleAddCardClick = () => {
@@ -50,13 +50,14 @@ const AccountPayment = () => {
   };
 
   const handleDefaultClick = async (paymentMethodID) => {
-    setDefaultPMIDUpdateLoading(true);
     if (paymentMethodID === defaultPaymentMethodID) {
       return;
     }
-    await updateDefaultPaymentMethodIDToStripe(user, paymentMethodID);
-    setDefaultPMIDUpdateLoading(false);
-    setDefaultPaymentMethodID(paymentMethodID);
+    const updatedDefaultPaymentMethodID = await updateDefaultPaymentMethodID(
+      user,
+      paymentMethodID
+    );
+    setDefaultPaymentMethodID(updatedDefaultPaymentMethodID);
   };
   return (
     <>
@@ -109,7 +110,7 @@ const AccountPayment = () => {
               </div>
               <div className="payment-profile__btn-container">
                 {item.id !== defaultPaymentMethodID &&
-                  !defaultPMIDUpdateLoading &&
+                  !updateDefaultPaymentMethodIDLoading &&
                   !deletePaymentLoading && (
                     <div
                       onClick={() => handlePaymentDeleteClick(item.id)}
@@ -132,7 +133,7 @@ const AccountPayment = () => {
                 <button
                   disabled={
                     item.id === defaultPaymentMethodID ||
-                    defaultPMIDUpdateLoading ||
+                    updateDefaultPaymentMethodIDLoading ||
                     deletePaymentLoading
                   }
                   onClick={() => handleDefaultClick(item.id)}

@@ -161,21 +161,22 @@ export default function PopupModal(props) {
   // Ok button
   const handleApplyClick = (e) => {
     togglePopup(!isPopupShowing);
-    if (isCheckoutPage) {
-      if (shipInfos?.length <= 0) {
-        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-      } else if (!Object.keys(shipUnit)?.length) {
-        window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
-      } else if (defaultPaymentMethodID.length === 0) {
-        window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
-      } else if (paymentMethod?.length === 0) {
-        window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
-      } else if (succeeded) {
-        navigate("/user/account/purchase");
-      }
+    if (isCheckoutPage && shipInfos?.length <= 0) {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+    if (isCheckoutPage && !Object.keys(shipUnit)?.length) {
+      window.scrollTo({ top: 300, left: 0, behavior: "smooth" });
+    }
+    if (isCheckoutPage && defaultPaymentMethodID.length === 0) {
+      window.scrollTo({ top: 700, left: 0, behavior: "smooth" });
+    }
+    if (isCheckoutPage && paymentMethod?.length === 0) {
+      window.scrollTo({ top: 600, left: 0, behavior: "smooth" });
+    }
+    if (isCheckoutPage && succeeded) {
+      navigate("/user/account/purchase");
     }
 
-    //AccountPage user info, ship info, card info
     if (isAccountPage && shipInfoIndex === null && !paymentMethodID) {
       navigate("/user");
     }
@@ -188,7 +189,6 @@ export default function PopupModal(props) {
       setPaymentMethodID();
     }
 
-    //Cart page popup delete
     if (isCartPage && deleteID) {
       handleDeleteCartTrue();
       setDeleteID();

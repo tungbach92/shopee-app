@@ -18,7 +18,6 @@ import useGetShipInfos from "../../hooks/useGetShipInfos";
 import getCustomerID from "../../services/getCustomerID";
 import usePaymentMethodList from "../../hooks/usePaymentMethodList";
 import useDefaultPaymentMethodID from "../../hooks/useDefaultPaymentMethodID";
-import { updateDefaultPaymentMethodIDToStripe } from "../../services/updateDefaultPaymentMethodIDToStripe";
 import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
@@ -28,9 +27,12 @@ import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlock
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
 import { ClipLoading } from "../ClipLoading";
+import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
+import { useUpdateDefaultPaymentMethodIDToStripe } from "../../hooks/useUpdateDefaultPaymentMethodIDToStripe";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
-  const { saveCartItemsToFirebase } = useCartContext();
+  const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
+    useUpdateDefaultPaymentMethodIDToStripe();
   const { checkoutState, checkoutDispatch } = useCheckoutContext();
   const { checkoutItems, loading } = checkoutState;
   const {
@@ -231,7 +233,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     updateCustomerBillingAddressStripe(user, shipInfos);
     resetCartItems();
     checkoutDispatch({});
-    saveCartItemsToFirebase([]);
+    saveCartItemsToFirebase(user, []);
     saveCheckoutItemsToFirebase([]);
     setSucceeded(true);
     setProcessing(false);
@@ -276,7 +278,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
   };
 
   const handlePaymentDefaultChange = async (paymentMethodID) => {
-    const defaultPaymentMethodID = await updateDefaultPaymentMethodIDToStripe(
+    const defaultPaymentMethodID = await updateDefaultPaymentMethodID(
       user,
       paymentMethodID
     );
@@ -955,6 +957,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
                           checked={item.id === defaultPaymentMethodID}
                           onChange={() => handlePaymentDefaultChange(item.id)}
                           className="checkout-product__radio-card"
+                          disabled={updateDefaultPaymentMethodIDLoading}
                         />
                         <img
                           src={getCardImgByBrand(item.card.brand)} //if cardInfo.number => img

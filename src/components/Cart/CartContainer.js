@@ -15,12 +15,14 @@ import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 import { ClipLoading } from "../ClipLoading";
+import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
+import { useUser } from "../../context/UserProvider";
 
 export default function CartContainer() {
+  const { user } = useUser();
   const {
     cartItems,
     cartItemsLoading,
-    saveCartItemsToFirebase,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
     changeSimilarDisPlayCartItems,
@@ -132,7 +134,7 @@ export default function CartContainer() {
         type: CHECKOUT_ACTIONTYPES.ADD_CHECKOUT,
         payload: checkoutItems,
       });
-      await saveCartItemsToFirebase(cartItems);
+      await saveCartItemsToFirebase(user, cartItems);
       navigate("/checkout");
     }
   };
