@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import ProductItem from "./ProductItem";
-import PropTypes from "prop-types";
 import { Box, useMediaQuery } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { useProductsContext } from "../../context/ProductsProvider";
@@ -9,26 +8,25 @@ function ProductList({ items, pageIndex, pageSize }) {
   const { itemsLoading } = useProductsContext();
 
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-  const similarPageSize = 6;
 
   // scrollToTop
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const getRenderItemsByPageAndPagination = () => {
+  const renderItemsByPagination = useMemo(() => {
     let renderItem = [];
     renderItem = items.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
     if (xsBreakpointMatches) {
       renderItem = items;
     }
     return renderItem;
-  };
+  }, [items, pageIndex, pageSize, xsBreakpointMatches]);
 
   return (
     <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
       {itemsLoading && <ClipLoading></ClipLoading>}
-      {getRenderItemsByPageAndPagination().length === 0 && !itemsLoading && (
+      {renderItemsByPagination.length === 0 && !itemsLoading && (
         <Box
           sx={{
             flex: 1,
@@ -42,13 +40,11 @@ function ProductList({ items, pageIndex, pageSize }) {
           Không có sản phẩm...
         </Box>
       )}
-      {getRenderItemsByPageAndPagination().map((item) => (
+      {renderItemsByPagination.map((item) => (
         <ProductItem key={item.id} item={item}></ProductItem>
       ))}
     </Grid2>
   );
 }
-
-
 
 export default ProductList;

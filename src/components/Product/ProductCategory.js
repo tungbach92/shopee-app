@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import * as categoryType from "../../constants/category";
+import * as sortType from "../../constants/sort";
 import {
   Box,
   Button,
@@ -11,6 +12,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { FilterAlt } from "@mui/icons-material";
+import { useRef } from "react";
 
 const StyledBox = styled(Box)({
   display: "flex",
@@ -36,14 +38,14 @@ export default function ProductCategory({
   category,
   setCategory,
   filteredItems,
-  handleItemsByCategory,
-  handleRating,
-  handleFilerPriceRange,
-  startPrice,
   setStartPrice,
-  endPrice,
   setEndPrice,
   handleResetAll,
+  setSortPrice,
+  setSort,
+  setRatingValue,
+  startPriceRef,
+  endPriceRef,
 }) {
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const fiveRating = 5;
@@ -52,10 +54,10 @@ export default function ProductCategory({
   const twoRating = 2;
   const oneRating = 1;
   const filterDisabled = filteredItems.length === 0;
-
-  const handleClick = (value) => {
-    handleItemsByCategory(value);
+  const handleCategoryClick = (value) => {
     setCategory(value);
+    setSort(sortType.ALL);
+    setSortPrice(sortType.DEFAULT_PRICE);
   };
 
   return (
@@ -66,7 +68,7 @@ export default function ProductCategory({
       <ul className="app__category-list">
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.ALL_PRODUCT)}
+          onClick={() => handleCategoryClick(categoryType.ALL_PRODUCT)}
           className={classNames("app__category-item", "app__category-default", {
             "app__category-item--active": category === categoryType.ALL_PRODUCT,
           })}
@@ -84,7 +86,7 @@ export default function ProductCategory({
         </li>
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.SHIRT)}
+          onClick={() => handleCategoryClick(categoryType.SHIRT)}
           className={classNames("app__category-item", "app__category-shirt", {
             "app__category-item--active": category === categoryType.SHIRT,
           })}
@@ -102,7 +104,7 @@ export default function ProductCategory({
         </li>
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.PANT)}
+          onClick={() => handleCategoryClick(categoryType.PANT)}
           className={classNames(
             "app__category-item",
             "app__category-discount",
@@ -122,7 +124,7 @@ export default function ProductCategory({
         </li>
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.SHOE)}
+          onClick={() => handleCategoryClick(categoryType.SHOE)}
           className={classNames("app__category-item", "app__category-shoe", {
             "app__category-item--active": category === categoryType.SHOE,
           })}
@@ -140,7 +142,7 @@ export default function ProductCategory({
         </li>
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.BAG)}
+          onClick={() => handleCategoryClick(categoryType.BAG)}
           className={classNames("app__category-item", "app__category-bag", {
             "app__category-item--active": category === categoryType.BAG,
           })}
@@ -158,7 +160,7 @@ export default function ProductCategory({
         </li>
         <li
           data-name="category"
-          onClick={() => handleClick(categoryType.SET)}
+          onClick={() => handleCategoryClick(categoryType.SET)}
           className={classNames("app__category-item", "app__category-set", {
             "app__category-item--active": category === categoryType.SET,
           })}
@@ -177,7 +179,7 @@ export default function ProductCategory({
         <li
           data-name="category"
           data-value="accessories"
-          onClick={() => handleClick(categoryType.ACCESSORIES)}
+          onClick={() => handleCategoryClick(categoryType.ACCESSORIES)}
           className={classNames(
             "app__category-item",
             "app__category-accessories",
@@ -230,12 +232,11 @@ export default function ProductCategory({
                 type="text"
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                 name="startPrice"
-                value={startPrice}
+                inputRef={startPriceRef}
                 onChange={(e) => {
                   e.target.value = e.target.value
                     .replace(/[^0-9.]/g, "")
                     .replace(/(\..*)\./g, "$1");
-                  setStartPrice(e.target.value);
                 }}
                 placeholder="Từ"
                 size="small"
@@ -246,12 +247,11 @@ export default function ProductCategory({
                 type="text"
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                 name="endPrice"
-                value={endPrice}
+                inputRef={endPriceRef}
                 onChange={(e) => {
                   e.target.value = e.target.value
                     .replace(/[^0-9.]/g, "")
                     .replace(/(\..*)\./g, "$1");
-                  setEndPrice(e.target.value);
                 }}
                 placeholder="Đến"
                 size="small"
@@ -267,7 +267,10 @@ export default function ProductCategory({
                 color: "white",
                 "&:disabled": { cursor: "not-allowed" },
               }}
-              onClick={handleFilerPriceRange}
+              onClick={() => {
+                setStartPrice(startPriceRef.current.value);
+                setEndPrice(endPriceRef.current.value);
+              }}
               disabled={filterDisabled}
             >
               Áp dụng
@@ -286,7 +289,7 @@ export default function ProductCategory({
               Đánh giá
             </Typography>
             <StyledBox
-              onClick={() => !filterDisabled && handleRating(fiveRating)}
+              onClick={() => !filterDisabled && setRatingValue(fiveRating)}
             >
               <Rating
                 name="fiveRating"
@@ -296,7 +299,7 @@ export default function ProductCategory({
               />
             </StyledBox>
             <StyledBox
-              onClick={() => !filterDisabled && handleRating(fourRating)}
+              onClick={() => !filterDisabled && setRatingValue(fourRating)}
             >
               <Rating
                 name="fourRating"
@@ -307,7 +310,7 @@ export default function ProductCategory({
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
             <StyledBox
-              onClick={() => !filterDisabled && handleRating(threeRating)}
+              onClick={() => !filterDisabled && setRatingValue(threeRating)}
             >
               <Rating
                 name="threeRating"
@@ -318,7 +321,7 @@ export default function ProductCategory({
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
             <StyledBox
-              onClick={() => !filterDisabled && handleRating(twoRating)}
+              onClick={() => !filterDisabled && setRatingValue(twoRating)}
             >
               <Rating
                 name="twoRating"
@@ -329,7 +332,7 @@ export default function ProductCategory({
               <StyledTypography>trở lên</StyledTypography>
             </StyledBox>
             <StyledBox
-              onClick={() => !filterDisabled && handleRating(oneRating)}
+              onClick={() => !filterDisabled && setRatingValue(oneRating)}
             >
               <Rating
                 name="oneRating"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import ProductCategory from "./ProductCategory";
 import ProductFilter from "./ProductFilter";
@@ -12,105 +12,102 @@ import * as sortType from "../../constants/sort";
 import usePagination from "../../hooks/usePagination";
 import { useProductsContext } from "../../context/ProductsProvider";
 
+const newestDays = 180;
+const oneDayinMs = 24 * 3600 * 1000;
+const currentTimeinMs = new Date().valueOf();
+
 const ProductContainer = ({ items }) => {
   const { bestSelling } = useProductsContext();
-  const [categoryItems, setCategoryItems] = useState(items);
-  const [filteredItems, setFilteredItems] = useState(items);
   const [category, setCategory] = useState(categoryType.ALL_PRODUCT);
   const [sort, setSort] = useState(sortType.ALL);
   const [sortPrice, setSortPrice] = useState(sortType.DEFAULT_PRICE);
   const [startPrice, setStartPrice] = useState("");
   const [endPrice, setEndPrice] = useState("");
+  const [ratingValue, setRatingValue] = useState(0);
+  const startPriceRef = useRef();
+  const endPriceRef = useRef();
+
+  const categoryItems = useMemo(() => {
+    return items.filter((item) => {
+      let result = true;
+      if (category !== categoryType.ALL_PRODUCT) {
+        result = item.category === category;
+      }
+      return result;
+    });
+  }, [category, items]);
+
+  const filteredItems = useMemo(() => {
+    return categoryItems
+      .filter((item) => {
+        let result = true;
+        if (sort === sortType.BEST_SELLING) {
+          result = item.soldAmount >= bestSelling;
+        }
+        if (sort === sortType.DATE) {
+          result =
+            Math.floor(new Date(item.date).valueOf() / oneDayinMs) >
+            Math.floor(currentTimeinMs / oneDayinMs) - newestDays;
+        }
+        // result = item.rating >= ratingValue
+        return result;
+      })
+      .filter((item) => {
+        let result = true;
+        if (startPrice.length > 0 && endPrice.length === 0) {
+          result = item.price >= Number(startPrice);
+        }
+        if (startPrice.length > 0 && endPrice.length > 0) {
+          result =
+            item.price >= Number(startPrice) && item.price <= Number(endPrice);
+        }
+        if (startPrice.length === 0 && endPrice.length > 0) {
+          result = item.price <= Number(endPrice);
+        }
+        if (startPrice.length > 0 && endPrice.length === 0) {
+          result = item.price >= Number(startPrice);
+        }
+        if (startPrice.length > 0 && endPrice.length > 0) {
+          result =
+            item.price >= Number(startPrice) && item.price <= Number(endPrice);
+        }
+        if (startPrice.length === 0 && endPrice.length > 0) {
+          result = item.price <= Number(endPrice);
+        }
+        return result;
+      })
+      .sort((a, b) => {
+        if (sortPrice === sortType.PRICE_ASC) {
+          return parseFloat(a.price) - parseFloat(b.price);
+        }
+        if (sortPrice === sortType.PRICE_DESC) {
+          return parseFloat(b.price) - parseFloat(a.price);
+        }
+        return 0;
+      })
+      .filter((item) => item.rating >= ratingValue);
+  }, [
+    bestSelling,
+    categoryItems,
+    endPrice,
+    ratingValue,
+    sort,
+    sortPrice,
+    startPrice,
+  ]);
+
   const { pageIndex, setPageIndex, pageSize, pageTotal } =
     usePagination(filteredItems);
-
-  const newestDays = 180;
-  const oneDayinMs = 24 * 3600 * 1000;
-  const currentTimeinMs = new Date().valueOf();
-
-  useEffect(() => {
-    setFilteredItems(items);
-    setCategoryItems(items);
-  }, [items]);
-
-  const handleItemsByCategory = (category) => {
-    let categoryItems = [...items];
-    if (category !== categoryType.ALL_PRODUCT) {
-      categoryItems = items.filter((item) => item.category === category);
-    }
-    setCategoryItems(categoryItems);
-    setFilteredItems(categoryItems);
-    setSort(sortType.ALL);
-    setSortPrice(sortType.DEFAULT_PRICE);
-  };
-
-  const handleCategoryItemsBySort = (sort) => {
-    let sortItems = [...categoryItems];
-    // Best Selling sort
-    if (sort === sortType.BEST_SELLING) {
-      sortItems = categoryItems.filter(
-        (item) => item.soldAmount >= bestSelling
-      );
-    }
-
-    // Date sort
-    if (sort === sortType.DATE) {
-      sortItems = categoryItems.filter(
-        (item) =>
-          Math.floor(new Date(item.date).valueOf() / oneDayinMs) >
-          Math.floor(currentTimeinMs / oneDayinMs) - newestDays
-      );
-    }
-
-    // priceAsc sort
-    if (sort === sortType.PRICE_ASC) {
-      sortItems = [...filteredItems].sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      );
-    }
-    // priceDesc sort
-    if (sort === sortType.PRICE_DESC) {
-      sortItems = [...filteredItems].sort(
-        (a, b) => parseFloat(b.price) - parseFloat(a.price)
-      );
-    }
-    setFilteredItems(sortItems);
-  };
-
-  const handleRating = (ratingValue) => {
-    const ratingItems = filteredItems.filter(
-      (item) => item.rating >= ratingValue
-    );
-    setFilteredItems(ratingItems);
-  };
-
-  const handleFilerPriceRange = () => {
-    let filterItems = [...filteredItems];
-    if (startPrice.length > 0 && endPrice.length === 0) {
-      filterItems = filteredItems.filter(
-        (item) => item.price >= Number(startPrice)
-      );
-    }
-    if (startPrice.length > 0 && endPrice.length > 0) {
-      filterItems = filteredItems.filter(
-        (item) =>
-          item.price >= Number(startPrice) && item.price <= Number(endPrice)
-      );
-    }
-    if (startPrice.length === 0 && endPrice.length > 0) {
-      filterItems = filteredItems.filter(
-        (item) => item.price <= Number(endPrice)
-      );
-    }
-    setFilteredItems(filterItems);
-  };
 
   const handleResetAll = () => {
     setCategory(categoryType.ALL_PRODUCT);
     setSort(sortType.ALL);
     setSortPrice(sortType.DEFAULT_PRICE);
-    setCategoryItems(items);
-    setFilteredItems(items);
+    setRatingValue(0);
+    setStartPrice("");
+    setEndPrice("");
+    startPriceRef.current.value = "";
+    endPriceRef.current.value = "";
   };
 
   return (
@@ -139,43 +136,44 @@ const ProductContainer = ({ items }) => {
           category={category}
           setCategory={setCategory}
           filteredItems={filteredItems}
-          handleItemsByCategory={handleItemsByCategory}
-          handleRating={handleRating}
-          handleFilerPriceRange={handleFilerPriceRange}
+          setSort={setSort}
+          setSortPrice={setSortPrice}
           startPrice={startPrice}
           setStartPrice={setStartPrice}
           endPrice={endPrice}
           setEndPrice={setEndPrice}
           handleResetAll={handleResetAll}
+          setRatingValue={setRatingValue}
+          startPriceRef={startPriceRef}
+          endPriceRef={endPriceRef}
         ></ProductCategory>
       </Grid2>
       <Grid2 xs sm={10}>
-          <ProductFilter
-            sort={sort}
-            setSort={setSort}
-            sortPrice={sortPrice}
-            setSortPrice={setSortPrice}
-            handleCategoryItemsBySort={handleCategoryItemsBySort}
-            categoryItems={categoryItems}
-            filteredItems={filteredItems}
+        <ProductFilter
+          sort={sort}
+          setSort={setSort}
+          sortPrice={sortPrice}
+          setSortPrice={setSortPrice}
+          categoryItems={categoryItems}
+          filteredItems={filteredItems}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          pageSize={pageSize}
+          pageTotal={pageTotal}
+        ></ProductFilter>
+        <ProductList
+          items={filteredItems}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+        ></ProductList>
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Pagination
+            items={filteredItems}
             pageIndex={pageIndex}
             setPageIndex={setPageIndex}
             pageSize={pageSize}
             pageTotal={pageTotal}
-          ></ProductFilter>
-          <ProductList
-            items={filteredItems}
-            pageIndex={pageIndex}
-            pageSize={pageSize}
-          ></ProductList>
-        <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            <Pagination
-              items={filteredItems}
-              pageIndex={pageIndex}
-              setPageIndex={setPageIndex}
-              pageSize={pageSize}
-              pageTotal={pageTotal}
-            ></Pagination>
+          ></Pagination>
         </Box>
       </Grid2>
     </Grid2>
@@ -186,7 +184,6 @@ ProductContainer.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
-ProductContainer.defaultProps = {
-};
+ProductContainer.defaultProps = {};
 
 export default ProductContainer;
