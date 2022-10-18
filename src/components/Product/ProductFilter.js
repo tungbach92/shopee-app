@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import classNames from "classnames";
 import MiniPageControl from "../Pagination/MiniPageControl";
-import PropTypes from "prop-types";
 import { ArrowDownward, ArrowUpward, UnfoldMore } from "@mui/icons-material";
 import { Box, useMediaQuery } from "@mui/material";
 import * as sortType from "../../constants/sort";
@@ -11,7 +10,6 @@ const ProductFilter = ({
   setSort,
   sortPrice,
   setSortPrice,
-  handleCategoryItemsBySort,
   filteredItems,
   categoryItems,
   pageIndex,
@@ -32,26 +30,26 @@ const ProductFilter = ({
   const handleFilterPriceClickForXsResponsive = () => {
     if (!isFilterPriceDescForXsResponsive) {
       setSortPrice(sortType.PRICE_ASC);
-      handleCategoryItemsBySort(sortType.PRICE_ASC);
+      // handleCategoryItemsBySort(sortType.PRICE_ASC);
 
       setIsFilterPriceDescForXsResponsive(true);
     }
     if (isFilterPriceDescForXsResponsive) {
       setSortPrice(sortType.PRICE_DESC);
-      handleCategoryItemsBySort(sortType.PRICE_DESC);
+      // handleCategoryItemsBySort(sortType.PRICE_DESC);
 
       setIsFilterPriceDescForXsResponsive(false);
     }
   };
 
   const handleSortChange = (sort) => {
-    handleCategoryItemsBySort(sort);
+    // handleCategoryItemsBySort(sort);
     setSort(sort);
     setSortPrice(sortType.DEFAULT_PRICE);
   };
 
   const handleSortPriceChange = (sortPrice) => {
-    handleCategoryItemsBySort(sortPrice);
+    // handleCategoryItemsBySort(sortPrice);
     setSortPrice(sortPrice);
   };
 
@@ -201,6 +199,5 @@ const ProductFilter = ({
     </Box>
   );
 };
-
 
 export default ProductFilter;
