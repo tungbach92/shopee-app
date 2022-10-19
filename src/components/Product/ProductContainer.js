@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import { Box } from "@mui/material";
+import Grid2 from "@mui/material/Unstable_Grid2";
 import PropTypes from "prop-types";
+import React, { useMemo, useRef, useState } from "react";
+import * as categoryType from "../../constants/category";
+import * as sortType from "../../constants/sort";
+import { useProductsContext } from "../../context/ProductsProvider";
+import usePagination from "../../hooks/usePagination";
+import Pagination from "../Pagination/Pagination";
 import ProductCategory from "./ProductCategory";
 import ProductFilter from "./ProductFilter";
 import ProductList from "./ProductList";
-import Pagination from "../Pagination/Pagination";
-import Grid2 from "@mui/material/Unstable_Grid2";
-import { Box } from "@mui/material";
-import { useState } from "react";
-import * as categoryType from "../../constants/category";
-import * as sortType from "../../constants/sort";
-import usePagination from "../../hooks/usePagination";
-import { useProductsContext } from "../../context/ProductsProvider";
 
 const newestDays = 180;
 const oneDayinMs = 24 * 3600 * 1000;
