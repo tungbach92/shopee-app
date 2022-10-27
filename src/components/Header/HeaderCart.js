@@ -9,10 +9,13 @@ import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
 import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
+import { useSelector } from "react-redux";
 
 const HeaderCart = () => {
   const { user } = useUser();
-  const { cartItems, cartItemsLoading, delCartItem } = useCartContext();
+  //TODO: rtk query, finishe cart redux
+  const { cartItemsLoading, delCartItem } = useCartContext();
+  const cartProducts = useSelector((state) => state.cart.products);
   const [deleteID, setDeleteID] = useState();
   const { isPopupShowing, togglePopup } = useModal();
   const navigate = useNavigate();
@@ -38,7 +41,7 @@ const HeaderCart = () => {
             {/* <!-- No cart: empty --> */}
             {user && (
               <div className="header__cart-numb">
-                {!cartItemsLoading && cartItems.length}
+                {!cartItemsLoading && cartProducts.length}
               </div>
             )}
           </i>
@@ -46,7 +49,7 @@ const HeaderCart = () => {
         {!xsBreakpointMatches && user && (
           <div
             className={classNames("header__cart-list", {
-              "header__cart-list--empty": cartItems?.length === 0,
+              "header__cart-list--empty": cartProducts.length === 0,
             })}
             onClick={(e) => {
               e.stopPropagation();
@@ -56,7 +59,7 @@ const HeaderCart = () => {
             <div className="header__cart-list-container">
               <div className="header__cart-title">Sản phẩm mới thêm</div>
               <div className="header__cart-list-item">
-                {cartItems?.map((item, index) => (
+                {cartProducts.map((item, index) => (
                   <div key={index} className="header__cart-item">
                     <div className="header__cart-link">
                       <img

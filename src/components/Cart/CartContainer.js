@@ -17,11 +17,13 @@ import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 import { ClipLoading } from "../ClipLoading";
 import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
 import { useUser } from "../../context/UserProvider";
+import { useSelector } from "react-redux";
 
 export default function CartContainer() {
   const { user } = useUser();
+  //TODO: finishe cart redux
   const {
-    cartItems,
+    // cartItems,
     cartItemsLoading,
     changeVariationDisPlayCartItems,
     changeCartItemsVariation,
@@ -34,8 +36,8 @@ export default function CartContainer() {
     voucher,
     resetVoucher,
   } = useCartContext();
+  const cartProducts = useSelector((state) => state.cart.products);
   const { checkoutDispatch } = useCheckoutContext();
-
   const navigate = useNavigate();
   const location = useLocation();
   const [variation, setVariation] = useState("");
@@ -134,7 +136,7 @@ export default function CartContainer() {
         type: CHECKOUT_ACTIONTYPES.ADD_CHECKOUT,
         payload: checkoutItems,
       });
-      await saveCartItemsToFirebase(user, cartItems);
+      await saveCartItemsToFirebase(user, cartProducts);
       navigate("/checkout");
     }
   };
@@ -179,7 +181,7 @@ export default function CartContainer() {
     const { name } = event.currentTarget.dataset;
     if (name === "variation") {
       changeVariationDisPlayCartItems(index);
-      setVariation(cartItems[index].variation);
+      setVariation(cartProducts[index].variation);
     }
     if (name === "similar") {
       changeSimilarDisPlayCartItems(index);
@@ -220,7 +222,7 @@ export default function CartContainer() {
   };
 
   const isCheckAll = () => {
-    const result = checked?.length === cartItems?.length;
+    const result = checked?.length === cartProducts?.length;
     return result;
   };
 
@@ -228,7 +230,7 @@ export default function CartContainer() {
     if (isCheckAll()) {
       setChecked([]);
     } else {
-      const newChecked = cartItems.map((cartItem) => {
+      const newChecked = cartProducts.map((cartItem) => {
         const { variationDisPlay, similarDisPlay, ...newCheckedItem } =
           cartItem;
         return newCheckedItem;
@@ -238,7 +240,7 @@ export default function CartContainer() {
   };
 
   const isIDVariationExist = (id, variation) => {
-    const result = cartItems.some(
+    const result = cartProducts.some(
       (item) => item.variation === variation && item.id === id
     );
     return result;
@@ -246,7 +248,7 @@ export default function CartContainer() {
 
   return (
     <div className="main">
-      {cartItems.length > 0 && (
+      {cartProducts.length > 0 && (
         <Grid2 container maxWidth="100%" width="120rem" m="0 auto">
           <Grid2
             sm={12}
@@ -377,7 +379,7 @@ export default function CartContainer() {
                 </span>
               </div>
             </div> */}
-            {cartItems.map((item, index) => (
+            {cartProducts.map((item, index) => (
               <div key={index} className="cart-product__item">
                 <input
                   type="checkbox"
@@ -887,7 +889,7 @@ export default function CartContainer() {
                   className="cart-product__checkout-label"
                   onClick={handleCheckAll}
                 >
-                  Chọn tất cả ({cartItems.length})
+                  Chọn tất cả ({cartProducts.length})
                 </span>
                 <span
                   data-name="deleteSelected"
@@ -938,7 +940,7 @@ export default function CartContainer() {
           </Grid2>
         </Grid2>
       )}
-      {cartItems.length === 0 && !cartItemsLoading && (
+      {cartProducts.length === 0 && !cartItemsLoading && (
         <div className="grid cart-empty">
           <img src={noCartImg} alt="nocart-img" className="cart-empty__img" />
           <label className="cart-empty__label">

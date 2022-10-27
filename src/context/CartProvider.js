@@ -44,6 +44,7 @@ const CartProvider = ({ children }) => {
     setCartItems([]);
   }, []);
 
+  //TODO: logic and dispatch
   const addToCartItems = (id, variation = "", amount = 1) => {
     let cartItemsUpdated = [];
     const isExistId = cartItems.some((cartItem) => cartItem.id === id);

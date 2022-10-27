@@ -6,11 +6,12 @@ import AddCartModal from "../Modal/AddCartModal";
 import ImageGallery from "react-image-gallery";
 import DetailCheckShipPrice from "./DetailCheckShipPrice";
 import { NumericFormat } from "react-number-format";
-import { Box, Rating } from "@mui/material";
+import { Rating } from "@mui/material";
 import { useProductsContext } from "../../context/ProductsProvider";
-import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
 import { ClipLoading } from "../ClipLoading";
+import { useDispatch, useSelector } from "react-redux";
+import { addProducts, updateProducts } from "../../redux/cartSlice";
 
 export default function DetailContainer() {
   const { user } = useUser();
@@ -19,7 +20,8 @@ export default function DetailContainer() {
   const scrolltoEl = useRef();
   const navigate = useNavigate();
   const { items, bestSelling } = useProductsContext();
-  const { addToCartItems } = useCartContext();
+  const cartProducts = useSelector((state) => state.cart.products);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     handleScrollTop();
@@ -28,12 +30,12 @@ export default function DetailContainer() {
   const [item, setItem] = useState(null);
   const [images, setImages] = useState([]);
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
-  //
+  const [amount, setAmount] = useState(1);
+  const [variation, setVariation] = useState("");
   const [isPickerShow, setIsPickerShow] = useState(false);
   const [address, setAddress] = useState("Tra cứu địa điểm");
   const [lookupShipPrice, setLookupShipPrice] = useState([]);
   const [bestSellingItems, setBestSellingItems] = useState([]);
-  //
   useEffect(() => {
     if (items.length > 0) {
       const bestSellingItems = [...items].filter(
@@ -109,28 +111,39 @@ export default function DetailContainer() {
   };
 
   const handleDecreAmount = () => {
-    const newItem = { ...item };
-    newItem.amount--;
-    newItem.amount = newItem.amount <= 0 ? 1 : newItem.amount;
-    setItem(newItem);
+    if (amount > 1) {
+      setAmount(amount - 1);
+    }
   };
   const handleIncreAmount = () => {
-    const newItem = { ...item };
-    newItem.amount++;
-    setItem(newItem);
+    setAmount(amount + 1);
   };
 
   const handleInputAmountChange = (e) => {
     const amount = e.target.value;
-    const newItem = { ...item };
-    newItem.amount = Number(amount);
-    setItem(newItem);
+    setAmount(amount);
   };
 
   const handleVariationClick = (e) => {
-    const newItem = { ...item };
-    newItem.variation = e.target.innerText;
-    setItem(newItem);
+    setVariation(e.target.innerText);
+  };
+
+  const addToCartItems = () => {
+    let cartProductsUpdated = [];
+    const isExistId = cartProducts.some((cartItem) => cartItem.id === item.id);
+    const isExistVariation = cartProducts.some(
+      (cartItem) => cartItem.variation === variation && cartItem.id === item.id
+    );
+    if (isExistId && isExistVariation) {
+      cartProductsUpdated = cartProducts.map((cartItem) =>
+        cartItem.id === item.id && cartItem.variation === variation
+          ? { ...cartItem, amount: cartItem.amount + amount }
+          : cartItem
+      );
+      dispatch(updateProducts(cartProductsUpdated));
+    } else {
+      dispatch(addProducts({ ...item, amount, variation }));
+    }
   };
 
   const handleBuyNow = () => {
@@ -138,7 +151,7 @@ export default function DetailContainer() {
       navigate("/login", { replace: true });
       return;
     }
-    addToCartItems(item.id, item.variation, item.amount);
+    addToCartItems();
   };
 
   const handleAddCart = () => {
@@ -146,7 +159,7 @@ export default function DetailContainer() {
       navigate("/login", { replace: true });
       return;
     }
-    addToCartItems(item.id, item.variation, item.amount);
+    addToCartItems();
     toggleIsAddCardPopup(!isAddCartPopup);
   };
 
@@ -434,7 +447,7 @@ export default function DetailContainer() {
                       key={index}
                       onClick={handleVariationClick}
                       className={
-                        variationItem === item.variation
+                        variationItem === variation
                           ? "detail-product__variation-item detail-product__variation-item--selected"
                           : "detail-product__variation-item"
                       }
@@ -454,7 +467,7 @@ export default function DetailContainer() {
                   </button>
                   <input
                     onChange={handleInputAmountChange}
-                    value={item?.amount ? item?.amount : 1}
+                    value={amount}
                     type="text"
                     className="detail-product__amount-input"
                   />
