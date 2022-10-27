@@ -1,0 +1,23 @@
+// $dark-theme: true !default;
+// $primary-color: #f8bbd0 !default;
+// $accent-color: #6a1b9a !default;
+
+// @if $dark-theme {
+//   $primary-color: darken($primary-color, 60%);
+//   $accent-color: lighten($accent-color, 60%);
+// }
+
+$primary-color: #ee4d2d;
+$primary-light: #ee8e7a;
+$primary-dark: #c02000;
+
+$colors: (
+  "white": #fff,
+  "black": #000,
+  "text": #333,
+  "grey": #888,
+  "lighter-grey": #f8f8f8,
+  "primary": $primary-color,
+  "primary-light": $primary-light,
+  "primary-dark": $primary-dark,
+);
