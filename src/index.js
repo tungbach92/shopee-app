@@ -6,8 +6,14 @@ import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
 import UserProvider from "./context/UserProvider.js";
 import ProductsProvider from "./context/ProductsProvider.js";
+<<<<<<< HEAD
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
+=======
+import "./css/style.css";
+import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
+>>>>>>> sass organized with @use @forward
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
