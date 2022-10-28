@@ -1,8 +1,26 @@
+@use "../sass" as *;
+
 @each $color, $val in $colors {
   .color-#{$color} {
     color: $val;
   }
-} /* shopee customize responsive */
+
+  .bg-#{$color} {
+    background-color: $val;
+  }
+}
+:root {
+  --white-color: #fff;
+  --black-color: #000;
+  --text-color: #333;
+  --grey-color: #888;
+  --lighter-grey-color: #f8f8f8;
+  --primary-color: #ee4d2d;
+  --primary-light-color: #ee8e7a;
+  --primary-dark-color: #c02000;
+}
+
+/* shopee customize responsive */
 .grid {
   width: 120rem;
   max-width: 100%;

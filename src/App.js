@@ -1,7 +1,3 @@
-import "./css/reset.css";
-import "./css/base.css";
-import "./css/main.css";
-import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
