@@ -63,13 +63,6 @@
       "last 1 safari version"
     ]
   },
-<<<<<<< HEAD
-  "devDependencies": {
-    "@reduxjs/toolkit": "^1.9.0",
-    "node-sass": "^6.0.1"
-  },
-=======
->>>>>>> sass organized with @use @forward
   "engines": {
     "node": "16.x"
   }
