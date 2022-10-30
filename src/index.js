@@ -7,8 +7,7 @@ import { ThemeProvider } from "@mui/material";
 import UserProvider from "./context/UserProvider.js";
 import CartProvider from "./context/CartProvider.js";
 import ProductsProvider from "./context/ProductsProvider.js";
-import "./css/style.css";
-import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+import "./sass/style.scss";
 
 ReactDOM.render(
   <React.StrictMode>
