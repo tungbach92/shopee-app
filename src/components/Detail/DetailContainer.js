@@ -139,6 +139,7 @@ export default function DetailContainer() {
       return;
     }
     addToCartItems(item.id, item.variation, item.amount);
+    navigate("/cart", { replace: true, state: location });
   };
 
   const handleAddCart = () => {
@@ -162,8 +163,8 @@ export default function DetailContainer() {
     return <ClipLoading></ClipLoading>;
   } else
     return (
-      <div className="main">
-        <div className="grid detail-breadcrumb">
+      <div className="container bg-lighter-grey">
+        <div className="detail-breadcrumb">
           <Link to="/" className="detail-breadcrumb__home">
             Shopee
           </Link>
@@ -178,8 +179,8 @@ export default function DetailContainer() {
           </svg>
           <span className="detail-breadcrumb__current">{item?.name}</span>
         </div>
-        <div className="grid detail-product">
-          <div className="detail-product__info">
+        <div className="detail-product">
+          <div className="detail-product__info bg-white">
             <div className="detail-product__info-left">
               <div className="detail-product__img-wrapper">
                 <ImageGallery
@@ -472,7 +473,7 @@ export default function DetailContainer() {
               <div className="detail-product__btn-wrapper">
                 <button
                   onClick={handleAddCart}
-                  className="btn detail-product__btn-cart"
+                  className="detail-product__btn-cart bg-white color-primary"
                 >
                   <svg
                     enableBackground="new 0 0 15 15"
@@ -519,7 +520,7 @@ export default function DetailContainer() {
                     </g>
                   </svg>
                   <span className="detail-product__btn-cart-text">
-                    thêm vào giỏ hàng
+                    thêm vào giỏ
                   </span>
                 </button>
                 {isAddCartPopup && (
@@ -529,15 +530,12 @@ export default function DetailContainer() {
                   ></AddCartModal>
                 )}
 
-                <Link
-                  to="/cart"
-                  state={location}
-                  replace
+                <button
                   onClick={handleBuyNow}
-                  className="detail-product__btn-checkout"
+                  className="detail-product__btn-checkout bg-primary color-white"
                 >
                   Mua ngay
-                </Link>
+                </button>
               </div>
               <div className="detail-product__protect-wrapper">
                 <img

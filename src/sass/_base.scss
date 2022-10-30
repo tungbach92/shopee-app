@@ -1,4 +1,4 @@
-@use "../sass" as *;
+@use "./index" as *;
 
 @each $color, $val in $colors {
   .color-#{$color} {
@@ -9,6 +9,22 @@
     background-color: $val;
   }
 }
+
+.container,
+footer {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+
+  @include tablet {
+    padding: 0 2rem;
+  }
+
+  @include mobile {
+    padding: 0 2rem;
+  }
+}
+
 :root {
   --white-color: #fff;
   --black-color: #000;
