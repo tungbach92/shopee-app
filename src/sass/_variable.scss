@@ -7,19 +7,15 @@
 //   $accent-color: lighten($accent-color, 60%);
 // }
 
-$primary-color: #ee4d2d;
-$primary-light: #ee8e7a;
-$primary-dark: #c02000;
-
 $colors: (
   "white": #fff,
   "black": #000,
   "text": #333,
   "grey": #888,
   "lighter-grey": #f5f5f5,
-  "primary": $primary-color,
-  "primary-light": $primary-light,
-  "primary-dark": $primary-dark,
+  "primary": #ee4d2d,
+  "primary-light": #ee8e7a,
+  "primary-dark": #c02000,
 );
 
 $mobile-width: 600px;

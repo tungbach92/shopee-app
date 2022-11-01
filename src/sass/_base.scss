@@ -26,14 +26,9 @@ footer {
 }
 
 :root {
-  --white-color: #fff;
-  --black-color: #000;
-  --text-color: #333;
-  --grey-color: #888;
-  --lighter-grey-color: #f8f8f8;
-  --primary-color: #ee4d2d;
-  --primary-light-color: #ee8e7a;
-  --primary-dark-color: #c02000;
+  @each $color, $val in $colors {
+    --#{$color}-color: #{$val};
+  }
 }
 
 /* shopee customize responsive */
