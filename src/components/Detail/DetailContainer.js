@@ -559,48 +559,51 @@ export default function DetailContainer() {
                 <div className="detail-content__detail-label">
                   CHI TIẾT SẢN PHẨM
                 </div>
+                <div className="detail-content__container">
+                  <div className="detail-content__breadcrumb-label">
+                    Danh Mục
+                  </div>
+                  <div className="detail-content__breadcrumb-item">
+                    <Link to="/" className="detail-breadcrumb__home">
+                      Shopee
+                    </Link>
+                    <svg
+                      enableBackground="new 0 0 11 11"
+                      viewBox="0 0 11 11"
+                      x="0"
+                      y="0"
+                      className="detail-breadcrumb__icon"
+                    >
+                      <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
+                    </svg>
+                    <span className="detail-breadcrumb__current">
+                      {item?.name}
+                    </span>
+                  </div>
 
-                <div className="detail-content__breadcrumb-label">Danh Mục</div>
-                <div className="detail-content__breadcrumb-item">
-                  <Link to="/" className="detail-breadcrumb__home">
-                    Shopee
-                  </Link>
-                  <svg
-                    enableBackground="new 0 0 11 11"
-                    viewBox="0 0 11 11"
-                    x="0"
-                    y="0"
-                    className="detail-breadcrumb__icon"
-                  >
-                    <path d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z"></path>
-                  </svg>
-                  <span className="detail-breadcrumb__current">
-                    {item?.name}
-                  </span>
-                </div>
+                  <div className="detail-content__brand-label">Thương hiệu</div>
+                  <div className="detail-content__brand-item">No Brand</div>
 
-                <div className="detail-content__brand-label">Thương hiệu</div>
-                <div className="detail-content__brand-item">No Brand</div>
+                  <div className="detail-content__variation-label">
+                    Khối lượng (g)
+                  </div>
+                  <div className="detail-content__variation-item">60</div>
 
-                <div className="detail-content__variation-label">
-                  Khối lượng (g)
-                </div>
-                <div className="detail-content__variation-item">60</div>
+                  <div className="detail-content__gender-label">Giới tính</div>
+                  <div className="detail-content__gender-item">
+                    {item?.gender}
+                  </div>
 
-                <div className="detail-content__gender-label">Giới tính</div>
-                <div className="detail-content__gender-item">
-                  {item?.gender}
-                </div>
+                  <div className="detail-content__madeby-label">Xuất xứ</div>
+                  <div className="detail-content__madeby-item">USA</div>
 
-                <div className="detail-content__madeby-label">Xuất xứ</div>
-                <div className="detail-content__madeby-item">USA</div>
+                  <div className="detail-content__amount-label">Kho hàng</div>
+                  <div className="detail-content__amount-item">662</div>
 
-                <div className="detail-content__amount-label">Kho hàng</div>
-                <div className="detail-content__amount-item">662</div>
-
-                <div className="detail-content__location-label">Gửi từ</div>
-                <div className="detail-content__location-item">
-                  {item?.location}
+                  <div className="detail-content__location-label">Gửi từ</div>
+                  <div className="detail-content__location-item">
+                    {item?.location}
+                  </div>
                 </div>
                 <div className="detail-content__description-label">
                   MÔ TẢ SẢN PHẨM
