@@ -23,11 +23,7 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   return (
     <>
-      <Suspense
-        fallback={
-          <ClipLoading></ClipLoading>
-        }
-      >
+      <Suspense fallback={<ClipLoading></ClipLoading>}>
         <Routes>
           <Route element={<SearchProviderLayout />}>
             <Route path="/" element={<Product />}></Route>

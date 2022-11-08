@@ -29,8 +29,9 @@ import { updateCustomerBillingAddressStripe } from "../../services/updateCustome
 import { ClipLoading } from "../ClipLoading";
 import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
 import { useUpdateDefaultPaymentMethodIDToStripe } from "../../hooks/useUpdateDefaultPaymentMethodIDToStripe";
+import withContainer from "../../pages/withContainer";
 
-export default function CheckoutContainer({ isCheckoutPage }) {
+function CheckoutContainer({ isCheckoutPage }) {
   const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
     useUpdateDefaultPaymentMethodIDToStripe();
   const { checkoutState, checkoutDispatch } = useCheckoutContext();
@@ -1114,3 +1115,4 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     </div>
   );
 }
+export default withContainer(CheckoutContainer, true);

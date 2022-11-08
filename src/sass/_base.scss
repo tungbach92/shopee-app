@@ -10,11 +10,10 @@
   }
 }
 
-.container,
-footer {
-  width: 100%;
-  max-width: 120rem;
-  margin: 0 auto;
+.container {
+  max-width: 162rem;
+  padding: 0 5rem;
+  margin: auto;
 
   @include tablet {
     padding: 0 2rem;
@@ -31,59 +30,6 @@ footer {
   }
 }
 
-/* shopee customize responsive */
-.grid {
-  width: 120rem;
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.grid__full-width {
-  width: 100%;
-}
-
-.grid__row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
-}
-
-.grid__row--padtb3 {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-/* test */
-.grid__col-2x {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  flex-basis: 16.6667%;
-}
-
-.grid__col-2c4x {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  flex-basis: 20%;
-}
-
-.grid__col-10x {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  flex-basis: 83.3333%;
-}
-
-.grid__col-12x {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  flex-basis: 100%;
-}
-
-.grid__col {
-  padding: 0 1rem;
-  flex: 1;
-}
 /* Common */
 .header__nav-item--border-lr {
   border-left: 0.2rem solid hsla(0, 0%, 100%, 0.22);

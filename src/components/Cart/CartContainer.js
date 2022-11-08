@@ -17,8 +17,9 @@ import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 import { ClipLoading } from "../ClipLoading";
 import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
 import { useUser } from "../../context/UserProvider";
+import withContainer from "../../pages/withContainer";
 
-export default function CartContainer() {
+function CartContainer() {
   const { user } = useUser();
   const {
     cartItems,
@@ -976,3 +977,4 @@ export default function CartContainer() {
     </div>
   );
 }
+export default withContainer(CartContainer, true);
