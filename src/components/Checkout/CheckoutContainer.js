@@ -31,10 +31,13 @@ import { resetCart } from "../../redux/cartSlice";
 import { useDispatch } from "react-redux";
 import { useAddCartToFireStoreMutation } from "../../services/cartApi";
 import useVoucher from "../../hooks/useVoucher";
+import withContainer from "../../pages/withContainer";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
   const [addCartToFireStore] = useAddCartToFireStoreMutation();
   const dispatch = useDispatch();
+
+function CheckoutContainer({ isCheckoutPage }) {
   const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
     useUpdateDefaultPaymentMethodIDToStripe();
   const { checkoutState, checkoutDispatch } = useCheckoutContext();
@@ -1118,3 +1121,4 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     </div>
   );
 }
+export default withContainer(CheckoutContainer, true);

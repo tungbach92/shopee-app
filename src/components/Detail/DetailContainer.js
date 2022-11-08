@@ -12,8 +12,9 @@ import { useUser } from "../../context/UserProvider";
 import { ClipLoading } from "../ClipLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { addProducts, updateProducts } from "../../redux/cartSlice";
+import withContainer from "../../pages/withContainer";
 
-export default function DetailContainer() {
+function DetailContainer() {
   const { user } = useUser();
   const { productId } = useParams();
   const location = useLocation();
@@ -811,3 +812,4 @@ export default function DetailContainer() {
       </div>
     );
 }
+export default withContainer(DetailContainer);

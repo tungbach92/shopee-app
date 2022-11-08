@@ -26,8 +26,9 @@ import {
   useFetchCartQuery,
 } from "../../services/cartApi";
 import useVoucher from "../../hooks/useVoucher";
+import withContainer from "../../pages/withContainer";
 
-export default function CartContainer() {
+function CartContainer() {
   const { user } = useUser();
   const { voucher, resetVoucher } = useVoucher();
   const { isLoading: cartItemsLoading } = useFetchCartQuery(user);
@@ -998,3 +999,4 @@ export default function CartContainer() {
     </div>
   );
 }
+export default withContainer(CartContainer, true);

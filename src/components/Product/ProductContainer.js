@@ -6,6 +6,7 @@ import * as categoryType from "../../constants/category";
 import * as sortType from "../../constants/sort";
 import { useProductsContext } from "../../context/ProductsProvider";
 import usePagination from "../../hooks/usePagination";
+import withContainer from "../../pages/withContainer";
 import Pagination from "../Pagination/Pagination";
 import ProductCategory from "./ProductCategory";
 import ProductFilter from "./ProductFilter";
@@ -112,9 +113,7 @@ const ProductContainer = ({ items }) => {
   return (
     <Grid2
       container
-      maxWidth="100%"
-      width="120rem"
-      m="0 auto"
+      maxWidth={"100%"}
       sx={{
         flexDirection: { xs: "column", sm: "row" },
         padding: { xs: "0", sm: "0.3rem 0" },
@@ -185,4 +184,4 @@ ProductContainer.propTypes = {
 
 ProductContainer.defaultProps = {};
 
-export default ProductContainer;
+export default withContainer(ProductContainer);

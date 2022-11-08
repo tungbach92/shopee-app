@@ -152,7 +152,6 @@ const HeaderSearch = ({ isCartPage, isCheckoutPage, xsBreakpointMatches }) => {
                       </li>
                       <Box
                         sx={{
-                          height: "100%",
                           marginRight: "0.6rem",
                           "& :hover": { color: "var(--primary-color)" },
                           cursor: "pointer",

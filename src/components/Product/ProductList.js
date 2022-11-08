@@ -24,7 +24,7 @@ function ProductList({ items, pageIndex, pageSize }) {
   }, [items, pageIndex, pageSize, xsBreakpointMatches]);
 
   return (
-    <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem" width="100%">
+    <Grid2 container columnSpacing="0.5rem" rowSpacing="1rem">
       {itemsLoading && <ClipLoading></ClipLoading>}
       {renderItemsByPagination.length === 0 && !itemsLoading && (
         <Box

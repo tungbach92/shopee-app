@@ -1,3 +1,4 @@
+@use "./index" as *;
 @import "react-image-gallery/styles/css/image-gallery.css";
 @import "/node_modules/bootstrap-icons/font/bootstrap-icons.css";
 /* @import 'bootstrap/dist/css/bootstrap.min.css'; */
@@ -8,7 +9,6 @@ header {
   top: 0;
   left: 0;
   z-index: 9999;
-  max-width: 100%;
 }
 
 .header--checkout {
@@ -888,6 +888,7 @@ header {
 .app__filter-list {
   display: flex;
   flex: 1;
+  min-width: 0;
 }
 
 .btn--active {
@@ -1036,7 +1037,6 @@ header {
   transform: translateY(0);
   transition: transform linear 0.1s;
   will-change: transform;
-  height: 100%;
 }
 
 .app__product-item:hover .app__product-cart-btn {
@@ -1196,6 +1196,7 @@ header {
 .app__product-more {
   margin-top: 0.6rem;
   display: flex;
+  justify-content: space-between;
 }
 
 .app__more-love {
@@ -1219,11 +1220,9 @@ header {
 }
 
 .app__more-rating {
-  /* flex: 1; */
-  /* text-align: right; */
-  /* margin-left: auto; */
   margin-top: -0.2rem;
   margin-right: 0.6rem;
+  min-width: 0;
 }
 
 .app__more-sold {
@@ -1240,6 +1239,12 @@ header {
 
 .main {
   background-color: #f5f5f5;
+  padding: 3rem 0;
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
 }
 
 .main--login {
@@ -3141,7 +3146,7 @@ header {
 }
 
 .user-profile {
-  background-color: #f5f5f5;
+  // background-color: #f5f5f5;
 }
 
 .user-profile__name-container {
@@ -3440,6 +3445,7 @@ header {
 
 .user-profile_info-container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .user-profile__info-input {
@@ -3448,7 +3454,7 @@ header {
   align-items: center;
   grid-row-gap: 1.4rem;
   grid-column-gap: 1.4rem;
-  grid-template-columns: 10rem;
+  grid-template-columns: 10rem 1fr;
 }
 
 .user-profile__user-label,
@@ -3859,8 +3865,6 @@ header {
   opacity: 0.7;
 }
 
-
-
 .pagination--mtb3 {
   margin: 3rem auto;
 }
@@ -3874,7 +3878,6 @@ header {
 .pagination-item__right:active {
   filter: brightness(70%);
 }
-
 
 @media screen and (max-width: 600px) {
   .header__nav-list:first-child {
@@ -3970,7 +3973,7 @@ header {
   .select-input--disabled,
   .select-input {
     margin: 0;
-    min-width: unset;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;

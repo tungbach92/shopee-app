@@ -10,6 +10,7 @@ import AccountProfile from "./AccountProfile";
 import useModal from "../../hooks/useModal";
 import PopupModal from "../Modal/PopupModal";
 import { useUser } from "../../context/UserProvider";
+import withContainer from "../../pages/withContainer";
 
 const AccountContainer = () => {
   const { user, setIsPhotoExist } = useUser();
@@ -138,127 +139,121 @@ const AccountContainer = () => {
 
   return (
     <div className="main">
-      <div className="grid user-profile">
-        <div className="grid__row grid__row--padtb3">
-          <div className="grid__col-2x">
-            <div className="user-profile__name-container">
-              <div className="user-profile__image-container">
-                {userAvatar ? (
-                  <img
-                    className="user-profile__image-user"
-                    src={userAvatar}
-                    alt=""
-                  />
-                ) : (
-                  <svg
-                    enableBackground="new 0 0 15 15"
-                    viewBox="0 0 15 15"
-                    x="0"
-                    y="0"
-                    className="user-profile__image-svg"
-                  >
-                    <g>
-                      <circle
-                        cx="7.5"
-                        cy="4.5"
-                        fill="none"
-                        r="3.8"
-                        strokeMiterlimit="10"
-                      ></circle>
-                      <path
-                        d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeMiterlimit="10"
-                      ></path>
-                    </g>
-                  </svg>
-                )}
-              </div>
-              <div className="user-profile__name">{user?.displayName}</div>
-
-              <Link to="profile" className="user-profile__name-btn">
-                Sửa Hồ Sơ
-              </Link>
-            </div>
-            <div className="user-profile__category">
-              {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
-              <NavLink to="profile" className="user-profile__my-info" replace>
-                Hồ sơ
-              </NavLink>
-              <NavLink to="payment" className="user-profile__my-bank" replace>
-                Thẻ tín dụng/ghi nợ
-              </NavLink>
-              <NavLink to="address" className="user-profile__my-adress" replace>
-                Địa chỉ
-              </NavLink>
-              <NavLink
-                to="password"
-                className="user-profile__change-password"
-                replace
+      <div className="user-profile">
+        <div className="user-profile__name-container">
+          <div className="user-profile__image-container">
+            {userAvatar ? (
+              <img
+                className="user-profile__image-user"
+                src={userAvatar}
+                alt=""
+              />
+            ) : (
+              <svg
+                enableBackground="new 0 0 15 15"
+                viewBox="0 0 15 15"
+                x="0"
+                y="0"
+                className="user-profile__image-svg"
               >
-                Đổi mật khẩu
-              </NavLink>
-              <NavLink to="purchase" className="user-profile__order" replace>
-                Đơn Mua
-              </NavLink>
-            </div>
+                <g>
+                  <circle
+                    cx="7.5"
+                    cy="4.5"
+                    fill="none"
+                    r="3.8"
+                    strokeMiterlimit="10"
+                  ></circle>
+                  <path
+                    d="m1.5 14.2c0-3.3 2.7-6 6-6s6 2.7 6 6"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeMiterlimit="10"
+                  ></path>
+                </g>
+              </svg>
+            )}
           </div>
-          <div className="grid__col-10x">
-            <Routes>
-              <Route
-                path="profile"
-                element={
-                  <AccountProfile
-                    userName={userName}
-                    name={name}
-                    email={email}
-                    phone={phone}
-                    gender={gender}
-                    birthday={birthday}
-                    fileImage={fileImage}
-                    previewImage={previewImage}
-                    setFileImage={setFileImage}
-                    isInfoUpdating={isInfoUpdating}
-                    handleInfoSubmit={handleInfoSubmit}
-                  ></AccountProfile>
-                }
-              ></Route>
-              <Route index element={<Navigate to="profile" replace />} />
-              <Route
-                path="email"
-                element={
-                  <AccountEmail
-                    email={email}
-                    setEmail={setEmail}
-                  ></AccountEmail>
-                }
-              ></Route>
-              <Route
-                path="password"
-                element={
-                  <AccountPassword
-                    email={email}
-                    setEmail={setEmail}
-                  ></AccountPassword>
-                }
-              ></Route>
-              <Route
-                path="address"
-                element={<AccountAddress></AccountAddress>}
-              ></Route>
-              <Route
-                path="payment"
-                element={<AccountPayment></AccountPayment>}
-              ></Route>
-              <Route
-                path="purchase"
-                element={<AccountOrder></AccountOrder>}
-              ></Route>
-            </Routes>
-          </div>
+          <div className="user-profile__name">{user?.displayName}</div>
+
+          <Link to="profile" className="user-profile__name-btn">
+            Sửa Hồ Sơ
+          </Link>
+        </div>
+        <div className="user-profile__category">
+          {/* <div className="user-profile__my-user">Tài Khoản Của Tôi</div> */}
+          <NavLink to="profile" className="user-profile__my-info" replace>
+            Hồ sơ
+          </NavLink>
+          <NavLink to="payment" className="user-profile__my-bank" replace>
+            Thẻ tín dụng/ghi nợ
+          </NavLink>
+          <NavLink to="address" className="user-profile__my-adress" replace>
+            Địa chỉ
+          </NavLink>
+          <NavLink
+            to="password"
+            className="user-profile__change-password"
+            replace
+          >
+            Đổi mật khẩu
+          </NavLink>
+          <NavLink to="purchase" className="user-profile__order" replace>
+            Đơn Mua
+          </NavLink>
         </div>
       </div>
+      <div className="user-content">
+        <Routes>
+          <Route
+            path="profile"
+            element={
+              <AccountProfile
+                userName={userName}
+                name={name}
+                email={email}
+                phone={phone}
+                gender={gender}
+                birthday={birthday}
+                fileImage={fileImage}
+                previewImage={previewImage}
+                setFileImage={setFileImage}
+                isInfoUpdating={isInfoUpdating}
+                handleInfoSubmit={handleInfoSubmit}
+              ></AccountProfile>
+            }
+          ></Route>
+          <Route index element={<Navigate to="profile" replace />} />
+          <Route
+            path="email"
+            element={
+              <AccountEmail email={email} setEmail={setEmail}></AccountEmail>
+            }
+          ></Route>
+          <Route
+            path="password"
+            element={
+              <AccountPassword
+                email={email}
+                setEmail={setEmail}
+              ></AccountPassword>
+            }
+          ></Route>
+          <Route
+            path="address"
+            element={<AccountAddress></AccountAddress>}
+          ></Route>
+          <Route
+            path="payment"
+            element={<AccountPayment></AccountPayment>}
+          ></Route>
+          <Route
+            path="purchase"
+            element={<AccountOrder></AccountOrder>}
+          ></Route>
+        </Routes>
+      </div>
+
       {isPopupShowing && (
         <PopupModal
           isUserUpdateFailed={isUserUpdateFailed}
@@ -272,4 +267,4 @@ const AccountContainer = () => {
   );
 };
 
-export default AccountContainer;
+export default withContainer(AccountContainer, true);

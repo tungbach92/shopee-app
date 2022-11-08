@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Stack, TextField } from "@mui/material";
 import PropTypes from "prop-types";
 import { useUser } from "../../context/UserProvider";
+import withContainer from "../../pages/withContainer";
 
 function LoginContainer({ isRegisterPage, isLoginPage, submitText }) {
   const { signIn, register } = useUser();
@@ -184,4 +185,4 @@ LoginContainer.defaultProps = {
   submitText: "",
 };
 
-export default LoginContainer;
+export default withContainer(LoginContainer);
