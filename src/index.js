@@ -5,7 +5,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { theme } from "./theme";
 import { ThemeProvider } from "@mui/material";
 import UserProvider from "./context/UserProvider.js";
-import CartProvider from "./context/CartProvider.js";
 import ProductsProvider from "./context/ProductsProvider.js";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
@@ -16,9 +15,7 @@ ReactDOM.render(
         <Router>
           <UserProvider>
             <ProductsProvider>
-              <CartProvider>
-                <App />
-              </CartProvider>
+              <App />
             </ProductsProvider>
           </UserProvider>
         </Router>

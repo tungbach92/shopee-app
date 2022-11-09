@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import useModal from "../../hooks/useModal";
 import VoucherModal from "../Modal/VoucherModal";
@@ -7,36 +7,33 @@ import noCartImg from "../../img/no-cart.png";
 import AddCartModal from "../Modal/AddCartModal";
 import PopupModal from "../../components/Modal/PopupModal";
 import { NumericFormat } from "react-number-format";
-import _ from "lodash";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { useCartContext } from "../../context/CartProvider";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getVoucherDiscount } from "../../services/getVoucherDiscount";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { CHECKOUT_ACTIONTYPES } from "../../constants/actionType";
 import { ClipLoading } from "../ClipLoading";
-import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
 import { useUser } from "../../context/UserProvider";
 import { useSelector } from "react-redux";
+import {
+  deleteProducts,
+  deleteSelectedProducts,
+  updateProducts,
+} from "../../redux/cartSlice";
+import { useDispatch } from "react-redux";
+import {
+  useAddCartToFireStoreMutation,
+  useFetchCartQuery,
+} from "../../services/cartApi";
+import useVoucher from "../../hooks/useVoucher";
 
 export default function CartContainer() {
   const { user } = useUser();
-  //TODO: finishe cart redux
-  const {
-    // cartItems,
-    cartItemsLoading,
-    changeVariationDisPlayCartItems,
-    changeCartItemsVariation,
-    changeSimilarDisPlayCartItems,
-    delCartItem,
-    delCartItems,
-    decrCartItem,
-    incrCartItem,
-    changeAmountCartItem,
-    voucher,
-    resetVoucher,
-  } = useCartContext();
+  const { voucher, resetVoucher } = useVoucher();
+  const { isLoading: cartItemsLoading } = useFetchCartQuery(user);
   const cartProducts = useSelector((state) => state.cart.products);
+  const [addCartToFireStore] = useAddCartToFireStoreMutation();
+  const dispatch = useDispatch();
   const { checkoutDispatch } = useCheckoutContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,7 +42,14 @@ export default function CartContainer() {
   const [deleteID, setDeleteID] = useState(null);
   const [deleteVariation, setDeleteVariation] = useState();
   const [isDeleteSelected, setIsDeleteSelected] = useState(false);
-  const [checked, setChecked] = useState([]);
+  const [selectedIdVariation, setSelectedIdVariation] = useState([]);
+  const selectedProduct = useMemo(() => {
+    return cartProducts.filter((item) =>
+      selectedIdVariation.some(
+        (e) => e.id === item.id && e.variation === item.variation
+      )
+    );
+  }, [cartProducts, selectedIdVariation]);
 
   const {
     isVoucherShowing,
@@ -69,13 +73,13 @@ export default function CartContainer() {
   }, [toggleIsAddCardPopup, location.state, location.pathname, navigate]);
 
   useEffect(() => {
-    if (checked.length > 0) {
-      const isVariationChoose = checked.every(
+    if (selectedProduct.length > 0) {
+      const isVariationChoose = selectedProduct.every(
         (item) => item.variation?.length > 0 || item.variationList.length === 0
       );
       setIsVariationChoose(isVariationChoose);
     }
-  }, [checked]);
+  }, [selectedProduct]);
 
   const getItemsTotal = (items) => {
     const result = items?.reduce(
@@ -90,55 +94,43 @@ export default function CartContainer() {
     setVariation(variation);
   };
 
-  const handleVariationBack = (index) => {
+  const handleVariationBack = (variation, id) => {
     setVariation("");
-    changeVariationDisPlayCartItems(index);
+    changeVariationDisPlayCartItems(variation, id);
   };
 
-  const changeCheckedItemVariation = (id, oldVariation) => {
-    if (checked?.length > 0) {
-      let indexOfItem = checked.findIndex(
-        (checkedItem) =>
-          checkedItem.id === id && checkedItem.variation === oldVariation
-      );
-      checked[indexOfItem].variation = variation;
-      const newChecked = [...checked];
-      setChecked(newChecked);
-    }
-  };
-
-  const changeCheckedItemAmount = (id, variation, amount) => {
-    if (checked?.length > 0) {
-      let indexOfItem = checked.findIndex(
-        (checkedItem) =>
-          checkedItem.id === id && checkedItem.variation === variation
-      );
-      checked[indexOfItem].amount = amount;
-      setChecked(checked);
-    }
-  };
-
-  const handleVariationApply = (index, id, oldVariation) => {
-    changeCartItemsVariation(variation, index);
-    changeCheckedItemVariation(id, oldVariation);
+  const handleVariationApply = (variation, id) => {
+    changeCartItemsVariation(variation, id);
   };
   const handleCheckout = async (event) => {
-    if (checked?.length === 0 || isVariationChoose === false) {
+    if (selectedProduct?.length === 0 || isVariationChoose === false) {
       event.preventDefault();
       togglePopup(!isPopupShowing);
     } else {
-      const checkoutItems = checked.map((checkedItem) => {
+      const checkoutItems = selectedProduct.map((selectedEle) => {
         // return checkedItem without uneccessary field
-        const { similarDisPlay, variationDisPlay, ...rest } = checkedItem;
+        const { similarDisPlay, variationDisPlay, ...rest } = selectedEle;
         return rest;
       });
       checkoutDispatch({
         type: CHECKOUT_ACTIONTYPES.ADD_CHECKOUT,
         payload: checkoutItems,
       });
-      await saveCartItemsToFirebase(user, cartProducts);
+      addCartToFireStore({ user, cartProducts });
       navigate("/checkout");
     }
+  };
+
+  const delCartItems = () => {
+    const newCartProducts = cartProducts.filter((item) =>
+      selectedIdVariation.every(
+        (e) => e.id !== item.id || e.variation !== item.variation
+      )
+    );
+    dispatch(deleteSelectedProducts(newCartProducts));
+    // if (newCartItems.length === 0) {
+    //   await saveCartItemsToFirebase(newCartItems);
+    // }
   };
 
   const handleDelete = (id, variation) => {
@@ -148,44 +140,92 @@ export default function CartContainer() {
   };
 
   const handleDeleteCartTrue = () => {
-    delCartItem(deleteID, deleteVariation);
-    const isCheckedItem = checked.some(
-      (checkedItem) =>
-        checkedItem.id === deleteID && checkedItem.variation === deleteVariation
+    dispatch(deleteProducts({ id: deleteID, variation: deleteVariation }));
+    const newCheckedId = selectedIdVariation.filter(
+      (e) => e.id !== deleteID || e.variation !== deleteVariation
     );
-    if (isCheckedItem) {
-      const newChecked = [...checked].filter(
-        (checkedItem) =>
-          checkedItem.id !== deleteID ||
-          checkedItem.variation !== deleteVariation
-      );
-      setChecked(newChecked);
-    }
+    setSelectedIdVariation(newCheckedId);
   };
 
-  // set selectedItems by checked
-
   const handleDeleteSelection = () => {
-    if (checked?.length > 0) {
+    if (selectedIdVariation?.length > 0) {
       setIsDeleteSelected(true);
       togglePopup(!isPopupShowing);
     }
   };
 
   const handleDeleteSelectionTrue = () => {
-    delCartItems(checked);
-    setChecked([]);
+    delCartItems();
+    setSelectedIdVariation([]);
   };
 
-  const handlePopup = (index, event) => {
-    const { name } = event.currentTarget.dataset;
-    if (name === "variation") {
-      changeVariationDisPlayCartItems(index);
-      setVariation(cartProducts[index].variation);
+  const changeAmountCartItem = (id, variation, amount) => {
+    const newCartProducts = [...cartProducts];
+    const indexOfItem = newCartProducts.findIndex(
+      (item) => item.id === id && item.variation === variation
+    );
+    newCartProducts[indexOfItem] = {
+      ...newCartProducts[indexOfItem],
+      amount,
+    };
+    dispatch(updateProducts(newCartProducts));
+  };
+
+  const incrCartItem = (id, variation) => {
+    const newCartProducts = [...cartProducts];
+    const indexOfItem = newCartProducts.findIndex(
+      (item) => item.id === id && item.variation === variation
+    );
+    newCartProducts[indexOfItem] = {
+      ...newCartProducts[indexOfItem],
+      amount: newCartProducts[indexOfItem].amount + 1,
+    };
+    dispatch(updateProducts(newCartProducts));
+  };
+
+  const decrCartItem = (id, variation) => {
+    const newCartProducts = [...cartProducts];
+    const indexOfItem = newCartProducts.findIndex(
+      (item) => item.id === id && item.variation === variation
+    );
+    if (newCartProducts[indexOfItem].amount > 1) {
+      newCartProducts[indexOfItem] = {
+        ...newCartProducts[indexOfItem],
+        amount: newCartProducts[indexOfItem].amount - 1,
+      };
+      dispatch(updateProducts(newCartProducts));
     }
-    if (name === "similar") {
-      changeSimilarDisPlayCartItems(index);
-    }
+  };
+
+  const changeVariationDisPlayCartItems = (variation, id) => {
+    const newCartProducts = cartProducts.map((item) =>
+      item.id === id && item.variation === variation
+        ? { ...item, variationDisPlay: !item.variationDisPlay }
+        : item
+    );
+    dispatch(updateProducts(newCartProducts));
+  };
+
+  const changeCartItemsVariation = (oldVariation, id) => {
+    const newCartProducts = cartProducts.map((item) =>
+      item.id === id && item.variation === oldVariation
+        ? {
+            ...item,
+            variation: variation,
+            variationDisPlay: !item.variationDisPlay,
+          }
+        : item
+    );
+    dispatch(updateProducts(newCartProducts));
+    const newCheckedId = selectedIdVariation.map((item) =>
+      item.id === id ? { ...item, variation } : item
+    );
+    setSelectedIdVariation(newCheckedId);
+  };
+
+  const handlePopup = (variation, id) => {
+    changeVariationDisPlayCartItems(variation, id);
+    setVariation(variation);
   };
 
   const handleVoucherModal = (e) => {
@@ -197,45 +237,39 @@ export default function CartContainer() {
   };
 
   const handleCheck = (item) => {
-    let newChecked = [];
-    // if (isCheck(id, variation)) {
-    //   newChecked = checked.map((item) =>
-    //     item.id === id && item.variation === variation ? null : item
-    //   );
-    //   newChecked = [...newChecked].filter((item) => item !== null);
-    // } else newChecked = [...checked, { id, variation }];
-    const { similarDisPlay, variationDisPlay, ...forComparedItem } = item;
     if (isCheck(item)) {
-      newChecked = checked.filter(
-        (checkedItem) => !_.isEqual(checkedItem, forComparedItem)
+      const newCheckedId = selectedIdVariation.filter(
+        (e) => e.id !== item.id || e.variation !== item.variation
       );
-    } else newChecked = [...checked, { ...forComparedItem }];
-    setChecked(newChecked);
+      setSelectedIdVariation(newCheckedId);
+      return;
+    }
+    setSelectedIdVariation([
+      ...selectedIdVariation,
+      { id: item.id, variation: item.variation },
+    ]);
   };
 
   const isCheck = (item) => {
-    const { similarDisPlay, variationDisPlay, ...forComparedItem } = item;
-    const result = checked.some((checkedItem) =>
-      _.isEqual(checkedItem, forComparedItem)
+    const result = selectedIdVariation.some(
+      (e) => e.id === item.id && e.variation === item.variation
     );
     return result;
   };
 
   const isCheckAll = () => {
-    const result = checked?.length === cartProducts?.length;
+    const result = selectedIdVariation?.length === cartProducts?.length;
     return result;
   };
 
   const handleCheckAll = () => {
     if (isCheckAll()) {
-      setChecked([]);
+      setSelectedIdVariation([]);
     } else {
-      const newChecked = cartProducts.map((cartItem) => {
-        const { variationDisPlay, similarDisPlay, ...newCheckedItem } =
-          cartItem;
-        return newCheckedItem;
+      const newCheckedId = cartProducts.map((e) => {
+        return { id: e.id, variation: e.variation };
       });
-      setChecked(newChecked);
+      setSelectedIdVariation(newCheckedId);
     }
   };
 
@@ -320,7 +354,6 @@ export default function CartContainer() {
               <input
                 name="all"
                 onChange={handleCheckAll}
-                // checked={!!checked[0]}
                 checked={isCheckAll()}
                 type="checkbox"
                 className="grid__col cart-product__checkbox"
@@ -379,13 +412,11 @@ export default function CartContainer() {
                 </span>
               </div>
             </div> */}
-            {cartProducts.map((item, index) => (
-              <div key={index} className="cart-product__item">
+            {cartProducts.map((item) => (
+              <div key={item.id} className="cart-product__item">
                 <input
                   type="checkbox"
-                  // checked={!!checked[index + 1]}
                   checked={isCheck(item)}
-                  // onChange={selectOne.bind(this, index)}
                   onChange={() => handleCheck(item)}
                   className="grid__col cart-product__checkbox"
                 />
@@ -405,7 +436,7 @@ export default function CartContainer() {
                 </Link>
                 <div
                   data-name="variation"
-                  onClick={handlePopup.bind(this, index)}
+                  onClick={handlePopup.bind(this, item.variation, item.id)}
                   className="grid__col cart-product__variation"
                 >
                   <span className="cart-product__variation-label">
@@ -471,7 +502,11 @@ export default function CartContainer() {
                     </div>
                     <div className="cart-product__notify-button">
                       <button
-                        onClick={handleVariationBack.bind(this, index)}
+                        onClick={handleVariationBack.bind(
+                          this,
+                          item.variation,
+                          item.id
+                        )}
                         className="btn cart-product__notify-back"
                       >
                         Trở Lại
@@ -479,7 +514,7 @@ export default function CartContainer() {
                       {item.variationList.length > 0 && (
                         <button
                           onClick={() =>
-                            handleVariationApply(index, item.id, item.variation)
+                            handleVariationApply(item.variation, item.id)
                           }
                           className="btn cart-product__notify-ok"
                         >
@@ -509,11 +544,6 @@ export default function CartContainer() {
                     <button
                       onClick={() => {
                         decrCartItem(item.id, item.variation);
-                        changeCheckedItemAmount(
-                          item.id,
-                          item.variation,
-                          item.amount
-                        );
                       }}
                       href="# "
                       className="btn cart-product__amount-desc"
@@ -535,21 +565,11 @@ export default function CartContainer() {
                         if (value > 0) {
                           changeAmountCartItem(item.id, item.variation, value);
                         }
-                        changeCheckedItemAmount(
-                          item.id,
-                          item.variation,
-                          item.amount
-                        );
                       }}
                     />
                     <button
                       onClick={() => {
                         incrCartItem(item.id, item.variation);
-                        changeCheckedItemAmount(
-                          item.id,
-                          item.variation,
-                          item.amount
-                        );
                       }}
                       href="# "
                       className="btn cart-product__amount-incr"
@@ -880,7 +900,6 @@ export default function CartContainer() {
                 <input
                   name="all"
                   onChange={handleCheckAll}
-                  // checked={!!checked[lastIndex]}
                   checked={isCheckAll()}
                   type="checkbox"
                   className="cart-product__checkout-checkbox"
@@ -904,11 +923,12 @@ export default function CartContainer() {
                 <div className="cart-product__checkout-total-wrapper">
                   <div className="cart-product__checkout-total">
                     <span className="cart-product__total-label">
-                      Tổng thanh toán ({getItemsTotal(checked)} sản phẩm):
+                      Tổng thanh toán ({getItemsTotal(selectedProduct)} sản
+                      phẩm):
                     </span>
                     <span className="cart-product__total-all">
                       <NumericFormat
-                        value={getItemsPriceTotal(checked)}
+                        value={getItemsPriceTotal(selectedProduct)}
                         thousandSeparator={true}
                         displayType="text"
                         prefix={"₫"}
@@ -921,7 +941,7 @@ export default function CartContainer() {
                     </span>
                     <span className="cart-product__saved-value">
                       <NumericFormat
-                        value={getVoucherDiscount(voucher, checked)}
+                        value={getVoucherDiscount(voucher, selectedProduct)}
                         thousandSeparator={true}
                         displayType="text"
                         prefix={"₫"}
@@ -966,7 +986,7 @@ export default function CartContainer() {
           isVariationChoose={isVariationChoose}
           isPopupShowing={isPopupShowing}
           togglePopup={togglePopup}
-          checked={checked}
+          checked={selectedIdVariation}
           deleteID={deleteID}
           setDeleteID={setDeleteID}
           handleDeleteCartTrue={handleDeleteCartTrue}

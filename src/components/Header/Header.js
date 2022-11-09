@@ -26,8 +26,8 @@ const Header = ({
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
   const location = useLocation();
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleLogout = () => {
+    signOut();
   };
 
   return (

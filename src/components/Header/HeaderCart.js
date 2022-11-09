@@ -1,30 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import noCartImg from "../../img/no-cart.png";
 import classNames from "classnames";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
-import useModal from "../../hooks/useModal";
-import PopupModal from "../Modal/PopupModal";
-import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
-import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
 import { useSelector } from "react-redux";
+import { useFetchCartQuery } from "../../services/cartApi";
 
 const HeaderCart = () => {
   const { user } = useUser();
-  //TODO: rtk query, finishe cart redux
-  const { cartItemsLoading, delCartItem } = useCartContext();
   const cartProducts = useSelector((state) => state.cart.products);
-  const [deleteID, setDeleteID] = useState();
-  const { isPopupShowing, togglePopup } = useModal();
+  const { isLoading: cartItemsLoading } = useFetchCartQuery(user);
+
   const navigate = useNavigate();
   const location = useLocation();
   const xsBreakpointMatches = useMediaQuery("(max-width:600px)");
-
-  const handleDeleteCartTrue = (id) => {
-    delCartItem(id);
-  };
 
   return (
     <div className="header__cart">
@@ -41,7 +32,7 @@ const HeaderCart = () => {
             {/* <!-- No cart: empty --> */}
             {user && (
               <div className="header__cart-numb">
-                {!cartItemsLoading && cartProducts.length}
+                {!cartItemsLoading && cartProducts?.length}
               </div>
             )}
           </i>
@@ -49,7 +40,7 @@ const HeaderCart = () => {
         {!xsBreakpointMatches && user && (
           <div
             className={classNames("header__cart-list", {
-              "header__cart-list--empty": cartProducts.length === 0,
+              "header__cart-list--empty": cartProducts?.length === 0,
             })}
             onClick={(e) => {
               e.stopPropagation();
@@ -59,7 +50,7 @@ const HeaderCart = () => {
             <div className="header__cart-list-container">
               <div className="header__cart-title">Sản phẩm mới thêm</div>
               <div className="header__cart-list-item">
-                {cartProducts.map((item, index) => (
+                {cartProducts?.map((item, index) => (
                   <div key={index} className="header__cart-item">
                     <div className="header__cart-link">
                       <img
@@ -95,15 +86,6 @@ const HeaderCart = () => {
           </div>
         )}
       </div>
-      {isPopupShowing && (
-        <PopupModal
-          isPopupShowing={isPopupShowing}
-          togglePopup={togglePopup}
-          deleteID={deleteID}
-          setDeleteID={setDeleteID}
-          handleDeleteCartTrue={handleDeleteCartTrue}
-        ></PopupModal>
-      )}
     </div>
   );
 };
