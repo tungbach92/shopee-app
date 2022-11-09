@@ -6,25 +6,28 @@ import AddCartModal from "../Modal/AddCartModal";
 import { NumericFormat } from "react-number-format";
 import Rating from "@mui/material/Rating";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { useCartContext } from "../../context/CartProvider";
 import { useUser } from "../../context/UserProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { addProducts } from "../../redux/cartSlice";
 
 const ProductItem = function ({ item, similarDisPlay }) {
   const { user } = useUser();
-  const { cartItems, addToCartItems } = useCartContext();
+  const cartProducts = useSelector((state) => state.cart.products);
+  const dispatch = useDispatch();
   const { id, metaTitle, imageUrl, name, price, soldAmount, location, rating } =
     item;
   const { isAddCartPopup, toggleIsAddCardPopup } = useModal();
   const navigate = useNavigate();
-  let isInCart = false;
-  isInCart = cartItems?.some((item) => item.id === id);
+  const isInCart = cartProducts.some((item) => item.id === id);
 
-  const handleAddCart = (id) => {
+  const handleAddCart = () => {
     if (!user) {
       navigate("/login", { replace: true });
       return;
     }
-    addToCartItems(id);
+    const amount = 1;
+    const variation = "";
+    dispatch(addProducts({ ...item, amount, variation }));
     toggleIsAddCardPopup(!isAddCartPopup);
   };
   return (
@@ -37,7 +40,7 @@ const ProductItem = function ({ item, similarDisPlay }) {
       <div className="app__product-item">
         <button
           disabled={isInCart}
-          onClick={() => handleAddCart(id)}
+          onClick={handleAddCart}
           className={classNames("btn app__product-cart-btn", {
             "app__product-cart-btn--disabled": isInCart,
           })}

@@ -12,6 +12,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { FilterAlt } from "@mui/icons-material";
+import { useRef } from "react";
 
 const StyledBox = styled(Box)({
   display: "flex",
