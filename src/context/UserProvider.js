@@ -1,11 +1,12 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext } from "react";
 import { auth } from "../firebase";
 import useGetUserByObserver from "../hooks/useGetUserByObserver";
-import axios from "../axios";
 import useCheckPhotoURL from "../hooks/useCheckPhotoURL";
-import { saveCartItemsToFirebase } from "../services/saveCartItemsToFirebase";
 import { useNavigate } from "react-router-dom";
 import { useCheckFirebaseIdTokenAuthTime } from "../hooks/useCheckFirebaseIdTokenAuthTime";
+import { useDispatch, useSelector } from "react-redux";
+import { resetCart } from "../redux/cartSlice";
+import { useAddCartToFireStoreMutation } from "../services/cartApi";
 
 const UserContext = React.createContext();
 export const useUser = () => {
@@ -16,20 +17,17 @@ const UserProvider = ({ children }) => {
   const { user, userLoading } = useGetUserByObserver();
   const { checkingPhotoURL, isPhotoExist, setIsPhotoExist } =
     useCheckPhotoURL(user);
+  const cartProducts = useSelector((state) => state.cart.products);
+  const [addCartToFireStore] = useAddCartToFireStoreMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const getCartItemsFromStorage = () => {
-    let savedCartItems = localStorage.getItem("cartProduct");
-    return savedCartItems ? JSON.parse(savedCartItems) : savedCartItems;
-  };
-
   const signOut = useCallback(async () => {
-    const saveCartItems = getCartItemsFromStorage();
-    await saveCartItemsToFirebase(user, saveCartItems);
-    localStorage.clear();
+    addCartToFireStore({ user, cartProducts });
+    dispatch(resetCart());
     await auth.signOut();
     navigate("/login", { replace: true });
-  }, [navigate, user]);
+  }, [addCartToFireStore, cartProducts, dispatch, navigate, user]);
 
   useCheckFirebaseIdTokenAuthTime(user, signOut);
 

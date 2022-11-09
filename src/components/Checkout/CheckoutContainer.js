@@ -22,15 +22,19 @@ import useGetUserByObserver from "../../hooks/useGetUserByObserver";
 import { getCardImgByBrand } from "../../services/getCardImgByBrand";
 import { getItemsPriceTotal } from "../../services/getItemsPriceTotal";
 import { getVoucherDiscount } from "../../services/getVoucherDiscount";
-import { useCartContext } from "../../context/CartProvider";
 import useNavigateAndRefreshBlocker from "../../hooks/useNavigateAndRefreshBlocker";
 import { useCheckoutContext } from "../../context/CheckoutProvider";
 import { updateCustomerBillingAddressStripe } from "../../services/updateCustomerBillingAddressStripe";
 import { ClipLoading } from "../ClipLoading";
-import { saveCartItemsToFirebase } from "../../services/saveCartItemsToFirebase";
 import { useUpdateDefaultPaymentMethodIDToStripe } from "../../hooks/useUpdateDefaultPaymentMethodIDToStripe";
+import { resetCart } from "../../redux/cartSlice";
+import { useDispatch } from "react-redux";
+import { useAddCartToFireStoreMutation } from "../../services/cartApi";
+import useVoucher from "../../hooks/useVoucher";
 
 export default function CheckoutContainer({ isCheckoutPage }) {
+  const [addCartToFireStore] = useAddCartToFireStoreMutation();
+  const dispatch = useDispatch();
   const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
     useUpdateDefaultPaymentMethodIDToStripe();
   const { checkoutState, checkoutDispatch } = useCheckoutContext();
@@ -69,7 +73,7 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     toggleAddressAdd,
   } = useModal();
 
-  const { voucher, resetVoucher, resetCartItems } = useCartContext();
+  const { voucher, resetVoucher } = useVoucher();
   const { user } = useGetUserByObserver();
   const { defaultPaymentMethodID, setDefaultPaymentMethodID } =
     useDefaultPaymentMethodID(user);
@@ -231,9 +235,9 @@ export default function CheckoutContainer({ isCheckoutPage }) {
     saveOrdersToFirebase(id, amount, created);
     updateSoldAmount();
     updateCustomerBillingAddressStripe(user, shipInfos);
-    resetCartItems();
+    dispatch(resetCart);
     checkoutDispatch({});
-    saveCartItemsToFirebase(user, []);
+    addCartToFireStore({ user, cartProducts: [] });
     saveCheckoutItemsToFirebase([]);
     setSucceeded(true);
     setProcessing(false);

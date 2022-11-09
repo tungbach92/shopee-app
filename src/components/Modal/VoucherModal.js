@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { useCartContext } from "../../context/CartProvider";
+import useVoucher from "../../hooks/useVoucher";
 //TODO: use formik form
 export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
-  const { voucher, updateVoucher } = useCartContext();
+  const { voucher, updateVoucher } = useVoucher();
   const [isValidVoucher, setIsValidVoucher] = useState(false);
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
   const inputEl = useRef();
