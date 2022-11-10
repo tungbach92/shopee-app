@@ -10,6 +10,32 @@
   }
 }
 
+@each $val in $colNumbs {
+  .grid-col-#{$val} {
+    grid-template-columns: repeat($val, 1fr);
+  }
+}
+
+@each $val in $colNumbs {
+  .grid-col-md-#{$val} {
+    @include tablet {
+      grid-template-columns: repeat($val, 1fr);
+    }
+  }
+}
+
+@each $val in $colNumbs {
+  .grid-col-sm-#{$val} {
+    @include mobile {
+      grid-template-columns: repeat($val, 1fr);
+    }
+  }
+}
+
+.grid {
+  display: grid;
+}
+
 .container {
   max-width: 162rem;
   padding: 0 5rem;

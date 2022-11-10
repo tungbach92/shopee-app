@@ -33,6 +33,7 @@
     "react-scripts": "4.0.3",
     "react-spinners": "^0.13.4",
     "redux": "^4.1.1",
+    "sass": "^1.56.1",
     "stripe": "^10.8.0",
     "styled-components": "^5.3.5",
     "web-vitals": "^1.1.1",
@@ -64,8 +65,5 @@
   },
   "engines": {
     "node": "16.x"
-  },
-  "devDependencies": {
-    "sass": "^1.56.0"
   }
 }
