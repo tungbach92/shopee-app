@@ -3,126 +3,126 @@ import qrCodeNavImg from "../img/qr-code-home.png";
 import appShopeeImg from "../img/app-shopee.png";
 import ggShopeeImg from "../img/gg-shopee.png";
 import appGalShopeeImg from "../img/app-gal-shopee.png";
-import { Box } from "@mui/material";
+import Grid from "./Grid";
 
 export default function Footer() {
   return (
     <footer>
       {/* <div className="footer__ads"></div> */}
       <div className="footer">
-        <div className="grid footer__grid">
-          <div className="grid__row grid__row--padtb3">
-            <div className="grid__col-2c4x">
+        <div className="container">
+          <Grid col={5} mdCol={3} smCol={1} gap={2}>
+            <div>
               <h3 className="footer__heading">Chăm sóc khách hàng</h3>
-              {/* <ul className="footer__list">
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Trung tâm trợ giúp
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Shopee Blog
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Shopee Mall
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Hướng dẫn mua hàng
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Hướng dẫn bán hàng
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Thanh toán
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Shopee Xu
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Vận chuyển
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Trả hàng Hoàn tiền
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Chăm sóc khách hàng
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Chính sách bảo hành
-                </a>
-              </li>
-            </ul> */}
+              <ul className="footer__list">
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Trung tâm trợ giúp
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Shopee Blog
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Shopee Mall
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Hướng dẫn mua hàng
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Hướng dẫn bán hàng
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Thanh toán
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Shopee Xu
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Vận chuyển
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Trả hàng Hoàn tiền
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Chăm sóc khách hàng
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Chính sách bảo hành
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div className="grid__col-2c4x">
+            <div>
               <h3 className="footer__heading">Về Shopee</h3>
-              {/* <ul className="footer__list">
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Giới thiệu về Shopee Việt Nam
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Tuyển dụng
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Điều Khoản Shopee
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Chính sách bảo mật
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Chính Hãng
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Kênh Người bán
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Flash Sales
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Chương trình Tiếp thị liên kết Shopee
-                </a>
-              </li>
-              <li className="footer__item">
-                <a href="# " className="footer__item-link">
-                  Liên Hệ Với Truyền Thông
-                </a>
-              </li>
-            </ul> */}
+              <ul className="footer__list">
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Giới thiệu về Shopee Việt Nam
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Tuyển dụng
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Điều Khoản Shopee
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Chính sách bảo mật
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Chính Hãng
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Kênh Người bán
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Flash Sales
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Chương trình Tiếp thị liên kết Shopee
+                  </a>
+                </li>
+                <li className="footer__item">
+                  <a href=" " className="footer__item-link">
+                    Liên Hệ Với Truyền Thông
+                  </a>
+                </li>
+              </ul>
             </div>
-            <div className="grid__col-2c4x">
+            <div>
               <h3 className="footer__heading">THANH TOÁN</h3>
               <ul className="footer__list-payment">
                 <li className="footer__payment-item">
@@ -181,12 +181,13 @@ export default function Footer() {
                 </li>
               </ul>
             </div>
-            <div className="grid__col-2c4x">
+            <div>
               <h3 className="footer__heading">THEO DÕI CHÚNG TÔI TRÊN</h3>
               <ul className="footer__list">
                 <li className="footer__item">
                   <a href="# " className="footer__item-link">
-                    <i className="footer__item-icon bi bi-facebook"></i>Facebook
+                    <i className="footer__item-icon bi bi-facebook"></i>
+                    Facebook
                   </a>
                 </li>
                 <li className="footer__item">
@@ -197,12 +198,13 @@ export default function Footer() {
                 </li>
                 <li className="footer__item">
                   <a href="# " className="footer__item-link">
-                    <i className="footer__item-icon bi bi-linkedin"></i>LinkedIn
+                    <i className="footer__item-icon bi bi-linkedin"></i>
+                    LinkedIn
                   </a>
                 </li>
               </ul>
             </div>
-            <div className="grid__col-2c4x">
+            <div>
               <h3 className="footer__heading">TẢI ỨNG DỤNG SHOPEE NGAY THÔI</h3>
               <a href="# " className="footer__app-wrapper">
                 <img
@@ -229,11 +231,9 @@ export default function Footer() {
                 </div>
               </a>
             </div>
-          </div>
-          <div className="grid__row">
-            <p className="footer__lisence">
-              © 2015 - Bản quyền thuộc về Công ty TNHH Shopee
-            </p>
+          </Grid>
+          <div className="footer__lisence">
+            © 2015 - Bản quyền thuộc về Công ty TNHH Shopee
           </div>
         </div>
       </div>
