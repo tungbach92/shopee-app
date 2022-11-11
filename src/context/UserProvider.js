@@ -27,7 +27,7 @@ const UserProvider = ({ children }) => {
     dispatch(resetCart());
     await auth.signOut();
     navigate("/login", { replace: true });
-  }, [addCartToFireStore, cartProducts, dispatch, navigate, user]);
+  }, [addCartToFireStore, dispatch, navigate, user]);
 
   useCheckFirebaseIdTokenAuthTime(user, signOut);
 
