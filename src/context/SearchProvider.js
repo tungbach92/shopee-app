@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import getSearchHistoryFromFirebase from "../services/getSearchHistoryFromFirebase";
 import { saveSearchHistoryToFirebase } from "../services/saveSearchHistoryToFirebase";
 import { useProductsContext } from "./ProductsProvider";
@@ -14,7 +14,16 @@ const SearchProvider = ({ children }) => {
   const [searchItems, setSearchItems] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
+  const suggestions = useMemo(
+    () =>
+      searchHistory.filter((item) => {
+        return item
+          .trim()
+          .toLowerCase()
+          .includes(searchInput.trim().toLowerCase());
+      }),
+    [searchHistory, searchInput]
+  );
 
   useEffect(() => {
     (async () => {
@@ -24,17 +33,6 @@ const SearchProvider = ({ children }) => {
       }
     })();
   }, [setSearchHistory, user]);
-
-  const changeSuggestionsByInputText = (text) => {
-    const mathSuggestions = searchHistory.filter((item) => {
-      return item.trim().toLowerCase().includes(text.trim().toLowerCase());
-    });
-    if (text === "") {
-      setSuggestions(searchHistory);
-    } else {
-      setSuggestions(mathSuggestions);
-    }
-  };
 
   const addToSearchHistory = (text) => {
     text = text.trim();
@@ -53,12 +51,8 @@ const SearchProvider = ({ children }) => {
         (item) => item !== text
       );
       setSearchHistory(newSearchHistory);
+      saveSearchHistoryToFirebase(user, newSearchHistory);
     }
-  };
-
-  const deleteFromSuggestions = (text) => {
-    const mathSuggestions = [...suggestions].filter((item) => item !== text);
-    setSuggestions(mathSuggestions);
   };
 
   const handleSearchInputChange = (input) => {
@@ -77,10 +71,8 @@ const SearchProvider = ({ children }) => {
     searchInput,
     setSearchInput,
     handleSearchInputChange,
-    changeSuggestionsByInputText,
     addToSearchHistory,
     deleteFromSearchHistory,
-    deleteFromSuggestions,
     suggestions,
   };
   return (
