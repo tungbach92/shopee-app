@@ -9,19 +9,13 @@ import { Box, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 import { useSearchContext } from "../../context/SearchProvider";
 
-const HeaderSearch = ({
-  isCartPage,
-  isCheckoutPage,
-  xsBreakpointMatches,
-}) => {
+const HeaderSearch = ({ isCartPage, isCheckoutPage, xsBreakpointMatches }) => {
   const {
     searchInput,
     setSearchInput,
     handleSearchInputChange,
-    changeSuggestionsByInputText,
     addToSearchHistory,
     deleteFromSearchHistory,
-    deleteFromSuggestions,
     suggestions,
   } = useSearchContext();
   const wrapperRef = useRef();
@@ -30,17 +24,14 @@ const HeaderSearch = ({
   const [isHistory, setIsHistory] = useState(false);
 
   const handleInputClick = (e) => {
-    const text = e.target.value;
     if (!xsBreakpointMatches) {
       setIsHistory(!isHistory);
     }
-    changeSuggestionsByInputText(text);
   };
 
   const handleInputChange = (e) => {
     const text = e.target.value;
     setSearchInput(text);
-    changeSuggestionsByInputText(text);
   };
 
   const handleSuggestionClick = (text) => {
@@ -57,7 +48,6 @@ const HeaderSearch = ({
 
   const handleHistoryDelete = (item) => {
     deleteFromSearchHistory(item);
-    deleteFromSuggestions(item);
   };
 
   const inputOnKeyUp = (event) => {
@@ -189,10 +179,7 @@ const HeaderSearch = ({
               ))}
             </ul>
           </div>
-          {!isCartPage && (
-            <HeaderCart
-            ></HeaderCart>
-          )}
+          {!isCartPage && <HeaderCart></HeaderCart>}
         </>
       )}
     </div>
