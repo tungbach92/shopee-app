@@ -1,46 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import useVoucher from "../../hooks/useVoucher";
-//TODO: use formik form
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
 export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
-  const { voucher, updateVoucher } = useVoucher();
-  const [isValidVoucher, setIsValidVoucher] = useState(false);
+  const { voucher, isValidVoucher, updateVoucher } = useVoucher();
   const [isVoucherNotifyShowing, setIsVoucherNotifyShowing] = useState(false);
-  const inputEl = useRef();
+
+  const formik = useFormik({
+    initialValues: { voucherCode: "" },
+    validationSchema: Yup.object({
+      voucherCode: Yup.string().max(20, "voucher không vượt quá 20 ký tự"),
+    }),
+    onSubmit: onSubmit,
+  });
+
+  console.log(voucher);
+
+  function onSubmit({ voucherCode }) {
+    voucherCode = voucherCode.trim();
+
+    if (voucherCode.length > 0) {
+      updateVoucher(voucherCode);
+      setIsVoucherNotifyShowing(true);
+    }
+  }
 
   const handleBack = () => {
     toggleVoucher(!isVoucherShowing);
   };
-
-  const handleKeyUp = (e) => {
-    if (e.keyCode === 13) {
-      handleVoucherApply();
-      inputEl.current.blur();
-    }
-  };
-
-  const handleFocus = (e) => {
-    setIsVoucherNotifyShowing(false);
-  };
-
-  const handleVoucherApply = (e) => {
-    let text = inputEl.current.value;
-    text = text.trim();
-    inputEl.current.value = text;
-
-    if (text.length > 0) {
-      updateVoucher(text);
-      setIsVoucherNotifyShowing(true);
-    }
-  };
-
-  useEffect(() => {
-    if (voucher) {
-      setIsValidVoucher(true);
-    } else {
-      setIsValidVoucher(false);
-    }
-  }, [voucher]);
 
   return ReactDOM.createPortal(
     <div className="cart-product__modal">
@@ -69,10 +58,27 @@ export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
             </svg>
           </div>
         </div>
-        <div className="cart-product__modal-voucher">
-          <span className="cart-product__voucher-text">Mã Voucher</span>
+        <form
+          onSubmit={formik.handleSubmit}
+          className="cart-product__modal-voucher"
+        >
+          <label htmlFor="voucherCode" className="cart-product__voucher-text">
+            Mã Voucher
+          </label>
           <div className="cart-product__input-wrapper">
-            {isVoucherNotifyShowing && (
+            {/* {isVoucherNotifyShowing && (
+              <span className="cart-product__voucher-notify">
+                {isValidVoucher
+                  ? "Thành công"
+                  : "Rất tiếc! Không thể tìm thấy mã voucher này.Xin vui lòng kiểm tra lại."}
+              </span>
+            )} */}
+            {formik.errors.voucherCode && formik.touched.voucherCode && (
+              <span className="cart-product__voucher-notify">
+                {formik.errors.voucherCode}
+              </span>
+            )}
+            {!Boolean(formik.errors.voucherCode) && isVoucherNotifyShowing && (
               <span className="cart-product__voucher-notify">
                 {isValidVoucher
                   ? "Thành công"
@@ -80,20 +86,25 @@ export default function VoucherModal({ isVoucherShowing, toggleVoucher }) {
               </span>
             )}
             <input
-              ref={inputEl}
-              onKeyUp={handleKeyUp}
-              onFocus={handleFocus}
+              // ref={inputEl}
+              id="voucherCode"
+              type="text"
+              {...formik.getFieldProps("voucherCode")}
+              // onKeyUp={handleKeyUp}
+              // onFocus={handleFocus}
               className="cart-product__voucher-input"
               placeholder="Mã shoppe Voucher"
             />
           </div>
           <button
-            onClick={handleVoucherApply}
+            // onClick={handleVoucherApply}
+            disabled={!formik.dirty}
+            type="submit"
             className="btn cart-product__voucher-btn"
           >
             Áp dụng
           </button>
-        </div>
+        </form>
 
         {/* <ul className="cart-product__voucher-list">
           <li className="cart-product__list-label">
