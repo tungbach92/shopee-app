@@ -7,19 +7,23 @@ const voucherList = [
 ];
 const useVoucher = () => {
   const [voucher, setVoucher] = useState();
+  const [isValidVoucher, setIsValidVoucher] = useState(false);
 
   const updateVoucher = (text) => {
     const voucher = voucherList.find((item) => item.code === text);
-    if (voucher) {
-      setVoucher(voucher);
+    if (!voucher) {
+      setIsValidVoucher(false);
+      return;
     }
+    setIsValidVoucher(true);
+    setVoucher(voucher);
   };
 
   const resetVoucher = () => {
     setVoucher(null);
   };
 
-  return { voucher, updateVoucher, resetVoucher };
+  return { voucher, updateVoucher, isValidVoucher, resetVoucher };
 };
 
 export default useVoucher;
