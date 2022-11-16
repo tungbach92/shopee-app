@@ -7,7 +7,6 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import React, { Suspense } from "react";
-import SearchProviderLayout from "./context/SearchProviderLayout";
 import PrivateRoute from "./routes/PrivateRoute";
 import { CheckoutProviderLayout } from "./context/CheckoutProviderLayout";
 import { ClipLoading } from "./components/ClipLoading";
@@ -27,45 +26,39 @@ const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY_TEST);
 function App() {
   return (
     <>
-      <Suspense
-        fallback={
-          <ClipLoading></ClipLoading>
-        }
-      >
+      <Suspense fallback={<ClipLoading></ClipLoading>}>
         <Routes>
-          <Route element={<SearchProviderLayout />}>
-            <Route path="/" element={<Product />}></Route>
-            <Route path="/search" element={<Search />}></Route>
+          <Route path="/" element={<Product />}></Route>
+          <Route path="/search" element={<Search />}></Route>
+          <Route
+            path="/product/:metaTitle/:productId"
+            element={<Detail />}
+          ></Route>
+          <Route element={<PrivateRoute />}>
             <Route
-              path="/product/:metaTitle/:productId"
-              element={<Detail />}
+              path="/user/account/*"
+              element={
+                <Elements stripe={stripePromise}>
+                  <Account />
+                </Elements>
+              }
             ></Route>
-            <Route element={<PrivateRoute />}>
+            <Route element={<CheckoutProviderLayout />}>
+              <Route path="/cart" element={<Cart />}></Route>
               <Route
-                path="/user/account/*"
+                path="/checkout"
                 element={
                   <Elements stripe={stripePromise}>
-                    <Account />
+                    <Checkout />
                   </Elements>
                 }
               ></Route>
-              <Route element={<CheckoutProviderLayout />}>
-                <Route path="/cart" element={<Cart />}></Route>
-                <Route
-                  path="/checkout"
-                  element={
-                    <Elements stripe={stripePromise}>
-                      <Checkout />
-                    </Elements>
-                  }
-                ></Route>
-              </Route>
             </Route>
-            <Route
-              path="/user"
-              element={<Navigate to="/user/account/" replace></Navigate>}
-            ></Route>
           </Route>
+          <Route
+            path="/user"
+            element={<Navigate to="/user/account/" replace></Navigate>}
+          ></Route>
           <Route element={<PrivateRoute />}>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Register />}></Route>

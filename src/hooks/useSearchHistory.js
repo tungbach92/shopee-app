@@ -1,18 +1,13 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { useUser } from "../context/UserProvider";
 import getSearchHistoryFromFirebase from "../services/getSearchHistoryFromFirebase";
 import { saveSearchHistoryToFirebase } from "../services/saveSearchHistoryToFirebase";
-import { useProductsContext } from "./ProductsProvider";
-import { useUser } from "./UserProvider";
-const SearchContext = React.createContext();
-export const useSearchContext = () => {
-  return useContext(SearchContext);
-};
 
-const SearchProvider = ({ children }) => {
+const useSearchHistory = () => {
   const { user } = useUser();
-  const { items } = useProductsContext();
-  const [searchItems, setSearchItems] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const searchInput = useSelector((state) => state.search.searchInput);
   const [searchHistory, setSearchHistory] = useState([]);
   const suggestions = useMemo(
     () =>
@@ -55,28 +50,12 @@ const SearchProvider = ({ children }) => {
     }
   };
 
-  const handleSearchInputChange = (input) => {
-    if (input.length === 0) {
-      setSearchItems([]);
-      return;
-    }
-    const searchItems = items.filter((item) =>
-      item.name.toLowerCase().includes(input.trim().toLowerCase())
-    );
-    setSearchItems(searchItems);
-  };
-
-  const value = {
-    searchItems,
-    searchInput,
-    setSearchInput,
-    handleSearchInputChange,
+  return {
+    searchHistory,
+    suggestions,
     addToSearchHistory,
     deleteFromSearchHistory,
-    suggestions,
   };
-  return (
-    <SearchContext.Provider value={value}>{children}</SearchContext.Provider>
-  );
 };
-export default SearchProvider;
+
+export default useSearchHistory;
