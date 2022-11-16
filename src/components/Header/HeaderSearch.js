@@ -7,17 +7,17 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
 import PropTypes from "prop-types";
-import { useSearchContext } from "../../context/SearchProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { changeSearchInput, changeSearchItems } from "../../redux/searchSlice";
+import { useProductsContext } from "../../context/ProductsProvider";
+import useSearchHistory from "../../hooks/useSearchHistory";
 
 const HeaderSearch = ({ isCartPage, isCheckoutPage, xsBreakpointMatches }) => {
-  const {
-    searchInput,
-    setSearchInput,
-    handleSearchInputChange,
-    addToSearchHistory,
-    deleteFromSearchHistory,
-    suggestions,
-  } = useSearchContext();
+  const { items } = useProductsContext();
+  const { addToSearchHistory, deleteFromSearchHistory, suggestions } =
+    useSearchHistory();
+  const searchInput = useSelector((state) => state.search.searchInput);
+  const dispatch = useDispatch();
   const wrapperRef = useRef();
   const navigate = useNavigate();
 
@@ -31,17 +31,20 @@ const HeaderSearch = ({ isCartPage, isCheckoutPage, xsBreakpointMatches }) => {
 
   const handleInputChange = (e) => {
     const text = e.target.value;
-    setSearchInput(text);
+    // setSearchInput(text);
+    dispatch(changeSearchInput(text));
   };
 
   const handleSuggestionClick = (text) => {
-    setSearchInput(text);
+    // setSearchInput(text);
+    dispatch(changeSearchInput(text));
     handleSearchIconClick(text);
   };
 
   const handleSearchIconClick = async (text) => {
     addToSearchHistory(text);
-    handleSearchInputChange(text);
+    // handleSearchInputChange(text);
+    dispatch(changeSearchItems(items));
     setIsHistory(false);
     navigate("/search"); // navigate to search 1 time
   };
