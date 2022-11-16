@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "../components/Header/Header";
 import ProductContainer from "../components/Product/ProductContainer";
-import { useSearchContext } from "../context/SearchProvider";
+import { changeSearchInput } from "../redux/searchSlice";
 const Search = () => {
-  const { searchItems, setSearchInput } = useSearchContext();
+  const searchItems = useSelector((state) => state.search.searchItems);
+  const dispatch = useDispatch();
   // const [searchParams, setSearchParams] = useSearchParams();
 
   // useEffect(() => {
@@ -12,9 +14,9 @@ const Search = () => {
 
   useEffect(() => {
     return () => {
-      setSearchInput("");
+      dispatch(changeSearchInput(""));
     };
-  }, [setSearchInput]);
+  }, [dispatch]);
 
   return (
     <>
