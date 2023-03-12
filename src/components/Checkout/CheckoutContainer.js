@@ -33,11 +33,9 @@ import { useAddCartToFireStoreMutation } from "../../services/cartApi";
 import useVoucher from "../../hooks/useVoucher";
 import withContainer from "../../pages/withContainer";
 
-export default function CheckoutContainer({ isCheckoutPage }) {
+function CheckoutContainer({ isCheckoutPage }) {
   const [addCartToFireStore] = useAddCartToFireStoreMutation();
   const dispatch = useDispatch();
-
-function CheckoutContainer({ isCheckoutPage }) {
   const { updateDefaultPaymentMethodID, updateDefaultPaymentMethodIDLoading } =
     useUpdateDefaultPaymentMethodIDToStripe();
   const { checkoutState, checkoutDispatch } = useCheckoutContext();
